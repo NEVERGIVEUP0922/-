@@ -1,0 +1,258 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        /*左右盒子布局*/
+        .tree-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .table-container {
+            margin-left: 240px;
+        }
+        /*拖拽*/
+        html, body, .tab-container, .jl-drag-container {
+            height: 100%
+        }
+        .tab-container {
+            box-sizing: border-box;
+        }
+        .jl-drag-handle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100%;
+            border-right: 1px solid #e2e2e2;
+            padding-right: 10px;
+            cursor: col-resize;
+        }
+        .jl-drag-handle:hover {
+            border-right: 2px solid #e2e2e2;
+        }
+    </style>
+</block>
+<block name="content">
+    <div class="jl-drag-container">
+        <div class="tree-container">
+            <div id="jstree_demo_div"></div>
+            <div class="jl-drag-handle layui-box"></div>
+        </div>
+        <div class="table-container">
+            <blockquote class="jl-title layui-elem-quote">
+                    <span class="layui-breadcrumb">
+                        <a class="jl-main-title" href="javascript:">后台用户列表</a>
+                    </span>
+            </blockquote>
+            <blockquote class="layui-elem-quote" style="overflow: hidden">
+                <span style="padding: 9px 15px">用户登录名</span>
+                <input value="{$request.user_name}" type="text" name="user_name" placeholder="请输入用户登录名" class="layui-input" style="display: inline-block;width: auto">
+                <div class="layui-btn-group">
+                    <button class="layui-btn search-btn">检索</button>
+                    <button class="layui-btn layui-btn-primary clear-btn">清空</button>
+                </div>
+            </blockquote>
+            <blockquote class="layui-elem-quote">
+                <button class="jl-add-btn layui-btn layui-btn-sm">添加用户</button>
+            </blockquote>
+            <table lay-filter="data-table" class="data-table">
+                <script type="text/html" id="data-table-handle-tpl">
+                    <div class="data-table-handle-box" data-id="{{ d.id }}">
+                        <span lay-event="detail">编辑</span>
+                        <span lay-event="delete">删除</span>
+                    </div>
+                </script>
+            </table>
+            <div id="data-table-page"></div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var list_data = {$list|json_encode};
+            var request = {$request|json_encode};
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Sysuser/sysUserList?'+query
+            };
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-290',
+                cols: [[ //表头
+                    {field: 'uid', title: '序号', fixed: 'left'}
+                    ,{field: 'user_name', title: '用户登录名'}
+                    ,{field: 'department', title: '部门编号',templet: function(d){
+                        return d.departmentInfo ? d.departmentInfo.department_name : '空'
+                    }}
+                    ,{field: 'fullname', title: '全称'}
+                    ,{field: 'nickname', title: '昵称'}
+                    ,{field: 'qq', title: 'qq'}
+                    ,{field: 'mobile', title: '手机'}
+                    ,{field: 'email', title: '用户邮箱'}
+                    ,{field: 'femplno', title: 'ERP用户编号'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right', toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'detail'){
+                    jlTool.sendIframeMsg('go',{
+                        title:'后台用户详情',
+                        url:'/Admin/Sysuser/adminAction?uid='+source.uid,
+                        icon:''
+                    });
+                }
+                else if(layEvent === 'delete'){
+                    layer.confirm('确定要删除吗？', function(index){
+                        var data = {
+                            action:'delete',
+                            uid:source.uid
+                        };
+                        $.post('/Admin/Sysuser/adminAction',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('操作成功');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        });
+                    });
+                }
+            });
+            $('.jl-add-btn').on('click',function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'后台用户详情',
+                    url:'/Admin/Sysuser/adminAction',
+                    icon:''
+                });
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            //树分割线***************************************************************************************************
+            var tree_data = {$tree|json_encode};
+            var cate_path = {$cate_path|json_encode};
+            var fatherPath = {$fatherPath|json_encode};
+            //树初始化
+            (function reduce(value,level) {
+                level = level ? level : 1;
+                if(value&&$.isArray(value)){
+                    $.each(value,function (i,v) {
+                        if(level===1){
+                            v["state"]={"opened": true};
+                        }
+                        v['text'] = v.department_name;
+                        if(fatherPath&&fatherPath.indexOf(v.id)>-1){
+                            v['state'] = {"opened": true};
+                        }
+                        if(request.department_id&&request.department_id===v.id){
+                            v['state'] = {"selected": true};
+                        }
+                        if(v.children){
+                            reduce(v.children,level+1)
+                        }
+                    });
+                }
+            })(tree_data);
+            $('#jstree_demo_div').jstree({
+                'core': {
+                    'data': tree_data,
+                    'check_callback':true,
+                    'multiple':false
+                }
+            }).on("changed.jstree", function (e, data) {
+                if ((data.action==='select_node')&&data.selected.length) {
+                    var category = data.instance.get_node(data.selected[0]);
+                    var cate_id = category.id;
+                    if(cate_id==='j1_1'){
+                        queryTable({
+                            pageSize:list_data.pageSize,
+                            page:1
+                        });
+                    }
+                    else {
+                        queryTable({
+                            department_id:cate_id,
+                            pageSize:list_data.pageSize,
+                            page:1
+                        });
+                    }
+                }
+            });
+            //检索按钮
+            $('.search-btn').on('click',function () {
+                queryTable({
+                    user_name:$('input[name="user_name"]').val(),
+                });
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            });
+            //分割线拖拽
+            var $drag_box = $('.jl-drag-container');
+            var $drag_handle = $('.jl-drag-handle');
+            var drag_box1 = $('.tree-container');
+            var drag_box2 = $('.table-container');
+            var box1_css, box2_css;
+            var drag_status = false;
+            var drag_offset;
+            $drag_handle.mousedown(function (e) {
+                drag_status = true;
+                drag_offset = e.screenX;
+                box1_css = parseInt(drag_box1.css('width'));
+                box2_css = parseInt(drag_box2.css('margin-left'))
+            });
+            $drag_box.mouseup(function () {
+                drag_status = false
+            });
+            $drag_box.mouseleave(function () {
+                drag_status = false
+            });
+            $drag_box.mousemove(function (e) {
+                if (drag_status) {
+                    var distance = e.screenX - drag_offset;
+                    drag_box1.css('width', box1_css + distance);
+                    drag_box2.css('margin-left', box2_css + distance)
+                }
+            });
+        })
+    </script>
+</block>

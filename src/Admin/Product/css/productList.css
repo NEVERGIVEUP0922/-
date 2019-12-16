@@ -1,0 +1,103 @@
+/*左右盒子布局*/
+.tree-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+.table-container {
+    margin-left: 240px;
+}
+/*拖拽*/
+html, body, .tab-container, .jl-drag-container {
+    height: 100%
+}
+.tab-container {
+    box-sizing: border-box;
+}
+.jl-drag-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 100%;
+    border-right: 1px solid #e2e2e2;
+    padding-right: 10px;
+    cursor: col-resize;
+}
+.jl-drag-handle:hover {
+    border-right: 2px solid #e2e2e2;
+}
+/*筛选区域*/
+ .data-table-screen .layui-input,
+ .data-table-screen .layui-select,
+ .data-table-screen .layui-textarea{
+     height: 30px;
+ }
+ .data-table-screen>div{
+     margin-bottom: 4px;
+ }
+.data-table-screen-title{
+    display: inline-block;
+    width: 100px;
+}
+/*批量操作*/
+.batch-handle-container{
+    position: absolute;
+    top:0;
+    right: 0;
+    height: 40px;
+    line-height: 40px;
+}
+.batch-handle-container a{
+    margin-left: 10px;
+}
+.batch-handle-container a>ul{
+    width:100%;
+    height:32px;
+    display:none;
+    color:#999
+}
+.data-table-download{
+    position:relative;
+}
+.data-table-download ul{
+    height:54px !important;
+    position: absolute;
+    top:16px;
+    left:-19px;
+    padding:0 16px;
+    z-index: 100;
+    background-color:#fff
+}
+.data-table-download ul>li{
+    display:block;
+    width:100%;
+    height:20px;
+    margin-left: 0px;
+}
+@media screen and (max-width: 1350px) {
+    .batch-handle-container{
+        line-height: 16px;
+        width: 300px;
+    }
+}
+.layui-tab-title li{
+    background-color: white;
+    z-index: 1;
+}
+/*紧凑*/
+.productList-container{
+    position: relative;
+}
+.query-container{
+    display: none;
+    position: absolute;
+    top: 46px;
+    left: 0;
+    z-index: 2;
+    border-bottom: 1px solid #e2e2e2 ;
+}

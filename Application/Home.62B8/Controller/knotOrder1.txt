@@ -1,0 +1,30 @@
+	public function knotOrder(){
+		if(IS_AJAX){
+			$request=I('post.');
+			$order_sn=$request['order_sn'];
+			if(!$order_sn) die(json_encode(['error'=>1,'msg'=>'参数错误']));
+			$order=M('order');
+			$res=$order->where(['order_sn'=>$order_sn,'knot'=>0])->find();
+			if($res){
+				$res=$order->where(['order_sn'=>$order_sn,'knot'=>0])->save(['knot'=>1]);
+				if($res){
+					//写入结单redis knotOrder
+					$orderSync = M('knot_order');
+					if(!($orderSync->where(['order_sn'=>$order_sn])->find())){
+						$res = $orderSync->add([ 'order_sn'=>$order_sn ]);
+						if($res === false )  die(json_encode(['error'=>1,'msg'=>$order_sn.'----结单信息同步写入数据库失败']));
+					}
+					$redis = Redis::getInstance();
+					$redRes = $redis->sAdd( 'knotOrder', $order_sn );
+					if((int)$redRes===0){
+						return ['error'=>1,'msg'=>'该订单正在结单中......'];
+					}
+					return die(json_encode(['error'=>0,'msg'=>'结单提交成功']));
+				}else{
+					return die(json_encode(['error'=>1,'msg'=>'结单失败']));
+				}
+			}else{
+				return die(json_encode(['error'=>1,'msg'=>'结单信息错误']));
+			}
+		}
+	}

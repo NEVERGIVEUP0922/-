@@ -1,0 +1,147 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-feedback" />
+
+<block name="title">搜索</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/feedback.css">
+</block>
+
+<block name="nav-title">意见反馈</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <div class="jl-line"></div>
+
+    <div id="jl-feedback">
+        <div class="js-success">
+            <p>
+                <img src="__PUBLIC__/Home/Public/img/check.png" alt="">
+                提交成功！感谢你诚挚的看法或建议，我们一定会认真阅读努力改进！
+            </p>
+            <a href="{:U('Home/Default/index')}">返回首页</a>
+        </div>
+
+        <p class="jl-top">尊敬的用户：</p>
+        <p>你好！为了给你提供更好的服务，我们希望收集你使用<span>玖隆芯城</span>时的看法或建议。您诚挚的建议玖隆芯城会认真阅读，努力改进！</p>
+        <div class="jl-content">
+            <textarea class="jl-feedback-content" name="content" placeholder="亲，写点建议吧，你的建议对我们是很有帮助的...."></textarea>
+            <i class="jl-false-note"></i>
+        </div>
+
+        <dl class="jl-degree">
+            <dt>你对<span>玖隆芯城</span>的满意度如何？</dt>
+            <dd><i class="jl-choose-circle jl-choose-active"></i>非常满意</dd>
+            <dd><i class="jl-choose-circle"></i>满意</dd>
+            <dd><i class="jl-choose-circle"></i>一般</dd>
+            <dd><i class="jl-choose-circle"></i>不满意</dd>
+            <dd><i class="jl-choose-circle"></i>非常不满意</dd>
+        </dl>
+
+        <dl class="jl-contact-way jl-cle">
+            <dt>你的联系方式（可选择填写或者不填写哦）</dt>
+            <dd class="jl-cle">
+                <p>姓名</p>
+                <input name="name" type="text" placeholder="请输入姓名">
+            </dd>
+            <dd>
+                <p>手机号码</p>
+                <input name="mobile" type="text" placeholder="请输入手机号码">
+                <i class="jl-false-note"></i>
+            </dd>
+        </dl>
+
+        <button class="jl-refer">确认提交</button>
+    </div>
+
+
+
+</block>
+
+<block name="js">
+
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+
+                var circle=$('.jl-degree dd i');
+                $.each(circle,function(index,el){
+                   $(el).data('degree',index+1);
+                });
+
+
+                $('.jl-degree dd').on('click',function(){
+                    circle.removeClass('jl-choose-active');
+                    $(this).children('i').addClass('jl-choose-active');
+                });
+
+                //内容验证
+                $('.jl-feedback-content').on('blur',function(){
+                    var text=$(this).val();
+                    if(text===""){
+                        $('.jl-content').addClass('jl-false').children('.jl-feedback-content').focus();
+                    }else{
+                        $('.jl-content').removeClass('jl-false');
+                    }
+                });
+
+                //手机验证
+                var reg3 = /^1(3|4|5|7|8)\d{9}$/;
+                $('input[name=mobile]').on('blur',function(){
+                    var mobile=$(this).val();
+                    if(!reg3.test(mobile)&&mobile!==""){
+                        $(this).parent().addClass('js-false');
+                    }else{
+                        $(this).parent().removeClass('js-false');
+                    }
+                });
+
+                $('.jl-refer').on('click',function(){
+                    var content=$('.jl-feedback-content').val();
+                    var star=$('.jl-choose-active').data('degree');
+                    var name=$('input[name=name]').val();
+                    var mobile=$('input[name=mobile]').val();
+                    var data = {
+                        content:content,
+                        star:star,
+                        name:name,
+                        mobile:mobile
+                    };
+                    var $false=$('#jl-feedback .jl-false,.js-false').length;
+                    if( content!== ''&&$false<1){
+                        $.ajax({
+                            url: '{:U("Home/Default/feedback")}',
+                            type: 'POST',
+                            data: data,
+                            dataType: 'json',
+                            success: function(res){
+                                if( res.status===0 ){
+                                    window.location.href= '{:U("Home/Default/feedback-success")}';
+                                }else{
+                                    modal.confirm({
+                                        title: '系统繁忙',
+                                        brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                        top: 100
+                                    })
+                                }
+                            }
+                        });
+                    }else{
+                        if(content===""){
+                            $('.jl-content').addClass('jl-false').children('.jl-feedback-content').focus();
+                        }else{
+                            $('input[name=mobile]').focus();
+                        }
+                    }
+                });
+
+            });
+        })
+    </script>
+
+</block>

@@ -1,0 +1,108 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout" />
+
+<block name="title">积分商城</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/retreatCargo.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Points/css/pointsMall.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div id="jl-purchase-fault" >
+        <div >你的位置&gt;首页&gt;积分商城&gt;积分记录</div>
+        <div class="jl-point-title">您的积分: <span class="jl-point-title-poins">{$points} </span> <a class="jl-point-record" href="/Home/Default/index">返回首页&gt;&gt;&gt;</a></div>
+        <div id="jl-hot-product" class="jl-cle">
+            <ul id="jl-code-record">
+                <?php $k = count($integral_record) ?>
+                <volist name="integral_record" id="h">
+                    <li class="" style="cursor:default">
+                        <div class="jl-img" style="padding-top:14px">
+                            <notempty name="h.img">
+                                <img src="{$h['img'][0]}" alt="" style="width: 184px;height: 120px;">
+                                <else/>
+                                <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="" style="width: 184px;height: 120px;">
+                            </notempty>
+                        </div>
+                        <div class="jl-describe" style="padding-top:14px">
+                            <p class="jl-p-describe" style="height:auto;font-weight:600">{$h.reward.goods_name}</p>
+                            <div class="jl-p-describe" style="height:40px;padding:10px 0;">{$h.reward.goods_describe}</div>
+                            <p class="jl-p-describe" ><?php echo($h['d_status']>0?(-$h['reward']['exchange_integral']):$h['reward']['exchange_integral'])?>积分
+                                <if condition="$h['reward_status'] gt 0"><span style="color:#009688">已发货</span></if>
+                            </p>
+                        </div>
+                        <div style="padding-top:50px">
+                            <?php $times=explode(' ',$h['create_time']);?>
+                            {$times[0]}
+                            <br/>
+                            {$times[1]}
+                        </div>
+                    </li>
+                </volist>
+            </ul>
+        </div>
+    </div>
+    {$page}
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery','jl-modal','jl-tool','login_page'], function ($) {
+                var modal= require("jl-modal");
+                var jlTool=layui.jlTool;
+                var get = {$request | json_encode};
+                var integral_record= {$integral_record | json_encode};
+                var is_relogin= {$is_relogin|json_encode};
+                console.log(integral_record,jlTool);
+                if( is_relogin ){
+                    modal.confirm({
+                        title: '账号异常',
+                        brief: '您的账号在别处登录!若非本人操作!请尽快修改您的密码!',
+                    })
+                }
+                //积分兑换
+                $(".jl-points-convert").on("click",function(){
+                    modal.confirm({
+                        title:"登录提示",
+                        brief:"您还未登录玖隆芯城，请先登录",
+                        isCenter:true,
+                        confirm:function(res){
+                            login_shadow();
+                        },
+                        cancel:function(){
+
+                        }
+                    });
+                });
+                //分页赋值跳转
+                $(".pageSize").val(get.pageSize || 10).on("change",function(){
+                    var pageSize = $(this).val();
+                    get = $.extend(get,{"pageSize":pageSize});
+                    var url = "{:U('Home/default/pointsMall?record=true')}";
+                    url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+                    window.location = url;
+                });
+
+                var login_shadow=function(){
+                    layer.open({
+                        title:"用户登录",
+                        type:1,
+                        area:["360px"],
+                        content:window.login_page.login_html,
+                        success:function(){
+                            window.login_page.login_init();
+                        }
+
+                    });
+                };
+                window.login_fn=function(){
+                    window.location.reload(true);
+                }
+            });
+        });
+    </script>
+</block>

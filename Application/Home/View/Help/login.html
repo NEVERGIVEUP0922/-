@@ -1,0 +1,53 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">免费注册</a></li>
+        <li class="jl-l"><a href="javascript:;">登录</a></li>
+    </ul>
+    <div class="jl-register">
+        <p>1. 打开玖隆芯城首页，在左上方，点击免费注册按钮，或者在banner图右侧点击免费注册按钮。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img1.png" alt="">
+        <p>2. 进入到注册页面，首先是个人用户注册请填写您的手机等信息完成注册；也可切换企业用户注册请填写您的公司名称、手机等信息完成注册。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img2.png" alt="">
+        <p>3. 注册成功，点击按钮可返回首页。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img3.png" alt="">
+    </div>
+    <div class="jl-logins">
+        <p>1. 打开玖隆芯城首页，在左上方点击登录按钮；或者在banner图右侧点击登录按钮。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img4.png" alt="">
+        <p>2. 输入注册时的用户名或电话号码、密码，点击登录即可。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img5.png" alt="">
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+                $('.jl-help-left h4').on('click',function(){
+                    $(this).parent().toggleClass('jl-active');
+                });
+                $('.jl-titles .jl-r').on('click',function(){
+                    $(this).addClass('jl-active').siblings().removeClass('jl-active');
+                    $('.jl-register').css('display','block');
+                    $('.jl-logins').css('display','none');
+                });
+                $('.jl-titles .jl-l').on('click',function(){
+                    $(this).addClass('jl-active').siblings().removeClass('jl-active');
+                    $('.jl-register').css('display','none');
+                    $('.jl-logins').css('display','block');
+                });
+            })
+        });
+    </script>
+</block>

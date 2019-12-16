@@ -1,0 +1,75 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page navbar" wx:if="{{show}}">
+  <view class="fui-cell-group {{code ? 'toggleSend-group' : ''}}" wx:for="{{order.order_goods}}" wx:for-item="val" wx:for-index="ind" wx:key="" >
+    <view  class="fui-list goods-item">
+      <view class="fui-list-media">
+          <image src="{{val.thumb}}" class="round goods_img" style="width:140rpx;height:140rpx"></image>
+      </view>
+      <view class="fui-list-inner jl-shop">
+        <view class="text text-left" style="font-size:32rpx;font-weight:600;">{{val.p_name}}</view>
+        <view class="subtitle text-left" style="padding:22rpx 0 ;height:auto">单价：￥{{val.p_price_true}}</view>
+        <view class="subtitle text-left">退款数量：{{val.retreat_num}}个</view>  
+      </view>
+     </view>
+  </view>
+  <view class="fui-cell-group" style="border-top:20rpx solid #efeff4;margin:0 ">
+    <view class="fui-cell" hover-class="none">
+      <view class="fui-cell-label">
+        快递公司
+      </view>
+      <view class="fui-cell-info">
+        <picker bindchange="change" class="right" data-name="rtypeIndex" range="{{rtypeArr}}" value="{{rtypeIndex}}" >
+          {{rtypeArr[rtypeIndex]}}
+        </picker>
+        <text class="{{refundstate == 1 ? '' : 'hidden'}}">{{rtypeArr[rtypeIndex]}}</text>
+      </view>
+      <view class="fui-cell-remark {{refundstate == 0 ? '' : 'hidden'}}"></view>
+    </view>
+     <view class="fui-cell">
+        <view class="fui-cell-label" >快递单号</view>
+          <view class="fui-cell-info">
+           <input type="text" data-name="re_delivery_num" bindinput='change'  placeholder="请输入物流单号快递单号" class="right" value="{{order.re_delivery_num}}"/>
+          </view>
+      </view>
+      <view class="fui-cell">
+        <view class="fui-cell-label">联系电话</view>
+        <view class="fui-cell-info">
+          <input type="text" bindinput='change' data-name="re_delivery_phone" class="fui-input right" placeholder="请输入联系电话" value="{{order.re_delivery_phone}}" />
+        </view>
+      </view>
+      <!-- <view class="fui-cell-self" style="border-top:1rpx solid #efeff4">
+        <view class="fui-cell-label" style="min-width:150rpx;;padding-bottom:25rpx" >退款说明</view>
+        <view class="fui-cell-info">
+           <textarea bindinput='change'  style="height:150rpx;padding:20rpx;width:calc(100% - 20px);border:1rpx solid #efeff4" data-name="re_delivery_desc" placeholder="请输入1-100字的退款说明">{{order.re_delivery_desc}}</textarea>        
+        </view>
+      </view> -->
+      <view class="fui-cell-self" style="border-top:1rpx solid #efeff4">
+        <view class="fui-cell-label" style="min-width:150rpx;;padding-bottom:25rpx;font-size:30rpx;" >退货地址</view>
+        <view class="fui-cell-info" style="font-size:28rpx;color:#666">
+            <view style="margin-bottom:10rpx">收 货 人：天玖隆科技</view>
+            <view>收货地址：广东省 深圳市 南山区粤海街道高新南一道赋安科技大厦A座301天玖隆科技有限公司</view>
+        </view>
+      </view>
+    <view class="fui-cells " style="border-top:20rpx solid #efeff4">
+      <view class="fui-cell-label" style="padding:25rpx;">上传凭证<text style="color:#888">(最多上传三张图片)</text></view>
+      <view  class="fui-cell">  
+        <view class="fui-images fui-images-sm">
+          <block wx:for="{{imgs}}" wx:key="">
+            <image data-index="{{index}}" src="{{item}}" class="image image-sm" style="height:150rpx;width:150rpx;" data-type="image-preview" catchtap="upload">
+              <content>
+                <text data-index="{{index}}" class="image-remove" data-type="image-remove" style="border-radius:50%;background-color:#fff;font-size:32rpx;" catchtap="upload">×</text>
+              </content>
+            </image>
+          </block>
+        </view>
+        <view class="fui-uploader fui-uploader-sm" data-type="image" catchtap="upload" wx:if="{{isImgok}}"></view>
+        <view class="fui-cell-info"></view>
+      </view>
+    </view>
+  </view>
+  <view class="fui-footer text-right" style="position:static">
+    <block >
+      <view bindtap="submit" class="btn btn-danger btn-submit" style="border:none">提交物流信息</view>
+    </block>
+  </view>
+</view>

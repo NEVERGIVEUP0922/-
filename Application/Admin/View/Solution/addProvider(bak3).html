@@ -1,0 +1,375 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+	<style>
+		.layui-form-label{
+			width:100px;
+		}
+		.layui-input-inline{
+			margin-left:15px;
+			width: 300px!important;
+		}
+		.textarea_css_layui{
+			width:500px;
+			float: left;
+			margin-left: 15px;
+			display: inline-block;
+		}
+		.word_number{
+			display: inline-block;
+			color:#777;
+			text-align: left;
+			width:200px;
+		}
+		.upload_div{
+			margin: 0 0 0 50px;
+		}
+		/*file+add*/
+		.layui-elem-field legend{
+			margin:0px;
+			padding:0px;
+		}
+		.layui-upload-list{
+			width:80%;
+			box-sizing: border-box;
+		}
+		.layui-upload-img{
+			display: inline-block!important;
+			width:10%;
+		}
+	</style>
+</block>
+<block name="content">
+	<div>
+		<blockquote class="layui-elem-quote">
+			<button class="layui-btn  addProvider">上传供应方案</button>
+			<span >》》》上传供应方案</span>
+		</blockquote>
+		<form class="layui-form" action="" method="" autocomplete="off">
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">项目类型:</label>
+				<div class="layui-inline layui-input-inline" lay-filter="sol_types">
+					<select name="types" lay-filter="sol_types" lay-search="" lay-verify="required">
+						<option value="">请选择方案类型</option>
+						<foreach name="types" item="vo" key="k">
+							<if condition="$request['where']['types']['value'] eq $vo['id']">
+								<option value="{$vo.id}" selected>{$vo.types}</option>
+								<else />
+								<option value="{$vo.id}">{$vo.types}</option>
+							</if>
+						</foreach>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">负责人:</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="text" name="sys_owner" placeholder="请选择负责人" class="layui-input sys_owner"  lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">方案名称:</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="text" name="pro_name" placeholder="请输入主控型号" class="layui-input"  lay-verify="required">
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">主控型号:</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="text" name="main_model" placeholder="请输入主控型号" class="layui-input select_main_model"  lay-verify="required">
+					<span class="layui-btn layui-btn-normal layui-btn-sm zhukong-model">选择型号</span>
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">主控品牌:</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="text" name="main_brand" placeholder="请输入品牌" class="layui-input select_main_brand"  lay-verify="required">
+					<span class="layui-btn layui-btn-normal layui-btn-sm zhukong-brand">选择品牌</span>
+				</div>
+			</div>
+			<div class="layui-form-item layui-form-text layui-required">
+				<label class="layui-form-label">方案简述:</label>
+				<div class="layui-input-block textarea_css_layui">
+					<textarea class="layui-textarea " name="synopsis" id="synopsis" placeholder="请输入简述"  lay-verify="required"></textarea>
+				</div>
+				<div class="word_number">
+					<span class="empty_check yincang" id="desc_empty_check"></span>
+					可以输入<span id="enter_content"><!--还可以输入字--></span>个字!</div>
+				<div class="clear"></div>
+			</div>
+			<div class="layui-form-item layui-form-text layui-required">
+				<label class="layui-form-label">方案详细:</label>
+				<div class="layui-input-block textarea_css_layui">
+					<textarea class="layui-textarea" name="pro_desc" id="pro_desc" placeholder="请输入详细描述"  lay-verify="required"></textarea>
+				</div>
+				<div class="word_number">
+					<span class="empty_check yincang" id="desc_empty_check2"></span>
+					<span id="enter_content2"><!--还可以输入字--></span></div>
+				<div class="clear"></div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">提供pcba:</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="radio" name="pcba" value="1" title="是" checked="">
+					<input type="radio" name="pcba" value="0" title="否">
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">pcba型号:</label>
+				<div class="layui-input-block textarea_css_layui select_pcba_list">
+					<input type="text" name="pcba_list" placeholder="请填写pcba型号" class="layui-input jl-select-erp-user" lay-verify="required">
+				</div>
+			</div>
+			<!--文件上传-->
+			<div class="upload_div">
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+					<legend>文件上传</legend>
+				</fieldset>
+				<!---->
+				<div class="layui-upload">
+					<button type="button" class="layui-btn" id="imgs_btn">选择图片</button>
+					<button type="button" class="layui-btn" id="start_up">开始上传</button>
+					图片只能保存最新上传的<span style="color:red;">五张</span>,请酌情选择
+					<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+						预览图：
+						<div class="layui-upload-list" id="imgs_view"></div>
+					</blockquote>
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<div class="layui-input-block" style="margin-left:50px;">
+					<span class="layui-btn" lay-submit lay-filter="base_data">方案上传</span>
+				</div>
+			</div>
+		</form>
+	</div>
+</block>
+<block name="js">
+	<script src="__PUBLIC__/Common/module/ueditor/1.4.3.3/ueditor.config.js"></script>
+	<script src="__PUBLIC__/Common/module/ueditor/1.4.3.3/ueditor.all.min.js"></script>
+	<script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+	<script>
+        layui.use(['layer', 'jlTool','element','form','selectProduct','selectUser','selectBrand','upload'], function () {
+            var base_data= {};
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var selectProduct = layui.selectProduct;
+            var selectUser	  = layui.selectUser;
+            var selectBrand	  = layui.selectBrand;
+            var form = layui.form;
+            var upload = layui.upload;
+            var pro_name = $("input[name='pro_name']");//方案名字
+            var synopsis = $("textarea[name='synopsis']");//简要描述
+            var pro_desc = $("textarea[name='pro_desc']");//详细描述
+
+            /*方案详细*/
+            pro_desc.on('focus',function(){
+                goDescribe(pro_desc,false);
+            });
+            //文本编辑
+            $('body').append(
+                '\t<div id="contentDiv" style="display: none">\n' +
+                '\t\t<textarea id="describe-container"  name="content" style="margin:auto"></textarea>\n' +
+                '\t</div>');
+            var ue;
+            function goDescribe(_this,fn){
+                var $this = $(_this);
+                var index = layer.open({
+                    title: '方案详细描述',
+                    area: ['80%', '90%'],
+                    closeBtn: 2,
+                    shadeClose:true,
+                    id: 'LAY_layuipro',
+                    type:1,
+                    btn:'确定',
+                    shade: 0.5, //不显示遮罩
+                    //content:("<script id ='describe-container' name='content' type='text/plain'>请输入您的方案介绍!</scirpt> "),
+                    content:$('#contentDiv'),
+                    success:function () {
+                        $(".layui-layer-shade").css({"z-index":"1000"});
+                        $(".layui-layer.layui-layer-dialog").css({"z-index":"1000"});
+                        $(".layui-layer-btn").css({"text-align":"right"});
+                        var $content = $('.layui-layer-content');
+                        var height = $content.height();
+                        ue = UE.getEditor('describe-container',{
+                            autoHeightEnabled:true,
+                            scaleEnabled:false,
+                            allowDivTransToP: false,
+                            initialFrameWidth:"100%",
+                            initialFrameHeight:height-120,
+                            topOffset:43
+                        });
+                        $('.edui-default').css('width','auto');
+                    },
+                    end:function () {
+                        ue.destroy();
+                    },
+                    yes:function (index, layero) {
+                        var html = ue.getContent();
+                        if(html){
+                        	$this.html('生成文件成功!');
+						}else{
+                            $this.html('生成文件失败!');
+						}
+
+                        base_data.pro_desc = html;
+						layer.close(index);
+                    },
+                });
+            }
+
+            /*限制字数*/
+            pro_name.attr('maxlength',30);
+//            pro_name.keydown(function(){
+//                var name_val = synopsis.val();
+//                if(String(name_val).length > 30){
+//                    $(this).val(name_val.substring(0,30));
+//                }
+//            })
+            var syn_num  = 0;
+            var word_num = $("#enter_content");
+            	word_num.text(50);
+            synopsis.bind('input propertychange',function(){
+                var syn_val = synopsis.val()?synopsis.val():1;
+                var value	= String(syn_val);
+                var chinese = value.match(/[\u4e00-\u9fa5]/g);
+                var en_num	= value.match(/[a-zA-Z]/g);
+                var reg 	= /[\u4e00-\u9fa5]/g;
+                value		= value.replace(reg,"");
+                value		= value.replace(/\n|\r|^\s+|\s+$/gi,"");
+                // 多个空格替换成一个空格
+                value = value.replace(/\s+/gi," ");
+                // 更新计数
+                var length = 0;
+                var match  = value.match(/\s/g);
+                if (match) {
+                    //length = match.length + 1;
+                    length = match.length;
+                }
+                if(chinese){
+                    length = chinese.length+length;
+				}
+				if(en_num){
+                    length = word_num.length+length;
+				}
+				if(length>50){
+                    if(!syn_num){
+                        var v= String(syn_val);
+                        syn_num=v.length;
+					}
+                    	synopsis.val(syn_val.substring(0,syn_num))
+				}else{
+				    syn_num =0;
+				}
+				word_num.text(50-length);
+            });
+            //选择主控型号:
+            selectProduct.initInput('.zhukong-model',function(data){
+                var xz_main_model = data['fitemno'];
+                var xz_main_brand = data['brand_name'];
+                $("input[name='main_model']").val(xz_main_model);
+                $("input[name='main_brand']").val(xz_main_brand);
+
+            },false,'true',{checkBox:false});
+
+            //选择主控品牌:
+            selectBrand.initInput('.zhukong-brand',function(data){
+//                console.log(data['brand_name']);return;
+                var xz_main_brand =data['brand_name'];
+                $("input[name='main_brand']").val(xz_main_brand);
+
+            },false,'true',{checkBox:false});
+
+  			//选择pcbas型号
+            selectProduct.initInput('.select_pcba_list',function(data){
+				var xz_pcba =data['fitemno'];
+				$("input[name='pcba_list']").val(xz_pcba);
+
+            },false,'true',{checkBox:false});
+            //选择负责人
+            selectUser.initInput('.sys_owner',function(data){
+                $("input[name='sys_owner']").val(data.nickname);
+                base_data.sys_owner = data.uid;
+			},false);
+            //数据提交
+            form.on('submit(base_data)',function(data){
+				delete data.field.sys_owner;
+                delete data.field.file;
+                delete data.field.pro_desc;
+                delete base_data.draft;
+                $.each(data.field,function(index,value) {
+                    base_data[index] = value;
+                });
+				if(!base_data.imgs){
+                    layer.msg('图片不能为空!');return;
+				}
+				if(!base_data.pro_desc){
+                    layer.msg('方案详细描述不能为空!');return;
+				}
+				if(base_data.imgs&&base_data.pro_desc&&base_data.sys_owner){
+					console.log(base_data);
+					$.post('/Admin/Solution/addProvider',base_data,function(rez){
+					  //console.log(rez);
+						if(rez.status==1000){
+	                      //base_data.id = rez.data;
+							layer.msg('数据保存成功',{time:500}, function(){
+								window.location.reload()}
+							);
+						}else{
+							layer.msg('保存失败');
+						}
+					});
+                }
+				return false;
+            });
+
+            //多图片上传
+			var i=0;
+			var imgs = [];
+            upload.render({
+                elem: '#imgs_btn'
+                ,url: '/Admin/Solution/addProvider'
+                ,multiple: true
+                ,auto:false
+                ,bindAction:'#start_up'
+                ,size:5*1024
+				,data:{action:1}
+                ,before: function(obj){
+                    //预读本地文件示例，不支持ie8
+					obj.preview(function(index, file, result){
+						$('#imgs_view').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+					});
+                }
+                ,done: function(res){
+                    i++;
+                    if(res.error==0){
+                        var img_path = res.msg.file.savepath+res.msg.file.savename;
+                        if(img_path){
+							imgs.push(img_path);
+						}
+						if(imgs.length>5){
+								imgs.splice(0,imgs.length-5);
+						}
+
+                        if(i>5){
+                            window.alert('上传数量超过限制');
+							$('#imgs_view').children('img')[0].remove();
+                            return;
+                        }else{
+                       		layer.msg('第'+i+'张图片上传成功');
+							base_data.imgs = imgs;
+						}
+//						console.log(base_data);
+					}
+                    //上传完毕
+                }
+                ,error:function(){
+                    i++
+                    layer.msg('第'+i+'张图片上传错误');
+                }
+            });
+        })
+	</script>
+</block>

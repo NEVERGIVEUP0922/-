@@ -1,0 +1,355 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">报备信息</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="overflow: hidden">
+            <span>
+                <span style="padding: 9px 15px">客户</span>
+                <input value="{$request.uid}" type="hidden" name="uid" placeholder="请选择客户" class="layui-input jl-select-customers " style="display: inline-block;width: auto">
+                <input value="{$request.uid_name}" type="text" name="uid_name" placeholder="请选择客户" class="layui-input jl-select-customers layui-form-label-pinyin-customer" style="display: inline-block;width: auto">
+            </span>
+            <span>
+                 <span style="padding: 9px 15px">业务员</span>
+                 <input value="{$request.sys_uid}" type="hidden" name="sys_uid" placeholder="请选择业务员" class="layui-input jl-select-users " style="display: inline-block;width: auto">
+                 <input value="{$request.sys_uid_name}" type="text" name="sys_uid_name" placeholder="请选择业务员" class="layui-input jl-select-users layui-form-label-pinyin-admin" style="display: inline-block;width: auto">
+            </span>
+
+            <div class="layui-btn-group">
+                <button class="layui-btn search-btn">检索</button>
+                <button class="layui-btn layui-btn-primary clear-btn">清空</button>
+            </div>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" style="width: 100%">
+                    <span lay-event="detail">详情</span>
+                    {{#  if((d.check_status==0)){ }}
+                    <span lay-event="check">审核</span>
+                    {{#  } }}
+                    {{#  if((d.check_status==2)){ }}
+                    <span lay-event="deal">处理</span>
+                    {{#  } }}
+                    <span lay-event="turn">抛转</span>
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool', 'element', 'form','selectUser','selectCustomer'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var selectUser = layui.selectUser;
+            selectUser.initInput();
+            var selectCustomer = layui.selectCustomer;
+            selectCustomer.initInput('.jl-select-customer',false,'user_name');
+            selectUser.initInput(false,false,'fullname');
+            var list_data = {$list|json_encode};
+            if (!list_data) {
+                list_data = {list: []}
+            }
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Customer/reportMessage?' + query
+            };
+            table.render({
+                elem: '.data-table',
+                data: list_data.list ? list_data.list : [],
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height: 'full-216',
+                cols: [[
+                    {field: 'id', title: '编号', fixed: 'left'}
+                    , {field: 'customer_name', title: '客户'}
+                    , {field: 'sale_name', title: '业务员'}
+                    , {field: 'check_status', title: '报备状态',templet:function (d) {
+                        switch (d.check_status){
+                            case '0':
+                                return '未审核';
+                            case '1':
+                                return '不通过';
+                            case '2':
+                                return '通过';
+                            case '3':
+                                return '已处理';
+                        }
+                    }}
+                    , {field: 'handle', title: '操作', align: 'center',width: 180, fixed: 'right', toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            //工具按钮
+            table.on('tool(data-table)', function (obj) {
+                var source = obj.data;
+                var layEvent = obj.event;
+                if (layEvent === 'check') {
+                    layer.confirm((
+                        '<span>审核通过吗？</span><br>' +
+                        '<span>审核信息：</span>' +
+                        '<input type="text" class="layui-input jl-check-msg" style="width: 160px;display: inline-block"/>'
+                    ), {
+                        btn: ['通过', '不通过', '取消'],
+                        icon:-1
+                    }, function(index, layero){
+                        var msg = $('.jl-check-msg').val();
+                        $.post('/Admin/Product/productReportCheck',{
+                            id:source.id,
+                            action:'check',
+                            check_status:'2',
+                            check_note:msg
+                        },function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('审核完成');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                    }, function(index){
+                        var msg = $('.jl-check-msg').val();
+                        $.post('/Admin/Product/productReportCheck',{
+                            id:source.id,
+                            action:'check',
+                            check_status:'1',
+                            check_note:msg
+                        },function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('审核完成');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                    });
+                } else if (layEvent === 'detail') {
+                    $.each(['address','agent','agent_engineer','agent_sale','buyer','designer',
+                        'company'],function (index,value) {
+                        source[value] = source[value].split('{}');
+                    });
+                    layer.open({
+                        title:'报备单',
+                        type: 0,
+                        area: '900px',
+                        content: (
+                            '<table class="layui-table"> ' +
+                            '<tr><th colspan="9">代理商信息</th></tr> ' +
+                            '<tr> ' +
+                            '<td>代理商：</td><td>'+source.agent[0]+'</td> ' +
+                            '<td>地点：</td><td colspan="6">'+source.agent[1]+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>应用工程师：</td><td>'+source.agent_engineer[0]+'</td> ' +
+                            '<td>手机：</td><td>'+source.agent_engineer[1]+'</td> ' +
+                            '<td>座机：</td><td colspan="4">'+source.agent_engineer[2]+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>销售业务员：</td><td>'+source.agent_sale[0]+'</td> ' +
+                            '<td>手机：</td><td>'+source.agent_sale[1]+'</td> ' +
+                            '<td>座机：</td><td colspan="4">'+source.agent_sale[2]+'</td>' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<th colspan="9">项目信息（终端工厂、项目信息）</th> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>公司全称：</td><td colspan="3">'+source.company[0]+'</td> ' +
+                            '<td>公司简称：</td><td colspan="4">'+source.company[1]+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>公司地址：</td><td colspan="3">'+source.address[0]+'</td> ' +
+                            '<td>省/自治区：</td><td colspan="4">'+source.address[1]+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>项目名称：</td><td colspan="3">'+source.project_name+'</td> ' +
+                            '<td>月产量(K/M)：</td><td colspan="4">'+source.month_num+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>应用领域:</td><td colspan="3">'+source.application_area+'</td> ' +
+                            '<td>原型日期:</td><td colspan="4">'+source.prototype_date+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>项目状态:</td><td colspan="3">'+source.project_status+'</td> ' +
+                            '<td>量产日期:</td><td colspan="4">'+source.batch_date+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>应用描述:</td><td colspan="8">'+source.describe+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>设计工程师:</td><td>'+source.designer[0]+'</td> ' +
+                            '<td>手机:</td><td>'+source.designer[1]+'</td> ' +
+                            '<td>座机:</td><td colspan="4">'+source.designer[2]+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>采购联系人:</td><td>'+source.buyer[0]+'</td> ' +
+                            '<td>手机:</td><td>'+source.buyer[1]+'</td> ' +
+                            '<td>座机:</td><td colspan="4">'+source.buyer[2]+'</td> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<th colspan="9">需求产品</th> ' +
+                            '</tr> ' +
+                            '<tr> ' +
+                            '<td>器件型号</td> ' +
+                            '<td>简要描述应用条件</td> ' +
+                            '<td>封装形式</td> ' +
+                            '<td>是否询价</td> ' +
+                            '<td>需求样品数量</td> ' +
+                            '<td>竞争品牌</td> ' +
+                            '<td>竞争型号</td> ' +
+                            '<td>竞品价格</td> ' +
+                            '<td>月用量</td> ' +
+                            '</tr> ' +
+                            (function () {
+                                var $item = '';
+                                $.each(source.item,function (index,value) {
+                                    $item += (
+                                        '<tr> ' +
+                                        '<td>'+value.p_sign+'</td> ' +
+                                        '<td>'+value.application_condition+'</td> ' +
+                                        '<td>'+value.package+'</td> ' +
+                                        '<td>'+value.is_request+'</td> ' +
+                                        '<td>'+value.sample+'</td> ' +
+                                        '<td>'+value.compete_brand+'</td> ' +
+                                        '<td>'+value.compete_sign+'</td> ' +
+                                        '<td>'+value.compate_price+'</td> ' +
+                                        '<td>'+value.month_num_used+'</td> ' +
+                                        '</tr> '
+                                    )
+                                });
+                                return $item
+                            }()) +
+                            '</table>'
+                        )
+                    })
+                } else if (layEvent === 'deal') {
+                    layer.confirm('请确认备货请求已经处理',function(){
+                        $.post('/Admin/Product/productReportCheck',{
+                            id:source.id,
+                            action:'check',
+                            check_status:'3'
+                        },function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('操作成功');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                    });
+                } else if (layEvent === 'turn') {
+                    selectUser.start(function (data) {
+                        $.post('/Admin/Customer/reportChangeSale',{
+                            sys_uid:data.uid,
+                            id:source.id
+                        } ,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('操作成功');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        })
+
+                    })
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({}, {
+                            pageSize: obj.limit,
+                            page: String(obj.limit) === String(list_data.pageSize) ? obj.curr : 1
+                        }));
+                    }
+                }
+            });
+            //检索按钮
+            $('.search-btn').on('click',function (data) {
+                queryTable({
+                    uid:$('input[name="uid"]').val(),
+                    uid_name:$('input[name="uid_name"]').val(),
+                    sys_uid:$('input[name="sys_uid"]').val(),
+                    sys_uid_name:$('input[name="sys_uid_name"]').val()
+                });
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            })
+        })
+        //搜索输入拼音首字母自动补全
+        var response_data=[];
+        $( ".layui-form-label-pinyin-customer" ).autocomplete({
+            source: "/Admin/Customer/companyPinyinSearch",
+            minLength: 2,
+            close:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-customer" );
+                var value = $this.val();
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+        $( ".layui-form-label-pinyin-admin" ).autocomplete({
+            source: "/Admin/Customer/adminPinyinSearch",
+            minLength: 2,
+            close:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-admin" );
+                var value = $this.val();
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+    </script>
+</block>

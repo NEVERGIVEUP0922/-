@@ -1,0 +1,445 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/pikaday/1.6.1/css/pikaday.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+</block>
+<block name="content">
+    <div style="position:relative">
+        <div class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">样品申请列表</a>
+            </span>
+            <span class="layui-breadcrumb">
+<!--
+                <button class="query-btn layui-btn layui-btn-sm check-search" style="color:#fff;margin:0 0 10px 10px;cursor:pointer" href="javascript:">检索</button>
+-->
+            </span>
+        </div>
+        <blockquote style="position: absolute;z-index:5;display:none" class="layui-elem-quote list-query-container">
+            <form class="layui-form layui-clear list-query-form" lay-filter="list-query-form" action="">
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">订单</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="order_sn" placeholder="请输入订单编号" autocomplete="off"
+                               class="layui-input " value="{$request.where.order_sn.value}">
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">客户</label>
+                    <div class="layui-input-block">
+                        <input type="hidden" name="user_id" placeholder="请选择客户" autocomplete="off" class="layui-input jl-select-customer" value="{$request.where.user_id.value}">
+                        <input type="text" name="user_id_name" placeholder="请选择客户" autocomplete="off" class="layui-input jl-select-customer layui-form-label-pinyin-customer" value="{$request.where.user_id_name.value}">
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">业务员</label>
+                    <div class="layui-input-block">
+                        <input type="hidden" name="saleId" placeholder="请选择业务员" autocomplete="off" class="layui-input jl-select-user " value="{$request.where.saleId.value}">
+                        <input type="text" name="saleId_name" placeholder="请选择业务员" autocomplete="off" class="layui-input jl-select-user layui-form-label-pinyin-admin" value="{$request.where.saleId_name.value}">
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">订单状态</label>
+                    <div class="layui-input-block">
+                        <select name="order_status">
+                            <option value="">请选择订单状态</option>
+                            <option value="0" {$request['where']['order_status']['value']==='0'?'selected':''}>新单</option>
+                            <option value="1" {$request['where']['order_status']['value']==='1'?'selected':''}>锁单</option>
+                            <option value="2" {$request['where']['order_status']['value']==='2'?'selected':''}>部分完成</option>
+                            <option value="3" {$request['where']['order_status']['value']==='3'?'selected':''}>已完成</option>
+                            <option value="100" {$request['where']['order_status']['value']==='100'?'selected':''}>已删除</option>
+                            <option value="101" {$request['where']['order_status']['value']==='101'?'selected':''}>客户申请取消</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">支付状态</label>
+                    <div class="layui-input-block">
+                        <select name="pay_status" lay-verify="">
+                            <option value="">请选择支付状态</option>
+                            <option value="0" {$request['where']['pay_status']['value']==='0'?'selected':''}>未付款</option>
+                            <option value="1" {$request['where']['pay_status']['value']==='1'?'selected':''}>部分支付</option>
+                            <option value="2" {$request['where']['pay_status']['value']==='2'?'selected':''}>全部支付</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">支付方式</label>
+                    <div class="layui-input-block">
+                        <select name="pay_type">
+                            <option value="">请选择支付方式</option>
+                            <option value="1" {$request['where']['pay_type']['value']==='1'?'selected':''}>在线支付</option>
+                            <option value="2" {$request['where']['pay_type']['value']==='2'?'selected':''}>账期支付</option>
+                            <option value="3" {$request['where']['pay_type']['value']==='3'?'selected':''}>快递代收</option>
+                            <option value="4" {$request['where']['pay_type']['value']==='4'?'selected':''}>面对面付款</option>
+                            <option value="5" {$request['where']['pay_type']['value']==='5'?'selected':''}>银行转账</option>
+                            <option value="6" {$request['where']['pay_type']['value']==='6'?'selected':''}>线下支付</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">运输状态</label>
+                    <div class="layui-input-block">
+                        <select name="ship_status">
+                            <option value="">请选择运输状态</option>
+                            <option value="0" {$request['where']['ship_status']['value']==='0'?'selected':''}>待发货</option>
+                            <option value="1" {$request['where']['ship_status']['value']==='1'?'selected':''}>已部分发货</option>
+<!--
+                            <option value="2" {$request['where']['ship_status']['value']==='2'?'selected':''}>已全部发货</option>
+-->
+                            <option value="2" {$request['where']['ship_status']['value']==='2'?'selected':''}>待收货</option>
+                            <option value="3" {$request['where']['ship_status']['value']==='3'?'selected':''}>已部分收货</option>
+                            <option value="4" {$request['where']['ship_status']['value']==='4'?'selected':''}>已全部收货</option>
+                            <option value="100" {$request['where']['ship_status']['value']==='100'?'selected':''}>初始值</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">运输方式</label>
+                    <div class="layui-input-block">
+                        <select name="ship_type">
+                            <option value="">请选择运输状态</option>
+                            <option value="1" {$request['where']['ship_type']['value']==='1'?'selected':''}>快递</option>
+                            <option value="2" {$request['where']['ship_type']['value']==='2'?'selected':''}>物流</option>
+                            <option value="3" {$request['where']['ship_type']['value']==='3'?'selected':''}>自取</option>
+                            <option value="4" {$request['where']['ship_type']['value']==='4'?'selected':''}>送货</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">是否预付定金</label>
+                    <div class="layui-input-block select-false" data-option="order_type">
+                        <input type="checkbox" name="order_type" value="1" lay-skin="switch" lay-text="是|否" {$request['where']['order_type']['value']==='1'?'checked':''}>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">定金支付方式</label>
+                    <div class="layui-input-block">
+                        <select name="deposits_pay_type" lay-verify="">
+                            <option value="">请选择支付方式</option>
+                            <option value="1" {$request['where']['deposits_pay_type']['value']==='1'?'selected':''}>在线支付</option>
+                            <option value="2" {$request['where']['deposits_pay_type']['value']==='2'?'selected':''}>账期支付</option>
+                            <option value="3" {$request['where']['deposits_pay_type']['value']==='3'?'selected':''}>快递代收</option>
+                            <option value="4" {$request['where']['deposits_pay_type']['value']==='4'?'selected':''}>面对面付款</option>
+                            <option value="5" {$request['where']['deposits_pay_type']['value']==='5'?'selected':''}>银行转账</option>
+                            <option value="6" {$request['where']['deposits_pay_type']['value']==='6'?'selected':''}>线下支付</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">是否开票</label>
+                    <div class="layui-input-block select-false" data-option="is_invoice">
+                        <input type="checkbox" name="is_invoice" value="1" lay-skin="switch" lay-text="是|否" {$request['where']['is_invoice']['value']==='1'?'checked':''}>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">是否已开票</label>
+                    <div class="layui-input-block select-false" data-option="invoice_status">
+                        <input type="checkbox" name="invoice_status" value="1" lay-skin="switch" lay-text="是|否" {$request['where']['invoice_status']['value']==='1'?'checked':''}>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">下单区间</label>
+                    <div class="layui-input-block" style="overflow:hidden">
+                        <input type="text" style="width:45%;float:left;" name="create_at_start" value="{$request.where.create_at_start.value}" id="pickStart" placeholder="起始时间" autocomplete="off" class="layui-input">
+                        <span style="float:left;margin:0 1%">—</span>
+                        <div class="layui-inline" style="float:left ;width:45%">
+
+                            <div class="layui-input-inline">
+                                <input type="text" name="create_at_end" class="layui-input" id="pickEnd" value="{$request.where.create_at_end.value}" placeholder="结束时间">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="list-query-submit">筛选</button>
+                            <button class="layui-btn layui-btn-sm layui-btn-primary jl-clear-btn">清空</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table"></table>
+        <div id="data-table-page"></div>
+    </div>
+    <style>
+        .layui-table-header .layui-table-cell{ height:54px;line-height:54px}
+        .layui-table-header th[data-field = order_type]>div{ line-height:28px}
+        .layui-table-header th[data-field = deposits_pay_type]>div{ line-height:28px}
+        .layui-table-header th[data-field = already_paid]>div{ line-height:28px}
+        .layui-table-header th[data-field = invoice_status]>div{ line-height:28px}
+
+    </style>
+</block>
+<block name="js">
+ <!--   <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script src="__PUBLIC__/Common/module/pikaday/1.6.1/pikaday.min.js"></script>-->
+    <script>
+        layui.use(['table', 'layer', 'laypage', 'jlTool', 'element', 'form','orderConfig','commonTpl','selectCustomer',
+            'selectUser','pikadayOption','selectProduct','laydate'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var laydate = layui.laydate;
+            var form = layui.form;
+            var selectProduct =layui.selectProduct;
+            var list_data = {$userSampleList | json_encode};
+            var request = {$request | json_encode};
+            //console.log(list_data);
+            if (!list_data) list_data = {};
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/sample/storeSampleList?' + query
+            };
+            laydate.render({
+                elem: '#pickStart',
+                done:function(value, date, endDate){
+                    var endTime = new Date($("#pickEnd").val());
+                    if(new Date(value) - endTime >0){
+                        setTimeout(function(){
+                            $("#pickStart").val($("#pickEnd").val());
+                        },500)
+                    }
+                }
+            });
+            laydate.render({
+                elem: '#pickEnd',
+                done:function(value, date, endDate){
+                    var startTime = new Date($("#pickStart").val());
+                    if(new Date(value) - startTime <0){
+                        setTimeout(function(){
+                            $("#pickEnd").val($("#pickStart").val());
+                        },500)
+                    }
+                }
+            });
+            table.render({
+                elem: '.data-table',
+                data: list_data,
+                page: false,
+                limit: request.pageSize,
+                unresize:true,
+                cellMinWidth: 90,
+                height: 'full-150',
+                cols: [[
+                        {field: 'id', title: 'ID', fixed: 'left',width:100}
+                        ,{field: 'project_name', title:'项目名称'}
+                        ,{field: 'fcustjc', title:'客户名'}
+                        ,{field: 'sys_name', title:'业务员'}
+                        ,{field: 'application_area', title:'应用领域'}
+                        ,{field: 'month_num', title:'月产量(K/M)'}
+                        ,{field: 'project_status', title:'项目状态',templet:function(d){
+                            var project_status_name={1:"概念",2:"原型",3:"完成设计",4:"量产"};
+                            return project_status_name[d.project_status];
+                        }}
+                        ,{field: 'prototype_date', title: '原型日期',templet:function(d){
+                            return d.prototype_date.split(" ")[0]
+                        }}
+                        ,{field: 'batch_date', title: '量产日期',templet:function(d){
+                            return d.batch_date.split(" ")[0]
+                        }}
+                        ,{field: 'action_status', title:'操作状态',templet:function(d){
+                            var handle_status_name={0:{name:"客户申请",color:"#666"},1:{name:"审核通过",color:"#5FB878"},2:{name:"拒绝",color:"#FF5722"}};
+                            return '<span style="color:'+handle_status_name[d.action_status].color+'">'+handle_status_name[d.action_status].name+'</span>';
+                        }}
+                        ,{field: 'update_at',width:200, title:'操作时间'}
+                        ,{field: 'handle', title: '操作',align:'center',templet:function(d){
+                                var retrun_str='';
+                                retrun_str +='<div class="data-table-handle-box" data-id="{{ d.id }}" style="width: 100%">';
+                                if(d.item.length>0){retrun_str +='<span lay-event="detail" >详情</span>';};
+                                return retrun_str;
+                            }}
+                    ]],
+                done:function () {
+                    $(".details").find("td").css("padding","8px");
+                    //订单删去
+                    var submit = function (value,$this) {
+                        var order_sn = $this.data('sn');
+                        $.post('/Admin/Order/delErpOrder',{order_sn:order_sn,order_status:value},function (res) {
+                            //res = $.parseJSON(res);
+                            //console.log(res)
+                            if(res.status===0){
+                                layer.msg('操作成功');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.alert(res.content)
+                            }
+                        })
+                    };
+                    $('.js-del-order-status').on('click',function () {
+                        var $this = $(this);
+                        layer.confirm('确定删除吗？', {icon: 3, title:'提示',btn: ['删除', '不删除']}, function(index){
+                            submit(0,$this);
+                            layer.close(index);
+                        },function (index) {
+                            //submit(100);
+                            layer.close(index)
+                        });
+                    });
+                }
+            });
+            //table
+            table.on('tool(data-table)',function(obj){
+                var sourse = obj.data;
+                var layEvent = obj.event;
+                //console.log(obj);
+                if(layEvent == "detail"){
+                    var getFrame =function(){
+                        var str = '<div class="details" style="display:none;z-index:99;position: absolute;right: 0;top:0;width: 23vw;padding:13px;border:1px solid #e6e6e6;background-color:#fff"><span class="closeTb" style="cursor:pointer;position:absolute;right:0;top:0;background-color:#000;width:20px;height:20px;line-height:20px;text-align:center;border-radius:50%;color:#fff">X</span>' +
+                            '<table class="layui-table" style="margin-top:0"> ' +
+                            '<thead> <tr class=""> <th>id</th> <th>商品型号</th> <th>分装</th> <th>品牌</th></tr> </thead>' +
+                            ' <tbody> ' +
+                            '<tr class="">  <td style="padding: 8px;">555</td><td style="padding: 8px;">MT2492-SOT23-6</td> <td style="padding: 8px;">0.150000</td><td style="padding: 8px;">22</td> </tr>  ' +
+                            '</tbody> ' +
+                            '</table></div>';
+                        return str;
+                    };
+                    var getModal = function(data,hasPass){
+                        var str='';
+                        str = (
+                           '<table class="layui-table"> ' +
+                           '<tr style="background-color:#f2f2f2"><th colspan="'+(hasPass?"5":"8")+'">'+(hasPass?"通过样品":"申请样品")+'</th></tr> ' +
+                           '<tr> ' +
+                           '<td>'+(!hasPass?"需求":"商品")+'商品型号</td> ' +
+                           '<td>'+(!hasPass?"需求":"商品")+'封装</td> ' +
+                           '<td>'+(!hasPass?"需求":"商品")+'品牌</td> ' +
+                           '<td>'+(!hasPass?"需求":"商品")+'分类</td> ' +
+                           '<td>'+(!hasPass?"需求样品数量":"推荐数量")+'</td> ' +
+                            (!hasPass? '<td>推荐数量</td> ':'') +
+                            (hasPass?'':'<td><span>选定样品</span></td> ') +
+                            (hasPass?'':'<td>操作</td> ') +
+                           '</tr> ' +
+                           (function () {
+                               var $item = '';
+                               $.each(data,function (index,value) {
+                                   $item += (
+                                       '<tr> ' +
+                                       '<td>'+(value.p_sign||"")+'</td> ' +
+                                       '<td>'+(value.package||"")+'</td> ' +
+                                       '<td>'+(value.brand||value.brand_name||"")+'</td> ' +
+                                       '<td>'+(value.cate||value.cate_name||"")+'</td> ' +
+                                       '<td>'+(value.pnum||value.max_num||"")+'</td> ' +
+                                       (hasPass?'':'<td><div style="text-align:center;width:100px"><input class="recommentNum" type="number" style="text-indent:20px;width:90%;height:35px;line-height:35px;border:1px solid #e6e6e6;background-color:#fff;" placeholder="推荐数量"/></div></td> ') +
+                                       (hasPass?'':'<td style="position:relative"><div class="chooseLook" style="background-color:#009688;color:#fff;padding:0 8px;height:30px;line-height:30px;cursor:pointer;text-align:center;" data-obj="'+([])+'">查看详情</div>'+getFrame()+'</td> ' )+
+                                       (hasPass?'':'<td class="chooseSample" style="cursor:pointer;hover:#5FB878" data-obj="'+(value.productList)+'">选择样品</td> ') +
+                                       '</tr> '
+                                   )
+                               });
+                               return $item
+                           }()) +
+                           '</table>'
+                       );
+                        return str;
+                    };
+                    //console.log(getModal(sourse.item),getModal(sourse.sampleList,true));
+                    layer.open({
+                        title:'样品列表',
+                        type: 2,
+                        area: ["80%","80vh"],
+                        content:'/Admin/sample/storeSampleDetail?index='+sourse.id/* (
+                            getModal(sourse.item)+
+                            getModal(sourse.sampleList,true)
+                        )*/,success:function(){
+                            selectProduct.initInput(".chooseSample",function(data,$this){
+                                    $this.parents("tr").find(".chooseLook").data("obj",data);
+                            });
+                            $(".chooseLook").off("click").on("click",function(){
+                                var array=$(this).data("obj");
+                                $(this).next(".details").show();
+                            });
+                            $(".closeTb").off("click").on("click",function(){
+                                $(this).parents(".details").hide();
+                            });
+                        },
+                        cancel:function(){
+                            window.location.reload();
+                        }
+                    })
+                }
+            });
+
+             //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: request.pageSize,
+                count: request.count,
+                curr: request.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request, {
+                            pageSize: obj.limit,
+                            page: String(obj.limit) === String(request.pageSize) ? obj.curr : 1,
+                            where:request.where
+                        }));
+                    }
+                }
+            });
+            $('.jl-clear-btn').on('click',function () {
+                queryTable();
+                return false
+            })
+            //筛选按钮
+            form.on('submit(list-query-submit)', function(data){
+                var where = {};
+                $.each(data.field,function (index,value) {
+                    if(value) {
+                        var single = { key:index, value:value };
+                        if(! value){ single.value = 0};
+                        switch (index){
+                            case 'order_sn':
+                                single['type'] = 'like';
+                                break;
+                            case 'create_at':
+                                var now = new Date();
+                                var date = now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
+                                single['value2'] = date;
+                                single['type'] = 'between';
+                                break;
+                            default:
+                                single['type'] = 'eq';
+                        }
+                        where[index] = single
+                    }
+                    var checkbox={"order_type":"0","invoice_status":"0","is_invoice":"0"};
+                    false_array = Array.from(new Set(false_array));
+                    var add_option={};
+                    if(false_array.length>0){
+                        false_array.forEach(function(item,index){
+                            add_option[item] = "0";
+                        });
+                        where = $.extend(true,checkbox,where);
+                    };
+                });
+                queryTable({
+                    pageSize:request.pageSize,
+                    page:1,
+                    where:where
+                });
+                return false;
+            });
+            $('.jl-clear-btn').on('click',function () {
+                queryTable();
+                return false
+            });
+            //选择样品
+            $(".chooseLook").on("click'",function(){
+                var array=$(this).data("obj");
+                if(array.length>0){
+
+                };
+            });
+            /*   //首字母筛选
+        initInput({"admin":"","customer":""});*/
+        });
+    </script>
+</block>

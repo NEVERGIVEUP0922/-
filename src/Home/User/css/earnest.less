@@ -1,0 +1,336 @@
+@import "../../Public/css/init.less";
+
+
+.jl-order-title{
+  height: 38px;
+  line-height: 38px;
+  border:@border02;
+  background: #f9f9f9;
+  li{
+    float: left;
+    text-align: center;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+.jl-earnest-detail,.jl-take-delivery,.jl-appraise,.jl-my-order{
+  .jl-order-search{
+    height: 38px;
+    line-height: 38px;
+    background: @bg-color;
+    border:@border02;
+    border-bottom:none;
+    input,button{
+      float: right;
+      margin-top: 7px;
+    }
+    input{
+      width: 156px;
+      height: 25px;
+      box-sizing: border-box;
+      padding-left: 10px;
+      border: 1px solid @grey;
+      border-right:none;
+    }
+    button{
+      width: 56px;
+      height: 25px;
+      background: @bg-color;
+      border: 1px solid @grey;
+      margin-right: 30px;
+    }
+  }
+  .jl-order-title{
+    height: 40px;
+    line-height: 40px;
+    border:@border02;
+    background: #f9f9f9;
+  }
+  ul>li{
+    float: left;
+    text-align: center;
+    a{
+      color:@dark-grey;
+    }
+    a:hover{
+      color:@color;
+    }
+  }
+}
+.jl-goods{
+  width: 124px;
+  img{
+    width: 68px;
+    border:@border02;
+  }
+}
+.jl-name{
+  width: 135px;
+}
+.jl-count{
+   width: 92px;
+}
+.jl-price{
+  width: 148px;
+}
+.jl-subtotal{
+  width: 146px;
+}
+.jl-state{
+  width: 165px;
+}
+.jl-operation{
+  width: 161px;
+}
+
+.jl-earnest-detail-title{
+  height: 38px;
+  line-height: 38px;
+  background: #e6f8f7;
+  border:@border02;
+  margin-top: 20px;
+  padding-left: 26px;
+  b{
+    color:@dark-grey;
+    margin-left: 10px;
+    margin-right: 16px;
+    font-weight: bold;
+  }
+}
+
+.jl-detail-content{
+  border:@border02;
+  border-top:none;
+  color:@dark-grey;
+  >li{
+    //height: 112px;
+    padding-top: 20px;
+    box-sizing: border-box;
+    ol{
+      border-bottom:@border02;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      li{
+        float: left;
+      }
+    }
+  }
+  .jl-state{
+    border-left:@border02;
+    border-right:@border02;
+    box-sizing: border-box;
+    p{
+      line-height: 24px;
+    }
+  }
+}
+
+
+.jl-take-delivery,.jl-appraise,.jl-my-order{
+  .jl-name{
+    width: 110px;
+  }
+  .jl-price{
+    width: 98px;
+  }
+  .jl-subtotal{
+    width: 120px;
+  }
+  .jl-goods-operation{
+    width: 100px;
+  }
+  .jl-operation>a{
+    display: inline-block;
+    width: 100px;
+    height: 30px;
+    line-height:30px;
+    color:#fff;
+    background:@green;
+  }
+  .jl-operation>a:hover{
+    color:#fff;
+  }
+}
+//物流弹框
+.jl-logistics-way{
+  position: relative;
+  height: 40px;
+  margin-top: 3px;
+  >a{
+    color:@color!important;
+  }
+}
+.jl-logistics-way:hover{
+  .jl-logistics-popup{
+    display: block;
+  }
+}
+.jl-logistics-popup{
+  display: none;
+  text-align: left;
+  position: absolute;
+  z-index: 1000;
+  top: 40px;
+  left: 39px;
+  width: 298px;
+  margin-left: -108px;
+  min-height: 250px;
+  border:@border02;
+  background: #fff;
+  box-shadow: 0 0 8px @light-gray;
+  .jl-logistics-title{
+    height: 44px;
+    line-height: 44px;
+    background: none;
+    padding-left: 20px;
+    border-bottom:@border02;
+  }
+  >ul{
+    padding-bottom: 10px;
+    li{
+      height: 50px;
+      padding:0;
+      margin-top: 10px;
+      padding-left: 40px;
+      border:none;
+      position: relative;
+      text-align: left;
+      float: none;
+      i{
+        position: absolute;
+        top: 9px;
+        left: 24px;
+        width: 5px;
+        height: 5px;
+        background: @medium-grey;
+        border-radius:50%;
+      }
+      p{
+        line-height: 22px;
+      }
+    }
+    .jl-check-more{
+      height: 30px;
+      line-height: 30px;
+      margin-top: 0;
+      display: block;
+      a{
+        color:@medium-grey;
+      }
+      a:hover{
+        color:@color;
+      }
+    }
+    li.jl-cur{
+      color:@color;
+      i{
+        background: @color;
+      }
+    }
+  }
+
+}
+.jl-arr-top{
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  margin-left: -5px;
+  width: 12px;
+  height: 12px;
+  border:@border02;
+  border-bottom:none;
+  border-right:none;
+  transform: rotate(45deg);
+  background: #fff;
+}
+
+
+.jl-appraise,.jl-my-order{
+  .jl-operation>a{
+    border:@border02;
+    background: none;
+    color:@dark-grey;
+  }
+  .jl-operation>a:hover{
+    color:@color;
+    border-color: @color;
+  }
+  .jl-logistics-way{
+    >a{
+      color:@dark-grey!important;
+    }
+  }
+  .jl-logistics-way:hover{
+    >a{
+      color:@color!important;
+    }
+  }
+}
+
+
+.jl-appraise .jl-invoice-detail{
+  min-height: 70px;
+  padding: 15px 0 15px 25px;
+  border:@border02;
+  border-top:none;
+  background: url("../../Public/img/user/icon01.png") no-repeat 95% center;
+  li{
+    float: none;
+    text-align: left;
+    overflow: hidden;
+    line-height: 30px;
+    p,span{
+      float: left;
+    }
+    p{
+      width: 112px;
+    }
+  }
+}
+
+//账期订单
+.jl-payment-detail{
+  height: 38px;
+  line-height: 38px;
+  padding-left: 25px;
+  border:@border02;
+  border-top:none;
+  li{
+    margin-right: 70px;
+  }
+  .jl-balance{
+    color:@color;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

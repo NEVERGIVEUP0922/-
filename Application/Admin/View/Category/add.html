@@ -1,0 +1,74 @@
+{__NOLAYOUT__}
+<extend name="Layout/layout-open" />
+    <block name="content">
+        <div class="container-fluid">
+            <div class="info-center">
+                <div class="main left">
+                    <div class="main-left width-100" style="margin-top:0px">
+                        <form enctype="multipart/form-data" id="add">
+                            <table class="content" border="0" cellspacing="0" cellpadding="0">
+                                <tbody>
+                                <tr>
+                                    <td class="left-txt"><span class="c-red">*</span>分类名称：</td>
+                                    <td><input class="input-text" name="cate_name" type="text"></td>
+                                </tr>
+                                <tr>
+                                    <td class="left-txt"><span class="c-red">*</span>父级分类：</td>
+                                    <td>
+                                        <select name="parent_id" id="parent_id" class="xla_k">
+                                            <option value="">请选择分类</option>
+                                            <option value="0">顶级分类</option>
+                                            <volist name="cate" id="vo">
+                                                <option value="{$vo.id}">|{:str_repeat('----',$vo['level']+1)}{$vo.cate_name}</option>
+                                            </volist>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="left-txt"><span class="c-red">*</span>排序：</td>
+                                    <td><input class="input-text" name="order" type="number"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <span><button class="btn btn-mystyle btn-sm"  type="submit">添加</button></span>
+                                        <span><button class="btn btn-mystyle btn-sm" type="reset" >取消</button></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </block>
+<block name="js">
+    <script>
+        $('form#add').on('submit',function(){
+            var data = $('form#add').serialize();
+            var index = layer.load();
+            $.ajax({
+                url:'{:U("Admin/Category/add")}',
+                type:'post',
+                data: data,
+                success:function(res){
+                    if( res.status == 0000 ){
+                        layer.close(index);
+                        layer.msg('添加成功', {icon:6, time:1000},function(){
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        });
+                    }else{
+                        layer.close(index);
+                        layer.msg(res.content, {icon:2, time:2000},function(){
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        });
+                    }
+                }
+            });
+            return false;
+        });
+    </script>
+</block>

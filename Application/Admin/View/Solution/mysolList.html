@@ -1,0 +1,539 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+	<!--<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>-->
+	<!--<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>-->
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Solution/sol_public.css">
+	<link href="__PUBLIC__/Common/module/viewerjs/1.0.0/viewer.min.css" rel="stylesheet">
+
+	<style>
+		.sol_header{
+			margin:8px 0px 10px 10px;
+		}
+		.clear{
+			clear:both;
+		}
+		.layui-table-tips-main{/*修改layui动态生成的弹框元素,别删除*/
+			max-height: 250px;
+		}
+		.sol_desc{
+			width:400px;height:300px;
+			text-space:4px;
+			text-indent:25px;
+			line-height:25px;
+		}
+		/*.sol_imgs{*/
+		/*width:300px;*/
+		/*}*/
+		/*.sol_imgs>img{*/
+		/*width:100%;*/
+		/*}*/
+	</style>
+</block>
+<block name="content">
+	<!--<div>-->
+	<blockquote class="layui-elem-quote">
+		<button class="layui-btn my-solList">自营方案</button>
+		<button class="layui-btn addProvider">上传方案</button>
+		<span >》》》自营供应方案列表</span>
+	</blockquote>
+	<blockquote class="layui-elem-quote" style="height:90px;clear:both">
+		<form class="layui-form" lay-filter="" action="">
+			<div class="layui-form-item" style="width:300px;float:left;clear:none">
+				<label class="layui-form-label">方案名称:</label>
+				<div class="layui-input-block">
+					<input type="text" name="sol_name" placeholder="请输入方案名称" autocomplete="off"
+						   class="layui-input layui-form-label-pinyin" value="{$request.where.sol_name.value}">
+				</div>
+			</div>
+			<div class="layui-form-item" style="width:300px;padding-left:25px;float:left;clear: none;">
+				<label class="layui-form-label">用户:</label>
+				<div class="layui-input-block">
+					<input type="text" name="nick_name" placeholder="请输入用户名" autocomplete="off"
+						   class="layui-input layui-form-label-pinyin" value="{$request.where.nick_name.value}">
+				</div>
+			</div>
+
+			<div class="layui-col-xs4">
+				<label class="layui-form-label">时间区间</label>
+				<div class="layui-input-block" style="overflow:hidden">
+					<input type="text" style="width:40%;float:left;" name="create_at_start" value="{$request.where.create_at_start.value}" id="pickStart" placeholder="起始时间" autocomplete="off" class="layui-input" >
+					<span style="float:left;margin:2% 1%">—</span>
+					<div class="layui-inline" style="float:left ;">
+
+						<div class="layui-input-inline">
+							<input type="text" name="create_at_end" value="{$request.where.create_at_end.value}" class="layui-input" id="pickEnd"  placeholder="结束时间">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item" style="float:left;clear:none;">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<div class="layui-btn-group">
+						<span class="layui-btn layui-btn-sm" lay-submit lay-filter="list-query-submit">筛选</span>
+						<span class="layui-btn layui-btn-primary layui-btn-sm clear-btn"
+							  lay-submit lay-filter="">清空</span>
+					</div>
+				</div>
+			</div>
+			<div class="clear"></div>
+			<div class="layui-form-item" style="width:325px;float:left;clear:none;">
+				<label class="layui-form-label">项目类型:</label>
+				<div class="layui-inline layui-input-inline" lay-filter="sol_types">
+					<select name="types" lay-filter="sol_types" lay-search="">
+						<option value="">请选择方案类型</option>
+						<foreach name="types" item="vo" key="k">
+							<if condition="$request['where']['types']['value'] eq $vo['id']">
+								<option value="{$vo.id}" selected>{$vo.types}</option>
+								<else />
+								<option value="{$vo.id}">{$vo.types}</option>
+							</if>
+						</foreach>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item" style="float:left;clear:none;">
+				<label class="layui-form-label black_word" style="width:80px;">状态:</label>
+				<div class="layui-inline layui-input-inline" lay-filter="sol_status" style="width:190px;">
+					<select name="sol_status" lay-filter="sol_pub_status">
+						<option value="1">发布中</option>
+						<option value="2">已结束</option>
+						<option value="3">审核中</option>
+						<option value="4">已通过</option>
+						<option value="5">未通过</option>
+						<!--<option value="6">未上架</option>-->
+						<!--<option value="7">草稿</option>-->
+						<option value="9">全部方案</option>
+
+					</select>
+				</div>
+			</div>
+		</form>
+	</blockquote>
+	<table lay-filter="data-table" class="data-table">
+		<script type="text/html" id="data-table-handle-tpl">
+			{{#  if(d.draft == 0 && d.check_status == 0 && d.publish_status == 0 ){ }}
+			<button class="layui-btn layui-btn-sm js-check" lay-event="shenhe">审核中</button>
+			<button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="edit">编辑</button>
+			<span class="layui-btn layui-btn-sm layui-bg-cyan" lay-event="shanchu">删除</span>
+			{{#  } }}
+			{{#  if(d.draft == 0 && d.check_status == 1 && d.publish_status == 1 ){ }}
+			<button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="xiajia">点击下架</button>
+			{{#  } }}
+			{{#  if(d.draft == 0 && d.check_status == 1 && d.publish_status == 2 ){ }}
+			<!--<button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="yixiajia">已下架</button>-->
+			<button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="shangjia">点击上架</button>
+			<button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="edit" >编辑</button>
+			<span class="layui-btn layui-btn-sm layui-bg-cyan shanchu" lay-event="shanchu">删除</span>
+			{{#  } }}
+			{{#  if(d.draft == 0 && d.check_status == 2 && d.publish_status == 0 ){ }}
+			<button class="layui-btn layui-btn-sm layui-bg-cyan" >未通过</button>
+			<button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="edit" >编辑</button>
+			<span class="layui-btn layui-btn-sm layui-bg-cyan" lay-event="shanchu" >删除</span>
+			{{#  } }}
+		</script>
+	</table>
+	<div id="data-table-page"></div>
+	</div>
+</block>
+<block name="js">
+	<script src="__PUBLIC__/Common/module/viewerjs/1.0.0/viewer.min.js"></script>
+	<script>
+        layui.use(['table', 'layer', 'laypage', 'jlTool', 'element', 'form','commonTpl','selectCustomer','selectUser','pikadayOption','laydate'], function (){
+            var laydate = layui.laydate;
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var request = {$request|json_encode};
+            var form = layui.form;
+            var solList = {$solList|json_encode};
+            var types= {$types|json_encode};
+            var sysUserInfo = {$sysUserInfo|json_encode};
+            var oss_prefix = "{$prefix}";
+            var oss_suffix = "{$suffix}";
+//            console.log(solList);
+            //检索:
+            form.on('submit(list-query-submit)',function(data){
+                var where = {};
+                $.each(data.field,function(index ,value){
+                    if(value){
+                        var single = {key:index,value:value};
+                        if(!value) single.value=0;
+                        switch(index){
+                            case 'sol_name':
+                                single['type']='like';break;
+                            case 'nick_name':
+                                single['type']='like';break;
+                            case 'create_at':
+                                var now = new Date();
+                                var date = now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
+                                single['value2'] = date;
+                                single['type'] = 'between';
+                                break;
+                            default:single['type']='eq';break;
+                        }
+                        where[index] = single;
+                    }
+                });
+                queryTable({
+//                    pageSize:request.pageSize,//添加这两行页面切换则保留分页状态,
+//                    page:request.page,
+                    where:where
+                });
+            });
+            //清空
+            $('.clear-btn').on('click',function () {
+                queryTable();
+                return false
+            })
+            //日期 //时间选择初始化
+            laydate.render({
+                elem: '#pickStart',
+                done:function(value, date, endDate){
+                    var endTime = new Date($("#pickEnd").val());
+                    if(new Date(value) - endTime >0){
+                        setTimeout(function(){
+                            $("#pickStart").val($("#pickEnd").val());
+                        },500)
+                    }
+                }
+            });
+            laydate.render({
+                elem: '#pickEnd',
+                done:function(value, date, endDate){
+                    var startTime = new Date($("#pickStart").val());
+                    if(new Date(value) - startTime <0){
+                        setTimeout(function(){
+                            $("#pickEnd").val($("#pickStart").val());
+                        },500)
+                    }
+                }
+            });
+            table.render({
+                elem: '.data-table',
+                data: solList.list?solList.list:[],
+                page: false,
+                limit: solList.pageSize,
+                cellMinWidth: 120,
+                height:'full-220',
+                cols: [[ //表头
+                    {field: 'pro_sn', width:140,title: '订单编号',fixed: 'left'}
+                    ,{field: 'pro_name', title: '方案名称'}
+//                    ,{field: 'nick_name', title: '用户'}
+                    ,{field: 'types', title: '方案类型',templet:function(d){
+                        for(var i in types){
+                            if(types[i]['id']==d.types){return types[i]['types'] };
+                        }
+                    }}
+                    ,{field: 'main_model', title: '主控型号'}
+                    ,{field: 'main_brand', title: '主控品牌'}
+                    ,{field: 'pcba',align:'center',width:100, title: '提供PCBA',templet:function(d){
+                        var h = {'0':'否','1':'是'}
+                        return h[d.pcba]
+                    }}
+                    ,{title: 'pcba型号',align:'center',templet: function(d){
+                        var pcba_list  ='';
+                        var css_disable='';
+                        if(d.pcba == 0){
+                            css_disable = '<button class="layui-btn layui-btn-sm" style="padding:0 8px ; background:#c2c2c2;" disabled>查看pcba型号</button>';
+                        }else{
+                            css_disable = '<button class="layui-btn layui-btn-sm" style="padding:0 8px">查看pcba型号</button>';
+							$.each(d.pcba_list,function (index,value) {
+								pcba_list += (
+									'<tr><td><a href="/Home/Product/detail.html?sign='+value+'">'+value+'</a></td></tr>'
+								)
+							});
+                        }
+                        return (
+                            '<div style="max-height: 250px;">' +
+                            '<p>'+css_disable+'<span style="margin: 0 50px;"></span></p>' +
+                            '<table class="layui-table"> ' +
+                            '<colgroup> ' +
+                            '<col width="200"> ' +
+                            '</colgroup> ' +
+                            '<thead> ' +
+                            '<tr> ' +
+                            '<th>pcba型号</th> ' +
+                            '</tr> ' +
+                            '</thead> ' +
+                            '<tbody> ' +pcba_list + '</tbody> ' +
+                            '</table>' +
+                            '</div>'
+                        )
+                    }}
+                    ,{title: '方案简介',align:'center',templet: function(d){
+                        var synopsis = d.synopsis
+//							synopsis =String(synopsis).replace(/\n/g, "<p>");
+                        return (
+                            '<div>' +
+                            '<p><button class="layui-btn layui-btn-sm" style="padding:0 8px">查看方案简介</button><span style="margin: 0 50px;"></span></p>' +
+                            '<div class="sol_desc">'+synopsis+'</div>' +
+                            '</div>'
+                        )
+                    }}
+                    ,{title: '方案详情',align:'center',templet: function(d){
+                        var pro_desc = d.pro_desc;
+                        return (
+                            '<button class="layui-btn layui-btn-sm pro_desc" style="padding:0 8px" data-method="describe" data-pro_desc='+pro_desc+'>查看方案详情</button>'
+                        )
+                    }}
+                    ,{title: '方案图片',templet: function(d){
+                        var css_disable='';
+                        if(d.imgs != ''){
+                            css_disable = '<button class="js-check-img layui-btn layui-btn-sm" data-img="'+d.imgs+'">查看图片</button>'
+                        }else{
+                            css_disable = '<button class="js-check-img layui-btn layui-btn-sm" data-img="'+d.imgs+'" style="background-color:#c2c2c2;">查看图片</button>'
+                        }
+                        return (css_disable )}}
+                    ,{field: 'sys_uid', title: '负责人',templet:function(d){
+                        if(d.sys_owner){
+                            for(var i in sysUserInfo){
+                                if(sysUserInfo[i]['uid']==d.sys_owner){
+                                    return sysUserInfo[i]['nickname'];
+                                }
+                            }
+                        }else{
+                            return '';
+                        }
+                    }}
+                    ,{field: 'sys_uid', title: '审核人',templet:function(d){
+                        if(d.sys_uid){
+                            for(var i in sysUserInfo){
+                                if(sysUserInfo[i]['uid']==d.sys_uid){
+                                    return sysUserInfo[i]['nickname'];
+                                }
+                            }
+                        }else{
+                            return '';
+                        }
+                    }}
+                    ,{field: 'uid', title: '入录人',templet:function(d){
+                        if(d.uid){
+                            for(var i in sysUserInfo){
+                                if(sysUserInfo[i]['uid']==d.uid){
+                                    return sysUserInfo[i]['nickname'];
+                                }
+                            }
+                        }else{
+                            return '';
+                        }
+                    }}
+                    ,{field: 'create_time', title: '录入时间'}
+                    ,{field: 'check_time', title: '审核时间'}
+                    ,{field: 'update_time', title:'更新时间'}
+                    ,{field: 'handle', title: '操作', align: 'center', fixed: 'right', minWidth:220,toolbar: '#data-table-handle-tpl'}
+                ]],
+                done:function () {
+                    //查看方案详情
+                    $('.pro_desc').on('click',function(){
+                        var _this = $(this);
+                        var _descri =  _this.data('pro_desc');
+                        var method  =  _this.data('method');
+                        active[method] ? active[method](_descri): '';
+                    });
+                    //审核
+                    $('.js-check').on('click',function (){
+                        var sol_sn	   = '';
+                        var sol_id     = '';
+                        table.on('tool(data-table)', function(obj){
+                            var source = obj.data;
+								sol_sn = source.pro_sn;
+								sol_id = source.id;
+                        });
+                        layer.open({
+                            title:['审核','font-size:15px'],
+                            type: 0,
+                            content: (
+                                '<div class="layui-form jl-check-modal" style="width: 250px"> ' +
+                                '<input type="radio" name="pass" value="1" title="通过" checked> ' +
+                                '<input type="radio" name="pass" value="2" title="不通过"> ' +
+                                '</div>'
+                            ),
+                            success: function(){
+                                form.render('radio');
+                                $('.layui-form-radio').css('font-size','14px');
+                            },
+                            yes:function (index, layero) {
+                                var	check_data	= {
+									'jl_self':1,
+                                    'sol_type':1,
+                                    'pro_sn':sol_sn,
+									'sol_id':sol_id,
+                                    'check_status':$('input[name="pass"]:checked').val()
+                                };
+//                                console.log(check_data);return;
+                                $.post('selfAudit_p',check_data,function (res) {
+//                                    console.log(res);
+                                    if(res.status==1000){
+                                        layer.close(index);
+                                        layer.msg('审核成功', {area:['200px', '50px']});
+                                        setTimeout(function () {
+                                            window.location.reload()
+                                        },500)
+                                    }
+                                    else {
+//                                        console.log(res.msg);
+                                        layer.msg('操作失败', {area:['200px', '50px']});
+                                    }
+                                })
+                            }
+                        });
+                    })
+					//弹层相关
+                    var active = {
+                        describe: function (texts) {
+                            var url = texts;
+                            console.log(url);
+                            layer.open({
+                                type: 2
+                                , title: false
+                                , closeBtn: 2
+                                , area: ["60%", '80%']
+                                , shade: 0.5
+                                , id: 'LAY_layuipro'
+                                , btn: ['关闭页面']
+                                , content: url
+                            });
+                        }
+                    }
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: solList.pageSize,
+                count: solList.count,
+                curr: solList.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request,{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(solList.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            //图片展示
+            $('.js-check-img').click(function () {
+                var _this= $(this);
+                var img  = _this.data('img');
+                img  = img.split(',');
+                var img_div= document.createElement("div");
+                $.each(img,function(ind,val){
+                    var myImage = new Image();
+                    myImage.src = oss_prefix+val+oss_suffix;
+                    img_div.appendChild(myImage);
+                });
+                var viewer = new Viewer(img_div,{toolbar:true});
+                viewer.show();
+            });
+            //跳转函数
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = 'mysolList?'+query
+            };
+            //状态
+            var status_value=request.where.sol_status.value;
+            $("select[name='sol_status'] option").each(function(d){
+//			    console.log(d);
+                var option_obj = $(this);
+                if(option_obj.val() == status_value){
+                    option_obj.attr('selected',true);
+                }
+                form.render('select');
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+//              var tr = obj.tr;
+				var sol_id = source.id;
+                var up_data= {};
+                var pro_sn = source.pro_sn;
+                	up_data.pro_sn = pro_sn;
+//                console.log(obj);console.log(source);console.log(layEvent);return;
+                switch( layEvent ){
+                    case 'xiugai': //草稿
+//                        up_data.action = 1;
+//                        $.post('/Admin/Solution/draftOfPro',up_data,function(rez){
+//                            if(rez.status = 1000){
+//                                layer.msg(rez.content,{time:500},function(){
+//                                    window.location.reload();
+//                                });
+//                            }else{
+//                                //layer.msg(rez.content);
+//                                layer.msg('操作失败');
+//                            }
+//                        });
+                        break;
+					case 'shangjia': //上架
+						up_data.action = 3;
+                        $.post('/Admin/Solution/updataProvider',up_data,function(rez){
+                            if(rez.status = 1000){
+                                layer.msg(rez.content,{time:500},function(){
+                                    window.location.reload();
+                                });
+                            }else{
+                                //layer.msg(rez.content)
+                                layer.msg('操作失败');
+                            }
+                        });
+                        break;
+                    case 'xiajia'://下架
+                        up_data.action = 2;
+                        $.post('/Admin/Solution/updataProvider',up_data,function(rez){
+                            if(rez.status = 1000){
+                                layer.msg(rez.content,{time:500},function(){
+                                    window.location.reload();
+                                });
+                            }else{
+                                //layer.msg(rez.content);
+                                layer.msg('操作失败');
+                            }
+                        });
+                        break;
+					case 'shanchu'://删除
+                        layer.confirm('确认删除吗？',function(){
+                            delete_mysol(sol_id);
+                        });
+                        break;
+					case 'edit'://编辑
+						openPopout(sol_id);
+					default:return;
+				}
+            });
+            //上传
+            $('.addProvider').click(function () {
+                openPopout();
+            });
+            //新窗口
+			var openPopout =function(id){
+                var contents='/Admin/Solution/addProvider';
+                if(id){
+                    contents="/Admin/Solution/draftOfPro?id="+id;
+                };
+                jlTool.sendIframeMsg('go',{
+                    title:id?"编辑供应方案":'上传供应方案',
+                    url:contents,
+                    icon:''
+                });
+            }
+            var delete_mysol = function(id){
+                $.get('/Admin/Solution/delete_mysol','id='+id,function(rez){
+                    if(rez.status == 1000){
+                        layer.msg(rez.content,{time:500},function(){
+                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('删除失败');
+                    }
+                });
+			}
+        });
+	</script>
+</block>

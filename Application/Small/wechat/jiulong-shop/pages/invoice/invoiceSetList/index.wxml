@@ -1,0 +1,73 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page navbar order" wx:if="{{show}}" style="padding:0;min-height:100vh;background-color:#f8f8f8">
+   <navigator hover-class="none"  url="/pages/invoice/settlement/index" style="background-color:{{colors}};padding:10rpx 20rpx;text-align:right;font-size:30rpx;color:#1AAD16"> 新增</navigator>
+  <view class="contain" wx:if="{{list.length != 0}}" wx:key="*this">
+    <block wx:for="{{list}}" wx:for-index="idd" wx:key="">
+      <view class="fui-list-group noclick" style="border-bottom:10px solid #efeff4;margin-top:0">
+        <view hover-class="none"  url="/pages/order/detail/index?id={{item.id}}">
+          <view class="fui-list-group-title" style="padding:5rpx 30rpx;font-size:30rpx;position:relative">
+            <view class="order-num">发票抬头：
+              <text>{{item.invoice_header}}</text>
+              <text style="position:absolute;right:10rpx;">{{item.invoice_status ==1 ?'默认发票':''}}</text>
+            </view> 
+          </view>
+          <navigator hover-class="none"  url="/pages/invoice/settlement/index?id={{item.id}}">
+              <view class="fui-list goods-info" style="padding:10rpx 30rpx;">
+                <!-- <view class="fui-list-media">
+                  <image src="{{val.thumb}}" class="round goods_img" style="width:140rpx;height:140rpx;border:1rpx solid #efeff4"></image>
+                </view> -->
+                <view class="fui-list-inner">
+                  <view class="subtitle text-left">企业电话：{{item.company_phone}}</view>
+                  <view class="subtitle text-left">收票人：{{item.invoice_owner}}</view>
+                </view>               
+              </view>
+          </navigator>
+          <view class="fui-list list-padding" >
+            <text class="fui-list-inner text-right totle" >
+              <!-- <text>创建时间</text> -->
+              <text class="text-danger"  >{{item.create_time}}</text>
+            </text>
+            <view class="morehandle" bindtap="moreHandle" data-self="{{idd}}">更多操作 <text class="{{isTurn == idd ? 'changeTurn' : ''}}">{{buttonText}}</text></view>
+          </view>
+        </view>
+        <view class="fui-list list-padding" wx:if="{{buttonStatus == idd}}">
+          <view class="fui-list-inner text-right">        
+               <view data-type="getOut" bindtap="handle" class="btn btn-default btn-default-o" data-data="{{item.id}}">
+                删去
+              </view>
+              <view data-type="setDefault" bindtap="handle" class="btn btn-default btn-default-o" data-data="{{item.id}}" wx:if="{{item.invoice_status !=1}}">
+                设为默认发票
+              </view>
+            <!-- <block wx:if="{{(item.ship_status ==4 || item.ship_status <=0 && item.pay_status>0 ) && item.pay_type==1 && item.total >0}}">
+              <block wx:if="{{item.is_retreat <=0}}">
+                <navigator class="btn btn-danger btn-default-o" url="/pages/order/refund/index?id={{item.order_sn}}" wx:if="{{item}}">
+                    退货/退款
+                </navigator> 
+              </block>
+              <block wx:elif="{{item.is_retreat>0}}">
+                <navigator class="btn btn-danger btn-default-o" url="/pages/order/refundList/index?id={{item.order_sn}}" wx:if="{{item}}">
+                    退货/退款
+                </navigator> 
+              </block>
+            </block> -->
+          </view>
+        </view>
+      </view>
+    </block>
+    <view style="background-color:#f8f8f8">
+      <view class="fui-loading empty " style="color:#999;margin:0 auto;padding:1em 0" wx:if="{{loaded && list.length > 0}}">
+        <view class="text">没有更多了</view>
+      </view>
+    </view>
+  </view>
+  <view class="center" style="margin-top:90rpx;" wx:if="{{list.length == 0 && empty}}">
+    <view class="empty">
+      <image class="light" src="/static/images/icon/lights-128.png"></image>
+      <view class="text-cancel">暂时没有发票抬头数据</view>
+      <navigator open-type="switchTab" url="/pages/index/index" class="btn btn-default-o">
+        到处逛逛
+      </navigator>
+    </view>
+  </view>
+  <include src="/pages/order/public/verify.wxml" />
+</view>

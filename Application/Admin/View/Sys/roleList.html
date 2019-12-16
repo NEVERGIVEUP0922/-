@@ -1,0 +1,129 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">后台角色管理</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote">
+            <button class="jl-add-btn layui-btn layui-btn-sm">添加角色</button>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" data-id="{{ d.id }}" style="width: 100%;">
+                    <span lay-event="detail">角色信息</span>
+                    <span lay-event="power">设置权限</span>
+                    <span lay-event="delete">删除</span>
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','commonTpl'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var commonTpl = layui.commonTpl;
+            var list_data = {$list|json_encode};
+            console.log(list_data);
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Sys/roleList?'+query
+            };
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-210',
+                cols: [[ //表头
+                    {field: 'role_id', title: 'ID', fixed: 'left'}
+                    ,{field: 'role_name', title: '角色名称'}
+                    ,{field: 'role_desc', title: '角色描述'}
+                    ,{field: 'role_level', title: '角色等级'}
+                    ,{field: 'is_disabled', title:'是否禁用',templet:function (d) {
+                        return commonTpl.oneZero(d.is_disabled)
+                    }}
+                    ,{field: 'create_date', title: '创建时间'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right',width: 200, toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'detail'){
+                    jlTool.sendIframeMsg('go',{
+                        title:'系统角色详情',
+                        url:'/Admin/Sys/roleList?url=roleListAction&role_id='+source.role_id,
+                        icon:''
+                    });
+                }
+                else if(layEvent === 'power'){
+                    jlTool.sendIframeMsg('go',{
+                        title:'系统角色权限',
+                        url:'/Admin/Sys/roleList?url=roleListPower&role_id='+source.role_id,
+                        icon:''
+                    });
+                }
+                else if(layEvent === 'delete'){
+                    //eg1
+                    layer.confirm('确认删除此角色吗？', function(index){
+                        var data = {
+                            action:'delete',
+                            role_id:source.role_id
+                        };
+                        $.post('/Admin/Sys/sysRoleAction',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('操作成功');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        });
+                        layer.close(index);
+                    });
+                }
+            });
+            $('.jl-add-btn').on('click',function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'系统角色详情',
+                    url:'/Admin/Sys/roleList?url=roleListAction',
+                    icon:''
+                });
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+        })
+    </script>
+</block>

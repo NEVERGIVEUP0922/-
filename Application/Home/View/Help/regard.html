@@ -1,0 +1,31 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">关于玖隆芯城</a></li>
+    </ul>
+    <div class="jl-invoices">
+        <h5>玖隆芯城是深圳市天玖隆科技有限公司独资项目，致力于打造集成电路产业产销一体化、供应链金融、信息互通的行业平台。</h5>
+        <h5>玖隆芯城承接天玖隆10多年经营积累的客户、产品线、交易流量，并为广大原厂、代理商、贸易商开放销售渠道，也为电子个人爱好者、方案自由职业者、小规模创业团队提供方案展示及撮合服务，最终达到产销一体化，实现终端客户一站式采购。对玖隆芯城产业链上的所有用户提供供应链金融服务，解决中小企业融资难、贷款难的现实问题。玖隆芯城为所有用户提供线上线下的信息展示和交流活动，实现信息及时、有效的沟通，打造行业圈子文化，实现利益共同体。</h5>
+        <h5>玖隆芯城的使命：为中国集成电路产业深度优化供应链产业结构而努力！</h5>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

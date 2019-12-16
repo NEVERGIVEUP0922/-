@@ -1,0 +1,359 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+<extend name="Layout:layout-sol-center" />
+<!--<extend name="Layout:layout" />-->
+
+<block name="title">方案中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		.input_padding{
+			padding-left: 10px
+		}
+		.vip_color,.qq_check,.nick_check{
+			color:#e84343;
+		}
+	</style>
+</block>
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main"><!-- 主要内容 -->
+	<!--面包屑导航系统-->
+	<!--{$breadcrum}-->
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--项目管理中心具体内容-->
+		<div class="projectContent">
+			<div class="vipState">
+				<div class="VS_1_a float_L">会员政策说明:</div>
+				<div class="VS_1_b float_L">无会员等级    只能查看方案和发布需求方案，不能发布供应方案和洽谈；月会员（一个月）   200元     发布1个供应方案、5次洽谈；季度会员（三个月）  500元   发布5个方案、20次洽谈；半年会员（六个月）   900元   发布20个方案、40次洽谈；年度会员（一年）    1600元   50个方案、100次洽谈 </div>
+				<div class="clear"></div>
+			</div>
+			<div class="vipContent">
+				<div class="VC_1_content float_L"><!--会员基本信息-->
+					<form action="" url="">
+						<div class="VC_2_form">
+							<div class="VC_3_name float_L ">
+								<label for class="jl-per-label">账号：</label>
+							</div>
+							<div class="VC_3_info float_L">
+								<input type="text" name="user_nick_name" value="{$_SESSION['userInfo']['user_name']}" disabled class="VC_3_input ">
+								<i class="jl-false-note jl-note-normal"></i>
+							</div>
+						</div>
+						<div class="VC_2_form">
+							<div class="VC_3_name float_L ">
+								<label for class="jl-per-label">昵称：</label>
+							</div>
+							<div class="VC_3_info float_L">
+								<if condition="(empty($res['nick_name']) eq true) && (empty($_SESSION['userInfo']['nick_name']) eq true)">
+									<input type="text" name="nick_name" value="{$_SESSION['userInfo']['user_name']}" placeholder="*必填*" class="VC_3_input"><span class="nick_check"></span>
+								<elseif condition="(empty($res['nick_name']) eq true) && (empty($_SESSION['userInfo']['nick_name']) neq true)" />
+									<input type="text" name="nick_name" value="{$_SESSION['userInfo']['nick_name']}" placeholder="*必填*" class="VC_3_input"><span class="nick_check"></span>
+								<else />
+									<input type="text" name="nick_name" value="{$res.nick_name}" placeholder="*必填*" class="VC_3_input"><span class="nick_check"></span>
+								</if>
+								<i class="jl-false-note jl-note-normal"></i>
+							</div>
+						</div>
+						<div class="VC_2_form">
+							<div class="VC_3_name float_L ">
+								<label for class="jl-per-label">手机号码：</label>
+							</div>
+							<div class="VC_3_info float_L">
+								<if condition="empty($res['mobile']) neq true">
+									<input type="text" name="mobile" value="{$res.mobile}" placeholder="*必填*" class="VC_3_input"><span class="mobile_check"></span>
+								<else/>
+									<input type="text" name="mobile" value="{$userInfo.user_mobile}" placeholder="*必填*" class="VC_3_input"><span class="mobile_check"></span>
+								<i class="jl-false-note jl-note-normal"></i>
+								</if>
+							</div>
+						</div>
+						<div class="VC_2_form">
+							<div class="VC_3_name float_L ">
+								<label for class="jl-per-label">QQ号码：</label>
+							</div>
+							<div class="VC_3_info float_L">
+								<if condition="empty($res['qq']) neq true">
+									<input type="text" name="qq" value="{$res.qq}" placeholder="*可选*" class="VC_3_input">
+									<span class="qq_check"></span>
+								<else/>
+									<input type="text" name="qq" value="" placeholder="*可选*" class="VC_3_input">
+									<span class="qq_check"></span>
+								<i class="jl-false-note jl-note-normal"></i>
+								</if>
+							</div>
+						</div>
+						<div class="VC_2_form">
+							<div class="VC_3_name float_L ">
+								<label for class="jl-per-label">微信号码：</label>
+							</div>
+							<div class="VC_3_info float_L">
+								<if condition="empty($res['wechat']) neq true">
+									<input type="text" name="wechat" value="{$res.wechat}" placeholder="*可选*" class="VC_3_input">
+								<else/>
+									<input type="text" name="wechat" value="" placeholder="*可选*" class="VC_3_input">
+								</if>
+									<i class="jl-false-note jl-note-normal"></i>
+							</div>
+						</div>
+						<div class="VC_2_form">
+							<div class="VC_3_name float_L ">
+								<label for class="jl-per-label">会员等级：</label>
+							</div>
+							<div class="VC_3_info float_L">
+								<input type="text" name="vip_level" value="{$res.vip_level}" disabled class="VC_3_input">
+								<i class="jl-false-note jl-note-normal"></i>
+							</div>
+						</div>
+						<div class="VC_2_form">
+							<div class="VC_3_name float_L ">
+								<label for class="jl-per-label">会员到期时间：</label>
+							</div>
+							<div class="VC_3_info float_L">
+								<input type="text" name="vip_time" value="{$res.vip_time}" disabled class="VC_3_input">
+								<i class="jl-false-note jl-note-normal"></i>
+							</div>
+						</div>
+						<div class="xuyue_0">
+							<div class="vip_buy cursor_pointer">续&nbsp;&nbsp;&nbsp;约</div>
+						</div>
+						<div class="clear"></div>
+					</form>
+				</div>
+				<div class="VC_1_Avator float_R"><!--会员头像等-->
+					<div class="VC_img" id="VC_Avator_btn">
+						<img src="{$res.nick_picture}"  class="funck you" alt="">
+						<span class="VC_img_status">点击编辑</span>
+					</div>
+					<div class="VC_update">保存修改</div>
+				</div>
+			</div>
+		</div>
+	<div class="clear"></div>
+	<!--会员办理窗口-->
+		<div class="vip_apply">
+			<div class="vip_apply_1">
+				<div class="vip_apply_2_level">选择会员等级</div>
+				<div class="vip_apply_2_cate">
+					<!--<div class="box">-->
+						<!--<input type="radio"  id="level_0"  name="vip_level" value="0" /><label for="level_0">无会员等级</label>-->
+					<!--</div>-->
+					<div class="box">
+						<input type="radio"  id="level_1"  name="vip_level" value="1" checked="checked"/><label for="level_1">月度会员</label>
+					</div>
+					<div class="box">
+						<input type="radio"  id="level_2"  name="vip_level" value="2"/><label for="level_2">季度会员</label>
+					</div>
+					<div class="box">
+						<input type="radio"  id="level_3"  name="vip_level" value="3"/><label for="level_3">半年会员</label>
+					</div>
+					<div class="box">
+						<input type="radio"  id="level_4"  name="vip_level" value="4"/><label for="level_4">年度会员</label>
+					</div>
+				</div>
+				<div class="vip_apply_2_pay">
+					<div class="vip_pay baiDiHongZi" id="cacel_vip">取&nbsp;&nbsp;&nbsp;消</div>
+					<div class="vip_pay baiZiHongDi" id="sure_vip">确&nbsp;&nbsp;&nbsp;定</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js', 'layer-all'], function () {
+            require(['jquery', 'jl-modal', 'jl-tool','layer','webuploader'], function ($,modal,jlTool,layer,WebUploader) {
+                var jlTool=layui.jlTool;
+                var layer =layui.layer;
+                //查看更多
+                var _nick_name=$("input[name='nick_name']");
+                var _mobile  = $("input[name='mobile']");
+                var _qq      = $("input[name='qq']");		_qq.maxLength=20;
+                var _wechat  = $("input[name='wechat']"); _wechat.maxLength=30;
+                var _nick_picture =  $('#VC_Avator_btn');
+//                console.log(_nick_picture);
+
+                /*点击进入续约界面*/
+                $('.vip_buy').on('click',function(){
+					$('.vip_apply').show();
+				});
+                /*点击关闭续约界面*/
+				$('#cacel_vip').on('click',function(){
+				    $('.vip_apply').hide();
+				});
+				/*点击保存修改的数据*/
+				$('.VC_update').on('click',function(){
+				    var data ={};
+                    data.mobile   = _mobile.val();
+                    data.nick_name= _nick_name.val();
+                    data.qq       = _qq.val();
+                    data.wechat	  = _wechat.val();
+                    data.nick_picture =_nick_picture.find('img').attr('src');
+                    if(!data.mobile || !data.nick_name){
+						waring_alert('昵称和手机号是相互联系的重要渠道,请填写');
+						return;
+					}else{
+						$.ajax({
+							type:'POST',
+							url :'{:U(Home/SolutionVip/vipIndex)}',
+							data:data,
+							success:function($re){
+								if($re.status =1000){
+									waring_alert($re.content);
+								}else{
+									waring_alert('提交失败')
+								}
+							},
+							error:function($re){
+								waring_alert('提交失败');
+							}
+						})
+					}
+				});
+				/*点击修改头像*/
+				var uploader = WebUploader.create({
+					pick:'#VC_Avator_btn',
+					auto:true,
+					swf:'__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+					server:"{:U('Home/Order/upload')}",
+					formData:{
+						path:'User',
+						act:'avator',
+					},
+					accept: {
+						title: 'Images',
+						extensions: 'gif,jpg,jpeg,png',
+						mimeTypes: 'image/jpg,image/jpeg'
+					},
+                    // 是否压缩图片, 默认如果是jpeg文件上传前会压缩，如果是false, 则图片在上传前不进行压缩
+                    compress:{
+                        // 压缩后的尺寸
+                        width: 150,
+                        height: 150,
+                        // 图片质量，只有type为image/jpeg的时候才有效。
+                        quality: 90,
+                        // 是否允许放大，如果想要生成小图的时候不失真，此选项应该设置为false
+                        allowMagnify: false,
+                        // 是否允许裁剪
+                        crop: true,
+                        // 是否保留头部meta信息
+                        preserveHeaders: true,
+                        // 如果发现压缩后文件大小比原来还大，则使用原来图片，此属性可能会影响图片自动纠正功能
+                        noCompressIfLarger: false,
+                        // 单位字节，如果图片大小小于此值，不会采用压缩
+                        compressSize: 0
+                    },
+					//图片大小
+                    fileNumLimit:1,
+					fileSingleSizeLimit: 2*1024*1024,
+					duplicate: true
+				});
+				uploader.on('uploadSuccess',function(file,res){
+					$('#VC_Avator_btn img').attr("src",'');
+					var dss = $('#VC_Avator_btn img').attr("src",res[0]);
+//					console.log(res[0]);
+				});
+				uploader.on('error',function(type){
+//				    console.log(type);
+				    layer.msg(type);
+                    if (type == "Q_TYPE_DENIED") {
+                        layer.msg("请上传JPG、PNG、GIF格式图片");
+                    } else if (type == "F_EXCEED_SIZE") {
+                        layer.msg("图片太大了,请选择小一点的图片吧!(不超过2M)");
+                    }else {
+//                        layer.msg("上传出错！请检查后重新上传");
+                    }
+				});
+				/*验证手机号(前台)*/
+                var reg_mobile =/^1(3|4|5|7|8)+\d{9}$/;
+                var reg_qq	=/^[0-9]*$/;
+                var isChecked = false;
+               _mobile.on('blur',function () {
+                    var mobile = _mobile.val();
+                    if(mobile==''){
+						$('.mobile_check').html("<i class='waring_picture'></i>"+"手机号不能为空!");
+                    }else{
+                        $('.mobile_check').html('');
+                        if(reg_mobile.test(mobile)){
+                            $.post("{:U('Home/Account/ajaxCheckMobile',['type'=>1])}",
+                                {user_mobile:mobile},
+                                function (res) {
+                                    if(res.status===0){
+                                        return;
+                                    }else {
+                                        $('.mobile_check').html('此号码已存在,沿用则忽略提示');
+                                    }
+                            	})
+                        }else {
+                            $('.mobile_check').html("<i class='waring_picture'></i>"+'请输入正确的手机号');
+                        }
+                    }
+                });
+				/*验证qq*/
+               _qq.on('blur',function(){
+                   var qq_temp = reg_qq.test(_qq.val());
+                   if(!qq_temp){
+					   $('.qq_check').html("<i class='waring_picture'></i>"+'请输入正确格式的qq号');
+				   }else{
+                       $('.qq_check').html('');
+				   }
+			   })
+				/*验证昵称*/
+				_nick_name.on('blur',function(){
+				    if(!_nick_name.val()){
+                        $('.nick_check').html("<i class='waring_picture'></i>"+'请输入昵称');
+					}
+				})
+				/*点击确认续费*/
+				$('#sure_vip').on('click',function(){
+                    var _vip_level=$('input:radio[name="vip_level"]:checked');
+                    var data ={};
+					data.vip_level= _vip_level.val();
+//					console.log(data);
+					$.ajax({
+						type:'GET',
+                        url:"/Home/SolutionVip/vipIndex",
+						data:data,
+						success:function(res){
+						    if(res.status==1001){
+						        modal.alert({
+									title:res.contente
+								});
+						        return;
+							}
+						    var request =jlTool.urlEncode(res);
+						    window.location.href ="{:U('Home/SolutionVip/vipPay')}"+"?"+request;
+						},
+						error:function($re){
+						    console.log('升级错误');
+						}
+					})
+//					var t = $('input').serializeArray();
+//                    $.each(t, function() {
+//                        d[this.name] = this.value;
+//                    });
+//					data = console.log(JSON.stringify(data));
+				});
+                /*提示*/
+                function waring_alert(brief,title){
+                    modal.alert({
+                        title:title?title:'提示',
+                        brief:brief?brief:false,
+                    });
+                };
+            });
+        });
+	</script>
+</block>

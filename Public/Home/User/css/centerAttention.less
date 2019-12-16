@@ -1,0 +1,264 @@
+@import "../../Public/css/init.less";
+//.jl-feedback{
+//    display: none;
+//}
+.jl-b-text{
+    width: 929px;
+    height: 435px;
+    padding: 16px 20px;
+    border: none;
+    .font14(@dark-grey);
+    border: @border02;
+  }
+.jl-b-bottom{
+    margin-top: 20px;
+    .jl-b-contact{
+        margin-bottom: 13px;
+        .jl-b-label{
+            display: inline-block;
+            width: 108px;
+            .font14(@dark-grey);
+        }
+    }
+}
+
+.jl-feedback-success{
+    display: none;
+    padding-top: 200px;
+    text-align: center;
+    h4{
+        .font18(@medium-grey);
+        margin-top: 22px;
+    }
+    .jl-continue{
+        width: 180px;
+        height: 40px;
+        background: @color;
+        .font18(#fff);
+        border: none;
+        margin-top: 30px;
+    }
+}
+
+//收藏夹
+.jl-fa-box{
+    li{
+        position: relative;
+        float: left;
+        width: 283px;
+        height: 327px;
+        padding: 0 20px 30px;
+        background: #fff;
+        box-sizing: border-box;
+        border:@border01;
+        text-align: center;
+        margin-right: 62px;
+        margin-top: 20px;
+        cursor: pointer;
+        >.jl-img{
+            height: 150px;
+            padding-top: 16px;
+            box-sizing: border-box;
+            img{
+                width: 120px;
+                height: 120px;
+            }
+        }
+        .jl-describe{
+            text-align: left;
+            min-height: 100px;
+            h4{
+                .font14(@dark-grey);
+            }
+            >p{
+                color:@medium-grey;
+                line-height: 22px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                -webkit-line-clamp: 4;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+            }
+            >p:last-child{
+                height:90px;
+            }
+            .jl-p-describe{
+                margin-bottom:8px;
+            }
+        }
+        >p{
+            margin-top:25px;
+            span{
+                float: left;
+                .price;
+            }
+            a{
+                float: right;
+                .a-dir;
+            }
+        }
+    }
+    li.jl-hot-li-last{
+        margin-right: 0;
+    }
+    li:hover{
+        box-shadow:0 0 8px @light-gray;
+        .jl-fa-dele{
+            display: block;
+        }
+    }
+}
+//删除
+.jl-fa-dele{
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: none;
+    width: 25px;
+    height: 25px;
+    background: url(../../Public/img/bg-big.png) no-repeat 5px -72px;
+}
+//.jl-fa-box{
+//    padding-left: 18px;
+//    width: 955px;
+//    li{
+//        float: left;
+//        margin-right: 49px;
+//        margin-bottom: 30px;
+//        width: 251px;
+//        padding: 0 13px 21px 19px;
+//        text-align: center;
+//        border: @border01;
+//        .jl-fa-img{
+//            width: 251px;
+//            padding-top: 28px;
+//            height: 122px;
+//        }
+//        .jl-fa-tit{
+//            text-align: left;
+//            margin-bottom: 9px;
+//            .jl-fa-prod{
+//                line-height: 25px;
+//                .font16(@dark-grey);
+//            }
+//            .jl-fa-det{
+//                width: 251px;
+//                line-height: 21px;
+//                overflow: hidden;
+//                text-overflow: ellipsis;
+//                white-space: nowrap;
+//            }
+//        }
+//        .jl-fa-text{
+//            text-align: left;
+//            width: 251px;
+//            line-height: 21px;
+//            height: 42px;
+//            overflow: hidden;
+//        }
+//        .jl-fa-text:after{
+//            content:"...";
+//        }
+//        .jl-fa-p{
+//            text-align: left;
+//            margin-top: 25px;
+//            .jl-fa-price{
+//                float: left;
+//                .font16(@color);
+//                line-height: 31px;
+//            }
+//            .jl-fa-check{
+//                .font16(@green);
+//                float: right;
+//                cursor: pointer;
+//                line-height: 31px;
+//            }
+//        }
+//    }
+//    li:hover{
+//        box-shadow: 0 0 2px 2px @bg-color;
+//        .jl-fa-dele{
+//            display: block;
+//        }
+//    }
+//    .jl-li-active{
+//        margin-right: 0;
+//    }
+//}
+
+
+
+//按钮组
+.jl-fa-btn{
+    margin: 0 auto;
+    padding-top: 20px;
+    padding-bottom: 103px;
+    width: 811px;
+    .jl-fa-page{
+        cursor: pointer;
+        float: left;
+        width: 90px;
+        height: 40px;
+        border: @border02;
+        background-color: #f9f9f9;
+    }
+    .jl-fa-page-c{
+        cursor: auto;
+        color: @light-gray;
+    }
+    .jl-list-btn{
+        float: left;
+        margin-left: 6px;
+        li{
+            float: left;
+            margin-right: 6px;
+            .font14(@dark-grey);
+            a{
+                display: block;
+                width: 38px;
+                line-height: 38px;
+                text-align: center;
+                border: @border02;
+                background-color: #f9f9f9;
+            }
+            .jl-btn-a{
+                border: none;
+                background-color: #ffffff;
+            }
+            .jl-btn-a-c{
+                color: @color;
+            }
+        }
+    }
+    .jl-btn-right{
+        float: left;
+        padding-left: 24px;
+        line-height: 40px;
+        .jl-btn-pages{
+            float: left;
+            width: 70px;
+            .jl-pages-c{
+                color: @dark-grey;
+            }
+        }
+        .jl-page-item{
+            float: left;
+            margin-right: 17px;
+            .jl-page-cont{
+                width: 38px;
+                line-height: 38px;
+                border:@border02;
+                text-align: center;
+            }
+        }
+        .jl-fa-submit{
+            width:58px;
+            height: 40px;
+            background-color: #f9f9f9;
+            border: @border02;
+            color: @dark-grey;
+            cursor: pointer;
+        }
+    }
+}

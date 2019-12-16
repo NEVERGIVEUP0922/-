@@ -1,0 +1,40 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-l"><a href="javascript:;">同城自取</a></li>
+    </ul>
+
+    <!-- 账期支付 -->
+    <ul class="jl-question">
+        <!--<li>-->
+            <!--<h4>1、用户收到到货通知短信后，需携带已盖公/合同章的销售订单合同，到以下地址提货。</h4>-->
+            <!--<h4>2、若自提货物超出尺寸60cm*40cm*10cm，则默认发送顺丰快递，查看物流信息请到【会员中心】查看。</h4>-->
+        <!--</li>-->
+        <li>
+            <h4>华强北自提点:</h4>
+            <h4>自提地址：深圳市福田区振华路159号高科德12921</h4>
+            <h4>联系电话：0755-82807681</h4>
+            <h4>提货时间：周一至周六  上午下单，下午14:30-17:30（周六下午3:00之前）自取，如上午下单急要请及时联络业务员沟通后再去取货</h4>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

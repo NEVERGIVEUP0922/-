@@ -1,0 +1,349 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/select2/4.0.5/css/select2.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="/Public/Admin/Product/css/productListAction.css?v=118"/>
+</block>
+<block name="content">
+    <div>
+
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">{$request?'编辑':'新增'}积分奖品</a>
+            </span>
+            <button class="layui-btn" lay-submit lay-filter="bargain" style="margin-left: 16px;padding:0 14px;height:30px;line-height:30px">提交</button>
+<!--
+            <button style="margin-left: 16px;" class="add-btn layui-btn action-add layui-btn-sm">添加行</button>
+-->
+        </blockquote>
+        <form class="layui-form layui-form-form" id="forms" action="" enctype="multipart/form-data">
+            <table id="addTable-table" lay-filter="addTable">
+            </table>
+        </form>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['table','layer', 'jlTool','laydate','upload','element','form','selectProduct','selectCustomer','actionTpl'], function () {
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var actionTpl = layui.actionTpl;
+            var form = layui.form;
+            var table = layui.table;
+            var upload = layui.upload;
+            var laydate = layui.laydate;
+            var single_data = {$integralRewardLists|json_encode};
+            var request = {$request|json_encode};
+            var demo = {
+                'id':'', 'goods_name':'','goods_describe':'', 'goods_num':'','exchange_integral':'', 'reward_img':'', 'note':''
+            };
+            var tableIns,cols;
+            console.log(single_data);
+            var initTable = function () {
+                //console.log(single_data);
+                single_data = $.isArray(single_data)?single_data:[single_data];
+                var data = request.id ? single_data:[demo];
+                cols = [
+                     {field: 'goods_name',align:'center',tplType:'input', title: '奖品名称',templet:function(d){
+                             return actionTpl.input('goods_name',d,false);
+                         }}
+                    , {field: 'goods_describe',align:'center',tplType:'input', title: '奖品描述',templet:function(d){
+                            return actionTpl.input('goods_describe',d);
+                        }}
+                    , {field: 'goods_num',align:'center', title: '奖品数量',tplType:'input',templet:function(d){
+                            return actionTpl.input('goods_num',d);
+                        }}
+                    , {field: 'exchange_integral',align:'center', title: '兑换积分数',tplType:'input',templet:function(d){
+                            return actionTpl.input('exchange_integral',d);
+                        }}
+                    ,{field: 'reward_img', title: '积分奖品图片',tplType:'img',align:'center',templet:function(d){
+                        return actionTpl.img('reward_img',d);
+                        }
+                    }
+                    , {field: 'note',align:'center', title: '备注',tplType:'input',templet:function(d){
+                            return actionTpl.input('note',d);
+                        }}
+                    ,{field: 'handle', title: '操作',toolbar:'#handle-tpl',fixed: 'right',width:130},
+                ];
+                if(request.id){
+                    cols.unshift({field: 'id', title: 'ID', fixed: 'left',tplType:'div',align:'center', width: 60,templet:function(d){
+                            return '<div class="jl-control-id">'+d.id+'</div>';
+                        }});
+                }
+                tableIns = table.render({
+                    elem: '#addTable-table',
+                    height:'full-120',
+                    data:data,
+                    page: false,
+                    cellMinWidth:120,
+                    cols: [cols],
+                    limit:50,
+                    done:function(){
+                        $(".layui-form tr td").find("div.layui-table-cell").css({'line-height':'40px','height':'40px'});
+                        $(".layui-table-cell").css("overflow","visible");
+                        /*$(".jl-control-cate_all").on("click",function(){
+
+                        });*/
+                        //搜索输入拼音首字母自动补全
+                        var response_data=[];
+                        $( ".layui-form-label-pinyin-customer" ).autocomplete({
+                            source: "/Admin/Customer/companyPinyinSearch?disable20=disable20",
+                            minLength: 2,
+                            classes: {
+                                "ui-menu": "highlight"
+                            },
+                            close:function(event,ui){
+
+
+                            },
+                            select:function(event,ui){
+                                var $this = $( ".layui-form-label-pinyin-customer" );
+                                var value = ui.item.value;
+                                var id=JSON.parse($("#autoComplete_index_data").val());
+                                var index = response_data.indexOf(value);
+                                $this.siblings("input").val(id[index]);
+                                setTimeout(function(){ response_data = [];},0)
+
+                            },
+                            response:function( event, data ) {
+                                response_data = [];
+                                $.each(data.content,function(item,value){
+                                    response_data.push(value.value);
+                                });
+                            }
+                        });
+                        //上传图片
+                        var ischoose=isAllimg=false;
+                        $('.action-upload-img-self').off("click").on("click",function () {
+                            ischoose=true;
+                            $('.action-upload-img').removeClass('active-upload');
+                            isAllimg = false;
+                            $(this).addClass('active-upload');
+                        });
+                        var uploadInst = upload.render({
+                            elem: '.action-upload-img'
+                            ,url: '/admin/excel/fileUpload'
+                            ,data:{
+                                path: 'product'
+                            }
+                            ,done: function(res){
+                                if(res.error===0){
+                                    if(!ischoose){
+                                        layer.msg("请选择商品");
+                                        return;
+                                    };
+                                    var data_image = $('.action-upload-img.active-upload').siblings('.jl-control-describe_image').data('img');
+                                    if(data_image){
+                                        data_image += ";"+res.data.path;
+                                    }else{
+                                        data_image = res.data.path;
+                                    };
+                                    $('.action-upload-img.active-upload').siblings('.jl-control-reward_img').data('img',data_image).css("background-color","#009688");
+                                    /*if(giveImg){
+                                        giveImg(data_image);
+                                    };*/
+                                    layerOpen(data_image);
+                                }
+                                else {
+                                    layer.msg(res.msg);
+                                }
+                            }
+                        });
+                        function layerOpen(data_image,elemen){
+                            var imgArr=data_image.split(";");
+                            var strs="";
+                            $.each(imgArr,function(index,item){
+                                strs += '<div style="width: 150px;height: 150px;float:left;margin:4px;position:relative"><span style="position:absolute;top: -4px;right: -4px;width: 20px; height: 20px;line-height: 20px;background-color: black;color: #fff;border-radius: 50%;cursor: pointer;">X</span><img style="width: 150px;height: auto;vertical-align: middle;cursor: pointer" src="'+item+'"/></div>' ;
+                            });
+                            layer.open({
+                                title:'积分奖品图片',
+                                type: 0,
+                                content: (
+                                    '<div class="action-product-imgs" style="text-align: center;overflow:hidden">' +
+                                    strs +
+                                    '</div>'
+                                ),
+                                success:function(){
+                                    $(".action-product-imgs").find("span").on("click",function(){
+                                        $(this).parent().remove();
+                                    });
+                                },
+                                yes:function(){
+                                    var imgSrc="";
+                                    $(".action-product-imgs").find("img").each(function(index){
+                                        if(index == 0){
+                                            imgSrc+=$(this).attr("src");
+                                        }else{
+                                            imgSrc+= ";"+$(this).attr("src");
+                                        }
+                                    });
+                                    var bgCss={"background-color":"#009688"};
+                                    if(!imgSrc){
+                                        bgCss["background-color"]="#c2c2c2";
+                                    };
+                                    if(elemen){
+                                        $(elemen).data('img',imgSrc);
+                                    }else{
+                                        $('.action-upload-img.active-upload').siblings('.jl-control-describe_image').data('img',imgSrc);
+                                    };
+                                    if(elemen)$(elemen).css(bgCss);
+                                    setTimeout(function(){
+                                        $('.action-upload-img').removeClass("active-upload")
+                                    },200);
+                                    layer.closeAll();
+                                }
+                            })
+                        }
+                        //查看图片
+                        $('.jl-control-reward_img').click(function () {
+                            var img = $(this).data('img');
+                            if(img){
+                                layerOpen(img,this);
+                            }
+                            else {
+                                layer.msg('没有图片');
+                            }
+                        });
+                    }
+                });
+                //删除按钮
+                table.on('tool(addTable)', function(obj){
+                    if(obj.event === 'delete'){ //删除
+                        layer.confirm('删除只是放弃编辑这一行，不会影响数据', function(index){
+                            obj.tr.remove();
+                            layer.close(index);
+                        });
+                    }
+                    //添加同一客户
+                    if(obj.event === 'add'){
+                        var tr = obj.tr;
+                        var value = {};
+                        value.index_num = $(tr[0]).data("index");
+                        value.user_name = $(tr[1]).find("td[data-field = uid]").find("input[name = uidtitle]").val();
+                        value.uid = $(tr[1]).find("td[data-field = uid]").find("input[name = uid]").val();
+                        addRow(undefined,false,false,value);
+                    }
+                });
+            };
+            initTable();
+            //添加一行
+            $(".add-btn").off("click").on("click",function(){
+                addRow();
+            })
+            var addRow = function (value,elems,keys,addSame) {
+                var data = value ? getData(value["p_sign"]):getData();
+                var cloneDemo=JSON.parse(JSON.stringify(demo));
+                if(value){
+                    if(keys==0 && data){
+                        elems.val(value.fitemno);
+                        elems.parent().parent().siblings("[data-field=fstcb]").find("div").text(value.fstcb)
+                        elems.data('id',value.id);
+                        return;
+                    };
+                    cloneDemo['fitemno'] = value.fitemno;cloneDemo['fstcb'] = value.fstcb};
+                if(addSame){
+                    cloneDemo['customer_name'] = addSame.user_name;
+                    cloneDemo['uid'] = addSame.uid;
+                    data.splice(Number(addSame.index_num) + 1,0,cloneDemo);
+                }else{
+                    data.push(cloneDemo);
+                };
+                tableIns.reload({
+                    data:data
+                });
+                // initTable();
+            };
+            //获取数据
+            var getData = function (exestPsign) {
+                var array = [];
+                $('.layui-table-main').find('tr').each(function (index) {
+                    var $tr = $(this);
+                    var single = {};
+                    var $nextTr = $tr.parents('.layui-table-main').siblings('.layui-table-fixed-l').find(".layui-table-body").find('tr').eq(index);
+                    $.each(cols,function (index,value) {
+                      if(value.tplType==='input'||value.tplType==='time'){
+                          single[value['field']] = $tr.find('.jl-control-'+value['field']).val().trim()||"";
+                        }
+                        else if(value.tplType==='select'){
+                          single[value['field']] = $tr.find('.jl-control-'+value['field']).val().trim()||"";
+                        }else if(value.tplType==='status'){
+                            single[value['field']] = $tr.find('.jl-control-'+value['field']).data('id');
+                        }else if(value.tplType==='cate'||value.tplType==='product'){
+                          single[value['field']] = $tr.find('.jl-control-'+value['field']).next().val().trim()||"";
+                      }else if(value.tplType==='img'){
+                          single[value['field']] = $tr.find('.jl-control-'+value['field']).data('img').trim()||"";
+                      }
+                    });
+                    if(single_data[0].id){
+                        single['goods_used_num']=single_data[0]['goods_used_num'];
+                        single['id']=single_data[0]['id'];
+                    }else{
+                        single['goods_used_num']='0';
+                    };
+                    if(array)array.push(single);
+                });
+                // console.log("array",array);
+                return array
+            };
+            form.on('submit(bargain)', function(data){
+                var datas = getData();
+                var isPass = true;
+                var isNum=true;
+                $.each(datas,function(index,item){
+                    for(var key in item){
+                        if(key !=="note" && !item[key]){
+                            isPass=false;
+                            return false;
+                        }
+                        if(key ==="goods_num" || key==="exchange_integral"){
+                            var reg=/^[0-9]+$/g;
+                            if(!reg.test(item[key])){
+                                isNum=false;
+                             return false;
+                            }
+                        };
+                    };
+                });
+                if(!isPass){ layer.msg('除了备注，其他都必须填写');return;}
+                if(!isNum){ layer.msg('奖品数量和奖品兑换积分必须为数字');return;}
+                $.post('/Admin/Integral/integralRewardAction',{data:datas},function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        layer.msg('提交保存成功');
+                        jlTool.sendIframeMsg('refresh','integralRewardList');
+                        setTimeout(function () {
+                            jlTool.sendIframeMsg('go',{
+                                title:'编辑积分',
+                                url:'/Admin/Integral/integralRewardList',
+                                icon:''
+                            });
+                        },500)
+                    }
+                    else {
+                        var text="";
+                        if(res.failed){
+                            $.each(res.failed,function(index,item){
+                                text+=item.msg+";<br/>";
+                            });
+                        }else{
+                            text=res.msg
+                        };
+                        layer.open({
+                            content:text,
+                            type:0,
+                            btn:["确定"],
+                            yes:function(){
+                                layer.closeAll();
+                            }
+                        });
+                    }
+                });
+                return false;
+            });
+        });
+
+    </script>
+</block>

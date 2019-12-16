@@ -1,0 +1,104 @@
+//彩色
+@color:#e84343;
+@yellow:#ffc33a;
+@green:#05baae;
+@light-green:#05baae;
+@blue:#00bff0;
+@check-color:#f2fbfb;
+@rose:#f5579e;
+
+
+//灰色系
+@dark-grey:#393939;
+@medium-grey:#777;
+@grey:#a8a8a8;
+@shaw:#f9f9f9;
+@light-gray:#ddd;
+@user-color:#f6f6f6;
+@bg-color:#f0f0f0;
+@bg-color03:#f5f5f5;
+@bg-color04:#e2e2e2;
+
+//主字体大小
+@font-size:14px;
+//次字体大小
+@minor-size:12px;
+//标题字体
+@title-size:16px;
+//大字体
+@big-size:18px;
+//登陆标题字体
+@login-size:20px;
+//注册标题
+@register-size:22px;
+//注册星号
+@star-size:30px;
+//购物车标题字体
+@trolley-size:26px;
+
+
+
+//边框
+@border01:1px solid @bg-color;
+@border02:1px solid @light-gray;
+@border03:1px solid @color;
+@border04:3px solid @color;
+@border05:1px solid @check-color;
+@border06:1px solid @grey;
+//圆
+.circle(@width:2px,@b-color:@medium-grey){
+  border-radius:@width solid @b-color;
+}
+
+//价格
+.price{
+  font:@font-size "Microsoft YaHei";
+  color:@color;
+}
+//a查看详情
+.a-dir{
+  font:@font-size "Microsoft YaHei";
+  color:@green;
+}
+
+.font12(@color12:@grey){
+  font:@minor-size  "Microsoft YaHei";
+  color:@color12;
+}
+.font14(@color14:@medium-grey){
+  font:@font-size "Microsoft YaHei";
+  color:@color14;
+}
+.font16(@color16:@medium-grey){
+  font:@title-size "Microsoft YaHei";
+  color:@color16;
+}
+.font18(@color18:@medium-grey){
+  font:@big-size "Microsoft YaHei";
+  color:@color18;
+}
+.font20(@color20:@dark-grey){
+  font:@login-size "Microsoft YaHei";
+  color:@color20;
+}
+.font22(@color22:@color){
+  font:@register-size "Microsoft YaHei";
+  color:@color22;
+}
+.font24(@color24:@dark-grey){
+  font:@register-size "Microsoft YaHei";
+  color: @color24;
+}
+.font26(@color26:@dark-grey){
+  font: @trolley-size "Microsoft YaHei";
+  color: @color26;
+}
+.font30(@color30:@color){
+  font: @star-size "Microsoft YaHei";
+  color: @color30;
+}
+
+.jl-cle:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.jl-clear{
+  clear: both;
+}

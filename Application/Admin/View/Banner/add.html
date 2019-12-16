@@ -1,0 +1,118 @@
+<extend name="Layout:layout-tab" />
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/css/form.css" media="all" />
+</block>
+<block name="content">
+	<div class="layui-fluid">
+		<div class="layui-row">
+				<form class="layui-form jl-form" id="add" method="post">
+					<div class="layui-form-item">
+						<label class="layui-form-label">Banner图片</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" name="img" lay-verify="required" placeholder="填写远程图片地址或上传">
+						</div>
+						<div class="layui-input-inline">
+							<button type="button" class="layui-btn" id="upload">
+								<i class="iconfont-jl icon-jl-help"></i>上传图片
+							</button>
+						</div>
+						<div class="layui-input-inline">
+							<img src="" id="uploadImg">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">跳转地址</label>
+						<div class="layui-input-inline">
+							<input type="text" name="url" placeholder="默认不填为自动跳转首页" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">请填写完整以http://开头的完整地址</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">Banner排序</label>
+						<div class="layui-input-inline">
+							<input type="text" name="order" required  lay-verify="required" placeholder="默认为0" autocomplete="off" class="layui-input" value="0">
+						</div>
+						<div class="layui-form-mid layui-word-aux">不参与排序默认为0</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">Banner状态</label>
+						<div class="layui-input-inline">
+							<input type="checkbox" name="status" lay-skin="switch" lay-filter="status" lay-text="开启|关闭" checked="true" value="0">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit="submit" lay-filter="add">立即提交</button>
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+</block>
+<block name="js">
+	<script>
+        layui.use(['layer','form','upload'],function(){
+            var form = layui.form,
+                upload = layui.upload,
+                layer = layui.layer;
+
+                upload.render({
+	                elem:'#upload' //绑定元素
+	                ,url: '{:U("Admin/Banner/upload")}'
+	                ,data: {path:'Banner'}
+                    ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                        layer.load(); //上传loading
+                    }
+                    ,done: function(res, index, upload){
+                        $('input[name=img]').val(res[0]);
+                        $('#uploadImg').attr('src', res[0]);
+                        layer.closeAll('loading'); //关闭loading
+                    }
+                });
+
+               //状态
+            form.on('switch(status)', function(data){
+				var status = this.checked ? 'true' : 'false';
+				if( status == 'true' ){
+				    $('input[name=status]').val(0);
+				}else{
+                    $('input[name=status]').val(1);
+				}
+            });
+
+            //提交
+            form.on('submit(add)', function(data){
+                if( data.field){
+                    var index = layer.load();
+                    $.ajax({
+						url: '',
+	                    type: 'POST',
+	                    data: data.field,
+	                    dataType:'json',
+	                    success: function(res){
+						    if( res.status == 0 ){
+                                layer.close(index);
+                                layer.msg('添加成功',{
+                                    icon: 6,
+                                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                }, function(){
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    parent.layer.close(index);
+                                    parent.location.href='{:U("Admin/Banner/index")}';
+                                });
+						    }else{
+                                layer.close(index);
+                                layer.msg('添加失败',{
+                                    icon: 2,
+                                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                                });
+						    }
+	                    }
+                    });
+                }
+                return false;
+            });
+        });
+	</script>
+</block>

@@ -1,0 +1,96 @@
+<!-- 前台首页模板文件  -->
+
+<extend name="Layout:layout-user-center" />
+
+<block name="title">登录</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/search-index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/logo-header.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/login-message.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <!--loginWrap-->
+    <div class="jl-login-wrap">
+        <!--loginmsg-->
+        <div class="jl-login-msg">
+            <div class="jl-login-de">
+                <h2 class="jl-login-tit">密码登录</h2>
+                <form method="post" id="login">
+                    <div class="jl-login-item">
+                        <label for="jl-login-adm" class="jl-lab jl-bg01"></label>
+                        <input id="jl-login-adm" class="jl-login-user" tabindex="1" placeholder="请输入用户名或手机号">
+                    </div>
+                    <div class="jl-login-item">
+                        <label for="jl-login-pw" class="jl-lab jl-bg02"></label>
+                        <input id="jl-login-pw" class="jl-login-user" tabindex="2" placeholder="请输入密码">
+                    </div>
+                    <div class="jl-login-item jl-login-for">
+                        <span class="jl-forget-pw"><a href="{:U('Home/Account/passForget')}">忘记密码</a></span>
+                    </div>
+                    <div class="jl-login-item jl-login-btn">
+                        <input type="button" value="登录">
+                    </div>
+                </form>
+            </div>
+            <div class="jl-choose">
+                <ul class="jl-choose-de">
+                    <li>
+                        <a href="{:U('Home/Account/login',['type'=>'qq'])}" class="jl-way">
+                            <b class="jl-choose-qq-bg"></b>
+                            <span>QQ</span>
+                        </a>
+                        <span class="jl-vertical-line">|</span>
+                    </li>
+                    <li>
+                        <a href="{:U('Home/Account/login',['type'=>'wechat'])}" class="jl-way">
+                            <b class="jl-choose-weiXin"></b>
+                            <span>微信</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{:U('Home/Account/register',['type'=>'1'])}" class="jl-run-reg">
+                            <b></b>
+                            <span>立即注册</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--loginBanner-->
+        <div class="jl-login-banner"></div>
+    </div>
+</block>
+<block name="js">
+    <script>
+
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery', 'jl-modal'], function($,modal) {
+                $('#login').on('submit', function(){
+                    var data = getFormJson('form#login');
+                    if( !(data.userName)){
+                        layer.msg('用户名不能为空', {icon:2, time:1000});
+                    }
+                    else if( !(data.password) ){
+                        layer.msg('密码不能为空', {icon:2, time:1000});
+                    }
+                    else{
+                        $.post('', data, function(res){
+                                if( res.status == 0 ){
+                                    layer.msg('登录成功', { icon:2, time:1000}, function(){
+                                        //跳转到首页
+                                        location.href="{:U('Home/Default/index')}";
+                                    });
+                                }
+                            },'json'
+                        );
+                    }
+                    return false;
+                });
+            });
+        })
+    </script>
+</block>

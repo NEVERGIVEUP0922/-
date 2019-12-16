@@ -1,0 +1,38 @@
+.data-table-container .layui-table-view {
+    margin: 0;
+}
+.data-table-container .layui-table-body .layui-table-cell,
+.data-table-container .layui-table-fixed .layui-table-body .layui-table-cell{
+    height: 92px;
+    white-space: normal;
+}
+/*图片*/
+.data-table-container .data-table-cover-image{
+    max-width: 90px;
+    max-height: 90px;
+    width: 90px;
+    height: 90px;
+    background-color: #e0e0e0;
+}
+/*操作*/
+.data-table-handle-box{
+    width: 120px;display: inline-block
+}
+.data-table-handle-box span{
+    display: inline-block;
+    cursor: pointer;
+}
+.data-table-handle-box span:hover{
+    color:#5FB878
+}
+.data-table-handle-box span:after{
+    content: '/';
+    margin-left: 5px;
+}
+.data-table-handle-box span:last-child:after{
+    content: '';
+    margin-left: 0;
+}
+.chooseSample:hover,.sample-clean:hover{
+    color:#5FB878
+}

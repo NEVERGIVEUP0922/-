@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "发票设置",
+  "enablePullDownRefresh": true,
+  "navigationBarTextStyle":"white",
+  "backgroundTextStyle": "dark",
+  "navigationBarBackgroundColor": "#DF433E"
+}

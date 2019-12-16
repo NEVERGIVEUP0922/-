@@ -1,0 +1,20 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+</block>
+<block name="content">
+    <php>
+        $request=I('get.');
+        $option = array(
+        '404' => array('icon' => '404', 'title' => '抱歉，您查看的页面不存在',),
+        'noPower' => array('icon' => 'power', 'title' => '抱歉，此页面有权限设置',)
+        );
+        $data = $option[$type] ? $option[$type] : $option[$request['type']];
+        $data = $data ? $data : $option['404'];
+    </php>
+    <div style="margin-top: 200px;text-align: center;color: #666">
+        <p><i style="font-size: 160px;" class="iconfont-jl icon-jl-{$data.icon}"></i></p>
+        <p style="font-size: 20px;margin-top: 12px">{$data.title}</p>
+    </div>
+</block>
+<block name="js">
+</block>

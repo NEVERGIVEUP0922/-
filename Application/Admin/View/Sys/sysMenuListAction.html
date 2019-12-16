@@ -1,0 +1,108 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">{$request['menu_id']?'编辑':'新增'}菜单</a>
+            </span>
+        </blockquote>
+        <form class="layui-form" action="">
+            <if condition="$request['menu_id']"><assign name="data" value="$list.list.0"/></if>
+            <div class="layui-form-item">
+                <label class="layui-form-label">父级菜单</label>
+                <div class="layui-input-block">
+                    <select name="menu_fid">
+                        <option value="0">顶级菜单</option>
+                        <volist name="menuFList" id="FList">
+                            <option value="{$FList.menu_id}" {$menuF['menu_id']==$FList['menu_id']?'selected':''}>{$FList.menu_name}</option>
+                        </volist>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item layui-required">
+                <label class="layui-form-label">菜单名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="menu_name" placeholder="请输入菜单名称" autocomplete="off"
+                           class="layui-input" value="{$data.menu_name}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">对应功能</label>
+                <div class="layui-input-block">
+                    <input type="text" name="function_id" placeholder="请选择功能" autocomplete="off"
+                           class="jl-select-function layui-input" value="{$data.function_name}" data-value="{$data.function_id}">
+                    <!--<input type="text" name="function_id_test" autocomplete="off" class="layui-input">-->
+                </div>
+            </div>
+            <div class="layui-form-item layui-required">
+                <label class="layui-form-label">菜单排序</label>
+                <div class="layui-input-block">
+                    <input type="text" name="menu_seq" placeholder="请输入菜单排序" autocomplete="off"
+                           class="layui-input" value="{$data.menu_seq}">
+                </div>
+            </div>
+            <div class="layui-form-item layui-required">
+                <label class="layui-form-label">icon</label>
+                <div class="layui-input-block">
+                    <input type="text" name="icon" placeholder="请输入图标" autocomplete="off"
+                           class="layui-input" value="{$data.icon}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="form">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['layer', 'jlTool','element','form','selectFunction'], function () {
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var selectFunction = layui.selectFunction;
+            var single_data = {$list.list.0|json_encode};
+            var request = {$request|json_encode};
+            var menuF = {$menuF|json_encode};
+            selectFunction.initInput(false,function (data,$this) {
+                $this.data('value',data.original.function_id)
+            });
+            form.on('submit(form)', function(data){
+                if(request&&request.menu_id){
+                    data.field['menu_id'] = request.menu_id;
+                    data.field['action'] = 'edit';
+                }
+                else {
+                    data.field['action'] = 'add';
+                }
+                data.field['menu_fid'] = $('select[name="menu_fid"]').val();
+                data.field['function_id'] = $('input[name="function_id"]').data('value');
+
+//                data.field['function_id'] = $('input[name="function_id_test"]').val();
+
+                $.post('/Admin/Sys/sysMenuAction',data.field,function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        layer.msg('操作成功');
+                        jlTool.sendIframeMsg('refresh','sysMenuList');
+                        setTimeout(function () {
+                            window.location.reload()
+                        },500)
+                    }
+                    else {
+                        layer.msg(res.msg)
+                    }
+                });
+                return false;
+            });
+        })
+    </script>
+</block>

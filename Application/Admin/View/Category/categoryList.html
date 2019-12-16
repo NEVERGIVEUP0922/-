@@ -1,0 +1,176 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Category/category.css"/>
+</block>
+<block name="content">
+    <div class="category-top-div">
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">分类管理</a>
+            </span>
+        </blockquote>
+        <div class="category-container">
+            <div id="jstree-category"></div>
+            <div class="left-container clearFix">
+                <blockquote class="layui-elem-quote">
+                    <button class="add-cate layui-btn">增加分类</button>
+                    <button class="delete-cate layui-btn">删除所选分类</button>
+                </blockquote>
+                <div class="form-container layui-form">
+                    <blockquote class="jl-title layui-elem-quote">
+                        <span class="layui-breadcrumb">
+                            <a class="jl-main-title category-detail-title" href="javascript:">新增分类</a>
+                        </span>
+                    </blockquote>
+                    <div class="form-section clearFix">
+                        <div class="form-title">分类名称</div>
+                        <div class="form-item">
+                            <input type="text" placeholder="请输入分类名称" autocomplete="off"
+                                   class="category-name layui-input">
+                        </div>
+                    </div>
+                    <div class="form-section clearFix">
+                        <div class="form-title">排序</div>
+                        <div class="form-item">
+                            <input type="text" placeholder="请输入排序数" autocomplete="off"
+                                   class="category-sort layui-input">
+                        </div>
+                    </div>
+                    <div class="form-section clearFix">
+                        <div class="form-title"> </div>
+                        <div class="form-item">
+                            <button class="save-cate layui-btn">保存</button>
+                            <span class="form-tips">（新增分类将归属于所选分类下）</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['element','jlTool','form','layer'], function () {
+            var element = layui.element;
+            var jlTool = layui.jlTool;
+            var form = layui.form;
+            var layer = layui.layer;
+            var categoryList = {$categoryList|json_encode};
+            var total = {$total|json_encode};
+            var cate_path = {$cate_path|json_encode};
+            var request = {$request|json_encode};
+            categoryList = [{
+                "id":"1",
+                "rht":"520",
+                "num":total,
+                "cate_name": "商品分类",
+                "state": {"opened": true},
+                "children": categoryList
+            }];
+            (function reduce(value) {
+                if(value&&$.isArray(value)){
+                    $.each(value,function (i,v) {
+                        v['text'] = v.cate_name+'（'+v.num+'）';
+                        if(cate_path&&cate_path.pathRht.indexOf(v.rht)>-1){
+                            v['state'] = {"opened": true};
+                        }
+                        if(cate_path&&cate_path.id===v.id){
+                            v['state'] = {"selected": true};
+                        }
+                        if(v.children){
+                            reduce(v.children)
+                        }
+                    });
+                }
+            })(categoryList);
+            var renderForm = function (data) {
+                if(data){
+                    $('.category-name').val(data.cate_name);
+                    $('.category-sort').val(data.sort);
+                    $('.category-detail-title').text('编辑分类');
+                    $('.form-tips').hide()
+                }
+                else {
+                    $('.category-name').val('');
+                    $('.category-detail-title').text('新增分类');
+                    $('.form-tips').show()
+                }
+            };
+            if(cate_path){
+                renderForm(cate_path)
+            }
+            $('#jstree-category').jstree({
+                'core': {
+                    'data': categoryList,
+                    'check_callback':true,
+                    'multiple':false
+                }
+            }).on("changed.jstree", function (e, data) {
+                if ((data.action==='select_node')&&data.selected.length) {
+                    var selected = data.instance.get_node(data.selected[0]);
+                    var original = selected.original;
+                    data.instance.open_node(original.id);
+                    renderForm(original);
+                    var parent = data.instance.get_node(selected.parent);
+                    $.each(parent.children,function (index, value) {
+                        if(value!==selected.id){
+                            data.instance.close_node(value)
+                        }
+                    })
+                }
+            });
+            $('.add-cate').click(function () {
+                renderForm();
+            });
+            $('.delete-cate').click(function () {
+                var instance = $('#jstree-category').jstree(true);
+                var selected = instance.get_selected();
+                if(selected.length){
+                    layer.confirm('确认删除吗？', function(index){
+                        $.post('/Admin/Category/deleteCategory',{id:selected[0]},function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('删除成功');
+                                instance.delete_node(selected)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                    });
+                }
+                else {
+                    layer.msg('请点击选择需要操作的分类')
+                }
+            });
+            $('.save-cate').click(function () {
+                var title = $('.category-detail-title').text();
+                var text = $('.category-name').val();
+                var sort = $('.category-sort').val();
+                var data = {
+                    name:text,
+                    sort:sort,
+                    type:'son',
+                    action:title==='新增分类'?'add':'edit'
+                };
+                var instance = $('#jstree-category').jstree(true);
+                var selected = instance.get_selected();
+                data['id'] = selected[0]?selected[0]:'1';
+                $.post('/Admin/Category/addCategory',data,function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        layer.msg('操作成功');
+                        setTimeout(function () {
+                            window.location.href ='/Admin/Category/categoryList?cate_id='+res.id
+                        },500);
+                    }
+                    else {
+                        layer.msg(res.msg)
+                    }
+                })
+            })
+        })
+    </script>
+</block>

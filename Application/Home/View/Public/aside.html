@@ -1,0 +1,109 @@
+<!-- 侧边栏 -->
+<div id="jl-aside">
+    <aside>展开侧边栏</aside>
+    <ul>
+        <li>
+            <a href="{:U('Home/Default/release')}" class="jl-aside-btn js-request"></a>
+        </li>
+        <notempty name="qqList">
+            <if condition="count($qqList['list']) eq 1">
+                <li>
+                    <a href="http://wpa.qq.com/msgrd?v=3&uin={$qqList.list.0.qq}&site=在线客服&menu=yes" target="_blank"
+                       class="jl-aside-btn js-link jl-trigger-cs-detail">
+                        <div class="jl-cs-detail jl-qr-container">
+                            <ul class="jl-cs-sales-list">
+                                <li>
+                                    <span>{$qqList.list.0.nickname}</span>
+                                    <img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" alt="">
+                                    <span>{$qqList.list.0.mobile}</span>
+                                </li>
+                            </ul>
+                            <p class="jl-qr-title" style="margin: 6px 0;">或扫码添加微信</p>
+                            <img class="jl-qr-img" src="{$qqList.list.0.wechat}" alt="">
+                        </div>
+                    </a>
+                </li>
+                <else />
+               <!-- <li class="jl-cs-container">
+                    <div class="jl-aside-btn js-link jl-trigger-cs-detail">
+                        <div class="jl-cs-detail">
+                            <ul class="jl-cs-sales-list">
+-->
+                                <php>shuffle($qqList['list']);</php>
+                                <volist name="qqList.list" id="sale">
+                                  <if condition="$sale.uid eq 10426">
+                                    
+                                    <!--<li>
+                                        <span>{$sale.nickname}</span>
+                                        <a href="http://wpa.qq.com/msgrd?v=3&uin={$sale.qq}&site=在线客服&menu=yes}" target="_blank">
+                                            <img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" alt="">
+                                        </a>
+                                        <span>{$sale.mobile}</span>
+                                        <notempty name="sale.wechat">
+                                            <div class="jl-cs-wx-container">
+                                                <img class="jl-cs-wx" src="__PUBLIC__/Home/Index/img/qrcode.png" alt="">
+                                                <img class="jl-cs-qr" src="{$sale.wechat}" alt="">
+                                            </div>
+                                        </notempty>
+                                    </li>-->
+                                    
+                 <li>
+                    <a href="http://wpa.qq.com/msgrd?v=3&uin={$sale.qq}&site=在线客服&menu=yes}" target="_blank"
+                       class="jl-aside-btn js-link jl-trigger-cs-detail">
+                        <div class="jl-cs-detail jl-qr-container">
+                            <ul class="jl-cs-sales-list">
+                                <li>
+                                    <span>{$sale.nickname}</span>
+                                    <img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" alt="">
+                                    <span>{$sale.mobile}</span>
+                                </li>
+                            </ul>
+                            <p class="jl-qr-title" style="margin: 6px 0;">或扫码添加微信</p>
+                            <img class="jl-qr-img" src="{$sale.wechat}" alt="">
+                        </div>
+                    </a>
+                </li>
+                                  </if>
+                                </volist>
+                           <!-- </ul>
+                        </div>
+                    </div>
+                </li>
+-->
+            </if>
+        </notempty>
+        <li>
+            <?php $type = session('userType') ?>
+            <if condition="$type eq 1 ">
+                <a href="{:U('Home/User/index')}" class="jl-aside-btn js-person1"></a>
+                <elseif condition="($type eq 2) OR ($type eq 20)" />
+                <a href="{:U('Home/User/index')}" class="jl-aside-btn js-person2"></a>
+                <else />
+                <a href="{:U('Home/User/index')}" class="jl-aside-btn js-person1"></a>
+            </if>
+        </li>
+        <li>
+            <a href="{:U('Home/Basket/basketDetail')}" class="jl-aside-btn js-cart">
+                <i class="js-cart-num">0</i>
+            </a>
+        </li>
+        <li>
+            <a href="{:U('Home/Default/feedback')}" class="jl-aside-btn js-back"></a>
+        </li>
+        <li class="js-scroll-top">
+            <a class="jl-aside-btn" href="javascript:;"></a>
+        </li>
+    </ul>
+</div>
+<script type="text/javascript" src="/Public/Common/module/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+    $("#jl-aside aside").on("click",function(){
+        var $this= $(this);
+        var value=$this.text();
+        if(value == "展开侧边栏"){
+            $this.text("收起侧边栏").parent().css("-webkit-transform","translate(0px,50%)");
+        }else{
+            $this.text("展开侧边栏").parent().css("-webkit-transform","translate(60px,50%)");
+        }
+    });
+</script>

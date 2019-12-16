@@ -1,0 +1,103 @@
+<extend name="Layout:layout-open" />
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/css/form.css" media="all" />
+</block>
+<block name="content">
+	<div class="layui-fluid">
+		<div class="layui-row">
+			<div class="layui-col-md7">
+				<form class="layui-form jl-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label">产品名称</label>
+						<div class="layui-input-block">
+							<input type="text" class="layui-input" name="p_name" lay-verify="required" placeholder="请输入商品名称">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">产品描述</label>
+						<div class="layui-input-block">
+							<textarea placeholder="请输入产品描述" class="layui-textarea"></textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">产品编号</label>
+						<div class="layui-input-inline">
+							<input type="text" name="p_sign" required  lay-verify="required" placeholder="留空将自动生成" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">如无特殊情况!请留空</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">样品价格</label>
+						<div class="layui-input-inline">
+							<input type="text" name="demo_price" required  lay-verify="required" placeholder="￥" autocomplete="off" class="layui-input">
+						</div>
+						<label class="layui-form-label">批量价格</label>
+						<div class="layui-input-inline">
+							<input type="text" name="bathc_price" required  lay-verify="required" placeholder="￥" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-input-inline" style="width: 100px;">
+							<input type="text" name="price_max" placeholder="数量" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-mid">/</div>
+						<div class="layui-input-inline" style="width: 100px;">
+							<input type="text" name="price_max" placeholder="单位" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-mid layui-word-aux">完整示例: ￥0.04 3000 / 盘</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">区间价格</label>
+						<div class="layui-input-inline" style="width: 100px;">
+							<input type="text" name="price_min" placeholder="起始数量" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-mid">-</div>
+						<div class="layui-input-inline" style="width: 100px;">
+							<input type="text" name="price_max" placeholder="终止数量" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-mid">价格</div>
+						<div class="layui-input-inline" style="width: 100px;">
+							<input type="text" name="price_max" placeholder="￥" autocomplete="off" class="layui-input">
+						</div>
+						<span class="layui-btn layui-btn-primary">
+							<i class="layui-icon">&#xe608;</i> 添加一个区间
+						</span>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">替代料号</label>
+						<div class="layui-input-block">
+							<input type="text" class="layui-input" name="replace_desc" lay-verify="required" placeholder="请输入替代料号 多个请以逗号','分隔 ">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">应用领域</label>
+						<div class="layui-input-block">
+							<input type="text" class="layui-input" name="replace_desc" lay-verify="required" placeholder="请输入应用领域 多个请以逗号','分隔 ">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">文章内容</label>
+						<div class="layui-input-block">
+							<textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="news_content"></textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit="" lay-filter="addNews">立即提交</button>
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="layui-col-md5">
+				你的内容 3/12
+			</div>
+	</div>
+</block>
+<block name="js">
+	<script>
+		layui.use(['layer','form','laydate'],function(){
+		    var form = layui.form,
+			    laydate = layui.laydate,
+			    layer = layui.layer;
+		});
+	</script>
+</block>

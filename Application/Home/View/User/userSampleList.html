@@ -1,0 +1,405 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">样品管理</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/myOrder.css">
+</block>
+<block name="nav-title">
+    企业中心
+</block>
+<block name="main">
+    <style>
+        #jl-center-main{
+            width:1330px
+        }
+        #jl-center-right{
+            width:1101px
+        }
+        #jl-table{
+            overflow:hidden
+        }
+        #jl-table .container{
+            margin-top:0%;
+            position:relative;
+            z-index:1;
+            box-sizing:border-box;
+            color:#666;
+            border-bottom:1px solid #eee;
+            border-spacing: 0;
+            vertical-align: middle;
+            text-align: center;
+            overflow-x: hidden;
+            overflow-y:auto;
+            max-height: 870px;
+        }
+        table{
+            font-size: 14px;
+            width:100%
+        }
+        table .first-head{
+            color:#e84343;
+        }
+        .table-body tr td>div{
+            padding:10px 0;
+            text-align: center;
+            margin:0 auto;
+        }
+        #jl-table .table-body tr .divModel{
+            z-index:99;
+            position:absolute;
+            top:100%;
+            left:50%;
+            transform:translate(-50%,0);
+            width:20vw;
+            display:none;
+            background-color: #fff;
+            overflow:initial;
+            border:1px solid #eee;
+            box-shadow: 2px 2px 2px #888;
+        }
+        .table-body tr .divModel h2{
+            position: relative;
+            padding:10px 0;
+            text-align:center;
+            color:#888;
+        }
+        .table-body tr .divModel .div-modle-top{
+            position: absolute;
+            top: -7px;
+            left: 50%;
+            margin-left: -5px;
+            width: 12px;
+            height: 12px;
+            border: 1px solid #eee;
+            border-bottom: none;
+            border-right: none;
+            transform: rotate(45deg);
+            background: #eee;
+        }
+        .divModel ul{
+            overflow:hidden;
+        }
+        .divModel ul li{
+            overflow:hidden;
+            float:left;
+            width:30%;
+            text-align:center;
+            padding:10px 0;
+            margin-left:1%;
+        }
+        .table-body tr td button{
+            outline:none;
+            border:none;
+            background-color:#009688;
+            border-radius:2px;
+            color:#fff;
+            padding:4% 10%;
+            display:block;
+            margin:0 auto;
+        }
+        #jl-table th{
+            border:1px solid #e6e6e6;
+            padding: 10px 5px;
+            background-color:#f2f2f2;
+        }
+        #jl-table th>div{
+            background-color:#f2f2f2;
+            width:84px;
+            text-align:center;
+            margin:0 auto;
+        }
+        #jl-table td{
+            border:1px solid #e6e6e6;
+            padding: 0px 5px;
+
+        }
+        #jl-table td div{
+            overflow:hidden;
+            text-overflow: ellipsis;
+        }
+        #jl-table td>div{
+            width:84px;
+            text-align:center;
+        }
+        #jl-table .last_td>section table td{
+            padding: 10px 5px;
+        }
+        #jl-table .last_td>section{
+            width: 356px;
+            box-sizing: border-box
+        }
+        #jl-table .last_td>section>div{
+            padding:2% 4%
+        }
+        .table-body{
+            /*height:64vh;*/
+           /* overflow: auto;*/
+        }
+    </style>
+    <div id="jl-table" style="position:relative">
+        <div class="container" >
+            <div class="bodyHeader" style="overflow:hidden;">
+                <table cellspacing="0" cellpadding="0" >
+                    <thead class="first-head">
+                    <th colspan="6"><div style="width:120px;margin: 0 auto;">项目</div></th>
+                    <th><div >需求</div></th>
+                    <th><div >操作</div></th>
+                    <th><div >日期</div></th>
+                    </thead>
+                    <thead>
+                    <th ><div style="width:120px">项目名称</div></th>
+                    <th > <div >应用领域</div></th>
+                    <th ><div >项目状态</div></th>
+                    <th ><div >月用量</div></th>
+                    <th ><div >原型日期</div></th>
+                    <th><div>产量日期</div></th>
+                   <!-- <th><div>操作状态</div></th>-->
+                    <th><div>商品</div></th>
+                    <th><div >下单/结束</div></th>
+                    <th><div ></div></th>
+                    </thead>
+                </table>
+            </div>
+            <div class="table-body">
+                <table>
+                        <volist name="userSampleList" id="listItem" key="j">
+                            <tr>
+                                <td><div style="width:120px">{$listItem.project_name}</div></td>
+                                <td><div>{$listItem.application_area}</div></td>
+                                <td><div>{$listItem.project_status|getProject}</div></td>
+                                <td><div >{$listItem.month_num}</div></td>
+                                <td><div>{$listItem.prototype_date}</div></td>
+                                <td><div>{$listItem.batch_date}</div></td>
+                                <td style="position:relative" class="parent-shadow">
+                                    <div style="position:relative;z-index:0;">
+                                        <button class="show-model">需求详情</button>
+                                    </div>
+                                    <div class="divModel" style="padding:0">
+                                        <i class="div-modle-top"></i>
+                                        <div class="layui-tab layui-tab-card" style="margin:0">
+                                                <ul class="layui-tab-title" style="border:none">
+                                                    <li class="layui-this" style="padding:0">申请样品</li>
+                                                    <li style="padding:0">已通过样品</li>
+                                                </ul>
+                                                <div class="layui-tab-content" style="height: 200px;overflow-y:scroll">
+                                                    <div class="layui-tab-item layui-show">
+                                                        <table style="margin:0 ;width:100%">
+                                                            <thead><th><div>申请型号</div></th><th><div>申请数量</div></th><!--<th><div>可提供数量</div></th>--></thead>
+
+                                                            <volist name="listItem.item" id="p_sign" >
+                                                                <tr>
+                                                                    <td><div style="width:120px">{$p_sign.p_sign}</div></td> <td><div>{$p_sign['pnum'] > 0 ? $p_sign['pnum'] : '0'}</div></td><!--<td><div>{$p_sign.pnum}</div></td>-->
+                                                                </tr>
+                                                            </volist>
+                                                        </table>
+                                                    </div>
+                                                    <div class="layui-tab-item">
+                                                        <table style="margin:0;width:100%">
+                                                            <thead><th><div>申请型号</div></th><!--<th><div>申请数量</div></th>--><th><div>可提供数量</div></th></thead>
+
+                                                            <volist name="listItem.samplelist" id="p_sign" >
+                                                                <tr>
+                                                                    <td><div style="width:120px"><a href="/Home/Product/detail.html?sign={$p_sign.p_sign}">{$p_sign.p_sign}</a></div></td> <!--<td><div>{$p_sign.pnum}</div></td>--><td><div>{$p_sign['max_num']>0?$p_sign['max_num']:'0'}</div></td>
+                                                                </tr>
+                                                            </volist>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                    <if condition="$listItem.action_status eq 1">
+                                        <?php
+                                        $length=count($listItem['samplelist']);
+                                        $steps=0;
+                                        $over=false;
+                                        foreach($listItem['samplelist'] as $v){
+                                                if($v['step'] <1){
+                                                    $steps+=1;
+                                                }
+                                         }
+                                            if($steps == $length ){
+                                                $over=true;
+                                            };
+                                          ?>
+                                        <if condition="$length eq 0 or $over">
+                                            <span style="color:#e84343">结束</span>
+                                            <else/>
+                                            <span class="sample-buy" style="color:#05baae;cursor:pointer;" data-index="{$j -1}">下单</span>
+                                        </if>
+                                        <elseif condition="$listItem.action_status eq 2"/>
+                                        <span style="color:#e84343">结束</span>
+                                        <else/>
+                                        <span >申请中</span>
+                                    </if>
+                                    </div>
+                                </td>
+                                <td><div>{$listItem.update_at}</div></td>
+                            </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {$page}
+</block>
+
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','layer-all'], function ($, modal, Pikaday, jlTool) {
+                var sons_info = {$userSampleList|json_encode};
+                var get = {$request|json_encode};
+                var jlTool = layui.jlTool;
+                console.log(sons_info);
+                //展示-隐藏弹框
+                var timer1,timer2
+                $(".show-model").off("click").on("click",function(){
+                    $(".divModel").hide(10);
+                    clearTimeout(timer1);
+                    var _this=this;
+                    timer1 = setTimeout(function(){
+                        $(_this).parents("td").find(".divModel").show(400);
+                    },10);
+                });
+                $(".parent-shadow").on("mouseleave",function(){
+                    clearTimeout(timer2);
+                    var _this=this;
+                    timer2=setTimeout(function(){
+                        $(_this).find(".divModel").hide(400);
+                    })
+                });
+                //下单
+                $(".sample-buy").on("click",function(){
+                    var sendData=sons_info[$(this).data("index")].samplelist;
+                    var lastSend= [];
+                    if(sendData.length<1){
+                        return layer.msg("没有可匹配样品");
+                    };
+                    $.each(sendData,function(ind,val){
+                        val.num=val.max_num;
+                        if(val.step>0){
+                            lastSend.push(val);
+                        };
+
+                    });
+                    if(lastSend.length<1){
+                        return layer.msg("没有可用样品");
+                    };
+                    $.get("{:U('Home/Basket/againBuyBasket')}", {goods: lastSend}, function (res) {
+                        var data = $.parseJSON(res);
+                        if (data.error === 0) {
+                            layer.confirm('下单成功', {icon: 1, title:'提示'}, function(index){
+                                //do something
+                                location.href = "{:U('Home/Basket/basketDetail')}";
+                                layer.close(index);
+                            });
+                        } else {
+                            modal.confirm({
+                                type: 'fade',
+                                title: '系统繁忙',
+                                brief: '不好意思哦！'+data.msg+'，请稍后重试！',
+                                top: 100
+                            });
+                        }
+                    });
+                });
+                //清空
+                $(".jl-clear").on("click",function(){
+                    window.location = "{:U('Home//User/myStatement')}";
+                });
+                //分页赋值跳转
+                $(".pageSize").val(get.pageSize || 10).on("change",function(){
+                    var pageSize = $(this).val();
+                    get = $.extend(get,{"pageSize":pageSize});
+                    var url = "{:U('Home/sample/userSampleList')}";
+                    url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+                    window.location = url;
+                });
+                //时间选择初始化
+                var pickerr = new Pikaday({
+                    field: document.getElementById('datepicker'),
+                    theme: 'js-data',
+                    i18n: {
+                        previousMonth: '上个月',
+                        nextMonth: '下个月',
+                        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                        weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                        weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                    },
+                    format: 'YYYY-M-D',
+                    defaultDate: new Date(get.time_start),
+                    setDefaultDate: new Date(get.time_start),
+                    toString: function (date, format) {
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function (dateString, format) {
+                        var parts = dateString.split('/');
+                        var day = parseInt(parts[0], 10);
+                        var month = parseInt(parts[1] - 1, 10);
+                        var year = parseInt(parts[1], 10);
+                        return new Date(year, month, day);
+                    },
+                    onSelect: function (value) {
+                        var date = value.toLocaleDateString();
+                        date = date.replace(/\//ig, "-");
+                        var data = get ;
+                        data.time_start = date;
+                        var url = "{:U('Home/User/myStatement')}";
+                        url = (data) ? url + '?' + jlTool.urlEncode(data) : url;
+                        window.location = url;
+                    }
+                });
+                var pickerr = new Pikaday({
+                    field: document.getElementById('datepickerr'),
+                    theme: 'js-data',
+                    i18n: {
+                        previousMonth: '上个月',
+                        nextMonth: '下个月',
+                        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                        weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                        weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                    },
+                    format: 'YYYY-M-D',
+                    defaultDate: new Date(get.time_end),
+                    setDefaultDate: new Date(get.time_end),
+                    toString: function (date, format) {
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function (dateString, format) {
+                        var parts = dateString.split('/');
+                        var day = parseInt(parts[0], 10);
+                        var month = parseInt(parts[1] - 1, 10);
+                        var year = parseInt(parts[1], 10);
+                        return new Date(year, month, day);
+                    },
+                    onSelect: function (value) {
+                        var date = value.toLocaleDateString();
+                        date = date.replace(/\//ig, "-");
+                        var data = get ;
+                        data.time_end = date;
+                        var url = "{:U('Home/User/myStatement')}";
+                        url = (data) ? url + '?' + jlTool.urlEncode(data) : url;
+                        window.location = url;
+                    }
+                });
+            })
+        })
+    </script>
+</block>

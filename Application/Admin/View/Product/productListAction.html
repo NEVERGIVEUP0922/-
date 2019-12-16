@@ -1,0 +1,303 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/select2/4.0.5/css/select2.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/pikaday/1.6.1/css/pikaday.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Product/css/productListAction.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <style>
+        .jl-fail-list{margin-top: -10px}
+        .jl-fail-list>button{  margin-top: 10px;  }
+        .jl-fail-list>button:first-child{  margin-left: 10px;  }
+    </style>
+</block>
+<block name="content">
+    <blockquote class="jl-title layui-elem-quote">
+        <span class="layui-breadcrumb"><a class="jl-main-title" href="javascript:">上传商品</a></span>
+    </blockquote>
+    <div class="layui-tab">
+        <ul class="layui-tab-title">
+            <li>批量上传</li>
+            <li class="layui-this">逐条上传</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item ">
+                <!--<div style="margin-bottom: 6px">
+                    <span>说明：按标准模板上传，先下载标准模板</span>
+                    <a href="__PUBLIC__/Admin/Product/product.xlsx" download="product.xlsx">
+                        <button type="button" class="layui-btn layui-btn-sm" id="download-excel">
+                            下载模板
+                        </button>
+                    </a>
+                </div>-->
+                <div>
+                    <span>上传：文件不能超过5m，格式应为xls</span>
+                    <button type="button" class="layui-btn layui-btn-sm" id="upload-excel">
+                        上传
+                    </button>
+                </div>
+                <div>
+                    <span>示例下载：</span>
+                    <button type="button" class="layui-btn layui-btn-sm" id="download-excel">
+                        下载
+                    </button>
+                </div>
+            </div>
+            <div class="layui-tab-item layui-show editable-table-container">
+                <button class="layui-btn action-submit">提交</button>
+                <button class="layui-btn action-add">添加行</button>
+                <span class="layui-btn action-product" data-type="all-cate" style="margin-left:20%">分类</span>
+                <button class="layui-btn action-product" data-type="all-productDetail">产品描述</button>
+                <div class="img-pdf" style="display:inline-block"></div>
+                <table id="editable-table" lay-filter="editable">
+                    <script type="text/html" id="handle-tpl">
+                        <div>
+                            <button lay-event="goodsGoIn" class="layui-btn layui-btn-sm jl-select-product">商品引入</button>
+                            <button lay-event="del" class="layui-btn layui-btn-danger layui-btn-sm">删除</button>
+                        </div>
+                    </script>
+                </table>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script src="__PUBLIC__/Common/module/pikaday/1.6.1/pikaday.min.js"></script>
+    <script src="__PUBLIC__/Common/module/select2/4.0.5/js/select2.min.js"></script>
+    <script src="__PUBLIC__/Common/module/ueditor/1.4.3.3/ueditor.config.js"></script>
+    <script src="__PUBLIC__/Common/module/ueditor/1.4.3.3/ueditor.all.min.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','upload','pikadayOption','actionTable'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var upload = layui.upload;
+            var actionTable = layui.actionTable;
+            var productList = {$productList|json_encode};
+            var attributeList = {$attributeList|json_encode};
+            var categoryTree = {$categoryTree|json_encode};
+            var request = {$request|json_encode};
+            var adminFront = {$adminFront|json_encode};
+            var brandList = {$brandList|json_encode};
+//            console.log('test',productList,brandList);
+            $(function () {
+                var idHashToProduct = (function (data) {
+                    var res = {};
+                    if(productList&&productList.list&&$.isArray(productList.list)){
+                        $.each(productList.list,function (index,value) {
+                            res[value.id] = value
+                        })
+                    }
+                    return res
+                })(productList);
+                //初始化
+                if(request.action==='edit'){
+                    $('.action-add').hide()
+                }
+                //示例下载
+                $("#download-excel").on("click",function(){
+                        var layer_index = layer.open({
+                            content: '生成中<i style="display: inline-block;" class="layui-anim layui-anim-rotate layui-anim-loop iconfont-jl icon-jl-loading"></i>',
+                            btn:[],
+                            closeBtn:0
+                        });
+                        $.post('/Admin/Product/productExcelDownload',{productId_arr:[1]},function (res) {
+                            layer.close(layer_index);
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                var url = '/'+res.data.one;
+                                var a = document.createElement("a");
+                                a.href = url;
+                                a.download ="商品信息.xlsx";
+                                a.click();
+                            } else {
+                                layer.msg(res.msg)
+                            }
+                        })
+
+                });
+                //批量上传
+                var uploadInst = upload.render({
+                    elem: '#upload-excel'
+                    ,url: '/Admin/Excel/fileUpload'
+                    ,exts:'xlsx'
+                    //,accept:"file"
+                    ,data:{
+                        path: 'product_excel'
+                    }
+                    ,done: function(res){
+                        layer.msg(res.msg);
+                        if((res.error===0)&&res.data&&res.data.path){
+                            var layer_index = layer.open({
+                                content: '写入中<i style="display: inline-block;" class="layui-anim layui-anim-rotate layui-anim-loop iconfont-jl icon-jl-loading"></i>',
+                                btn:[],
+                                closeBtn:0
+                            });
+                            $.post('/Admin/Product/excelProductToDB',{path:res.data.path.substr(1)},function (res) {
+                                layer.close(layer_index);
+                                res = $.parseJSON(res);
+                                layer.open({
+                                    title:'提示',
+                                    type: 0,
+                                    area: '440px',
+                                    content: (
+                                        '<div> ' +
+                                        '<p>提交成功'+($.isArray(res.success)?res.success.length:'')+'个，' +
+                                        '提交失败'+($.isArray(res.faild)?res.faild.length:'')+'个</p>' +
+                                        '<p>失败型号：</p>' +
+                                        '<div class="jl-fail-list">' +
+                                        (function(){
+                                            var fail = '';
+                                            $.each(res.faild,function (index,value) {
+                                                fail+='<button class="layui-btn layui-btn-sm">'+value+'</button>';
+                                            });
+                                            return fail
+                                        }())+
+                                        '<p>请重新上传失败型号</p>'+
+                                        '</div>'+
+                                        '</div>'
+                                    )
+                                })
+                            })
+                        }
+                        else {
+
+                        }
+                    }
+                    ,error: function(){
+                        layer.msg('上传失败')
+                    }
+                });
+                //逐条上传
+                actionTable.init({
+                    productList:productList,
+                    request:request,
+                    categoryTree:categoryTree,
+                    adminFront:adminFront,
+                    brandList:brandList,
+                    attributeList:attributeList
+                });
+                $('.action-add').click(function () {
+                    actionTable.addRow();
+                });
+                $('.action-submit').click(function () {
+                    function isOnline(isOnline) {
+                        var data = actionTable.getData();
+                        var isPsign=false;
+                        //统一处理：
+                        if(data&&$.isArray(data)){
+                            $.each(data,function (index,value) {
+                                var num=0;
+                                $.each(data,function (nums,compval) {
+                                    if(compval["p_sign"] == value["p_sign"]){
+                                        num++;
+                                        if(num == 2)isPsign=true;
+                                    }
+                                });
+                                value['is_online'] = isOnline ? isOnline:idHashToProduct[value.id].is_online;
+                                value['is_delivery'] = value['delivery']&&parseFloat(value['delivery']) ? 1:0;
+                                value['is_earnest'] = value['earnest_scale']&&parseFloat(value['earnest_scale']) ? 1:0;
+                                if(value['price_section']&&$.isArray(value['price_section'])){
+                                    $.each(value['price_section'],function (index,value) {
+                                        value['line'] = index
+                                    })
+                                };
+                                var exreaAttr=value['extraAttr']?JSON.parse(decodeURIComponent(value['extraAttr'])):{};
+                                value=$.extend(true,value,exreaAttr);
+                            })
+                        };
+                       // console.log(data);
+//                        if(isPsign){ layer.open({title:"提示",content:"型号是唯一的，请更换...",btn:["确认"]});return;};
+                        $.post('/Admin/Product/productListAction',{
+                            data:data,
+                            action:request.action==='edit'?'edit':'add'
+                        },function (res) {
+
+                            res = $.parseJSON(res);
+                            if((res.data&&$.isArray(res.data)) ||(res.log&&$.isArray(res.log))){
+                                var idArray = [];
+                                var notPassIdArray = [];
+                                var passIndexArray = [];
+                                var trHtml = '';
+                                $.each(res.log.length>0?res.log:res.data,function (index,value) {
+                                    idArray.push(value.id);
+                                    if(value.error!==0){
+                                        notPassIdArray.push(value.id);
+                                        trHtml +=
+                                            '<tr> ' +
+                                            '<td>'+(index+1)+'</td> ' +
+                                            '<td>'+value.msg+'</td> ' +
+                                            '</tr> ' ;
+                                    }
+                                    else {
+                                        passIndexArray.push(index);
+                                    }
+                                });
+                                if(notPassIdArray.length===0){
+                                    var query = jlTool.urlEncode({
+                                        action:'edit',
+                                        productId_arr:idArray
+                                    });
+                                    window.location.href = '/Admin/Product/productListAction?'+query;
+                                    layer.msg('全部提交成功');
+                                }
+                                else {
+                                    layer.open({
+                                        title:'提示',
+                                        type: 0,
+                                        area: '440px',
+                                        content: (
+                                          '<div> ' +
+                                          '<p>提交成功'+(res.log.length-notPassIdArray.length)+'行，提交失败'+notPassIdArray.length+'</p>'+
+                                          '<table class="layui-table" lay-size="sm"> ' +
+                                          '<colgroup><col width="100"><col width="100"></colgroup> ' +
+                                          '<thead><tr><th>出错行号</th> ' +
+                                          '<th >出错信息</th> ' +
+                                          '<tbody> ' +
+                                          trHtml+
+                                          '</tbody> ' +
+                                          '</table> ' +
+                                          '<p>点击确定，继续编辑提交失败的行</p>'+
+                                          '</div>'
+                                        ),
+                                        yes:function (index) {
+                                            this.removeTr();
+                                            layer.close(index);
+                                        },
+                                        cancel:function () {
+                                            this.removeTr()
+                                        },
+                                        removeTr:function () {
+                                            $('.editable-table-container').find('.layui-table-body').each(function () {
+                                                var $this = $(this);
+                                                $.each(passIndexArray,function (index,value) {
+                                                    $this.find('tr').eq(value).remove()
+                                                });
+                                            });
+                                        }
+                                    })
+                                }
+                            }
+                            else {
+                                layer.msg(res.msg);
+                            }
+                        })
+                    }
+                    if(request.action==='edit'){
+                        isOnline(false);
+                    }
+                    else {
+                        layer.confirm('是否直接上架？', function(index){
+                            isOnline(1);
+                            layer.close(index);
+                        },function () {
+                            isOnline(2);
+                        });
+                    }
+                })
+            })
+        });
+    </script>
+</block>

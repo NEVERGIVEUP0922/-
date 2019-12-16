@@ -1,0 +1,36 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-center" />
+<block name="title">账期说明</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+</block>
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-center-user">
+        <div class="jl-payment-limit">
+            <p><b>01</b><span>玖隆芯城乐意授信账期给有信用有市场能力的客户</span></p>
+            <p><b>02</b><span>请提交相关资料进行申请流程</span></p>
+            <p><b>03</b><span>我们的后台业务员会在收到您的申请后及时审核并联系您协商相关事宜</span></p>
+            <p><b>04</b><span>个人用户只能申请周结，且个人近半年平均销售额达到月2W及以上</span></p>
+            <p><b>05</b><span>企业用户申请周结，需要企业最近两个月平均销售额达到月3W及以上</span></p>
+            <p><b>06</b><span>企业用户申请半月结，需要企业最近两个月平均销售额达到月5W及以上</span></p>
+            <p><b>07</b><span>企业用户申请月结，需要企业最近两个月平均销售额达到月7W及以上</span></p>
+            <p><b>08</b><span>企业用户申请月结15天，需要企业最近两个月平均销售额达到月7W及以上</span></p>
+            <p><b>09</b><span>企业用户申请月结30天，需要企业最近两个月平均销售额达到月10W及以上</span></p>
+        </div>
+        <empty name="user_account">
+            <a href="{:U('Home/Order/accountRequest')}"><button class="jl-apply">账期申请</button></a>
+        </empty>
+    </div>
+</block>
+<block name="js">
+</block>

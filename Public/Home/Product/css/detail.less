@@ -1,0 +1,716 @@
+@import "../../Public/css/init.less";
+
+body{
+  position: relative;
+}
+
+/* 面包屑导航 */
+#jl-brand{
+  background:@bg-color;
+}
+.jl-brand-url{
+  height:40px;
+  line-height: 40px;
+  >li{
+    float: left;
+    margin-right: 10px;
+  }
+}
+
+/* 商品详情 */
+#jl-detail{
+  padding-top: 20px;
+}
+
+.jl-detail-left,.jl-detail-center,.jl-detail-right{
+  float: left;
+}
+
+//详情图
+.jl-detail-picture{
+  width: 365px;
+  height: 365px;
+  border:@border02;
+  margin-bottom: 15px;
+  img{
+    height: 100%;
+    width: 100%;
+  }
+}
+.jl-detail-picture-small{ overflow:hidden;width:365px;}
+.jl-detail-picture-small>img:hover{ cursor:pointer}
+.jl-detail-picture-small>img{ float:left;margin:2%;width:20%;height:20%;min-height:40px;}
+
+.jl-detail-left>ul>li{
+  float: left;
+  margin-right: 24px;
+}
+.jl-share,.jl-collect{
+  display: block;
+  font-size: 12px;
+  >b{
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background:url("../../Public/img/sprite.png") no-repeat -58px -26px;
+    margin-right: 8px;
+  }
+}
+.jl-collect>b{
+  background-position-x:-81px;
+}
+.jl-share:hover>b,.jl-collect:hover>b{
+  background-position-y:-44px;
+}
+.js-collect{
+  b{
+    background-position-y:-44px;
+  }
+  color:@color;
+}
+
+//商品型号报价详情
+.jl-detail-center{
+  margin: 0 30px;
+  width: 513px;
+}
+.jl-center-title{
+  height: 40px;
+  padding-top: 5px;
+  .font18(@dark-grey);
+}
+.jl-offer{
+  box-sizing: border-box;
+  background: #f9f9f9;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 18px;
+  overflow: hidden;
+}
+.jl-offer-title{
+  width: 65px;
+  float: left;
+  color:@grey;
+}
+.jl-offer-content{
+  float: left;
+  >li{
+    height: 30px;
+    line-height: 30px;
+  }
+  p{
+    width: 154px;
+    display: inline-block;
+    text-align: right;
+  }
+  i{
+    .font16(@color);
+  }
+  s{
+    color: @color;
+  }
+}
+
+.jl-commodity-details{
+  margin-top: 20px;
+  >li{
+    //height: 32px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    padding-left:16px;
+    overflow: hidden;
+  }
+  .jl-laster{
+    margin-bottom: 30px;
+  }
+  .jl-li{
+    float: left;
+    width: 50%;
+    >p{
+      width: 76px;
+      float: left;
+      color:@grey;
+    }
+    >span{
+      float: left;
+    }
+  }
+  .jl-dish,.jl-kilo,.jl-one,.jl-total-num{
+    height: 42px;
+    line-height: 42px;
+    margin-top: 15px;
+    >p{
+      float: left;
+      width: 60px;
+      color:@grey;
+    }
+    .jl-input-count,.jl-num{
+      margin-right: 36px;
+    }
+  }
+  .jl-total-num{
+    min-height: 30px;
+    line-height: 30px;
+    height: auto;
+    span{
+      float: left;
+    }
+  }
+  .jl-btns{
+    height: 42px;
+    margin-top: 30px;
+  }
+}
+.jl-input-count{
+  float: left;
+  >input{
+    width: 73px;
+    height: 40px;
+    line-height: 40px;
+    text-align:center;
+    border: none;
+    border-top: 1px solid @grey;
+    border-bottom: 1px solid @grey;
+    float: left;
+    color:@dark-grey;
+  }
+}
+.jl-num{
+  float: left;
+  min-width: 153px;
+  b{
+    .font18(@color);
+    font-weight: bold;
+    margin-right: 24px;
+  }
+}
+
+.jl-button-add,.jl-button-subtract{
+  background: @bg-color;
+  float: left;
+  text-align:center;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  border: 1px solid @grey;
+  color:@dark-grey;
+}
+
+.jl-enquiry,.jl-addCart-submit,.jl-addcart{
+  width:180px;
+  height:40px;
+  cursor: pointer;
+  text-align: center;
+  .font16(@color);
+  line-height: 40px;
+  border: 1px solid @color;
+  background:#fdecec;
+  float: left;
+}
+.jl-addCart-submit,.jl-addcart{
+  margin-left: 15px;
+  background: @grey;
+  border-color: @grey;
+  color:#fff;
+  >b{
+    display: inline-block;
+    width: 22px;
+    height: 20px;
+    position: relative;
+    top: 3px;
+    margin-right: 10px;
+    background: url("../../Public/img/sprite.png") no-repeat -171px 0;
+  }
+}
+.jl-addCart-submit{
+  background: @color;
+  border-color: @color;
+}
+
+.jl-detail-right{
+  width: 260px;
+  height: 250px;
+}
+.jl-right-top{
+  height: 49px;
+  border:@border02;
+}
+.jl-right-middle{
+  height: 147px;
+  padding-top: 12px;
+  border-left:@border02;
+  border-right:@border02;
+}
+.jl-pdf{
+  overflow: hidden;
+  width: 122px;
+  text-align: center;
+  height: 174px;
+  line-height: 174px;
+  margin: 0 auto;
+  box-shadow:0 0 8px rgba(0,0,0,0.15);
+  &>img{
+    width: 100%;
+    height: 100%;
+  }
+}
+.jl-pdf-btn{
+  float: left;
+  width: 50%;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background:#12d6c9;
+  color:@bg-color;
+  box-sizing: border-box;
+}
+.jl-pdf-btn:hover{
+  color:@bg-color;
+  background: @green;
+}
+.jl-pdf-btn.jl-cur{
+  background: @green;
+}
+.jl-pdf-btn.jl-disabled{
+  background: #b3b3b3;
+}
+
+
+
+//商品规格
+#jl-specification{
+  margin-top: 50px;
+}
+.jl-specification-title{
+  height: 38px;
+  border-top:@border02;
+  border-right:@border02;
+  border-bottom:1px solid @color;
+  background: #f9f9f9;
+  overflow: hidden;
+  >p{
+    float: left;
+    width: 145px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+    background: white;
+    color:#777 ;
+    font-size: 18px;
+    border-left: 1px solid #ddd;
+    cursor: pointer;
+    &:last-child{
+      border-right: 1px solid #ddd;
+    }
+  }
+  >p.jl-cle{
+    background: @color;
+    color: white;
+  }
+}
+.jl-specification-content{
+  border:@border02;
+  border-top:none;
+  padding: 16px;
+  padding-bottom:12px;
+  display: none;
+  &.jl-cle{
+    display: block;
+  }
+  .jl-specification-brief{
+    min-height: 200px;
+  }
+
+}
+
+//数据手册
+#jl-manual{
+  margin-bottom: 80px;
+}
+.jl-manual-title{
+  height: 38px;
+  line-height: 38px;
+  border:@border02;
+  background: #f9f9f9;
+  font-size:@big-size ;
+  padding-left: 8px;
+}
+.jl-manual-content{
+  padding:60px 105px 0 105px;
+}
+.jl-manual-left{
+  float: left;
+  width: 700px;
+  height: 992px;
+  box-shadow: 0 0 12px #d4d2d2;
+  position: relative;
+  overflow: hidden;
+  li{
+    display: none;
+    position: absolute;
+    top: 0;
+    background: #fff;
+    a{
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    img{
+      width: 700px;
+    }
+  }
+  .jl-arr-left,.jl-arr-right{
+    display: none;
+    z-index:777;
+    top: 42%;
+    margin-left: 30px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border:3px solid @light-gray;
+    border-right:none;
+    border-top:none;
+    transform: rotate(45deg);
+  }
+  .jl-arr-right{
+    right:30px;
+    transform: rotate(225deg);
+  }
+  .jl-cur{
+    display: block;
+  }
+}
+
+
+.jl-manual-right{
+  width: 210px;
+  float: right;
+}
+
+.jl-slideup,.jl-slidedown{
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background: @bg-color;
+  >b{
+    display: inline-block;
+    width: 14px;
+    height: 10px;
+    background: url("../../Public/img/sprite.png") no-repeat -77px -114px;
+  }
+}
+.jl-slidedown>b{
+  background-position-x:-103px;
+}
+
+.jl-thumbnail{
+  height: 902px;
+  margin: 15px 0;
+  overflow: hidden;
+}
+.jl-thumbnail-content{
+  position: relative;
+  top: 0;
+  transition: all .4s linear;
+  >li{
+    width: 210px;
+    height: 264px;
+    padding: 18px;
+    box-sizing: border-box;
+    a{
+      width: 174px;
+      height: 224px;
+      display: inline-block;
+      overflow: hidden;
+      background: #fff;
+    }
+    img{
+      border:@border02;
+      width: 172px;
+    }
+  }
+  >li:hover{
+    background:@bg-color;
+    img{
+      width: 174px;
+      border: none;
+    }
+  }
+  .jl-cur{
+    background:@bg-color;
+    img{
+      width: 174px;
+      border: none;
+    }
+  }
+}
+
+
+//弹窗
+#js-popup-share,#js-popup-login{
+  display: none;
+  position: fixed;
+  z-index:9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height:100%;
+}
+
+.jl-bg{
+  width: 100%;
+  height:100%;
+  background: #000;
+  filter:alpha(opacity=10);
+  opacity: .1;
+}
+
+.js-share{
+  width: 510px;
+  height: 300px;
+  box-sizing: border-box;
+  position: absolute;
+  top: 400px;
+  left: 50%;
+  margin-left:-280px;
+  border:10px solid rgba(0,0,0,0.2);
+  background:#fff;
+}
+.js-share-title{
+  .font14(#fff);
+  height: 40px;
+  line-height: 40px;
+  background: @color;
+  padding-left: 16px;
+  position: relative;
+}
+.js-close{
+  cursor: pointer;
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  width: 14px;
+  height: 14px;
+  background:url("../../Public/img/sprite.png") no-repeat 0 -180px;
+}
+.js-share-content{
+  padding: 30px 30px 22px;
+  text-align: center;
+}
+.js-share-way{
+  dt,dd{
+    float: left;
+  }
+  s{
+    display: inline-block;
+    width: 16px;
+    height: 15px;
+    background: url("../../Public/img/share.png") no-repeat 0 -30px;
+    position: relative;
+    top: 2px;
+  }
+  dt{
+    margin-right: 10px;
+  }
+  dd{
+    margin-right: 28px;
+    height: 30px;
+    line-height: 30px;
+  }
+  .jl-kongjian{
+    background-position-x:-25px;
+  }
+  .jl-weibo{
+    background-position-x:-50px;
+  }
+  .jl-douban{
+    background-position-x:-125px;
+  }
+  .jl-weixin{
+    background-position-x:-150px;
+  }
+}
+.js-share-words{
+  width: 100%;
+  height:96px;
+  border:@border02;
+  margin-top: 12px;
+  padding: 12px 20px;
+  color:@dark-grey;
+  box-sizing: border-box;
+}
+
+.jl-choose-picture{
+  margin-top: 20px;
+  >p{
+    height: 28px;
+    text-align: left;
+  }
+  li{
+    float: left;
+    width: 110px;
+    height: 110px;
+    box-sizing: border-box;
+    border:@border02;
+    margin-right: 12px;
+    padding: 1px;
+  }
+  .jl-choose-last{
+    margin-right: 0;
+  }
+  li.jl-cur{
+    border:2px solid @color;
+    padding: 0;
+    position: relative;
+    .jl-confirm{
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      background:url("../../Public/img/sprite.png") no-repeat 0 -151px;
+    }
+  }
+}
+
+.jl-share-btn{
+  width: 100px;
+  height: 40px;
+  background: @color;
+  border: none;
+  .font16(@bg-color);
+  margin-top: 48px;
+}
+//分享不成功
+.jl-notice{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: url(../../Public/img/bg-big.png) no-repeat -24px 0;
+  position: relative;
+  top: 1px;
+}
+#js-popup-login{
+  .js-share{
+    width: 385px;
+    height: 465px;
+    margin-left:-385/2px;
+    top: 300px;
+  }
+  .js-share-content{
+    text-align: left;
+    padding-top: 30px;
+    h4{
+      .font20;
+      font-weight:bold;
+    }
+  }
+}
+
+#js-share-login{
+  margin-top: 28px;
+  input{
+    width: 304px;
+    padding: 10px 0 10px 55px;
+    box-sizing: border-box;
+    border:@border02;
+  }
+  >p{
+    margin-top: -4px;
+  }
+}
+.jl-form-grop{
+  position: relative;
+  margin-bottom: 26px;
+  p{
+    display: none;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    padding-top: 5px;
+    color: @color;
+  }
+}
+.jl-user-icon,.jl-password-icon{
+  position: absolute;
+  top: 11px;
+  left: 20px;
+  display: inline-block;
+  width: 19px;
+  height: 20px;
+  background:url("../../Public/img/sprite.png") no-repeat -38px -151px;
+}
+.jl-password-icon{
+  width: 17px;
+  height: 21px;
+  background-position-x: -69px;
+}
+.jl-forgot-password{
+  float: right;
+  color:@grey;
+}
+.js-login-btn{
+  //display: block;
+  width: 100%;
+  height: 45px;
+  border: none;
+  background: @color;
+  margin-top: 22px;
+  .font20(#fff);
+  cursor: pointer;
+}
+
+.jl-login-way{
+  margin-top: 55px;
+  overflow: hidden;
+  li{
+    float: left;
+    margin-right: 12px;
+  }
+  .jl-last-choose{
+    float: right;
+    margin-right: 0;
+    a{
+      .font16(@color);
+    }
+    img{
+      position: relative;
+      top: 3px;
+    }
+  }
+}
+
+.js-chose{
+  b{
+    margin-right: 5px;
+  }
+}
+.jl-sina-title{
+  float: right;
+}
+.jl-share-title{
+  text-align: left;
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+.jl-share-platform{
+  position: relative;
+  top: -2px;
+  margin-left: 2px;
+}
+.jl-lazy-pdf-img{
+  min-height: 240px;
+  background:url('../../Public/img/loading.gif') no-repeat center center;
+}
+
+
+
+
+
+
+
+
+
+
+

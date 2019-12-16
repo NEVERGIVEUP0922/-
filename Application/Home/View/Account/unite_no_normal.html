@@ -1,0 +1,478 @@
+<!-- 前台首页模板文件  -->
+
+<extend name="Layout:layout-user-center"/>
+
+<block name="title">联合登录</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/logo-header.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/register.css">
+</block>
+<block name="user-nav">个人用户绑定</block>
+
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-reg-wrap">
+        <div class="jl-unite-top"></div>
+        <div class="jl-reg-msg">
+            <div class="jl-unite-item">
+                <div class="jl-unite-tit" >
+                    <img src="{$avator}" alt="">
+                </div>
+                <span class="jl-unite-acc ">已有账号,<a href="{:U('Home/Account/create',['type'=>3])}" class="jl-unite-bind"> 绑定> </a> </span>
+            </div>
+            <div class="jl-reg-de">
+                <form method="post">
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <label for="jl-reg-name" class="jl-reg-p">用户名</label>
+                            <input id="jl-reg-name" class="jl-reg-text js-next-input" name="user_name" type="text" placeholder="请输入用户名">
+                        </div>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <label for="jl-reg-phone" class="jl-reg-p">手机号码</label>
+                            <input id="jl-reg-phone" class="jl-reg-text js-next-input" type="text" name="user_mobile" placeholder="请输入手机号码">
+                        </div>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <input type="text" class="js-next-input jl-c-hidden">
+                            <label for="jl-reg-code" class="jl-reg-p">手机验证码</label>
+                            <button type="button" class="jl-reg-btn" id="js-ver-code">获取短信验证码</button>
+                            <input id="jl-reg-code" type="text" name="mobile_code" class="jl-reg-text jl-p-code js-next-input" placeholder="请输入手机验证码">
+                        </div>
+                        <span class="jl-nor-tips jl-nor-tips02">
+                           <i class="jl-code-bg"></i>
+                            验证码已发送
+                        </span>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <label for="jl-reg-set" class="jl-reg-p">设置密码</label>
+                            <input id="jl-reg-set" class="jl-reg-text js-next-input" type="password" name="user_pass"  placeholder="请输入密码">
+                        </div>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <label for="jl-reg-affirm" class="jl-reg-p">确认密码</label>
+                            <input id="jl-reg-affirm" class="jl-reg-text js-next-input js-submit-input" type="password" name="user_pass" placeholder="请输入请输入密码">
+                        </div>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="jl-form-agree">
+                            <span href="#" class="jl-check" id="jl-checkbox"></span>
+                            <span>阅读并同意</span><a href="javascript:;">《玖隆芯城服务协议》</a>
+                        </div>
+                        <input type="button" class="jl-reg-put" id="js-enroll" value="确 定">
+                    </div>
+                </form>
+                <div class="jl-reg-switch jl-reg-switch02">
+                    <a href="{:U('Home/Account/create',['type'=>2])}">
+                        <b class="jl-bg-r jl-unite-no"></b>
+                        <span>企业用户，绑定></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户协议 -->
+    <div id="jl-protocol">
+        <div class="jl-background"></div>
+        <div class="js-protocol">
+            <div class="js-protocol-title">玖隆芯城服务协议<span class="js-close"></span></div>
+            <div class="js-protocol-main">
+                <div class="js-js-protocol-content">
+                    <h2>玖隆芯城服务协议</h2>
+                    <p>
+                        本协议详述您在http://www.longicmall.com（"玖隆芯城网站"）使用我们的服务所须遵守的条款和条件。如您有任何疑问，请及时联系我们。 您注册成为玖隆芯城用户前，必须仔细阅读本用户协议和隐私声明，一旦您注册成为了玖隆芯城用户即表示您已经阅读、同意并接受本用户协议和隐私声明中所含的所有条款和条件。如果我们对本声明进行了任何变更，我们会在玖隆芯城网站页面上发布有关变更事项的通知，所有协议内容在发布之日后自动生效。如您不同意该修订，您必须终止您与玖隆芯城的用户关系。
+                    </p>
+                    <h3>一、用户注册：</h3>
+                    <h4>1. 用户资格：</h4>
+                    <p>玖隆芯城用户必须是适用法律下能够签订具有法律约束力的合同的公司或个人。如您不合资格，请不要使用我们的服务。您的玖隆芯城帐户不得向其他方转让或出售。玖隆芯城保留根据其意愿中止或终止您的帐户的权利。</p>
+                    <h4>2. 资料填写：</h4>
+                    <p>为确保交易的正常进行，用户向玖隆芯城供真实、有效的个人资料，如个人资料有任何变动，必须及时通知玖隆芯城更新。 玖隆芯城用户同意接收来自玖隆芯城或者玖隆芯城合作伙伴发出的邮件、信息。</p>
+
+                    <h3>二、 隐私：</h3>
+                    <p>玖隆芯城设有适用于所有用户并纳入用户协议的隐私声明。您应当在注册时阅读并接受隐私声明以使用玖隆芯城网站，且您在作为玖隆芯城用户期间将继续受其规定（及玖隆芯城对隐私声明作出的任何修订）的约束。 </p>
+                    <h4>（1）个人数据资料,真实姓名、地址、电子邮箱和联系电话等用户信息。在未经您同意之前，玖隆芯城不会将您的资料用于其它目的。 </h4>
+                    <h4>（2）使用非个人信息。玖隆芯城将通过您的IP地址来收集非个人化的信息，包括您的浏览器性质、操作系统种类、给您提供接入服务的ISP的域名等，以优化在您计算机屏幕上显示的页面。通过收集上述信息，我们亦进行客流量统计，从而改进网站的管理和服务。 </h4>
+                    <h4>（3）个人数据安全。玖隆芯城采用安全性的服务器使用控制设备保护保护您的个人数据。</h4>
+                    <h4>（4）个人数据披露和限制利用。当国家机构依照法定程序要求玖隆芯城披露个人资料时，玖隆芯城将根据执法单位的要求或为公共安全目的提供个人资料。在此情况下披露的任何内容，玖隆芯城不承担任何责任。玖隆芯城在符合下列条件时，对个人资料进行必要范围以外利用：已取得您的同意；相应的法律及程序要求本站提供用户的个人资料。 </h4>
+
+                    <h3>三、交易：</h3>
+                    <h4>用户在玖隆芯城进行物品购买时必须遵守以下条款：</h4>
+                    <h4>1. 您应就您使用玖隆芯城的服务及对物品购买遵守所有适用的中国法律、法规、条例和地方性法律要求。您还必须确保您遵守本用户协议和隐私声明及纳入上述文件的所有其它条款和规则的所有规定。 </h4>
+                    <h4>2. 如您在玖隆芯城购买物品，您有义务完成与玖隆芯城的交易，但法律或本用户协议禁止的交易除外。通过对一项物品的下订单，您同意受该物品描述所含的出售条件的约束，只要该等出售条件不违反本协议或不是非法的。</h4>
+                    <h4>3．玖隆芯城网站上的广告，价目表和声明并不构成要约。玖隆芯城有权在发现了玖隆芯城网站上显现的产品及订单的明显错误或缺货的情况下，单方面撤回该信息。玖隆芯城保留对产品订购的数量的限制权。在下订单的同时，您也同时承认了您已经达到购买这些产品的法定年龄，并将对您在订单中提供的所有信息的真实性负责。</h4>
+                    <h4>4．产品价格和可获性都在网站上指明。这类信息将随时更改且不发任何通知。送货费将另外结算，费用根据您选择的送货方式的不同而异。如果发生了意外情况，在确认了您的订单后，由于供应商提价，税额变化引起的价格变化，或是由于网站的错误等造成价格变化，玖隆芯城会通过email或电话，在玖隆芯城没有取消订单的情况下，让您决定是否取消订单。</h4>
+
+                    <h3>四、物品质量与售后服务：</h3>
+                    <h4>1.详见售后服务</h4>
+                    <h4>2. 物品的质量</h4>
+                    <p>有国家标准或专业标准的，按国家标准或专业标准执行；无前述标准的，按生产厂的企业标准执行；无生产厂企业标准的，由用户与玖隆芯城协商确定。如果物品质量不符合标准，用户可以要求换货或退货。</p>
+
+                    <h3>五、网站安全：</h3>
+                    <h4>您同意，未经玖隆芯城明示书面准许，您不会为了任何目的使用任何机器人、蜘蛛软件、刷屏软件或其他自动方式进入网站。此外，您同意您将不会：</h4>
+                    <h4>1. 进行任何对玖隆芯城网站造成或可能造成（按玖隆芯城自行酌情确定）不合理或不合比例的重大负荷的行为；</h4>
+                    <h4>2. 未经玖隆芯城事先明示书面准许，对网站的任何内容（除您的个人信息以外）制作拷贝、进行复制、修改、制作衍生作品、分发或公开展示；</h4>
+                    <h4>3. 干扰或试图干扰网站的正常工作或网站上进行的任何活动；</h4>
+                    <h4>4. 在网站中使用违反适用的法律法规下可能视为被禁止或可能被禁止的任何内容；</h4>
+                    <h4>5. 对网站使用包含可能破坏、改变、删除、不利影响、秘密截取、未经授权而接触或征用任何系统、数据或个人资料的任何病毒、特洛依木马、蠕虫、定时炸弹、删除蝇、复活节彩蛋、间谍软件或其他电脑程序。 </h4>
+
+                    <h3>六、知识产权声明：</h3>
+                    <h4>玖隆芯城所提供的网络服务的相关著作权、专利权、商标、商业秘密及其它任何所有权或权利，均属玖隆芯城所有。非经玖隆芯城的同意，任何人或用户均不得擅自下载、复制、传输、改编、编辑，否则应负所有法律责任。玖隆芯城拥有向用户提供网络服务过程中所产生并储存于玖隆芯城服务器中的任何数据信息的所有权。</h4>
+
+                    <h3>七、免责声明：</h3>
+                    <h4>玖隆芯城有义务在技术上确保网站的正常运行，尽力避免服务中断或将中断时间限制在最短时间内，保证用户网上交易活动的顺利进行。但如因不可抗力或其他玖隆芯城无法控制的原因使玖隆芯城网站崩溃或无法正常使用导致网上交易无法完成或丢失有关的信息、记录等，玖隆芯城不承担责任；任何用户向玖隆芯城提供错误、不完整、不实信息等造成不能正常使用玖隆芯城服务或遭受任何其他损失，概与玖隆芯城无关</h4>
+
+                    <h3>八、其它：</h3>
+                    <h4>本协议在所有方面均受中华人民共和国法律管辖。本网站所有用户均不可撤销地受玖隆芯城持有人所在地的法院及上级法院的管辖。本协议的规定是可分割的，如本协议任何规定被裁定为无效或不可执行，该规定可被删除而其余条款应予以执行。</h4>
+
+                </div>
+            </div>
+            <div class="js-protocol-footer">
+                <button class="js-protocol-btn">同意并继续</button>
+            </div>
+        </div>
+    </div>
+
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery','jl-modal'], function ($,modal) {
+                require(['Account/js/common_register']);
+
+                //用户协议
+                $('.jl-form-agree a').on('click',function(){
+                    $('#jl-protocol').show();
+                });
+                //关闭
+                $('.js-close').on('click',function(){
+                    $('#jl-protocol').hide();
+                });
+                $('.js-protocol-btn').on('click',function () {
+                    $('#jl-protocol').hide();
+                    $('#jl-checkbox').addClass('jl-check-active');
+                });
+
+                var $user_input = $('#jl-reg-name');
+                var $phone_input = $('#jl-reg-phone');
+                var $code_input = $('#jl-reg-code');
+                var $password = $('#jl-reg-set');
+                var $reg_affirm = $('#jl-reg-affirm');
+                //公用输入提示语句的方法
+                function inputTips(text, type, input) {
+                    var $tips_box = $(input).parent().siblings('.jl-reg-nor');
+                    $tips_box.show();
+                    if (type !== 1) {
+                        $tips_box.addClass('jl-reg-nor-active');
+                    }
+                    else {
+                        $tips_box.removeClass('jl-reg-nor-active');
+                    }
+                    $tips_box.children('.jl-nor-text').html(text);
+                }
+
+
+                //用户名
+                //var res_nor_user =/^(?!\d)(?!_)(?!.*?_$)(?!.*?\-$)[a-zA-Z0-9_\u4e00-\u9fa5]{4,20}$/;
+                var nor_user = function (input) {
+                    if ($(input).val() === '') {
+                        inputTips('用户名不能为空', 2, input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().siblings('.jl-reg-nor').hide();
+                        return false;
+                    }
+                };
+                $user_input.focus(function () {
+                    inputTips('支持中文、字母、数字、“-”“_”的组合，2-20个字符', 1, this);
+                    $(this).off('focus');
+                });
+                $user_input.keydown(function () {
+                    inputTips('支持中文、字母、数字、“-”“_”的组合，2-20个字符', 1, this);
+                });
+
+                $user_input.blur(function () {
+                    var user_name = $user_input.val();
+                    if($user_input.val()===''){
+                        inputTips('用户名不能为空', 2, $user_input);
+                    }
+                    if( user_name ){
+                        $.post(
+                            "{:U('Home/Account/ajaxCheckUserName')}",
+                            {user_name: user_name},
+                            function (res) {
+                                if (res.status === 0) {
+                                    $user_input.parent().siblings('.jl-reg-nor').hide();
+                                }
+                                else {
+                                    inputTips(res.content, 2, $user_input);
+                                }
+                        })
+                    }
+                });
+
+
+                //手机号
+                // var res_mobile = /^1(3|4|5|7|8)\d{9}$/;
+                var nor_mobile = function (input) {
+                    if ($(input).val() === '') {
+                        inputTips('请输入手机号码', 2, input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().siblings('.jl-reg-nor').hide();
+                        return false;
+                    }
+                };
+                $phone_input.focus(function () {
+                    inputTips('请输入正确的手机号码', 1, this);
+                    $(this).off('focus');
+                });
+                $phone_input.keydown(function () {
+                    inputTips('请输入正确的手机号码', 1, this);
+                });
+
+                //发送手机号请求
+                $phone_input.blur(function () {
+                    var that = this;
+                    var user_mobile = $(that).val();
+                    if( user_mobile ){
+                        $.post(
+                            "{:U('Home/Account/ajaxCheckMobile')}",
+                            {user_mobile: user_mobile},
+                            function (res) {
+                                if (res.status === 0) {
+                                    $(that).parent().siblings('.jl-reg-nor').hide();
+                                    $(that).data('use','choice');
+                                }
+                                else {
+                                    inputTips(res.content, 2, that);
+                                }
+                            }
+                        )
+                    }else{
+                        inputTips('请输入手机号码', 2, $phone_input);
+                    }
+                });
+
+                //设置密码
+
+                var reg_password = /^[a-zA-Z]+[\w]{5,20}/;
+                var norSetPaw = function (input) {
+                    if ($(input).val() === '') {
+                        inputTips('密码不能为空', 2, input);
+                        return true;
+                    }
+                    else if (!reg_password.test($(input).val())) {
+                        inputTips('密码至少6位,字母数字组成,必须以字母开头', 2, input);
+                        return true
+                    }
+                    else {
+                        $(input).parent().siblings().hide();
+                        return false;
+                    }
+                };
+                $password.focus(function () {
+                    inputTips('密码至少6位,字母数字组成,必须以字母开头', 1, this);
+                    $(this).off('focus');
+                });
+                $password.keydown(function () {
+                    inputTips('密码至少6位,字母数字组成,必须以字母开头', 1, this);
+                });
+                $password.blur(function () {
+                    norSetPaw(this);
+                });
+
+
+                //确认密码
+                $reg_affirm.focus(function () {
+                    inputTips('请再次输入密码', 1, this);
+                });
+                $reg_affirm.blur(function () {
+                    if ($reg_affirm.val() === '') {
+                        inputTips('请输入确认密码', 2, this);
+                    }
+                    else if ($reg_affirm.val() !== $password.val()) {
+                        inputTips('两次密码输入不一致', 2, this);
+                    }
+                    else {
+                        $reg_affirm.parent().siblings().hide();
+                    }
+                });
+
+
+                //手机验证码
+                $('#jl-reg-code').focus(function () {
+                    if ($phone_input.val() === '') {
+                        inputTips('请输入手机号码', 2, $phone_input);
+                    }
+                });
+                //发送手   机验证码
+                var timer;
+                var num_number = 60;
+                var $btn_code = $('#js-ver-code');
+                $btn_code.click(function () {
+                    var $disabled = $('#js-ver-code').attr("disabled");
+                    var data=$('#jl-reg-phone').data('use');//获取到use的数据
+                    if ($disabled) {
+                        return false;
+                    }
+                    if (data!=='choice') {
+                        $phone_input.focus();
+                        inputTips('请输入正确的手机号码', 2, $phone_input);
+                        return false;
+                    }
+                    $disabled = $('#js-ver-code').attr('disabled','disabled');
+                    var mobile = $phone_input.val();
+                    //发送请求
+                    $.post(
+                        "{:U('Home/Account/sendSms')}",
+                        {mobile: mobile},
+                        function (res) {
+                            if (res.status === 0) {
+                                $('.jl-nor-tips').css('display', 'block');
+                                sendCode();
+                                timer = setInterval(sendCode, 1000);
+                            }
+                            else {
+                                modal.alert({
+                                    title:res.content
+                                })
+                            }
+                        }
+                    );
+                });
+
+                //发送验证码倒计时函数
+                function sendCode() {
+                    if (num_number === 0) {
+                        $btn_code.html('重新发送验证码');
+                        $btn_code.attr('disabled',false);
+                        $('.jl-nor-tips').css('display','none');
+                        num_number = 60;
+                        clearInterval(timer);
+                    }
+                    else {
+                        $btn_code.css('color','#777');
+                        $btn_code.attr('disabled', 'disabled');
+                        $btn_code.html(num_number + '秒后重新发送');
+                        num_number--;
+                    }
+                }
+
+                //输入的手机验证码正确与否请求
+                $('#jl-reg-code').blur(function () {
+                    var that = this;
+                    if($(that).val()===''){
+                        inputTips('验证码不能为空',2,$(that));
+                    }
+                    else {
+                        var mobile_code = $(that).val();
+                        $.post(
+                            "{:U('Home/Account/checkSms')}",
+                            {mobile_code:mobile_code},
+                            function (res) {
+                                if(res.status===0){
+                                    $(that).parent().siblings('.jl-reg-nor').hide();
+                                }
+                                else {
+                                    inputTips('验证码错误',2,$(that));
+                                }
+                            }
+                        )
+                    }
+                });
+
+
+                //最后一个文本框按回车键后
+//
+//                $('.js-submit-input').on('keydown',function (e) {
+//                    if($('#jl-checkbox').hasClass('jl-check-active')){
+//                        if(e.keyCode===13){
+//                            $('#js-enroll').trigger('click');
+//                        }
+//                    }
+//                });
+                $('#js-enroll').click(function () {
+                    var isPass = true;
+                    var $user_tips = $user_input.parent().siblings('.jl-reg-nor');
+                    if($user_tips.hasClass('jl-reg-nor-active')){
+                        isPass = false;
+                    }
+                    else {
+                        if (nor_user($user_input[0])) {
+                            inputTips('请输入用户名', 2, $user_input);
+                            isPass = false
+                        }
+                    }
+                    var $phone_tips = $phone_input.parent().siblings('.jl-reg-nor');
+                    if($phone_tips.hasClass('jl-reg-nor-active')){
+                        isPass = false
+                    }
+                    else {
+                        if (nor_mobile($phone_input[0])) {
+                            inputTips('请输入手机号码', 2, $phone_input);
+                            isPass = false
+                        }
+                    }
+
+
+                    if (norSetPaw($password[0])) {
+                        inputTips('请输入密码', 2, $password);
+                        isPass = false;
+                    }
+                    if(!$('#jl-checkbox').hasClass('jl-check-active')){
+                        isPass = false;
+                    }
+                    if(!isPass){
+                        return false
+                    }
+                    var data = {
+                        user_name: $.trim($user_input.val()),
+                        user_pass: $password.val(),
+                        user_mobile: $phone_input.val(),
+                        mobile_code: $code_input.val()
+                    };
+                    $.post("{:U('Home/Account/doCreate', ['act'=>'create'])}", data, function (res) {
+                        if (res.status === 0) {
+                            window.location.href="{:U('Home/Account/register_success')}";
+                        }
+                        else {
+                            modal.alert({
+                                title:res.content
+                            })
+                        }
+                    });
+                })
+            })
+        })
+    </script>
+</block>

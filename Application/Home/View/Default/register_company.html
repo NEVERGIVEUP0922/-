@@ -1,0 +1,130 @@
+<!-- 前台首页模板文件  -->
+
+<extend name="Layout:layout-user-center" />
+
+<block name="title">企业注册</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/search-index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/logo-header.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/register.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-reg-wrap">
+        <h3 class="jl-reg-tit">
+            <a href="#">我已经注册，马上登录></a>
+        </h3>
+        <div class="jl-reg-msg">
+            <div class="jl-reg-p-tit">
+                <i class="jl-c-tit"></i>
+                <span class="jl-reg-user">企业用户注册</span>
+            </div>
+            <div class="jl-reg-c">
+                <form method="post">
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">用户名</label>
+                        <input type="text" class="jl-c-long" value="请输入用户名">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">公司名称</label>
+                        <input type="text" class="jl-c-long" value="请输入公司名称">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">公司所在地</label>
+                        <div class="jl-c-address">
+                            <span class="jl-c-c">请选择</span>
+                            <b class="jl-top-tri"></b>
+                            <b class="jl-bottom-tri"></b>
+                        </div>
+                        <div class="jl-c-address">
+                            <span class="jl-c-c">请选择</span>
+                            <b class="jl-top-tri"></b>
+                            <b class="jl-bottom-tri"></b>
+                        </div>
+                        <div class="jl-c-address">
+                            <span class="jl-c-c">请选择</span>
+                            <b class="jl-top-tri"></b>
+                            <b class="jl-bottom-tri"></b>
+                        </div>
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">公司地址</label>
+                        <input type="text" class="jl-c-long" value="请输入公司地址">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">公司人数</label>
+                        <div class="jl-c-address">
+                            <span class="jl-c-c">请选择</span>
+                            <b class="jl-top-tri"></b>
+                            <b class="jl-bottom-tri"></b>
+                        </div>
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">联系人姓名</label>
+                        <input type="text" class="jl-c-long" value="请输入联系人姓名">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">所在部门</label>
+                        <input type="text" class="jl-c-long" value="请输入所在部门">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">固定电话</label>
+                        <input type="text" class="jl-c-long" value="请输入固定电话">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">用户名</label>
+                        <input type="text" class="jl-c-long" value="请输入用户名">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">手机号码</label>
+                        <input type="text" class="jl-c-long" value="请输入手机号码">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">手机验证码</label>
+                        <input type="text" class="jl-c-mid" value="请输入手机号码">
+                        <input class="jl-c-pcode" type="button" value="获取短信验证码">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">设置密码</label>
+                        <input type="text" class="jl-c-long" value="请输入用户名">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">设置密码</label>
+                        <input type="password" class="jl-c-long" value="请输入设置密码">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">联系人邮箱</label>
+                        <input type="text" class="jl-c-long" value="请输入联系人邮箱">
+                        <b class="jl-c-em">*</b>
+                    </div>
+                    <input type="button" class="jl-reg-put" value="注册">
+                </form>
+                <div class="jl-reg-switch">
+                    <a href="#" >
+                        <b class="jl-bg-r jl-bg-c"></b>
+                        <span>个人用户注册></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</block>
+<block name="js">
+</block>

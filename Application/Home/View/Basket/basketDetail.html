@@ -1,0 +1,666 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-cart" />
+<block name="title">购物车</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/cart.css">
+</block>
+<block name="nav-title">购物车</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul id="jl-cart-progress" class="jl-cle">
+        <li class="jl-cur">
+            <p>
+                <span class="jl-serial">1</span>
+                我的购物车
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li>
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">2</span>
+                确认订单信息
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-progress-last">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">3</span>
+                成功提交订单
+            </p>
+        </li>
+    </ul>
+    <if condition="$basket_detail">
+        <div id="jl-cart-main">
+            <ul id="jl-cart-title" class="jl-cle">
+                <li class="jl-check">全选</li>
+                <li class="jl-goods">商品</li>
+                <li class="jl-trademark">名称</li>
+                <li class="jl-detail">详情</li>
+                <li class="jl-price">单价（元）<span style="color: #e84343;">含税</span></li>
+                <li class="jl-count">数量（PCS）</li>
+                <li class="jl-subtotal">库存（PCS）</li>
+                <li class="jl-operation">操作</li>
+            </ul>
+            <ul id="jl-cart-content" class="jl-cle">
+                <volist name="basket_detail" id="basket">
+                    <notempty name="basket">
+                        <li class="jl-cart-li" data-id="{$key}" data-sample="{$basket.sample}" >
+                            <div class="jl-check-box">
+                                <div class="jl-check">
+                                    <span class="jl-get-check jl-box js-product-checkbox" ></span>
+                                </div>
+                                <div class="jl-goods">
+                                    <notempty name="basket.cover_image">
+                                        <img src="{$basket.cover_image}" alt="">
+                                        <else />
+                                        <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                    </notempty>
+                                </div>
+
+                                <div class="jl-trademark">{$basket.p_sign}</div>
+                                <div class="jl-detail">
+                                    <s>封装：{$basket.package}</s>
+                                    <s>分类：{$basket.cate_name}</s>
+                                    <s>交期：{$basket.delivery}{$basket['delivery']?'天':''}</s>
+                                </div>
+                            </div>
+                            <div class="jl-price">
+                                <div class="jl-price-active" style="margin-bottom:10px"><span class="jl-price-range"></span></div>
+                                <a class="jl-price-a" href="{:U('Home/Product/detail')}?sign={$basket['p_sign']}">商品详情</a>
+                                <if condition="$basket.sample eq 1" >
+                                    <p style="color:#e84343;margin-top:10px">样品</p>
+                                    <esle/>
+                                </if>
+
+                            </div>
+                            <div class="jl-count">
+                                <button class="jl-minus">-</button>
+                                <input type="text" class="js-product-num" data-sample="{$basket.sample}" value="{$basket.basket_num}">
+                                <button class="jl-add">+</button>
+                                <p class="jl-product-subtotal"></p>
+                            </div>
+                            <div class="jl-subtotal">
+                                 <?php echo $basket['store']>0?$basket['store']:0; ?>
+                            </div>
+                            <div class="jl-operation">
+                                <i class="jl-delete"></i>
+                            </div>
+                        </li>
+                    </notempty>
+                </volist>
+            </ul>
+            <ul id="jl-settlement" class="jl-cle">
+                <li class="jl-check">
+                    <span class="jl-box js-product-checkbox-all"></span>
+                </li>
+                <li class="js-product-checkbox-all-text" style="cursor:pointer;">全选</li>
+                <li class="js-add-collect jl-remove"><a href="javascript:">移入收藏夹</a></li>
+                <li><a class="js-deletes" href="javascript:">批量删除</a></li>
+                <li class="jl-settle"><button class="js-settle">结算</button></li>
+                <li class="jl-total">总金额（不含运费）：<span>￥</span><span class="js-total"></span></li>
+            </ul>
+        </div>
+        {$page}
+        <!--登陆弹窗-->
+        <div id="js-popup-login">
+            <div class="jl-bg"></div>
+            <div class="js-share">
+                <div class="js-share-title">你还尚未登录<span class="js-close"></span></div>
+                <div class="js-share-content">
+                    <h4>密码登录</h4>
+                    <div id="js-share-login" >
+                        <div class="jl-form-grop">
+                            <b class="jl-user-icon"></b>
+                            <input type="text" name="user_name" class="user-name js-enter-next" placeholder="请输入用户名" autocomplete="off">
+                            <p>
+                                <i class="jl-notice"></i>
+                                <span>用户名不能为空</span>
+                            </p>
+                        </div>
+                        <div class="jl-form-grop">
+                            <b class="jl-password-icon"></b>
+                            <input type="password" name="user_pwd" class="user-pwd js-enter-next" placeholder="请输入密码" autocomplete="off">
+                            <p>
+                                <i class="jl-notice"></i>
+                                <span></span>
+                            </p>
+                        </div>
+                        <p class="jl-cle">
+                            <a href="{:U('Home/Account/passForget')}" class="jl-forgot-password">忘记密码</a>
+                        </p>
+                        <button class="js-login-btn">登录</button>
+                    </div>
+                    <ul class="jl-login-way">
+                        <li>
+                            <a href="{:U('Home/Account/login')}?type=qq" class="jl-way">
+                                <img src="__PUBLIC__/Home/Public/img/images/qq.png" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:U('Home/Account/login')}?type=wechat" class="jl-way">
+                                <img src="__PUBLIC__/Home/Public/img/images/weiixn.png" alt="">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:U('Home/Account/login')}?type=sina" class="jl-way">
+                                <img src="__PUBLIC__/Home/Public/img/images/sina1.png" alt="">
+                            </a>
+                        </li>
+                        <li class="jl-last-choose">
+                            <a href="{:U('Home/Account/register')}" class="jl-run-reg">
+                                <img src="__PUBLIC__/Home/Public/img/images/login_register.png" alt="">
+                                <span>立即注册</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <else />
+        <div id="jl-cart-empty">
+            <img src="__PUBLIC__/Home/Public/img/no-product.png" alt="">
+            <p>您的购物车还是空的，赶紧行动吧！</p>
+        </div>
+    </if>
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['jquery','jl-tool','jl-price'], function($,jlTool,jlPrice) {
+            var basket_data = {$basket_detail|json_encode};
+            var isLogin = {$isLogin|json_encode};
+            //console.log('basket_data',basket_data);
+            //enter下一个
+            $('.js-enter-next').on('keydown',function (e) {
+                var nextInputArray = $('.js-enter-next');
+                if(parseInt(e.keyCode)===13){
+                    var index = nextInputArray.index(this);
+                    if(nextInputArray[index+1]){
+                        nextInputArray[index+1].focus()
+                    }
+                }
+            });
+            //页面条数转
+            var selfurl=window.location;
+            var request = {$request|json_encode};
+            $(".pageSize").val(request["pageSize"]?decodeURIComponent(request["pageSize"]) : "10");
+            $(".pageSize").change(function(){
+                var nums=parseInt($(this).val());
+                if(selfurl.search){
+                    location.href=location.href.split("pageSize")[0]+(location.href.split("pageSize")[1] ? "":"&")+("pageSize="+nums);
+                }else{
+                    location.href=location.href.split("pageSize")[0]+"&pageSize="+nums;
+                }
+
+            });
+            //判断登陆
+            if(!isLogin){
+                $('.js-close').on('click',function(){
+                    $('body').css('overflow','auto');
+                    $("#js-popup-login").css('display','none');
+                    $("#js-popup-share").css('display','none');
+                });
+                $('.user-name').on('blur',function(){
+                    if($(this).val()===""){
+                        $(this).siblings('p').css('display','block');
+                    }
+                    else{
+                        $(this).siblings('p').css('display','none');
+                    }
+                });
+                $('.user-pwd').on('blur',function(){
+                    if($(this).val()===''){
+                        $('.user-pwd').siblings('p').css('display','block').children('span').html('密码不能为空');
+                    }
+                    else{
+                        $(this).siblings('p').css('display','none');
+                    }
+                }).on('keydown',function (e) {
+                    if(parseInt(e.keyCode)===13){
+                        $('.js-login-btn').click()
+                    }
+                });
+                $('.js-login-btn').on('click',function (e) {
+                    e.preventDefault();
+                    var user=$('.user-name').val();
+                    var password=$('.user-pwd').val();
+                    if(user===""){
+                        $('.user-name').focus().siblings('p').css('display','block');
+                    }
+                    else if(password===""){
+                        $('.user-pwd').focus().siblings('p').css('display','block').children('span').html('密码不能为空');
+                    }
+                    else{
+                        var data = {
+                            user_name:user,
+                            user_pass:password
+                        };
+                        $.post("{:U('Home/Account/login')}",data, function (res) {
+                            if(res.status===0){
+                                location.href='{:U("Home/Basket/basketDetail")}';
+                            }
+                            else {
+                                $('.user-pwd').siblings('p').css('display','block').children('span').html('用户名或密码错误');
+                            }
+                        });
+                    }
+                });
+            }
+            require(['jl-modal','jl-price'],function (modal,jlPrice) {
+                //检查价格
+                var check_price = function (data) {
+                    $.each(data,function(index,value){
+                        value.price_section[0].start = 0;
+                    });
+                    var total = 0;
+                    console.log(data);
+                    $('.jl-cart-li').each(function () {
+                        var index = $(this).data('id');
+                        var num = parseInt($(this).find('.js-product-num').val());
+                        var product = data[index];
+                        var correct_price_info = jlPrice.get_correct_price({
+                            num:num,
+                            isTax:true,
+                            product:product
+                        });
+                        console.log(correct_price_info);
+                        //显示价格
+                        $(this).find('.jl-price-range').text(jlPrice.fixed_float(correct_price_info.should_pay,4));
+                        //显示小结
+                        var real_subtotal = jlPrice.fixed_float(correct_price_info.real_pay*num);
+                        if(product.sample == 1){ real_subtotal = 0 ;}
+                        var subtotalHtml = '<span class="js-subtotal-cur">小计：￥<span class="js-product-subtotal">'+real_subtotal+'</span></span><br>';
+                        if(correct_price_info.real_pay!==correct_price_info.should_pay){
+                            var should_subtotal = jlPrice.fixed_float(correct_price_info.should_pay*num);
+                            subtotalHtml = '<span class="js-subtotal-cur jl-price-origin">原价：￥<span class="js-product-subtotal">'+should_subtotal+'</span></span><br>'+subtotalHtml
+                        }
+                        if(product.basket_num - product.store >0 && product.earnest_scale >0){
+                            $(this).data("deposite","1");
+                            var desposite_money = (real_subtotal *product.earnest_scale).toFixed(2);
+                            subtotalHtml +='<div class="js-subtotal-cur">订金：￥<span class="js-product-subtotal">'+desposite_money+'</span></div>';
+                        };
+                        $(this).find('.jl-product-subtotal').html(subtotalHtml);
+                        if($(this).find('.jl-box').hasClass('jl-cur')){
+                            total += parseFloat(real_subtotal);
+                        }
+                    });
+                    $('.js-total').text(total.toFixed(2))
+                };
+                check_price(basket_data);
+                //勾选
+                var $checkbox = $('.js-product-checkbox');
+                var $settle_btn = $('.jl-settle').children('.js-settle');
+                /*$checkbox.on('click',function () {
+                    $(this).find(".jl-get-check").toggleClass('jl-cur');
+                    check_price(basket_data);
+                    var active_length = $('.js-product-checkbox.jl-cur').length;
+                    if($checkbox.length===active_length){
+                        $('.js-product-checkbox-all').addClass('jl-cur')
+                    }
+                    else { $('.js-product-checkbox-all').removeClass('jl-cur') }
+                    if(active_length>0){
+                        $settle_btn.addClass('jl-cur-checkbox')
+                    }
+                    else { $settle_btn.removeClass('jl-cur-checkbox') }
+                    checkSettleBtn()
+                });*/
+                $(".jl-check-box").on('click',function () {
+                    $(this).find(".jl-get-check").toggleClass('jl-cur');
+                    check_price(basket_data);
+                    var active_length = $('.js-product-checkbox.jl-cur').length;
+                    if($checkbox.length===active_length){
+                        $('.js-product-checkbox-all').addClass('jl-cur')
+                    }
+                    else { $('.js-product-checkbox-all').removeClass('jl-cur') }
+                    if(active_length>0){
+                        $settle_btn.addClass('jl-cur-checkbox')
+                    }
+                    else { $settle_btn.removeClass('jl-cur-checkbox') }
+                    checkSettleBtn()
+                });
+                $('.js-product-checkbox-all').on('click',function () {
+                    var now = $(this).hasClass('jl-cur');
+                    if(now){
+                        $(this).removeClass('jl-cur');
+                        $('.js-product-checkbox').removeClass('jl-cur');
+                        $settle_btn.removeClass('jl-cur-checkbox');
+                    }
+                    else {
+                        $(this).addClass('jl-cur');
+                        $('.js-product-checkbox').addClass('jl-cur');
+                        $settle_btn.addClass('jl-cur-checkbox');
+                    }
+                    checkSettleBtn();
+                    check_price(basket_data);
+                });
+                $('.js-product-checkbox-all-text').on('click',function () {
+                    $('.js-product-checkbox-all').click()
+                });
+                //检查结算按钮
+                var checkSettleBtn = function () {
+//                        var $checked_box = $('.js-product-checkbox.jl-cur');
+//                        var isPass = false;
+//                        $checked_box.each(function () {
+//                            console.log('??');
+//                            var $li = $(this).parents('.jl-cart-li');
+//                            var index = $li.data('id');
+//                            var product = basket_data[index];
+//                            if((product.store>0)&&(!product.price_section.error)){
+//                                isPass = true;
+//                            }
+//                        });
+                    if($settle_btn.hasClass('jl-cur-checkbox')){
+                        $settle_btn.addClass('jl-cur')
+                    }
+                    else {
+                        $settle_btn.removeClass('jl-cur')
+                    }
+                };
+                //数量调整
+                var timer = null;
+                $('.js-product-num').on('change',function () {
+                    //保留上一个值，做提交判断
+                    var num = parseInt($(this).val());
+                    num = num ? Math.abs(num) :1;
+                    var $parent = $(this).parents('.jl-cart-li');
+                    var index = $parent.data('id');
+                    $(this).val(num);
+                    check_price(basket_data);
+                    var pid = basket_data[index].id;
+                    var data={pid:pid,num:num,num_is_add:0};
+                    if($(this).data("sample") == 1){ data.sample_edit ="sample_edit"; }
+                    $.post("{:U('Home/Basket/basketAddProduct')}",data,function(res){
+                        clearTimeout(timer);
+                        timer = setTimeout(function(){ window.location.reload(true);},600);
+                    });
+                });
+                $('.jl-minus').on('click',function () {
+                    var $input = $(this).siblings('.js-product-num');
+                    var num = parseInt($input.val())-1;
+                    if(num<=0){
+                        $(this).parents('.jl-cart-li').find('.jl-delete').click();
+                    }
+                    else {
+                        var index = $(this).parents('.jl-cart-li').data('id');
+                        $input.val(num);
+                        check_price(basket_data);
+                        var pid = basket_data[index].id;
+                        var data = {pid:pid,num:num,num_is_add:0};
+                        if($(this).next().data("sample") == 1){ data.sample_edit ="sample_edit"; }
+                        $.post("{:U('Home/Basket/basketAddProduct')}",data,function(res){
+                            window.location.reload(true);
+                        });
+                    }
+                });
+                $('.jl-add').on('click',function () {
+                    var $input = $(this).siblings('.js-product-num');
+                    var num = parseInt($input.val())+1;
+                    var index = $(this).parents('.jl-cart-li').data('id');
+                    $input.val(num);
+                    check_price(basket_data);
+                    var pid = basket_data[index].id;
+                    var data = {pid:pid,num:num,num_is_add:0};
+                    if($(this).prev().data("sample") == 1){ data.sample_edit ="sample_edit"; }
+                    $.post("{:U('Home/Basket/basketAddProduct')}",data,function(res){
+                        window.location.reload(true);
+                    });
+                });
+                //删除
+                $('.jl-delete').on('click',function () {
+                    var $li = $(this).parents('.jl-cart-li');
+                    var index = $li.data('id');
+                    var sample = $li.data('sample');
+                    var pid = basket_data[index].id;
+                    var delete_data = {num:0};
+                    if(sample == 1){
+                        delete_data.sample_id=[pid] ;
+                     }else{
+                        delete_data.pid=[pid] ;
+                    };
+                    modal.confirm({
+                        title:'删除宝贝？',
+                        brief:'确认要删除该商品吗？',
+                        confirm:function () {
+                            $.post("{:U('Home/Basket/basketAddProduct')}",delete_data, function (res) {
+                                res = $.parseJSON(res);
+                                if(res.error===0){
+                                    $li.fadeOut(function () {
+                                        $li.remove();
+                                        var length = $('#jl-cart-content').children().length;
+                                        if(length===0){
+                                            location.reload()
+                                        }
+                                    })
+                                }
+                                else{
+                                    modal.alert({
+                                        title:res.msg
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+                $('.js-deletes').on('click',function () {
+                    var pid = [];
+                    var $array = [];
+                    var $sample = [];
+                    var datas = {num:0};
+                    $('.jl-cart-li').each(function () {
+                        var $this = $(this);
+                        if($this.find('.jl-box').hasClass('jl-cur')){
+                            var index = $this.data('id');
+                            if($this.data("sample") == 1){
+                                $sample.push(basket_data[index].id);
+                                $array.push($this);
+
+                            }else{
+                                pid.push(basket_data[index].id);
+                                $array.push($this)
+                            }
+
+                        }
+                    });
+                    datas.pid=pid;
+                    datas.sample_id = $sample;
+                    if(pid.length==0 && $sample.length == 0){
+                        modal.alert({
+                            title:"请勾选需要删去商品"
+                        });
+                    }else{
+                        modal.confirm({
+                            title:'删除宝贝？',
+                            brief:'确认要删除该商品吗？',
+                            confirm:function () {
+                                $.post("{:U('Home/Basket/basketAddProduct')}",datas, function (res) {
+                                    res = $.parseJSON(res);
+                                    if(res.error===0){
+                                        $.each($array,function (index,$value) {
+                                            $value.fadeOut(function () {
+                                                $(this).remove();
+                                                var length = $('#jl-cart-content').children().length;
+                                                if(length===0){
+                                                    location.reload();
+                                                }
+                                            })
+                                        });
+                                    }
+                                    else{
+                                        modal.alert({
+                                            title:res.msg
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                //收藏夹
+                $('.js-add-collect').on('click',function () {
+                    if(!isLogin){
+                        window.location.href = '/Home/Account/login';
+                        return
+                    }
+                    var pid = [];
+                    var $array = [];
+                    $('.jl-cart-li').each(function () {
+                        var $this = $(this);
+                        if($this.find('.jl-box').hasClass('jl-cur')){
+                            var index = $this.data('id');
+                            pid.push(basket_data[index].id);
+                            $array.push($this);
+                        }
+                    });
+                    if(pid.length!==0){
+                        $.post("{:U('Home/Product/addCollect')}",{p_id:pid}, function (res) {
+                            if(res.status===0){
+                                modal.confirm({
+                                    title:'收藏成功',
+                                    brief:'商品已加入收藏夹',
+                                    confirmText: '查看收藏夹',
+                                    top:100,
+                                    confirm:function () {
+                                        location.href = '{:U("Home/User/favorite")}';
+                                    }
+                                });
+                            }
+                            else{
+                                modal.alert({
+                                    title:res.msg
+                                });
+                            }
+                        });
+                    }
+                });
+                //提交
+                $('.js-settle').on('click',function () {
+                    if(!isLogin){
+                        window.location.href = '/Home/Account/login';
+                        return
+                    }
+                    if($(this).hasClass('jl-cur')){
+                        var pid = [];
+                        var sample=[];
+                        var depositeLength = 0;
+                        var isPass = true;
+                        var notDesposite = true;
+                        var noStore = 0;
+                        var $curs = $('.js-product-checkbox.jl-cur');
+                        if($curs.length===0){
+                            modal.alert({
+                                title:'请勾选需要的商品'
+                            });
+                            return
+                        }
+                        var isOpenPass = '';
+                        $curs.each(function () {
+                            var $li = $(this).parents('.jl-cart-li');
+                            var $deposite = $li.data("deposite");
+                            var index = $li.data('id');
+                            var product = basket_data[index];
+                            var num = parseInt($li.children('.jl-count').children('.js-product-num').val());
+                            var store = parseInt(product.store);
+                            var min = parseInt(product.min);
+                            var min_open = parseInt(product.min_open);
+                            if($deposite){
+                                depositeLength ++;
+                            };
+                            if(product.price_section.error){
+                                modal.alert({
+                                    title:'结算失败',
+                                    brief:product.p_sign+'的价格出错，请联系客服'
+                                });
+                                isPass = false;
+                                return false
+                            }
+                            else if((min_open===0)&&(num%min!==0)){
+                                isOpenPass+=product.p_sign+'的最小包装为'+min+'<br>';
+                                isPass = false;
+                            }
+                            else{
+                                if(num>store){
+                                    noStore++;
+                                }
+                                if(product.sample == 1){ sample.push(product.id);}else{ pid.push(product.id)};
+                            }
+                        });
+                        if(isOpenPass!==''){
+                            modal.alert({
+                                title:'结算失败',
+                                brief:isOpenPass+'购买数量必需是最小包装的整数倍'
+                            });
+                            return
+                        }
+                        var createOrder = function () {
+                            var prop = '';
+                            $.each(pid,function (index,value) {
+                                prop += 'pid[]='+ value;
+                                if((index)!==pid.length){
+                                    prop+='&'
+                                };
+                            });
+                            $.each(sample,function (index,value) {
+                                //if(pid.length>0){ prop+='&';}
+                                prop += 'sample[]='+ value;
+                                if((index)!==sample.length){
+                                    prop+='&'
+                                };
+                            })
+                            window.location.href='{:U("Home/Order/createOrder")}?'+prop;
+                        };
+                        if($curs.length != depositeLength && depositeLength>0){
+                            modal.alert({
+                                title:'订金商品和非订金商品不能同时下单'
+                            });
+                            return;
+                        };
+                        if((noStore!==0)&&(noStore!==$curs.length)){
+                            isPass = false;
+                            createOrder();
+                            /*modal.alert({
+                                title:'结算确认',
+                                //brief:'库存充足商品不能与库存不足商品一起结算<br/>请分开下单',
+                                brief:'全部商品到货后一起发货<br>如需分开发货请分开下单',
+                                cancelText:'取消',
+                                confirm:function () {
+                                    createOrder()
+                                }
+                            });*/
+                        }
+                        //在付定金模式而且不是一个的时候，需要确认是否等待一起发货
+                        else if((noStore===$curs.length)&&($curs.length!==1)){
+                            isPass = false;
+                            createOrder();
+                            /*modal.confirm({
+                                title:'结算确认',
+                                brief:'全部商品到货后一起发货<br>如需分开发货请分开下单',
+                                cancelText:'取消',
+                                confirm:function () {
+                                    createOrder()
+                                }
+                            });*/
+                        }
+                        else if((noStore===$curs.length)){
+                            isPass = false;
+                            modal.confirm({
+                                title:'结算确认',
+                                brief:'当前库存不足，需等待交期到货后发货',
+                                cancelText:'取消',
+                                confirm:function () {
+                                    createOrder()
+                                }
+                            });
+                        }
+                        if(!isPass){ return }
+                        createOrder()
+                    }
+                })
+            });
+        })
+    </script>
+</block>

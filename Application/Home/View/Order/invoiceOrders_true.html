@@ -1,0 +1,783 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">待开发票订单</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/myOrder.css">
+    <style>
+        .jl-product-detail .jl-table-content{
+            display: none;
+        }
+    </style>
+</block>
+
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <!-- 标题 -->
+    <ul class="jl-order-title jl-chose-title">
+        <li class="jl-chose">全选</li>
+        <li class="jl-goods">商品</li>
+        <li class="jl-name">名称</li>
+        <li class="jl-price">单价</li>
+        <li class="jl-count">数量</li>
+        <li class="jl-goods-operation">商品操作</li>
+        <li class="jl-subtotal">小计/元</li>
+        <li class="jl-state">交易状态</li>
+        <li class="jl-operation">交易操作</li>
+    </ul>
+
+    <!-- 订单详情 -->
+    <notempty name="order_list">
+        <volist name="order_list" id="order">
+            <table class="jl-product-detail jl-noInvoice jl-chose-title" style="margin-bottom: 20px;width:100%">
+                <tr class="jl-table-head" style="padding-right: 20px;">
+                    <th colspan="3" style="padding-left:0;padding-right: 20px;">
+                        <div class="jl-chose" style="display: inline-block;text-align: center;">
+                            <i class="jl-chose-checked"></i>
+                        </div>
+                        {$order.create_at}
+                        <span>订单编号：<i class="js-sn">{$order.order_sn}</i></span>
+                        <span style="color:#e84343;margin-right: 20px;">开票金额：{$order.total}</span>
+                        <span class="js-check-detail" style="float: right;cursor: pointer">查看详情</span>
+                    </th>
+                    <?php $g_count = count($order['goods']); ?>
+                </tr>
+                <volist name="order.goods" id="good">
+                    <tr class="jl-table-content">
+                        <td>
+                            <ul class="jl-detail-content jl-cle">
+                                <li class="jl-goods" style="margin-left: 54px;">
+                                    <notempty name="good.cover_image">
+                                        <img src="{$good.cover_image}" alt="{$good.name}">
+                                        <else />
+                                        <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                    </notempty>
+                                </li>
+                                <li class="jl-name">{$good.p_name}</li>
+                                <li class="jl-price">￥{$good.p_price}</li>
+                                <li class="jl-count">{$good.p_num}</li>
+                                <li class="jl-goods-operation">
+                                    <if condition="$good.handle_status eq 6  ">
+                                        <a href="{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}">退款成功</a>
+                                        <elseif condition="$good.handle_status eq 7" />
+                                        <a href="{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}">退款关闭</a>
+                                        <elseif condition="$good.handle_status egt 1" />
+                                        <a href="{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}">退款中</a>
+                                        <elseif condition="$order.order_status gt 1" />
+                                        <a href="{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}">退货/退款</a>
+                                        <else />
+                                        无
+                                    </if>
+                                </li>
+                                <li class="jl-subtotal">￥<i>{$good.p_subtotal}</i></li>
+                            </ul>
+                        </td>
+                        <if condition="$i eq 1 ">
+                            <td rowspan="{$g_count}">
+                                <div class="jl-state">
+                                    <if condition="$order.order_status eq 1">
+                                        <p>待付款</p><p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                        <elseif condition="$order.order_status eq 2" />
+                                        <p>{:C('ORDER_STATUS.'.$order['order_status'])}</p>
+                                        <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                        <elseif condition="$order.order_status eq 6" />
+                                        <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                        <div class="jl-logistics-way" data-sn="{$order.order_sn}">
+                                            <a href="#">查看物流</a>
+                                            <div class="jl-logistics-popup">
+                                                <i class="jl-arr-top"></i>
+                                                <div class="jl-logistics-title">
+                                                    <span data-code="{$order.delivery_code}" class="jl-delivery-name">{$order['delivery_name']}</span>
+                                                    <span data-num="{$order.delivery_num}" class="jl-delivery-num">运单号：{$order['delivery_num']}</span>
+                                                </div>
+                                                <ul class="jl-delivery-text"></ul>
+                                            </div>
+                                        </div>
+                                        <else />
+                                        <p>{:C('ORDER_STATUS.'.$order['order_status'])}</p>
+                                        <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                        <div class="jl-logistics-way" data-sn="{$order.order_sn}">
+                                            <a href="#">查看物流</a>
+                                            <div class="jl-logistics-popup">
+                                                <i class="jl-arr-top"></i>
+                                                <div class="jl-logistics-title">
+                                                    <span data-code="{$order.delivery_code}" class="jl-delivery-name">{$order['delivery_name']}</span>
+                                                    <span data-num="{$order.delivery_num}" class="jl-delivery-num">运单号：{$order['delivery_num']}</span>
+                                                </div>
+                                                <ul class="jl-delivery-text"></ul>
+                                            </div>
+                                        </div>
+                                    </if>
+                                </div>
+                            </td>
+                            <td rowspan="{$g_count}">
+                                <p class="jl-operation">
+                                    <if condition="$order.order_status eq 1 ">
+                                        <a href="javascript:;" class="jl-pay-money">立即支付</a>
+                                        <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                        <elseif condition="$order.order_status  eq 2"/>
+                                        <elseif condition="$order.order_status  eq 3"/>
+                                        <if condition="$order.pay_name eq 货到付款 AND $order.cod_status eq 0">
+                                            <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                            <elseif condition="$order.pay_name eq 货到付款 AND $order.cod_status eq 1" />
+                                            <a href="javascript:;" class="jl-confirm-receipt">确认收货</a>
+                                            <else />
+                                            <a href="javascript:;" class="jl-confirm-receipt">确认收货</a>
+                                        </if>
+                                        <elseif condition="$order.order_status  eq 4"/>
+
+                                        <a href="{:U('Home/Order/comment', ['order_sn'=>$order['order_sn']])}" class="jl-immediate-appraise">立即评价</a>
+                                        <elseif condition="$order.order_status  eq 5"/>
+
+                                        <a href="{:U('Home/Order/myAppraise')}" class="jl-appraise">查看评价</a>
+                                        <else />
+                                    </if>
+                                    <if condition="$invoiceOrders eq 1 ">
+                                        <else />
+                                        <a href="javascript:;" class="jl-invoicing">开发票</a>
+                                    </if>
+                                </p>
+                            </td>
+                        </if>
+                    </tr>
+                </volist>
+            </table>
+        </volist>
+
+        <p style="margin-bottom: 10px;">选择收票人信息：
+            <span class="jl-mores" style="float: right;color:#05baae;cursor: pointer">查看更多收票人信息</span>
+            <if condition="count($userOrderInvoice) egt 5">
+                <else />
+                <span class="jl-add-invoice" style="float: right;color:#05baae;cursor: pointer;margin-right: 20px">新增收票人信息</span>
+            </if>
+        </p>
+        <ul class="jl-special-invoice jl-cle">
+            <volist name="userOrderInvoice" id="vo">
+                <empty name="vo.invoice_status">
+                    <if condition="$key eq 0 ">
+                        <li data-id="{$vo.id}" class="jl-cur" data-aid="{$key}">
+                        <else />
+                        <li data-id="{$vo.id}" class="jl-hide" style="display: none" data-aid="{$key}">
+                    </if>
+                <else />
+                    <li data-id="{$vo.id}" class="jl-cur" data-aid="{$key}">
+                </empty>
+                    <div class="jl-ordinary-top">
+                        <p class="jl-ordinary-title">发票抬头:</p>
+                        <p class="jl-ordinary-name">{$vo.invoice_header}</p>
+                    </div>
+                    <div class="jl-special-phone">
+                        <p class="jl-ordinary-title">地址、电话:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">{$vo.company_area_code_name}{$vo.company_address}</span>
+                            <span class="jl-ordinary-telephone">{$vo.company_phone}</span>
+                        </p>
+                    </div>
+                    <div class="jl-special-number">
+                        <p class="jl-ordinary-title">纳税人识别号:</p>
+                        <p class="jl-ordinary-name">{$vo.company_tax_code}</p>
+                    </div>
+                    <div class="jl-special-bank">
+                        <p class="jl-ordinary-title">开户行、账号:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">{$vo.company_bank_name}</span>
+                            <span class="jl-ordinary-telephone">{$vo.company_bank_acount}</span>
+                        </p>
+                    </div>
+                    <div class="jl-ordinary-bottom">
+                        <p class="jl-ordinary-title">收票人信息:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">{$vo.invoice_owner}</span>
+                            <span class="jl-ordinary-news">{$vo.area_code_name}{$vo.address}</span>
+                            <span class="jl-ordinary-phone">{$vo.mobile}</span>
+                        </p>
+                    </div>
+                    <i></i>
+                </li>
+            </volist>
+        </ul>
+
+        <p style="margin-bottom: 10px">开票说明：</p>
+        <div class="jl-instruction">
+            <ul class="jl-invoice-instruction">
+                <li>1、本商城发票一个月只开一次；</li>
+                <li>2、本商城的发票都是集中到每月的20号-28号开票；</li>
+                <li>3、本商城订单总金额累计达到2万才开发票，累计不够2万的，继续顺延直至达到2万才开发票；</li>
+                <li>4、商品退货退款，如果退回两个月内的有效发票，则正常退款；发票不接受平邮或到付</li>
+                <li>5、商品退货退款，如果不能退回有效发票，则按17%税点扣除税金后的金额退款。</li>
+            </ul>
+        </div>
+
+        <ul id="jl-settlement">
+            <li class="jl-chose-all">
+                <i class="jl-choses"></i>
+                全选
+            </li>
+            <li data-type="2" class="jl-apply-btn">普票</li>
+            <li data-type="1" style="margin-right: 10px" class="jl-apply-btn">增值税专用票</li>
+            <li class="jl-total-money">总金额：<span>￥0.00</span></li>
+        </ul>
+
+
+        <else />
+        <div class="jl-empty">
+            <img src="__PUBLIC__/Home/Public/img/empty.png" alt="">
+            <h4>亲爱的客官，空空如也啊！</h4>
+        </div>
+    </notempty>
+
+    <!-- 增值税专票弹窗 -->
+    <div class="js-popup-special">
+        <div class="jl-bg"></div>
+        <div class="jl-consignee-main">
+            <div class="jl-title">新增收票人信息<span class="jl-close"></span></div>
+            <form action="" id="js-add-invoice">
+                <ul class="jl-popup-content">
+                    <li class="jl-cle">
+                        <p class="jl-first">
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">发票抬头</span>
+                            <input class="js-enter-next js-check-input"
+                                   type="text" placeholder="请输入发票抬头" name="invoice_header" data-title="发票抬头">
+                            <i class="jl-input-error-icon"></i>
+                        </p>
+                        <p>
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">企业电话</span>
+                            <input class="js-enter-next js-check-input js-check-input-phone-2"
+                                   type="text" placeholder="请输入企业电话" name="company_phone" data-title="企业电话">
+                            <i class="jl-input-error-icon"></i>
+                        </p>
+                    </li>
+                    <li class="jl-cle">
+                        <p>
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">注册地址</span>
+                        </p>
+                        <div class="jl-c-de js-selector-container1">
+                            <input type="text"
+                                   class="js-selector-input jl-c-hidden jl-y-select-input js-enter-next jl-check-address"
+                                   name="company_area_code"  placeholder="" data-title="注册地址">
+                            <div class="jl-c-address jl-y-select js-select-first">
+                                <div class="jl-y-select-title">
+                                    <span class="jl-c-c text-ellipsis">请选择</span>
+                                    <b class="jl-top-tri"></b>
+                                    <b class="jl-bottom-tri"></b>
+                                </div>
+                                <ul class="lj-option-box"></ul>
+                            </div>
+                            <div class="jl-c-address jl-y-select js-select-second">
+                                <div class="jl-y-select-title">
+                                    <span class="jl-c-c text-ellipsis">请选择</span>
+                                    <b class="jl-top-tri"></b>
+                                    <b class="jl-bottom-tri"></b>
+                                </div>
+                                <ul class="lj-option-box"></ul>
+                            </div>
+                            <div class="jl-c-address jl-y-select js-select-third">
+                                <div class="jl-y-select-title">
+                                    <span class="jl-c-c text-ellipsis">请选择</span>
+                                    <b class="jl-top-tri"></b>
+                                    <b class="jl-bottom-tri"></b>
+                                </div>
+                                <ul class="lj-option-box"></ul>
+                            </div>
+                            <i class="jl-input-error-icon jl-address-error"></i>
+                        </div>
+                    </li>
+                    <li class="jl-cle">
+                        <p class="jl-block">
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">详细地址</span>
+                            <input class="js-enter-next js-check-input"
+                                   type="text" placeholder="请输入详细地址" name="company_address" data-title="详细地址">
+                            <i class="jl-input-error-icon"></i>
+                        </p>
+                    </li>
+                    <li class="jl-cle">
+                        <p>
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">纳税人识别号</span>
+                            <input class="js-enter-next js-check-input"
+                                   type="text" placeholder="请输入纳税人识别号" name="company_tax_code" data-title="税务登记号">
+                            <i class="jl-input-error-icon"></i>
+                        </p>
+                    </li>
+                    <li class="jl-cle">
+                        <p class="jl-first">
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">开户银行</span>
+                            <input class="js-enter-next js-check-input"
+                                   type="text" placeholder="请输入开户银行" name="company_bank_name" data-title="开户银行">
+                            <i class="jl-input-error-icon"></i>
+                        </p>
+                        <p>
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">银行账号</span>
+                            <input class="js-enter-next js-check-input"
+                                   type="text" placeholder="请输入银行账号" name="company_bank_acount" data-title="银行账号">
+                            <i class="jl-input-error-icon"></i>
+                        </p>
+                    </li>
+                    <li class="jl-cle">
+                        <p class="jl-first">
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">收票人</span>
+                            <input class="js-enter-next js-check-input"
+                                   type="text" placeholder="请输入收票人" name="invoice_owner" data-title="收票人">
+                            <i class="jl-input-error-icon"></i>
+                        </p>
+                        <p>
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">手机号码</span>
+                            <input class="js-enter-next js-check-input js-check-input-phone"
+                                   type="text" placeholder="请输入手机号码" data-title="手机号码" name="mobile">
+                            <i class="jl-input-error-icon"></i>
+                        </p>
+                    </li>
+                    <li class="jl-cle">
+                        <p>
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">所在地址</span>
+                        </p>
+                        <div class="jl-c-de js-selector-container2">
+                            <input type="text"
+                                   class="js-selector-input jl-c-hidden js-enter-next jl-y-select-input jl-check-address"
+                                   name="area_code"  placeholder="" data-title="所在地址">
+                            <div class="jl-c-address jl-y-select js-select-first">
+                                <div class="jl-y-select-title">
+                                    <span class="jl-c-c text-ellipsis">请选择</span>
+                                    <b class="jl-top-tri"></b>
+                                    <b class="jl-bottom-tri"></b>
+                                </div>
+                                <ul class="lj-option-box"></ul>
+                            </div>
+                            <div class="jl-c-address jl-y-select js-select-second">
+                                <div class="jl-y-select-title">
+                                    <span class="jl-c-c text-ellipsis">请选择</span>
+                                    <b class="jl-top-tri"></b>
+                                    <b class="jl-bottom-tri"></b>
+                                </div>
+                                <ul class="lj-option-box"></ul>
+                            </div>
+                            <div class="jl-c-address jl-y-select js-select-third">
+                                <div class="jl-y-select-title">
+                                    <span class="jl-c-c text-ellipsis">请选择</span>
+                                    <b class="jl-top-tri"></b>
+                                    <b class="jl-bottom-tri"></b>
+                                </div>
+                                <ul class="lj-option-box"></ul>
+                            </div>
+                            <i class="jl-input-error-icon jl-address-error"></i>
+                        </div>
+                    </li>
+                    <li class="jl-cle">
+                        <p class="jl-block">
+                            <i class="jl-mandatory"></i>
+                            <span class="jl-name">详细地址</span>
+                            <input class="js-enter-next js-check-input"
+                                   type="text" placeholder="请输入详细地址" name="address" data-title="详细地址">
+                            <i class="jl-input-error-icon"></i>
+                        </p>
+                    </li>
+                    <li>
+                        <input type="button" class="jl-popup-submit" value="保存收票人信息">
+                        <!--<button class="jl-popup-submit">保存收票人信息</button>-->
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+
+    <!-- 分页 -->
+    <!--{$page}-->
+
+
+</block>
+
+
+<block name="js">
+
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery','jl-modal'], function($,modal) {
+
+                modal.option({
+                    left:-77
+                });
+                require(['Home/Public/js/address-select'],function (selector) {
+                    selector.init($('.js-selector-container0'));
+                    selector.init($('.js-selector-container1'));
+                    selector.init($('.js-selector-container2'));
+                    selector.init($('.js-selector-container3'))
+                });
+                //enter下一个
+                $('.js-enter-next').on('keydown',function (e) {
+                    var nextInputArray = $('.js-enter-next');
+                    if(parseInt(e.keyCode)===13){
+                        var index = nextInputArray.index(this);
+                        if(nextInputArray[index+1]){
+                            nextInputArray[index+1].focus()
+                        }
+                    }
+                });
+
+                $('.js-check-detail').on('click',function(){
+                    $(this).parents('.jl-table-head').siblings('.jl-table-content').stop().slideToggle();
+                });
+
+                //新增收票人信息
+                $('.jl-add-invoice').on('click',function(){
+                     $('.js-popup-special').fadeIn();
+                });
+                $('.jl-close').on('click',function () {
+                    $('.js-popup-special').fadeOut();
+                });
+                var $input_list=$('.jl-popup-content input').not('input[name=company_area_code],input[name=area_code]');
+                $input_list.on('blur',function () {
+                    if($(this).val()===""){
+                        $(this).parent().addClass('jl-false-note');
+                    }else{
+                        $(this).parent().removeClass('jl-false-note');
+                    }
+                });
+                //电话号码
+                var reg1=/^[0-9-]+$/;
+                $('.jl-popup-content input[name="company_phone"]').on('blur',function(){
+                    if(!reg1.test($(this).val())){
+                        $(this).parent().addClass('jl-false-note');
+                    }else{
+                        $(this).parent().removeClass('jl-false-note');
+                    }
+                });
+                //手机号码
+                var reg2 = /^1(3|4|5|7|8)\d{9}$/;
+                $('.jl-popup-content input[name="mobile"]').on('blur',function(){
+                    var mobile=$(this).val();
+                    if(!reg2.test(mobile)){
+                        $(this).parent().addClass('jl-false-note');
+                    }else{
+                        $(this).parent().removeClass('jl-false-note');
+                    }
+                });
+                //地址
+                $('.jl-popup-content input[name=area_code]').on('change',function(){
+                    if($(this).val()!==""){
+                        $(this).parent().removeClass('jl-false-note');
+                    }else{
+                        $(this).parent().addClass('jl-false-note');
+                    }
+                });
+                $('.jl-popup-content input[name=company_area_code]').on('change',function(){
+                    if($(this).val()!==""){
+                        $(this).parents().removeClass('jl-false-note');
+                    }else{
+                        $(this).parents().addClass('jl-false-note');
+                    }
+                });
+
+                //保存收票人信息
+                $('.jl-popup-submit').on('click',function () {
+                    $.each($input_list,function (index,el) {
+                       if($(el).val()===""){
+                           $(this).parent().addClass('jl-false-note');
+                       }else {
+                           $(this).parent().removeClass('jl-false-note');
+                       }
+                    });
+                    if($('input[name=company_area_code]').val()===""){
+                        $('input[name=company_area_code]').parent().addClass('jl-false-note');
+                    }else {
+                        $('input[name=company_area_code]').parent().removeClass('jl-false-note');
+                    }
+                    if($('input[name=area_code]').val()===""){
+                        $('input[name=area_code]').parent().addClass('jl-false-note');
+                    }else {
+                        $('input[name=area_code]').parent().removeClass('jl-false-note');
+                    }
+                    //电话
+                    if(!reg1.test($('.jl-popup-content input[name="company_phone"]').val())){
+                        $('.jl-popup-content input[name="company_phone"]').parent().addClass('jl-false-note');
+                    }else{
+                        $('.jl-popup-content input[name="company_phone"]').parent().removeClass('jl-false-note');
+                    }
+                    //手机号码
+                    if(!reg2.test($('.jl-popup-content input[name="mobile"]').val())){
+                        $('.jl-popup-content input[name="mobile"]').parent().addClass('jl-false-note');
+                    }else{
+                        $('.jl-popup-content input[name="mobile"]').parent().removeClass('jl-false-note');
+                    }
+                    var $false_list=$('.jl-popup-content .jl-false-note').length;
+                    if(!$false_list){
+                        $('.js-popup-special').fadeOut();
+                        var data=$('#js-add-invoice').serialize();
+                        $.ajax({
+                            url:"{:U('Home/Order/editUserOrderInvoice')}",
+                            type:'post',
+                            data:data,
+                            success:function(res){
+                                var data=$.parseJSON(res);
+                                if(data.error===0){
+                                    modal.alert({
+                                        title: '保存成功',
+                                        brief: '增值税专票保存成功！',
+                                        top: 100,
+                                        confirm:function(){
+                                            window.location.reload();
+                                        },
+                                        close:function(){
+                                            window.location.reload();
+                                        }
+                                    });
+                                }else{
+                                    modal.confirm({
+                                        title: '系统繁忙',
+                                        brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                        top: 100
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+
+                //全选  单选
+                var check=$(".jl-chose-checked");
+                function update_money(){
+                    var total=0;
+                    var lis=$('.jl-check-active').parents('.jl-table-head').siblings('tr').find('.jl-subtotal i');
+                    $.each(lis,function(index,el){
+                        total+=parseFloat($(el).html());
+                    });
+                    $("#jl-settlement .jl-total-money span").html('￥'+total.toFixed(2));
+                    if(total>=20000){
+                        $(".jl-apply-btn").addClass('js-apply-btn');
+                    }else{
+                        $(".jl-apply-btn").removeClass('js-apply-btn');
+                    }
+                }
+                check.on("click",function () {
+                    $(this).toggleClass("jl-check-active");
+                    var check_num=$('table .jl-chose-checked').length;
+                    var checked_num=$('table .jl-check-active').length;
+                    if(check_num===checked_num){
+                        $('.jl-choses').addClass('jl-check-active');
+                    }else{
+                        $('.jl-choses').removeClass('jl-check-active');
+                    }
+                    update_money();
+                });
+                $(".jl-chose-all").on("click",function(){
+                    if($('.jl-choses').hasClass('jl-check-active')){
+                        $('.jl-choses').removeClass('jl-check-active');
+                        $.each(check,function(index,el){
+                            $(el).removeClass('jl-check-active');
+                        })
+                    }else{
+                        $('.jl-choses').addClass('jl-check-active');
+                        $.each(check,function(index,el){
+                            $(el).addClass('jl-check-active');
+                        });
+                    }
+                    update_money();
+                });
+                //选择开票信息
+                $('.jl-special-invoice li').on("click",function(){
+                    $(this).addClass('jl-cur').removeClass('jl-hide').siblings().removeClass('jl-cur').addClass('jl-hide');
+                });
+                //查看更多收票人信息
+                $(".jl-mores").on("click",function () {
+                    $('.jl-special-invoice .jl-hide').slideToggle();
+                });
+
+                //提交
+                $("#jl-settlement").on("click",".js-apply-btn",function () {
+                    var list=$("table").find('.jl-check-active');
+                    var order_sn_arr =new Array();
+                    var invoice_type=$(this).attr("data-type");
+                    $.each(list,function (index,el) {
+                        var sn=$(el).parent().siblings('span').children('.js-sn').html();
+                        order_sn_arr.push(sn);
+                    });
+                    var invoice_id=$('.jl-special-invoice li.jl-cur').attr("data-id");
+                    if(!invoice_id){
+                        modal.confirm({
+                            title:'申请失败',
+                            brief:'收票人信息不能为空，请填写收票人信息！',
+                            top:100,
+                            confirm:function () {
+                                location.href="{:U('Home/Order/setSpecial')}";
+                            }
+                        });
+                    }else{
+                        $.ajax({
+                            type:'GET',
+                            url:"{:U('Home/Order/invoiceRequest')}",
+                            data:{'order_sn_arr':order_sn_arr,'invoice_id':invoice_id,'invoice_type':invoice_type},
+                            success:function (res) {
+                                var data=$.parseJSON(res);
+                                if(data.error===0){
+                                    location.href="{:U('Home/Order/invoiceList')}?status=0";
+                                }else{
+                                    modal.alert({
+                                        title:'申请失败',
+                                        brief:data.msg,
+                                        top:100
+                                    });
+                                }
+                            }
+                        })
+                    }
+                });
+
+
+                var get = $.parseJSON('{$get|json_encode} ');
+
+                //取消订单
+                $('.jl-cancel').on('click',function () {
+                    var $that=$(this);
+                    var $table=$that.parents('.jl-product-detail');
+                    var order_sn=$table.find('.jl-order-sn').html();
+                    modal.confirm({
+                        title:'取消订单',
+                        brief:'您确定要取消订单吗？',
+                        top:100,
+                        confirm:function () {
+                            $.post("{:U('Home/Order/cancleOrder')}",{order_sn:order_sn}, function (res) {
+                                if(res.status===0){
+                                    window.location.reload();
+                                }else{
+                                    modal.confirm({
+                                        title:'系统繁忙',
+                                        brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                        top:100
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                });
+
+
+                //确认收货
+                $('.jl-confirm-receipt').on('click',function(){
+                    var $that=$(this);
+                    var order_sn=$that.parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                    modal.confirm({
+                        title:'确认收货',
+                        brief:'您确定要收货吗？',
+                        top:100,
+                        confirm:function () {
+                            $.post("{:U('Home/Order/doDelivery')}",{order_sn:order_sn}, function (res) {
+                                if(res.status===0){
+                                    window.location.reload();
+//                                        $that.removeClass('jl-confirm-receipt').addClass('jl-immediate-appraise');
+//                                        $that.html('立即评价');
+//                                        $that.parents('td').siblings().children('.jl-state').find("p:first-child").html("待评价");
+                                }else{
+                                    modal.confirm({
+                                        title:'系统繁忙',
+                                        brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                        top:100
+                                    })
+                                }
+                            });
+                        }
+                    });
+                });
+
+                //立即支付
+                $('.jl-pay-money').on('click',function(){
+                    var $that=$(this);
+                    var order_sn=$that.parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                    $.ajax({
+                        type:'POST',
+                        url:"{:U('Home/Order/checkStore')}",
+                        data:{"order_sn":order_sn},
+                        success:function(res){
+                            var data=res.content;
+                            if(res.status===0){
+                                var tr=$that.parents('.jl-product-detail').find('tr').not('.jl-table-head');
+                                var $res=0;
+                                $.each(tr,function(index,el){
+                                    var pid=$(el).attr("data-id");
+                                    var store=$(el).find('.jl-count').html();
+                                    var $store=data[pid];
+                                    if($store<store){
+                                        modal.confirm({
+                                            title:'支付失败',
+                                            brief:'不好意思哦！你购买的商品库存不足，请重新下单',
+                                            top:100
+                                        });
+                                        $res++;
+                                        return;
+                                    }
+                                });
+                                if($res<=0){
+                                    window.location.href="{:U('Home/Order/userPayPlatform')}?order_sn="+order_sn;
+                                }
+                            }
+
+                        }
+                    });
+                });
+
+                //查看物流
+                $('.jl-logistics-way').each(function(){
+                    var t = $(this);
+                    t.hover(function(){
+                        var code = t.find('.jl-delivery-name').attr('data-code'), num = t.find('.jl-delivery-num').attr('data-num'), sn= t.data('sn');
+                        if( !t.hasClass('ajax-done') ){
+                            $.ajax({
+                                type:'post',
+                                url:'{:U("Home/kd/info")}',
+                                data:{shipperCode:code,logisticCode:num,orderCode:sn},
+                                success:function(res){
+                                    if( res.status != 1001 ){
+                                        res = $.parseJSON(res);
+                                        var str = '';
+                                        for( i=0; i< 4; i++ ){
+                                            if( i < 3 ){
+                                                if( i == 0){
+                                                    str += '<li class="jl-cur">';
+                                                }else{
+                                                    str += '<li>'
+                                                }
+                                                str += '<i></i><div><p>'+res[i].AcceptStation+'</p><p>'+res[i].AcceptTime+'</p></div></li>';
+                                            }else {
+                                                str += '<li class="jl-check-more"><a href="{:U(\'Home/Order/detail\')}?order_sn='+sn+'">查看全部</a></li>';
+                                            }
+                                        }
+                                    }else{
+                                        str = '<li class="jl-cur"><i></i><div><p>暂无物流信息</p></div></li>';
+                                    }
+                                    t.find('ul.jl-delivery-text').html(str);
+                                    t.addClass('ajax-done');
+                                }
+
+                            })
+                        }
+
+                    },function(){
+
+                    });
+                });
+
+            });
+        });
+    </script>
+
+</block>

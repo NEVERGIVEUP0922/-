@@ -1,0 +1,113 @@
+
+.editable-table-container .layui-table-body.layui-table-main{
+    overflow: scroll;
+}
+.editable-table-container .layui-table-body .layui-table-cell,
+.editable-table-container .layui-table-fixed .layui-table-body .layui-table-cell{
+    height: 40px;
+    white-space: normal;
+}
+
+.layui-table-cell[class$="pack_unit"],
+.layui-table-cell[class$="tax"],
+.layui-table-cell[class$="min_open"],
+.layui-table-cell[class$="cate_id"],
+.layui-table-cell[class$="show_site"],
+.layui-table-cell[class$="brand_id"]{
+    overflow: visible;
+}
+.img-tpl-btn{
+    font-size: 24px;
+}
+.action-tpl-tap-box .layui-input{
+    display:inline-block;
+    width: 200px;
+}
+.action-tpl-tap-box button{
+    border:none;
+    background-color: white;
+    padding: 0;
+    padding-left: 10px;
+}
+.action-tpl-tap-box .iconfont-jl{
+    font-size: 24px;
+}
+.jstree-div{
+    height: 400px;
+    width: 340px;
+    overflow: auto;
+}
+/*whisper*/
+.action-tpl-tap-list{
+    max-height: 351px;
+    overflow: auto;
+}
+.action-tpl-tap-section{
+    overflow: hidden;
+    margin-right: 10px;
+}
+.action-tpl-tap-add .iconfont-jl{
+    color: #4aaa4a;
+}
+.action-tpl-tap-delete .iconfont-jl{
+    color: #d7342e;
+}
+.disabled-container{
+    position: relative;
+}
+
+.disabled-container.disabled-active .disabled-mark{display: block}
+.disabled-mark{
+    display: none;
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.1;
+    z-index: 1;
+    cursor: not-allowed;
+}
+/*价格*/
+.price-data{
+    display: none;
+}
+.price-section-container{
+    width: 420px;
+}
+.price-section-delete{
+    display: none;
+    text-align: center;
+    color: #d7342e;
+    cursor: pointer;
+}
+.price-section-delete .iconfont-jl{
+    font-size: 24px;
+}
+.price-section-list>tr:last-child .price-section-delete{
+    display: block;
+}
+.price-section-add{
+    text-align: center;
+    cursor: pointer;
+    color: #4aaa4a;
+    border:1px solid #e6e6e6;
+    border-top: none;
+}
+.price-section-add:hover{
+    background-color: #f2f2f2;
+}
+.price-section-add .iconfont-jl{
+    font-size: 24px;
+}
+.price-section-table{
+    margin-bottom: 0;
+}
+.editable-table-container .layui-table-fixed{
+    z-index: 1;
+}
+/**/
+.layui-table-cell[class$="brand_id"] .layui-anim.layui-anim-upbit{
+    width: 200px;
+}

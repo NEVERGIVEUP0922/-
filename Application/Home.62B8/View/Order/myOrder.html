@@ -1,0 +1,1113 @@
+<extend name="Layout:layout-center"/>
+<block name="title">我的订单</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/myOrder.css">
+    <style>
+        .jl-hover-box{
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .jl-hover-box:hover .jl-hover-show-box{
+            display: block;
+        }
+        .jl-refund-container .jl-arr-top{
+            left: 154px;
+        }
+       .jl-water {
+            border: 1px solid #ddd;
+            background: none;
+            color: #393939;
+            display: block;
+            margin: 0 auto;
+            width: 100px;
+            height: 30px;
+            line-height: 30px;
+
+        }
+        .jl-water:hover {
+            border: 1px solid #e84343;
+            color: #e84343;
+            cursor: pointer;
+        }
+    </style>
+</block>
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <!-- 搜索条件 -->
+    <div class="jl-conditions jl-cle">
+        <div class="jl-conditions-search">
+            <!--{:dd($get)}-->
+            <input class="jl-search-input" type="text" value="{$get.p_sign}" placeholder="请输入商品名称或订单编号">
+            <button class="jl-conditions-btn">订单搜索</button>
+            <span class="jl-more-conditions">更多筛选条件<i class="jl-arrs"></i></span>
+        </div>
+    </div>
+    <div class="jl-conditions-pop jl-cle">
+        <ul>
+            <li>
+                <span>支付方式</span>
+                <select class="js-order-type">
+                    <option value="全部">全部</option>
+                    <option value="1" {$get['pay_type'] == '1' ? 'selected' : ''}>在线支付</option>
+                    <option value="2" {$get['pay_type'] == '2' ? 'selected' : ''}>账期支付</option>
+                    <option value="3" {$get['pay_type'] == '3' ? 'selected' : ''}>快递代收</option>
+<!--
+                    <option value="4" {$get['pay_type'] == '4' ? 'selected' : ''}>面对面付款</option>
+-->
+                    <option value="5" {$get['pay_type'] == '5' ? 'selected' : ''}>银行转账</option>
+                    <option value="6" {$get['pay_type'] == '6' ? 'selected' : ''}>线下支付</option>
+                </select>
+            </li>
+            <li>
+                <span>下单时间</span>
+                <input type="text" id="datepicker" unselectable="on" readonly class="jl-end-time"
+                       placeholder="请选择时间范围起始" name="end_time">
+                <b>-</b>
+                <input type="text" id="datepickerr" unselectable="on" readonly class="jl-end-time"
+                       placeholder="请选择时间范围结束" name="end_time">
+            </li>
+            <li>
+                <span>订单状态</span>
+
+                <select class="js-order-status">
+                    <option value="全部">全部</option>
+                    <option value="0" {$get['order_status'] == '0' ? 'selected' : ''}>新单</option>
+                    <option value="1" {$get['order_status'] == '1' ? 'selected' : ''}>锁单</option>
+                    <option value="2" {$get['order_status'] == '2' ? 'selected' : ''}>部分完成</option>
+                    <option value="3" {$get['order_status'] == '3' ? 'selected' : ''}>完成</option>
+                    <!--<option value="4" {$get['action'] == '4' ? 'selected' : ''}>已取消</option>-->
+                </select>
+            </li>
+            <li>
+                <span>评价状态</span>
+                <select class="js-appraise-status">
+                    <option>全部</option>
+                    <if condition="$get.is_comment eq '1'">
+                        <option selected value="1">待评价</option>
+                        <else/>
+                        <option value="1">待评价</option>
+                    </if>
+                    <if condition="$get.is_comment eq '2'">
+                        <option selected value="2">已评价</option>
+                        <else/>
+                        <option value="2">已评价</option>
+                    </if>
+                </select>
+            </li>
+            <li>
+                <span>子账号</span>
+                <select class="son-user" name="user_id">
+                    <option>全部</option>
+                    <volist name="sonList" id="list">
+                        <option value="{$list.user_id}">{$list.nick_name}</option>
+                    </volist>
+                </select>
+            </li>
+            <li>
+                <div><span class="jl-clear" type="button" style="padding:2px 6px ;background-color:#05baae;color:#fff;border:none;cursor: pointer" >清空</span></div>
+            </li>
+        </ul>
+    </div>
+    <!-- 标题 -->
+    <ul class="jl-order-title">
+        <li class="jl-goods">商品</li>
+        <li class="jl-name">名称</li>
+        <li class="jl-price">单价</li>
+        <li class="jl-count">数量</li>
+        <li class="jl-goods-operation">商品操作</li>
+        <li class="jl-subtotal">小计/元</li>
+        <li class="jl-state">交易状态</li>
+        <li class="jl-operation">交易操作</li>
+    </ul>
+    <notempty name="orderList">
+        <volist name="orderList" id="order">
+            <if condition="$order.pay_status eq 0 ">
+                <in name="order.pay_type" value="1">
+                    <p class="js-tishi">
+                        <i class="jl-mandatory"></i>
+                        未支付的订单可能随时会存在库存不足！
+                    </p>
+                </in>
+            </if>
+            <table class="jl-product-detail">
+                <?php
+                    $retreats_knot_total=0;
+                    $total_retreat_num_money = 0;
+                    $knot_money = 0;
+                    foreach($order['goodsList'] as $selfGood){
+                        $totalRetreatNum=0;
+                        $knot_nums=0;
+                        $retreat_sn = 0;
+                        if($order['knot'] == 2  || $selfGood['retreat']){
+                             if($selfGood['retreat']){
+                                foreach ($selfGood['retreat'] as $value) { if($value['handle_status'] == 3){ $retreat_sn= $value['re_sn'];};if(($value['handle_status'] == 6 ) && $value['retreat_money'] > 0 ){ $totalRetreatNum += $value['p_num'];} ;}
+                             }else{ $totalRetreatNum = 0;};
+                             if($order['knot'] == 2){ $knot_nums = $selfGood["knot_num"];};
+                            $retreats_knot_total +=($selfGood["p_num"] - $totalRetreatNum - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                            $knot_money += round(($selfGood["p_num"]  - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"],2);
+                        }else{
+                            $retreats_knot_total += $selfGood['pay_subtotal'];
+                        };
+                        $total_retreat_num_money += $totalRetreatNum*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                    };
+                    $knot_money+=(float)$order['total_deposits']>0?$order['total_deposits']:0;
+                    $knot_money_compared = ceil(($knot_money )*100)/100;
+                    $orderTotal = round($retreats_knot_total,2);
+                ?>
+                <tr class="jl-table-head">
+                    <th colspan="3">
+                        {$order.create_at}<span>订单编号：<b class="jl-order-sn">{$order.order_sn}</b><notempty name="order.order_user">——{$order.order_user}</notempty></span>
+                        <if condition="($order.pay_type eq 2)">
+                            <span class="js-pay">账期支付：
+                                <b>¥
+                                <if condition = "$order.knot eq 2">
+                                        {$retreats_knot_total}
+                                    <else/>
+                                    <notempty name="$order['goodsList'][0]['retreat']">
+                                        {$retreats_knot_total}
+                                        <else/>
+                                        {$order['total']-$order['total_deposits']|sprintf="%.2f",###}
+                                    </notempty>
+                                </if>
+                                </b></span>
+                        </if>
+                    </th>
+                </tr>
+                <volist name="order.goodsList" id="good">
+                    <tr data-id="{$good.p_id}">
+                        <td>
+                            <ul class="jl-detail-content jl-cle">
+                                <li class="jl-goods">
+                                    <notempty name="good.cover_image">
+                                        <img src="{$good.cover_image}" alt="{$good.name}" alt="无效图片"/>
+                                        <else/>
+                                        <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="无效图片"/>
+                                    </notempty>
+                                </li>
+                                <li class="jl-name">{$good.p_name}</li>
+                                <li class="jl-price">￥{$good.p_price_show}</li>
+                                <li class="jl-count">
+                                    <?php $totalRetreatNum=0;$isRetreat=0;foreach ($good['retreat'] as $value) { if($value){ $isRetreat = 2;if($value['handle_status'] == 6 || $value['handle_status'] == 5)$totalRetreatNum += $value['p_num']; };};?>
+
+                                    <if condition="($order.knot eq 2 && $good['knot_num'] gt 0) || $totalRetreatNum gt 0">
+                                        <span class="getValue" style="text-decoration: line-through">{$good.p_num}</span><br/>
+                                        <else/>
+                                        <span class="getValue">{$good.p_num}</span><br/>
+                                    </if>
+                                    <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                        <span  style="color: #e84343">已取消{$good["knot_num"]}</span><br/>
+                                        <else/>
+                                    </if>
+                                    <if condition="$good['retreat_num'] gt 0">
+                                        <notempty name="good['retreat']">
+                                            <if condition="$totalRetreatNum gt 0">
+                                                <div style="color: #e84343;">已退 {$totalRetreatNum}</div>
+                                            </if>
+                                        </notempty>
+                                        <else/>
+                                    </if>
+                                    <if condition="$order.knot eq 2 && $good['knot_num'] gt 0 ">
+                                        <span  style="color: #e84343">实计<?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></span>
+                                        <else/>
+                                        <notempty name="good['retreat']">
+                                            <if condition="$totalRetreatNum gt 0">
+                                                <div style="color: #e84343;">实计 <?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></div>
+                                            </if>
+                                            <else/>
+                                        </notempty>
+                                    </if>
+
+                                </li>
+                                <li class="jl-goods-operation">
+                                    <if condition="$order['ship_status'] neq '4'">
+                                        无
+                                        <elseif condition="$good['subtotal'] eq 0"/>
+                                        无
+                                        <else/>
+                                        <div class="jl-refund-container jl-hover-box">
+                                            <if condition="$retreat_sn gt 0">`
+                                                <a href="{:U('Home/Retreat/index',['re_sn'=>$retreat_sn,'action'=>'edit'])}">退货/退款</a>
+                                                <else/>
+                                                <a href="{:U('Home/Retreat/index',['order_sn'=>$order['order_sn']])}">退货/退款</a>
+                                            </if>
+                                            <div class="jl-hover-show-box jl-logistics-popup" style="width: 480px">
+                                                <i class="jl-arr-top"></i>
+                                                <div class="jl-logistics-title">
+                                                    <span>退货/退款历史</span>
+                                                </div>
+                                                <div style="padding: 10px;">
+                                                    <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                        <li style="width: 140px">退款号</li>
+                                                        <li style="width: 100px">退货数量</li>
+                                                        <li style="width: 100px">退货金额</li>
+                                                        <li style="width: 116px">退货状态</li>
+                                                    </ul>
+                                                    <table class="jl-product-detail">
+                                                        <tbody>
+                                                        <notempty name="good.retreat">
+                                                            <?php foreach( $good['retreat'] as $re ){ ?>
+                                                            <tr>
+                                                                <td style="width: 160px">{$re.re_sn}</td>
+                                                                <td style="width: 100px">{$re.p_num}</td>
+                                                                <td style="width: 100px">{$re.retreat_money}</td>
+                                                                <td style="width: 116px">
+                                                                    <a href="{:U('Home/Retreat/index',['re_sn'=>$re['re_sn']])}">
+                                                                        <switch name="re.handle_status">
+                                                                            <case value="1">审核中</case>
+                                                                            <case value="2">审核通过，待退货</case>
+                                                                            <case value="3">驳回,协商</case>
+                                                                            <case value="4">退货运输中</case>
+                                                                            <case value="5">已收货,待退款</case>
+                                                                            <case value="6">已完成</case>
+                                                                            <case value="7">退款撤销</case>
+                                                                            <case value="8">部分审核通过</case>
+                                                                        </switch>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <?php } ?>
+                                                            <else />
+                                                            <tr>
+                                                                <td rowspan="3">无</td>
+                                                            </tr>
+                                                        </notempty>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </if>
+                                </li>
+                                <li class="jl-subtotal">
+                                    <?php $knotMoney=round((($good['p_num'] - $good['knot_num']) * $good['pay_subtotal']/$good['p_num']),2);
+                                        $good_pay_subtotal_excal=round($good['pay_subtotal'],2);$good_subtotal_excal=round($good['subtotal'],2); ?>
+                                    <?php $totalRetreatNum = 0;foreach ($good['retreat'] as $value) { if($value){ if($value['handle_status'] == 6)$totalRetreatNum +=$value['p_num'];}; };?>
+
+                                    <if condition="$good['pay_subtotal'] neq $good['subtotal']">
+                                        <div style="text-decoration: line-through">￥{$good_subtotal_excal}</div>
+                                        <if condition="($order.knot eq 2 && $good['knot_num'] gt 0 )or $totalRetreatNum gt 0 ">
+                                            <else/>
+                                            <div  style="color: #e84343">￥{$good_pay_subtotal_excal}</div>
+                                        </if>
+                                        <else />
+
+                                    </if>
+                                    <?php $realPay=$good['pay_subtotal'] * ($good['p_num'] - $totalRetreatNum - $good['knot_num'])/$good['p_num'];$realPay_excal=round($realPay,2);?>
+                                    <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                        <span style="text-decoration: line-through">￥{$good.pay_subtotal}</span>
+                                        <div style="color: #e84343;">实付{$realPay_excal}</div>
+                                        <else/>
+                                        <notempty name="good['retreat']">
+                                            <if condition="$totalRetreatNum gt 0">
+                                                <div style="text-decoration: line-through">￥{$good.pay_subtotal}</div>
+                                                <div style="color: #e84343;">实付 {$realPay_excal}</div>
+                                            </if>
+                                            <else/>
+                                            <if condition="$good['pay_subtotal'] eq $good['subtotal']">
+                                                <div  >￥{$good_pay_subtotal_excal}</div>
+                                                <else />
+                                            </if>
+
+                                        </notempty>
+                                    </if>
+                                </li>
+                            </ul>
+                        </td>
+                        <if condition="$i eq 1 ">
+                            <td rowspan="{$order.goodsList|count}">
+                                <div class="jl-state">
+                                        <p style="font-weight: bold">{$order|getOrderStatus}</p>
+                                    <p>支付方式：<span style="color: #e84343">{$order.pay_type|getPayType}</span></p>
+                                    <if condition="$order.order_type eq 0">
+                                        <p>全款:￥
+                                            <?php $round_total_knot=round($retreats_knot_total,2);?>
+                                            <if condition="$order.knot eq 2">
+                                                {$round_total_knot}（<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                <else/>
+                                                <notempty name="good['retreat']">
+                                                    {$round_total_knot}(<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                    <else/>
+                                                    {$order['total']}
+                                                </notempty>
+                                            </if>
+
+                                        </p>
+                                        <elseif condition="$order.deposits_pay_status eq 0"/>
+                                        <p>全款:￥ {$order['total']}</p>
+                                        <if condition="$order.deposits_pay_status eq 0">
+                                            <p style="border-top: 1px solid #ddd;margin-top: 6px;padding-top: 6px;">预付定金</p>
+                                            <p>定金：￥{$order.total_deposits}</p>
+                                            <if condition="$order.total_deposits neq 0">
+                                                <p>定金支付方式：<span style="color: #e84343">{$order.deposits_pay_type|getPayType}</span></p>
+                                            </if>
+                                        </if>
+                                        <else/>
+                                        <p>尾款：￥{$order['total']-$order['order_has_pay']}</p>
+                                        <if condition="$order.deposits_pay_status eq 0">
+                                            <p style="border-top: 1px solid #ddd;margin-top: 6px;padding-top: 6px;">预付定金</p>
+                                            <p>定金：￥{$order.total_deposits}</p>
+                                            <if condition="$order.total_deposits neq 0">
+                                                <p>定金支付方式：<span style="color: #e84343">{$order.deposits_pay_type|getPayType}</span></p>
+                                            </if>
+                                        </if>
+                                    </if>
+                                    <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money or $total_retreat_num_money gt 0">
+                                        <p>已付金额：￥{$order['order_has_pay']}</p>
+                                        <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money">
+                                            <p><if condition=" $order.knot_status eq 20">已<else/>待</if>返差额：￥<span style="color: #e84343"><?php echo ( $order['order_has_pay'] > $knot_money ? round($order['order_has_pay'] - $knot_money,2) : 0);?></span></p>
+                                        </if>
+                                    </if>
+                                    <if condition=" $total_retreat_num_money gt 0">
+                                        <p>已退款：￥<span style="color: #e84343">{$total_retreat_num_money}</span></p>
+                                    </if>
+                                    <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                    <if condition="$order.knot gt 0">
+                                        <p>
+                                            <if condition="$order['knot'] eq 2">
+                                                <if condition="$order['pay_status'] gt 0">
+                                                    <if condition="$order['knot_status'] eq 0">
+                                                        返差额申请中
+                                                        <elseif condition="$order['knot_status'] eq 1"/>
+                                                        返差额申请已通过
+                                                        <elseif condition="$order['knot_status'] eq 5 "/>
+                                                        返差额申请失败，请继续申请
+                                                        <elseif condition="$order['knot_status'] eq 20"/>
+                                                        返差额已完成
+                                                        <else/>
+                                                        取消出货成功
+                                                    </if>
+                                                    <else/>
+                                                </if>
+                                              <elseif condition="$order['knot'] eq 1"/>
+                                                取消出货中
+                                              <elseif condition="$order['knot'] eq 3"/>
+                                                取消出货失败
+                                            </if>
+
+                                        </p>
+                                        <else/>
+                                    </if>
+                                    <notempty name="order['orderKdList']">
+                                        <div class="jl-logistics-way" data-sn="{$order.order_sn}">
+                                            <a href="#">查看物流</a>
+                                            <div class="jl-logistics-popup" style="width:450px;left:-29px;">
+                                                <i class="jl-arr-top" style="margin-left: -5px;"></i>
+                                                <div class="jl-logistics-title">
+                                                    <span>快递/物流列表</span>
+                                                </div>
+                                                <div style="padding: 10px;">
+                                                    <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                        <li style="width: 150px">快递公司</li>
+                                                        <li style="width: 150px">货运单号</li>
+                                                        <li style="width: 100px">操作</li>
+                                                    </ul>
+                                                    <table class="jl-product-detail">
+                                                        <tbody>
+                                                        <volist name="order['orderKdList']" id="kd">
+                                                            <tr>
+                                                                <td style="width: 150px">{$kd.hy_name}({$kd.kd_code})</td>
+                                                                <td style="width: 150px">{$kd.hy_num}</td>
+                                                                <td style="width: 100px"><a href="javascript:;" class="jl-kd-show" data-code="{$kd.kd_code}" data-num="{$kd.hy_num}" data-sn="{$kd.order_no}">查询物流</a></td>
+                                                            <tr>
+                                                        </volist>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </notempty>
+                                </div>
+                            </td>
+                            <td rowspan="{$order.goodsList|count}">
+                                <div class="jl-operation" data-sn="{$order.order_sn}">
+                                    <a href="javascript:;" class="jl-again">再次购买</a>
+                                    <?php $getStatue=getOrderStatus($order,1);?>
+                                    <if condition="($order['pay_type'] eq 1 or $order['deposits_pay_type'] == 1)and ($order['pay_status'] eq 0 or $order['pay_status'] eq 1 ) ">
+                                        <if condition="  $order['pay_status'] eq 0  ">
+                                                <if condition="$order['deposits_pay_type'] eq 1 and $order['order_type'] gt 0">
+                                                    <a href="javascript:;" class="jl-pay-money js-online-pay" >仅支付定金</a>
+                                                    <else/>
+                                                    <a href="javascript:;" class="jl-pay-money js-online-pay" >立即支付</a>
+                                                </if>
+                                            <elseif condition=" $order['pay_status'] eq 1 and  $order['pay_type'] eq 1"/>
+                                             <a href="javascript:;" class="jl-pay-money js-online-pay" >尾款支付</a>
+                                            <else/>
+                                        </if>
+                                    </if>
+
+                                    <if condition="(($order['deposits_pay_type'] eq 5 AND $order['deposits_pay_status'] eq 0) or $order['pay_type'] eq 5 )AND $order['pay_status'] neq 2 ">
+                                        <!--<a href="javascript:;" class="jl-pay-money js-bank-pay">提交水单</a>-->
+                                        <a  href="javascript:;" class="jl-water" style="margin-bottom:10px">上传水单</a>
+                                    </if>
+                                    <!--<if condition="$order['pay_type'] eq 5 AND $order['pay_status'] eq 1">
+                                        <a  href="javascript:;" class="jl-water" style="margin-bottom:10px">上传水单</a>
+                                    </if>-->
+                                    <notempty name="order['order_user']">
+                                        <else/>
+                                        <if condition="$order.knot egt 0">
+                                            <if condition="$order['order_has_pay'] gt $knot_money && $order['pay_type'] neq 2 && $order['knot'] eq 2 && ($order.knot_status eq 10000 or $order.knot_status eq 5)">
+                                                <a href="javascript:;" class="jl-counter-balance">返差额</a>
+                                                <else/>
+                                            </if>
+
+                                            <if condition="$order['display_kont'] gt 0 and ($order.knot eq 0 or $order.knot eq 3) and ( $order['total'] eq 0 or $order['order_status'] neq 0 ) "><!--0不展示 1展示 and $order['order_type'] neq 1-->
+                                                <a href="javascript:;" class="jl-account-bill">取消出货</a>
+                                                <else/>
+                                            </if>
+                                                <else/>
+                                        </if>
+                                        <if condition="($order['pay_status'] eq 0 and $order['ship_status'] eq 0 ) or ( $order.order_type gt 0&&$order.pay_status eq 1&&$order.deposits_pay_type eq 1 && $order.deposits_pay_status eq 1 &&$order.pay_type eq 1)"><!--||($order['total'] eq 0 and $order['order_status'] eq 0 )-->
+                                                <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                        </if>
+
+                                        <if condition="$order['is_receipt'] eq 1">
+                                            <a href="javascript:;" class="jl-confirm-receipt" data-is_part="{$order['isPart']}" data-part_id="{$order[hyInfo][0]['partid']}">确认收货</a>
+                                            <elseif condition="$order['is_receipt'] eq 2"/>
+                                            <a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}" class="jl-confirm-receipt" data-is_part="2" data-part_id="2">确认收货</a>
+                                        </if>
+                                        <if condition="$order['order_status'] eq 3">
+                                            <a href="javascript:;" class="jl-immediate-appraise">立即评价</a>
+                                        </if>
+                                        <if condition="$order['is_comment'] eq 2">
+                                            <a href="{:U('Home/Order/myAppraise')}" class="jl-appraise">查看评价</a>
+                                        </if>
+                                    </notempty>
+                                </div>
+                            </td>
+                        </if>
+                    </tr>
+                </volist>
+            </table>
+        </volist>
+        <else/>
+        <div class="jl-empty">
+            <img src="__PUBLIC__/Home/Public/img/empty.png" alt="">
+            <h4>亲爱的客官，空空如也啊！</h4>
+        </div>
+    </notempty>
+    {$page}
+    <div style="display: none" class="js-water-modal jl-modal-container vertical-box">
+        <div class="jl-modal-mask"></div>
+        <div class="jl-modal-box vertical-middle">
+            <div class="jl-modal-header vertical-box">
+                <div class="jl-modal-close-btn vertical-middle"><i class="jl-modal-close-icon"></i></div>
+            </div>
+            <div class="jl-modal-body">
+                <div class="jl-modal-title">提交水单</div>
+                <div class="jl-modal-brief">
+                    <div class="">
+                        <div id="js-upload-container" style="text-align: center">
+                            <div id="js-upload">
+                                <img class="jl-upload-btn"
+                                     src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                            </div>
+                            <img class="jl-upload-img" src="" alt="无效图片"/>
+                            <div>点击上面按钮上传水单<button class="jl-change-btn">更换图片</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="jl-modal-footer">
+                <button class="jl-modal-primary-btn">确定</button>
+                <button class="jl-modal-secondary-btn">关闭</button>
+            </div>
+        </div>
+    </div>
+    <div class="jl-way-container" style="position:fixed;left:0;top:0;width:100%;height:100%;display:none">
+        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.1)"></div>
+        <div style="position:absolute;left:calc(50vw - 136px);top:calc(50vh - 90px);padding:4% 2% 4%;background-color:#fff;border:6px solid rgba(0, 0, 0, 0.22);width:364px;text-align:center;">
+           <h2 style="margin-left:34px;text-align:left;font-weight: bold;font-size:16px">反差额到账方式</h2>
+           <div class="jl-balance-way" style="margin-top:10px;height:40px;text-align:left;margin-left:34px;" myattr="1"><i class="jl-choose-circle jl-choose-active"></i>转入玖隆账户，支付其他款项 </div>
+           <div class="jl-balance-way" style="height:40px;text-align:left;margin-left:34px;" myattr="2"><i class="jl-choose-circle"></i>银行转账 </div>
+           <div style="overflow:hidden" class="jl-balance-result">
+               <div style="float:left;width:136px;height:40px;line-height:40px;border:1px solid #ddd;margin:0 34px;cursor:pointer" data-way="cancel">取消</div>
+               <div style="float:left;width:136px;height:40px;line-height:40px;background-color:#e84343;color:#fff;cursor:pointer" data-way="sure">确定</div>
+           </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','webuploader'], function ($, modal, pikaday, jlTool,WebUploader) {
+                var orderList = {$orderList|json_encode};
+                console.log(orderList,{$round_total_knot|json_encode});
+                var get = {$get|json_encode};
+                console.log({$sonList|json_encode});
+                //console.log(get);
+                if(!$.isArray(get)){
+                    $(".jl-conditions-pop").slideToggle("fast");
+                }
+                modal.option({
+                    left: -77
+                });
+                //搜索订单
+                $(".jl-more-conditions").on("click", function () {
+                    $(".jl-conditions-pop").slideToggle("fast");
+                });
+                //搜索框
+                $(".jl-conditions-btn").on("click", function () {
+                    var val = $(".jl-search-input").val();
+                    get['page'] = 1;
+                    if(val.trim()){
+                        get['p_sign'] = val;
+                        var url = "{:U('Home/Order/myOrder')}";
+                        url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+                        window.location = url;
+                    }
+                    else {
+                        window.location = "{:U('Home/Order/myOrder')}";
+                    }
+                });
+                //清空搜索
+                $(".jl-clear").on("click",function(){
+                    window.location = "{:U('Home/Order/myOrder')}";
+                });
+                //订单类型
+                $(".js-order-type").on("change", function () {
+                    var pay_type = $(this).val();
+                    get['page'] = 1;
+                    if (pay_type === "全部") {
+                        pay_type = "";
+                        delete get['pay_type']
+                    } else {
+                        get['pay_type'] = pay_type;
+                    }
+                    var url = "{:U('Home/Order/myOrder')}";
+                    url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+                    window.location = url;
+                });
+                require(['pikaday'], function (Pikaday) {
+                    var picker = new Pikaday({
+                        field: document.getElementById('datepicker'),
+                        theme: 'js-data',
+                        i18n: {
+                            previousMonth: '上个月',
+                            nextMonth: '下个月',
+                            months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                            weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                            weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                        },
+                        format: 'YYYY-M-D',
+                        defaultDate: new Date(get.create_at_start),
+                        setDefaultDate: new Date(get.create_at_start),
+                        toString: function (date, format) {
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+                            return year + '-' + month + '-' + day;
+                        },
+                        parse: function (dateString, format) {
+                            var parts = dateString.split('/');
+                            var day = parseInt(parts[0], 10);
+                            var month = parseInt(parts[1] - 1, 10);
+                            var year = parseInt(parts[1], 10);
+                            return new Date(year, month, day);
+                        },
+                        onSelect: function (value) {
+                            var date = value.toLocaleDateString();
+                            date = date.replace(/\//ig, "-");
+                            var $create_at_start = date;
+                            var data = $.parseJSON('{$get|json_encode} ');
+                            data.create_at_start = $create_at_start;
+                            var url = "{:U('Home/Order/myOrder')}";
+                            url = (data) ? url + '?' + jlTool.urlEncode(data) : url;
+                            window.location = url;
+                        }
+                    });
+                    var pickerr = new Pikaday({
+                        field: document.getElementById('datepickerr'),
+                        theme: 'js-data',
+                        i18n: {
+                            previousMonth: '上个月',
+                            nextMonth: '下个月',
+                            months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                            weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                            weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                        },
+                        format: 'YYYY-M-D',
+                        defaultDate: new Date(get.create_at_end),
+                        setDefaultDate: new Date(get.create_at_end),
+                        toString: function (date, format) {
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+                            return year + '-' + month + '-' + day;
+                        },
+                        parse: function (dateString, format) {
+                            var parts = dateString.split('/');
+                            var day = parseInt(parts[0], 10);
+                            var month = parseInt(parts[1] - 1, 10);
+                            var year = parseInt(parts[1], 10);
+                            return new Date(year, month, day);
+                        },
+                        onSelect: function (value) {
+                            var date = value.toLocaleDateString();
+                            date = date.replace(/\//ig, "-");
+                            var $create_at_end = date;
+                            var data = $.parseJSON('{$get|json_encode} ');
+                            data.create_at_end = $create_at_end;
+                            var url = "{:U('Home/Order/myOrder')}";
+                            url = (data) ? url + '?' + jlTool.urlEncode(data) : url;
+                            window.location = url;
+                        }
+                    });
+                });
+                //console.log({$order_status_list|json_encode});
+                //交易状态
+                $(".js-order-status").on("change", function () {
+                    var $order_status = $(this).val();
+                    get['page'] = 1;
+                    if ($order_status === "全部") {
+                        delete get['order_status']
+                    } else {
+                        get['order_status'] = $order_status;
+                    }
+                    var url = "{:U('Home/Order/myOrder')}";
+                    url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+                    window.location = url;
+                });
+                //评价状态
+                $(".js-appraise-status").on("change", function () {
+                    var $is_appraise = $(this).val();
+                    get['page'] = 1;
+                    if ($is_appraise === "全部") {
+                        delete get['is_comment']
+                    } else {
+                        get['is_comment'] = $is_appraise;
+                    }
+                    var url = "{:U('Home/Order/myOrder')}";
+                    url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+                    window.location = url;
+                });
+                //子账号筛选，赋值
+                $(".son-user").on("change",function(){
+                    var values = $(this).val() || '';
+                    get['page'] = 1;
+                    if (values === "全部") {
+                        delete get['user_id']
+                    } else {
+                        get['user_id'] = values;
+                    }
+                    var url = "{:U('Home/Order/myOrder')}";
+                    url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+                    window.location = url;
+                });
+                if(get['user_id'])$(".son-user").val(get['user_id']);
+                //取消订单
+                $('.jl-cancel').on('click', function () {
+                    var $this = $(this);
+                    var $table = $this.parents('.jl-product-detail');
+                    var order_sn = $table.find('.jl-order-sn').text();
+                    modal.confirm({
+                        title: '取消订单',
+                        brief: '您确定要取消订单吗？',
+                        top: 100,
+                        confirm: function () {
+                            $.post("{:U('Home/Order/cancleOrder')}", {order_sn: order_sn}, function (res) {
+                                res = $.parseJSON(res);
+                                if (res.error === 0) {
+                                    modal.alert({
+                                        title: '取消成功',
+                                        top: 100,
+                                        confirm:function () {
+                                            window.location.reload();
+                                        }
+                                    });
+                                }
+                                else {
+                                    modal.confirm({
+                                        title: '操作异常',
+                                        brief: res.msg,
+                                        top: 100
+                                    })
+                                }
+                            });
+                        }
+                    });
+                });
+                //结单---取消出货
+                $(".jl-account-bill").on('click',function(){
+                    var $this = $(this);
+                    var $table = $this.parents('.jl-product-detail');
+                    var order_sn = $table.find('.jl-order-sn').text();
+                    modal.confirm({
+                        title: '确认取消出货',
+                        brief: '如果您选择取消出货，余下没有发的货不再发货了，请谨慎选择！',
+                        top: 100,
+                        confirm: function () {
+                            $.post("{:U('Home/Order/knotOrder')}", {order_sn: order_sn}, function (res) {
+                                res = $.parseJSON(res);
+                                if (res.error === 0) {
+                                    modal.alert({
+                                        title: res.msg,
+                                        top: 100,
+                                        confirm:function () {
+                                            window.location.reload();
+                                        }
+                                    });
+                                }
+                                else {
+                                    modal.confirm({
+                                        title: res.msg,
+                                        top: 100
+                                    })
+                                }
+                            });
+                        }
+                    });
+                });
+                //反差额
+                $(".jl-counter-balance").on("click",function(){
+                    getBank($(this).parents('.jl-product-detail').find('.jl-order-sn').text());
+                    //$(".jl-way-container").show(100).data("sn",$(this).parents('.jl-product-detail').find('.jl-order-sn').text());
+                });
+                function getBank(order_sn){
+                    var sr = '<div class="jl-goods-detail"> <p myattr="2"><i class="jl-choose-circle jl-choose-active"></i>原路返回</p></div>';
+                    modal.confirm({
+                        title: '反差额返还方式',
+                        brief: sr,
+                        cancelText:'取消',
+                       confirm:function(){
+                            var chooseId = $(".jl-choose-active").parent("p").attr("myattr");
+                           getChoose(chooseId);
+                        }
+                     });
+                    //反差额返还方式选择
+                    $('.jl-goods-detail p').on('click',function(){
+                        $(this).siblings().children('.jl-choose-circle').removeClass('jl-choose-active');
+                        $(this).children('.jl-choose-circle').addClass('jl-choose-active');
+                    });
+                    function getChoose(chooseId){
+                        var str ="";
+                        if(chooseId == 2){
+                            str = "三天内完成返款，请注意查收!";
+                        }else{
+                            str='<div id="account-information"><div style="margin:1% 0"><input placeholder="请填写银行卡开户人姓名" class="bankName" style="text-indent:10px;height:40px;width: 98%;line-height:40px"/></div><div style="margin:1% 0"><input placeholder="请填写银行卡账号" class="bankAcount" required style="text-indent:10px;height:40px;width: 98%;line-height:40px"/></div><div><input placeholder="请填写银行卡短信通知手机号" class="bankMobile" style="text-indent:10px;width: 98%;height:40px;line-height:40px"/></div></div>';
+                        }
+                        modal.confirm({
+                            title: '温馨提示',
+                            brief: str,
+                            cancelText:'取消',
+                            confirm:function(){
+                                var $account=$("#account-information") || $(".jl-modal-brief");
+                                var datas={
+                                    order_sn: order_sn,
+                                    customer_account_type:chooseId,
+                                    customer_account:$account.find(".bankAcount").val() || "",
+                                    notify_mobile:$account.find(".bankMobile").val() || "",
+                                    account_name:$account.find(".bankName").val() || ""
+                                };
+                                $.post("{:U('Home/Knotorder/knotOrderRequest')}", datas, function (res) {
+                                    var res=JSON.parse(res);
+                                    if (res.error === 0 ) {
+                                        modal.alert({
+                                            title:'提交申请',
+                                            brief: '提交成功',
+                                            top: 100,
+                                            hiddenCloseIcon:true,
+                                            confirm:function(){
+                                                window.location.reload();
+                                            }
+                                        })
+
+                                    } else {
+                                        modal.confirm({
+                                            brief: res.msg,
+                                            top: 100
+                                        })
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+                //切换
+                $(".jl-balance-way").on("click",function(){
+                    $(this).find("i").addClass("jl-choose-active");
+                    $(this).siblings().find("i").removeClass("jl-choose-active");
+                });
+                $(".jl-balance-result div").on("click",function(){
+                    var $this=$(this);
+                    if($this.data("way") == "cancel"){
+                        $this.parents(".jl-way-container").hide(100);
+                    }else{
+                        if($this.parent().siblings().find(".jl-choose-active").parent().attr("myAttr") == "1"){
+
+                        }else{
+                            $(".jl-way-container").hide(100);
+                            getBank($(".jl-way-container").data("sn"));
+                        };
+                    };
+                });
+
+                //上传水单
+                $('.jl-water').on('click', function () {
+                    var order_sn=$(this).parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                    location.href = "{:U('Home/Order/publicAccount')}?order_sn="+order_sn;
+                })
+                //再次购买
+                $('.jl-again').on('click', function () {
+                    var $td = $(this).parents('.jl-product-detail').find('tr').not(".jl-table-head");
+                    var goods = [];
+                    var obj = {};
+                    $.each($td, function (index, el) {
+                        obj = {
+                            "pid": $(el).attr('data-id'),
+                            "num": $(el).find('.jl-count .getValue').text().trim() =="" ? undefined : $(el).find('.jl-count .getValue').text().trim()
+                        };
+                        goods.push(obj);
+                    });
+                    $.get("{:U('Home/Basket/againBuyBasket')}", {goods: goods}, function (res) {
+                        var data = $.parseJSON(res);
+                        if (data.error === 0) {
+                            location.href = "{:U('Home/Basket/basketDetail')}";
+                        } else {
+                            modal.confirm({
+                                type: 'fade',
+                                title: '系统繁忙',
+                                brief: '不好意思哦！'+data.msg+'，请稍后重试！',
+                                top: 100
+                            });
+                        }
+                    });
+                });
+                //确认收货
+                $('.jl-confirm-receipt').on('click', function () {
+                    var $this = $(this);
+                    var order_sn = $this.parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                    var isPart = $this.data('is_part');
+                    if(isPart == 2){ return;};
+                    if( parseInt(isPart) > 0 ){
+                        location.href="{:U('Home/Order/detail')}?order_sn="+order_sn;
+                    }else{
+                        var partId = $this.data('part_id');
+                        modal.confirm({
+                            title: '确认收货',
+                            brief: '您确定要收货吗？',
+                            top: 100,
+                            confirm: function () {
+                                $.post("{:U('Home/order/allDelivery')}", {order_sn: order_sn,partid:partId}, function (res) {
+                                    //res=JSON.parse(res);
+                                    if (res.error === 0 ) {
+                                        modal.confirm({
+                                            title: '操作提示',
+                                            brief: res.msg,
+                                            top: 100,
+                                            confirm:function(){
+                                                window.location.reload();
+                                            }
+                                        })
+
+                                    } else {
+                                        modal.confirm({
+                                            title: '错误提示',
+                                            brief: res.msg,
+                                            top: 100
+                                        })
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+                $('.jl-immediate-appraise').on('click',function(){
+                    var $this = $(this);
+                    var order_sn = $this.parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                    window.location.href = "{:U('Home/Order/comment')}?order_sn=" + order_sn;
+                });
+                //立即支付
+                $('.js-online-pay').each(function () {
+                    var index = $('#jl-center-right').children('.jl-product-detail').index($(this).parents('.jl-product-detail'));
+                    var order = orderList[index];
+                    var pay_type;
+                    if(parseInt(order.deposits_pay_type)&&parseFloat(order.total_deposits)&&(parseInt(order.deposits_pay_status)===0)){
+                        if(order.deposits_pay_type===5){
+                            $(this).show().on('click',function () {
+                                window.location.href = "{:U('Home/Order/publicAccount')}?order_sn=" + order.order_sn;
+                            })
+                        }
+                        else {
+                            pay_type = order.deposits_pay_type;
+                        }
+                    }
+                    else if(parseInt(order.pay_status)===0||parseInt(order.pay_status)===1){
+                        pay_type = order.pay_type;
+                    }
+                    //统一处理
+                    pay_type = parseInt(pay_type);
+                    if(pay_type){
+                        if(pay_type===1){
+                            $(this).show().on('click',function () {
+                                window.location.href = "{:U('Home/Order/userPayPlatform')}?order_sn=" + order.order_sn;
+                            })
+                        }
+                        else if(pay_type===6){
+                            $(this).show().on('click',function () {
+                                modal.alert({
+                                    title:'支付提示',
+                                    brief:'请找客服索要付款信息支付订单'
+                                });
+                            })
+                        }
+                    }
+                });
+                //提交水单
+                var uploader1;
+                $('.js-bank-pay').on('click',function () {
+                    if(!uploader1){
+                        uploader1 = WebUploader.create({
+                            pick:'#js-upload',
+                            auto: true,
+                            swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                            server: "{:U('Home/Order/upload')}",
+                            formData:{
+                                path: 'bank_receipt'
+                            },
+                            accept: {
+                                title: 'Images',
+                                extensions: 'jpg,jpeg,png',
+                                mimeTypes: 'image/jpg,image/jpeg,image/png'
+                            }
+                        });
+                        uploader1.on('uploadSuccess',function (file,res) {
+                            if(res&&res[0]){
+                                $('.jl-upload-img').attr('src',res[0]);
+                                $('#js-upload-container').addClass('js-uploaded')
+                            }
+                        });
+                        uploader1.on( 'uploadError', function () {
+                            modal.alert({
+                                title:'上传失败'
+                            })
+                        });
+                    }
+                    $('.js-water-modal').show();
+                    $('.js-water-modal .jl-modal-primary-btn').data('sn',$(this).parent().data('sn'))
+                });
+                //更换图片
+                $('.jl-change-btn').on('click',function () {
+                    $('#js-upload-container').removeClass('js-uploaded');
+                    $('.jl-upload-img').attr('src','');
+                });
+                //提交按钮
+                $('.js-water-modal .jl-modal-primary-btn').on('click',function () {
+                    var img = $('.jl-upload-img').attr('src');
+                    if(img){
+                        var order_sn = $(this).data('sn');
+                        var data = {
+                            order_sn:order_sn,
+                            pay_img:img
+                        };
+                        $.post('/Home/Order/publicAccount',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                modal.alert({
+                                    title:'提交成功',
+                                    confirm:function () {
+                                        window.location.reload();
+                                    }
+                                })
+                            }
+                            else {
+                                modal.alert({
+                                    title:'提交失败',
+                                    brief:res.msg
+                                })
+                            }
+                        })
+                    }
+                    else {
+                        modal.alert({
+                            title:'请选择上传图片'
+                        })
+                    }
+                });
+                //关闭按钮
+                $('.js-water-modal .jl-modal-secondary-btn').on('click',function () {
+                    $('#js-upload-container').removeClass('js-uploaded');
+                    $('.jl-upload-img').attr('src','');
+                    $('.js-water-modal').hide();
+                });
+                $('.js-water-modal .jl-modal-close-icon').on('click',function () {
+                    $('#js-upload-container').removeClass('js-uploaded');
+                    $('.jl-upload-img').attr('src','');
+                    $('.js-water-modal').hide();
+                });
+                //退货退款
+                $('.jl-return').on('click', function () {
+                    var title = $(this).attr('data-id');
+                    if (title === '0') {
+                        modal.confirm({
+                            title: '确认退货退款',
+                            brief: '你的订单已存在待开发票中，如果申请退货退款，需重新申请开发票！',
+                            top: 100,
+                            confirmText: '确认退款',
+                            cancelText: '取消退款',
+                            confirm: function () {
+                                location.href = "{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}";
+                            }
+                        });
+                    }
+                    else {
+                        modal.confirm({
+                            title: '确认退货退款',
+                            brief: '你的订单已开发票，如果申请退货退款，退款金额将扣除17%的税点后进行退款！',
+                            top: 100,
+                            confirmText: '确认退款',
+                            cancelText: '取消退款',
+                            confirm: function () {
+                                location.href = "{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}";
+                            }
+                        });
+                    }
+                });
+                //查看物流
+                $( '.jl-logistics-way' ).on('click','.jl-kd-show',function(){
+                    var $this = $(this);
+                    var code = $this.data('code');
+                    var num = $this.data('num');
+                    var sn = $this.data('sn');
+                    var second = 1;
+                    var timer = setInterval(function () {
+                        var time = second%4;
+                        var text = '';
+                        for(var i = 0;i<time;i++){
+                            text+='。'
+                        }
+                        $this.text('加载中'+text);
+                        second++;
+                    },500);
+                    $.ajax({
+                        type: 'post',
+                        url: '{:U("Home/kd/info")}',
+                        data: {shipperCode: code, logisticCode: num, orderCode: sn},
+                        success: function (res) {
+                            clearInterval(timer);
+                            $this.text('查询物流');
+                            var str = '<ul class="jl-delivery-text" style="text-align: left">';
+                            $.each(res.traces, function (i, d) {
+                                str += '<i></i><li  class="jl-cur"><div><p>' + d.AcceptTime + '</p><p>' + d.AcceptStation + '</p></div></li>';
+                            });
+                            str += '</ul>';
+                            modal.alert({
+                                title: '物流轨迹',
+                                brief: str,
+                                width:'470px'
+                            })
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</block>

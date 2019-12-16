@@ -1,0 +1,76 @@
+
+<div class="layui-tab-item layui-show" style="padding-top:20px">
+    <div class="form-body">
+        <form class="layui-form" method="post" id="retreatDetail">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">商户订单号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-select" value="{$detail['out_trade_no']}" disabled >
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">平台订单号</label>
+                    <div class="layui-input-inline">
+                        <if condition="isset($detail['transaction_id'])">
+                            <input type="text" class="layui-input" value="{$detail['transaction_id']}" disabled >
+                            <else />
+                            <input type="text" class="layui-input" value="{$detail['trade_no']}" disabled >
+                        </if>
+                        <!--<input type="text" class="layui-select" value="<?php if(isset($detail['transaction_id'])){echo $datail['transaction_id'];}else{echo $detail['trade_no'];} ?>" disabled >-->
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">收款金额</label>
+                    <div class="layui-input-inline">
+                        <if condition="isset($detail['total_fee'])">
+                            <input type="text" class="layui-input" value="{$detail['total_fee']/100}" disabled >
+                            <else />
+                            <input type="text" class="layui-input" value="{$detail['total_amount']}" disabled >
+                        </if>
+                        <!--<input type="text" class="layui-select" value="<?php if(isset($datail['total_fee'])){echo $datail['total_fee']/100;}else{echo $detail['total_amount'];} ?>" disabled >-->
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">支付时间</label>
+                    <div class="layui-input-inline">
+                        <if condition="isset($detail['send_pay_date'])">
+                            <input type="text" class="layui-input" value="{$detail['send_pay_date']}" disabled >
+                            <else />
+                            <input type="text" class="layui-input" value="<?php echo date("Y-m-d h:i:s",strtotime($detail['time_end'])) ?>" disabled >
+                        </if>
+                        <!--<input type="text" class="layui-select" value="<?php if(isset($datail['total_fee'])){echo $datail['total_fee']/100;}else{echo $detail['total_amount'];} ?>" disabled >-->
+                    </div>
+                </div>
+            </div>
+            <!-- 申请订单数据 -->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">支付状态</label>
+                    <div class="layui-input-inline">
+                        <if condition="$detail['order_status'] eq 0">
+                            <input type="text" class="layui-input" value="未付款" disabled >
+                            <elseif condition="$detail['order_status'] eq 1" />
+                            <input type="text" class="layui-input" value="支付超时" disabled >
+                            <elseif condition="$detail['order_status'] eq 2" />
+                            <input type="text" class="layui-input" value="支付成功" disabled >
+                            <elseif condition="$detail['order_status'] eq 3" />
+                            <input type="text" class="layui-input" value="支付成功" disabled >
+                            <elseif condition="$detail['order_status'] eq 4" />
+                            <input type="text" class="layui-input" value="转入退款" disabled >
+                            <elseif condition="$detail['order_status'] eq 5" />
+                            <input type="text" class="layui-input" value="已撤销" disabled >
+                            <elseif condition="$detail['order_status'] eq 6" />
+                            <input type="text" class="layui-input" value="支付中" disabled >
+                            <elseif condition="$detail['order_status'] eq 7" />
+                            <input type="text" class="layui-input" value="支付失败" disabled >
+                            <else />
+                            <input type="text" class="layui-input" value="信息错误" disabled >
+                        </if>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

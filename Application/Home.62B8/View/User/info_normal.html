@@ -1,0 +1,420 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">个人信息</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css?">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/settingUser.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/select_address.css">
+</block>
+<block name="nav-title">个人中心</block>
+<block name="main">
+    <form method="post">
+        <div class="jl-per-information">
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left">
+                    <label for>当前头像:</label>
+                </div>
+                <div class="jl-per-right jl-info-images">
+                    <div class="jl-per-item" id="js-upload-btn">
+                        <?php $avator = session('userInfo.avator');  ?>
+                        <?php if( !file_exists(SITE_PATH.$avator) || empty($avator) ){echo '<img src="__UPLOAD__/User/avator/default.png" alt="">';}else{echo "<img src=".$avator.">";}?>
+                        <span class="jl-per-write">点击编辑</span>
+                    </div>
+                    <span class="jl-info-request">建议上传100×100像素的图片</span>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">用户名：</label>
+                </div>
+                <div class="jl-per-right jl-info-right">
+                    <if condition="$userAccountChange eq 2 ">
+                        <input type="text" name="user_name" value="{$info['user_name']}" style="background-color:#fff" class="jl-per-input jl-per-name js-next-input" />
+                        <span class="mendUser_name" style="color:#009688;cursor: pointer" data-id="{:session('userInfo.user_id')}">修改用户名</span>
+                        <p style="color:#F63333">用户名只能修改一次(数字加字母的6位数以上)</p>
+                        <else/>
+                        <input type="text" name="user_name" value="{$info['user_name']}" class="jl-per-input jl-per-name js-next-input" disabled />
+                    </if>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">昵称：</label>
+                </div>
+                <div class="jl-per-right jl-info-right">
+                    <input type="text" name="nick_name" value="{$info['nick_name']}" class="jl-per-input js-next-input">
+                    <i class="jl-false-note jl-note-normal"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">真实姓名：</label>
+                </div>
+                <div class="jl-per-right jl-info-right jl-per-h">
+                    <input type="text" name="real_name" value="{$info['real_name']}" class="jl-per-input js-next-input">
+                    <i class="jl-false-note jl-note-normal"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left jl-per-gender-tit">
+                    <label for class="jl-per-label jl-per-gender-tit">性别：</label>
+                </div>
+                <div class="jl-per-right jl-info-s">
+                    <div class="jl-per-item-g" data-id="0">
+                        <if condition="$info['sex'] eq 0">
+                            <i class="jl-choose-circle jl-choose-active"></i>男
+                            <else />
+                            <i class="jl-choose-circle"></i>男
+                        </if>
+                    </div>
+                    <div class="jl-per-item-g jl-per-w" data-id="1">
+                        <if condition="$info['sex'] eq 1">
+                            <i class="jl-choose-circle jl-choose-active"></i>女
+                            <else />
+                            <i class="jl-choose-circle"></i>女
+                        </if>
+
+                    </div>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    {// 注释   出生年月表单字段 : birthday   }
+                    <label for class="jl-per-label">出生年月：</label>
+                </div>
+                <div class="jl-per-right jl-info-right">
+                    <input type="text" class="js-selector-input jl-c-hidden jl-y-select-input js-next-input"
+                           name="year_code"  placeholder="" data-title="出生日期">
+                    <div class="jl-per-bir">
+                        <div class="jl-per-y" id="js-year" data-id="1">
+                            <span class="jl-per-c">请选择</span>
+                            <b class="jl-per-t"></b>
+                            <b class="jl-per-b"></b>
+                        </div>
+                        <ul class="jl-date-list"></ul>
+                    </div>
+                    <div class="jl-per-bir">
+                        <div class="jl-per-y" id="js-month" data-id="2">
+                            <span class="jl-per-c">请选择</span>
+                            <b class="jl-per-t"></b>
+                            <b class="jl-per-b"></b>
+                        </div>
+                        <ul class="jl-date-list"></ul>
+                    </div>
+                    <div class="jl-per-bir">
+                        <div class="jl-per-y" id="js-day" data-id="3">
+                            <span class="jl-per-c">请选择</span>
+                            <b class="jl-per-t"></b>
+                            <b class="jl-per-b"></b>
+                        </div>
+                        <ul class="jl-date-list"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">职务：</label>
+                </div>
+                <div class="jl-per-right jl-info-right">
+                    <input type="text" name="job" value="{$info['job']}" class="jl-per-input js-next-input">
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">电子邮箱：</label>
+                </div>
+                <div class="jl-per-right jl-info-right jl-per-h">
+                    <input type="text" name="user_email" value="{$info['user_email']}" class="jl-per-input js-next-input">
+                    <i class="jl-false-note jl-note02"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">现居住地：</label>
+                </div>
+                <div class="jl-per-right jl-info-right">
+                    <div class="jl-c-de js-selector-container2">
+                        <input type="text" class="js-selector-input jl-c-hidden jl-y-select-input"
+                               name="area_code"  placeholder="" data-title="所在地址">
+                        <div class="jl-c-address jl-y-select js-select-first">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-second">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-third">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">详细地址：</label>
+                </div>
+                <div class="jl-per-right jl-info-right jl-per-h">
+                    <input type="text" name="address" value="{$info['address']}" class="jl-per-input js-next-input jl-add-detail">
+                    <i class="jl-false-note jl-note02"></i>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="jl-per-submit jl-save-submit">保 存</button>
+    </form>
+</block>
+
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function(){
+            require(['jquery','jl-modal'],function($,modal){
+                modal.option({
+                    left:-77
+                });
+                //console.log({$info|json_encode});
+                require(['Account/js/common_register']);
+                require(['Public/js/address-select'],function (address) {
+                    address.init($('.js-selector-container2'), "{$info['now_addr']}");
+                    //address.init($('.js-selector-container2'),340103)：当你要固定传某个地址的时候。就会传一个地址的code
+                });
+
+                //上传照片
+                require(['webuploader'],function(WebUploader){
+                    var uploader = WebUploader.create({
+                        pick:'#js-upload-btn',
+                        auto: true,
+                        swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                        server: "{:U('Home/Order/upload')}",
+                        formData:{
+                            path: 'User',
+                            act: 'avator',
+                        }
+                    });
+                    uploader.on( 'uploadSuccess', function( file ,res) {
+                        $('#js-upload-btn img').attr("src",res[0]);
+                    });
+                    uploader.on( 'uploadError', function() {
+                        modal.alert({
+                            title:'上传失败'
+                        })
+                    });
+                });
+
+                //昵称
+               // var reg1=/^[\u4E00-\u9FA5A-Za-z0-9_]{2,20}$/;
+//                $('input[name=nick_name]').on('blur',function(){
+//                    passTips($(this));
+//                });
+
+                //性别
+                $('.jl-per-item-g').on('click',function(){
+                    $('.jl-choose-circle').removeClass('jl-choose-active');
+                    $(this).children('.jl-choose-circle').addClass('jl-choose-active');
+                });
+
+                //公共
+                function passTips(input,reg) {
+                    var values = $(input).val();
+                    if(reg.test(values)||values===''){
+                        $(input).parent().removeClass('js-false');
+                    }
+                    else {
+                        $(input).parent().addClass('js-false');
+                    }
+                }
+
+                //电子邮箱
+                var reg_email = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/ ;
+                var $user_email = $('input[name=user_email]');
+                $user_email.on('blur',function () {
+                    passTips($(this),reg_email);
+                });
+
+
+                //出生日期
+                //年份
+                var this_year = new Date().getFullYear();
+                var $get_year = $('#js-year');
+                var getYear = function () {
+                    var li_list = '';
+                    for(var i=this_year ; i>=1867; i--){
+                        li_list +=  '<li>'+ i +'</li>';
+                        $get_year.siblings('.jl-date-list').html(li_list);
+                    }
+                };
+                //月份
+                var $get_month = $('#js-month');
+                var getMonth = function () {
+                    var li_list = '';
+                    for(var i=1; i<=12 ;i++){
+                        if(i<10){
+                            i = 0+''+i;
+                        }
+                        li_list += '<li>'+i+'</li>';
+                        $get_month.siblings('.jl-date-list').html(li_list);
+                    }
+                };
+
+                var $get_day = $('#js-day');
+                var getDay = function () {
+                    //要获取到哪一年，就是通过得到年那边的值 $('#js-year').find('.jl-per-c').html()
+                    var select_year = $('#js-year').find('.jl-per-c').html();
+                    var select_month = parseInt($('#js-month').find('.jl-per-c').html());
+                    var new_day = new Date(select_year,select_month,0);
+                    var li_list ='';
+                    for(var i = 1; i<=new_day.getDate(); i++){
+                        if(i<10){
+                            i = 0+''+i;
+                        }
+                        li_list += '<li>'+i+'</li>';
+                        $get_day.siblings('.jl-date-list').html(li_list);
+                    }
+                };
+                //修改用户名
+                $(".mendUser_name").on("click",function(){
+                    var user_name = $(".mendUser_name").siblings("input").val();
+                    if(!user_name){
+                        modal.alert({
+                            title:'错误提示',
+                            brief:'用户名不能为空...',
+                            confirm:function(){
+                            }
+                        })
+                    }else{
+                        user_name = user_name.trim();
+                    }
+                    $.post("{:U('Home/User/customerAccountChange')}",{"user_name":user_name},function(res){
+                        if(res.error == 0){
+                            modal.alert({
+                                title:'修改成功',
+                                brief:'用户名修改成功',
+                                confirm:function(){
+                                    window.location.reload();
+                                }
+                            })
+                        }else{
+                            modal.alert({
+                                title:'修改失败',
+                                brief:res.msg,
+                                confirm:function(){
+                                    //location.reload();
+                                }
+                            })
+                        }
+                    },"json");
+                });
+                $('#js-year').on('click',function(){
+                    getYear();
+                    var b=$(this);
+                    a(b);
+                });
+                $('#js-month').on('click',function(){
+                    getMonth();
+                    var b=$(this);
+                    if($('#js-year').children('.jl-per-c').html()!=="请选择"){
+                        a(b);
+                    }
+                });
+                $('#js-day').on('click',function(){
+                    getDay();
+                    var b=$(this);
+                    if($('#js-year').children('.jl-per-c').html()!=="请选择"&&$('#js-month').children('.jl-per-c').html()!=="请选择"){
+                        a(b);
+                    }
+                });
+                var info={$info|json_encode};
+                $('#js-day .jl-per-c').html(info.birthday_day);
+                $('#js-month .jl-per-c').html(info.birthday_mouth);
+                $('#js-year .jl-per-c').html(info.birthday_year);
+                function  a(b) {
+                    var $active = $(b).parent();
+                    var year_month_day_num = $(b).data("id");
+                    if($active.hasClass('jl-per-active')){
+                        $active.removeClass('jl-per-active');
+                    }
+                    else {
+                        $active.addClass('jl-per-active');
+                        $(b).siblings('.jl-date-list').on('click','li',function () {
+                            $(this).addClass('jl-list-active').siblings().removeClass('jl-list-active');
+                            $(this).parent().siblings('.jl-per-y').find('.jl-per-c').text($(this).text());
+                             $(b).parent().removeClass('jl-per-active');
+                             switch (year_month_day_num) {
+                                 case 1:
+                                     $('#js-month .jl-per-c').html('请选择');
+                                     $('#js-day .jl-per-c').html('请选择');
+                                     break;
+                                 case 2:
+                                     $('#js-day .jl-per-c').html('请选择');
+                                     break;
+                             }
+                        })
+                    }
+                }
+
+
+
+
+                //提交
+                $('.jl-per-submit').on('click',function () {
+                    if($user_email.parent().hasClass('js-false')){
+                        return false
+                    }
+                    var data={
+                        avator : $('#js-upload-btn img').attr('src'),
+                        nick_name:$('input[name=nick_name]').val(),
+                        real_name:$('input[name=real_name]').val(),
+                        sex:$('.jl-choose-active').parent().attr('data-id'),
+                        birthday_year:$('#js-year').find('.jl-per-c').text(),
+                        birthday_mouth:$('#js-month').find('.jl-per-c').text(),
+                        birthday_day:$('#js-day').find('.jl-per-c').text(),
+                        job:$('input[name=job]').val(),
+                        user_email:$('input[name=user_email]').val(),
+                        now_addr:$('input[name=area_code]').val(),
+                        address:$('input[name=address]').val()
+                    };
+
+                    $.post(
+                        "{:U('Home/User/changeInfo')}",
+                        data,
+                        function (res) {
+                            if(res.status===0){
+                                modal.alert({
+                                    title:'保存成功',
+                                    brief:'个人信息保存成功',
+                                    confirm:function(){
+                                        location.reload();
+                                    }
+                                })
+                            }
+                            else {
+                                modal.alert({
+                                    title:'保存失败',
+                                    brief:res.content
+                                })
+                            }
+                        }
+                    )
+                })
+            });
+        });
+    </script>
+
+</block>

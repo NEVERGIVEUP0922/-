@@ -1,0 +1,14 @@
+<block wx:if="{{item.data.length > 0}}">
+  <view class="fui-icon-group col-4 noborder circle" style="padding:10px ;background-color: #EFEFF4;margin-top:0;">
+    <view style="border-radius:8rpx;background-color:#fff;overflow:hidden">
+      <block wx:for="{{item.data}}" wx:for-index="idx" wx:key="">
+        <navigator url="{{item.url}}" class="fui-icon-col" style="width:25%;padding:10rpx 0;">
+          <view>
+            <image src="{{item.icon}}" style="width:60rpx;height:60rpx;border-radius:5px"></image>
+          </view>
+          <view class="navs-navname">{{item.navname}}</view>
+        </navigator>
+      </block>
+    </view>
+  </view>
+</block>

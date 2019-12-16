@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Uploadify</title>
+    <script src="__COMMON__/module/jquery/1.11.3/jquery.min.js" type="text/javascript"></script>
+    <script src="__COMMON__/module/uploadify/jquery.uploadifive.min.js" type="text/javascript"></script>
+    <script src="__COMMON__/module/layer/3.0.3/layer.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="__COMMON__/module/uploadify/uploadifive.css">
+    <style type="text/css">
+        body {
+            font: 13px Arial, Helvetica, Sans-serif;
+        }
+        .uploadifive-button {
+            float: left;
+            margin-right: 10px;
+        }
+        #queue {
+            border: 1px solid #E5E5E5;
+            height: 177px;
+            overflow: auto;
+            margin-bottom: 10px;
+            padding: 0 3px 3px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+<h1>UploadiFive Demo</h1>
+<form>
+    <div id="queue"></div>
+    <input id="file_upload" name="file_upload" type="file" multiple="true">
+    <a style="position: relative; top: 8px;" href="javascript:$('#file_upload').uploadifive('upload')">上传</a>
+</form>
+
+<script type="text/javascript">
+    //没有设置upDir 文件保存目录  则自动获取控制器名称
+    <?php  $timestamp = time(); $upDir = $upDir?$upDir:CONTROLLER_NAME;?>
+    $(function() {
+        $('#file_upload').uploadifive({
+            'auto'             : false,//是否自动上传
+            'formData'         : {
+                'timestamp' : '<?php echo $timestamp;?>',
+                'token'     : '<?php echo md5('unique_salt' . $timestamp);?>',
+                'upDir'   : '{$upDir}',//定义上传目录
+            },
+            'queueID'          : 'queue',//设定上传框选择id
+            'uploadScript'     : "{:U('Home/Upload/uploadifive')}",//设定上传处理地址
+            'onUploadComplete' : function(file, data) { console.log(data); }
+        });
+    });
+
+</script>
+
+</body>
+</html>

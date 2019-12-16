@@ -1,0 +1,42 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-l"><a href="javascript:;">账期申请（个人）</a></li>
+    </ul>
+
+    <!-- 账期支付 -->
+    <ul class="jl-question">
+        <li>
+            <h4>1、玖隆芯城乐意授信账期给有信用有市场能力的客户</h4>
+            <h4>2、请提交相关资料进行申请流程</h4>
+            <h4>3、我们的后台业务员会在收到您的申请后及时审核并联系您协商相关事宜。</h4>
+            <h4>温馨提示：在个人中心有账期说明，阅读后可点击账期申请。</h4>
+        </li>
+        <li>
+            <img src="__PUBLIC__/Home/Public/img/help/img16.png" alt="">
+        </li>
+        <li>
+            <img src="__PUBLIC__/Home/Public/img/help/img17.png" alt="">
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

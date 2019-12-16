@@ -1,0 +1,579 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout" />
+
+<block name="title">方案中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Product/css/search.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/solCenter.css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.4/css/layui.css" rel="stylesheet"  media="all">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		/*layui的css补充*/
+		.sol-serach0{/*不能移至css文件*/
+			display: inline-block;overflow: hidden;height: 34px;
+		}
+		.sol-serach1{
+			padding:0 10px 0 0px;
+			height:34px;line-height: 34px;
+		}
+		.sol-serach2{
+			margin-right:0px!important;
+		}
+		.sol-serach2>input{
+			border-right:rgba(255,0,0,.3)!important;
+			border:1px solid #777;
+			height:34px;
+		}
+		.sol-serach3{
+			height:32px;line-height: 32px;
+			padding:0px;
+			margin:0px;
+			width:50px!important;
+			border:1px solid #e84343;
+			border-top-right-radius: 2px;
+			border-bottom-right-radius: 2px;
+			background: #e84343;
+			color:#fff;
+			text-align: center;
+			cursor: pointer;
+		}
+		.layui-input{
+			height:32px;
+			border-color: #777;
+		}
+		.layui-form-select dl dd.layui-this{
+			background: #e84343!important;
+		}
+		.layui-form-select dl{
+			top:32px;
+		}
+		.converse-item{
+			margin-top:30px;
+		}
+		.converse-text{
+			min-height: 280px;
+			margin-bottom:50px;
+		}
+		.input-add{
+			width:330px;
+		}
+		.layui-form-label{
+			width:75px;
+		}
+	</style>
+</block>
+
+<block name="main"><!-- 主要内容 -->
+	<!--页面布局主区域1-->
+	<div class="jl-in-width jl-banner-container" style="margin:0 auto;padding-left:5px;">
+		<!--页面布局次区域1-->
+		<div class="sol-options">
+			<!-- 供应/需求 选项-->
+			<div class="jl-sol baiDiHongZi" id="sol-provider" data-type="{$request.type1}">供应方案</div>
+			<div class="jl-sol baiZiHongDi" id="sol-desired" data-type="{$request.type2}">需求方案</div>
+		</div>
+		<!--页面布局次区域2-->
+		<div class="mian2">
+			<!-- 免责说明 -->
+			<div class="disclaimer">
+				<div class="dis-a">说明:</div>
+				<div class="dis-b black_word">
+					非玖隆芯城自营方案,玖隆芯城只做牵线媒介作用,均线下自由合作,玖隆芯城对非自营方案不承担任何方案交易风险,请谨慎选择合作!
+					发出洽谈需求并被接受后可以获取对方联络方式!
+				</div>
+			</div>
+			<!-- 搜索框 -->
+			<div class="jl-main">
+				<div class="sol-serach">
+					<form class="layui-form ">
+						<div class="layui-form-item sol-serach0">
+							<label class="layui-form-label sol-serach1 black_word">关键词搜索:</label>
+							<div class="layui-input-inline sol-serach2">
+								<input type="text" name="keyword" lay-verify="required" value="{$req['keyword']}" placeholder="请输入方案名称/方案编号/作者" autocomplete="off" class="layui-input">
+							</div>
+							<label class="layui-form-label sol-serach3" lay-filter="">搜索</label>
+						</div>
+
+						<div class="layui-form-item"style="display: inline-block;">
+							<label class="layui-form-label sol-serach1 black_word">项目类型:</label>
+							<div class="layui-inline layui-input-inline" lay-filter="" style="margin:0px;">
+								<select name="sol_types" id="sol-types-id" class="sol-types" lay-filter="sol_types" style="border:1px solid #777;" lay-search="">
+									<option value="">请选择方案类型</option>
+									<foreach name="soltypes" item="t">
+										<option value="{$t.id}">{$t.types}</option>
+									</foreach>
+								</select>
+							</div>
+						</div>
+
+						<div class="layui-form-item" style="display:inline-block">
+							<label class="layui-form-label sol-serach1 black_word">状态:</label>
+							<div class="layui-inline layui-input-inline" lay-filter="sol_types" style="width:100px;">
+								<select name="modules" id="modules-id" lay-filter="sol_pub_status" lay-search="">
+									<if condition="$req['pub_status'] eq 1">
+										<option value="1" selected="selected">发布中</option>
+										<option value="2">已结束</option>
+										<else />
+										<option value="1">发布中</option>
+										<option value="2" selected="selected">已结束</option>
+									</if>
+								</select>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<if condition="$res eq null">
+				<div style="border:1px solid #ddd;width:100%;">
+					<div class="no-sol">
+						<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+						<p class="jl-fault">没有搜到相关方案!</p>
+						<a href="{:U('Home/Default/index')}" class="jl-browse">返回首页</a>
+					</div>
+				</div>
+			<else />
+			<!-- 排序头 (需重新写css)-->
+				<div class="jl-title">
+					<ul class="jl-sort">
+						<li class="jl-defa" data-sork="pubtime">发布日期<b></b></li>
+						<li class="jl-news" data-sork="browse">浏览量<b></b></li>
+					</ul>
+					<div class="jl-title-right">筛选出<span style="color:#e84343">{$count}</span>条满足条件的方案</div>
+				</div>
+				<!-- 方案列表+分页 -->
+				<foreach name="res" item="vo">
+					<div class="sol-list" style="overflow-y: auto;">
+						<div class="desir-info" style="border:0px;">
+							<ul>
+								<li>
+									<if condition="$vo[jl_self] eq 1"><div class="baiZiHongDi p_botton1" style="margin-right:15px;">自营</div>
+										<else />
+									</if>
+									<div class="info-name-a" style="color:#e84343;margin:0; width:225px;">{$vo.desir_name}</div>
+								</li>
+								<li>
+									<div class="info-name">方案编号:</div>
+									<div class="info-name-a" style="margin:0 0 0 15px;width:170px;">{$vo.desir_sn}</div>
+									<div class="info-name">方案类型:</div>
+									<div class="info-name-a" style="margin:0 0 0 15px;">{$vo.types}</div>
+								</li>
+								<li>
+									<div class="info-name">预&#12288;&#12288;算:</div>
+									<div class="info-name-a" style="margin:0 5px 0 15px;width:165px">{$vo.budget}</div>
+									<div class="info-name">状&#12288;&#12288;态:</div>
+									<div class="info-name-a" style="margin:0 15px 0 15px;width:115px">
+										<if condition="$vo['publish_status'] eq 1">发布中
+										<else />已结束
+										</if>
+									</div>
+									<div class="info-name">交付日期:</div>
+									<div class="info-name-a" style="margin:0 0 0 15px;width:180px">{$vo.delivery}</div>
+									<div class="need-service baiZiHongDi" style="float:right">洽&nbsp;&nbsp;&nbsp;谈</div>
+								</li>
+								<li>
+									<div class="nick_picture2">
+										<empty name="vo.nick_picture"><img src="/Public/Home/Solution/img/avator.png" alt="">
+											<else /><img src="{$vo.nick_picture}" alt="">
+										</empty>
+									</div>
+									<div class="info-name" style="margin-left:70px;width:auto">作者:</div>
+									<a href="/Home/Solution/desired?keyword={$vo.nick_name}">
+									<div class="info-name-a the_auth" style="margin:0 10px 0 15px;width:118px;color:#87CEFA">
+										<if condition="$vo[jl_self] eq 1">玖隆芯城
+											<else />{$vo.nick_name}
+										</if>
+									</div>
+									</a>
+									<div class="info-name">发布日期:</div>
+									<div class="info-name-a" style="margin:0 0px 0 15px;width:130px">{$vo.pubtime}</div>
+									<div class="info-name">浏览量:</div>
+									<div class="info-name-a" style="margin:0 0px 0 15px;width:180px">{$vo.browse}</div>
+									<div class="collect_img sol_collect" style="width:100px;float:right;text-align: center" data-collected="{$vo.collected}" data-sol_sn="{$vo.desir_sn}" data-sol_id="{$vo.id}" data-id="{$vo.uid}">
+										<if condition="$vo['collected'] eq 1">
+											<i style="background: url(/Public/Home/Solution/img/shop.png) no-repeat 1px -435px;"></i>已收藏
+											<else /><i></i>收藏
+										</if>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="desir-info2" style="border:0px;border-top:1px solid #ddd ">
+							<div class="black_word">方案描述:</div>
+							<div class="desir-info2-content">{$vo.desir_desc}</div>
+							<div class="aqua_word">
+								<div class="check-more">更多>>></div>
+							</div>
+						</div>
+					</div>
+				</foreach>
+				<div>{$page}</div>
+			</if>
+		</div>
+		<!--页面布局次区域3-->
+		<div class="mian3">
+			<!-- 最新方案 -->
+			<div class="sol-new">
+				<ul>
+					<li>
+						<div class="ranking-list">最新的方案</div>
+						<div class="upload-sol baiZiHongDi">我要上传方案</div>
+						<div class="clear"></div>
+					</li>
+					<hr>
+					<foreach name="list.new" item="v" key="k">
+						<li>
+							<div class="new-hot-list">
+								<a href="/Home/Solution/desired?keyword={$v.desir_sn}">
+									<div class="nhl-div1">{$k+1}.</div>
+									<div class="nhl-div2">{$v.desir_name}</div>
+								</a>
+									<div class="nhl-div3">
+										<if condition="$v[jl_self] eq 1">
+											<a href="/Home/Solution/desired?keyword=jl_self">
+												<div class="wathet_word the_auth" style="margin:0 5px 0 15px; width:63px;color:	#87CEFA;">
+													玖隆芯城
+												</div>
+											</a>
+											<else />
+											<a href="/Home/Solution/desired?keyword={$v.nick_name}">
+												<div class="wathet_word the_auth" style="margin:0 5px 0 15px; width:63px;color:	#87CEFA;">
+													{$v.nick_name}
+												</div>
+											</a>
+										</if>
+									</div>
+							</div>
+						</li>
+					</foreach>
+				</ul>
+			</div>
+
+			<!-- 热门方案 -->
+			<div class="sol-hot">
+				<ul>
+					<li>
+						<div class="ranking-list">最热的方案</div>
+						<!--<div class="upload-sol baiZiHongDi">上传方案</div>-->
+						<div class="clear"></div>
+					</li>
+					<hr>
+					<foreach name="list.hot" item="v" key="k">
+						<li>
+							<div class="new-hot-list">
+								<a href="/Home/Solution/desired?keyword={$v.desir_sn}">
+									<div class="nhl-div1">{$k+1}.</div>
+									<div class="nhl-div2">{$v.desir_name}</div>
+								</a>
+									<div class="nhl-div3">
+										<if condition="$v[jl_self] eq 1">
+											<a href="/Home/Solution/desired?keyword=jl_self">
+												<div class="wathet_word the_auth" style="margin:0 5px 0 15px; width:63px;">
+													玖隆芯城
+												</div>
+											</a>
+											<else />
+											<a href="/Home/Solution/desired?keyword={$v.nick_name}">
+												<div class="wathet_word the_auth" style="margin:0 5px 0 15px; width:63px;">
+													{$v.nick_name}
+												</div>
+											</a>
+										</if>
+									</div>
+							</div>
+						</li>
+					</foreach>
+				</ul>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<!--洽谈弹窗-->
+		<div id="sol-customer2">
+			<div class="sol-customer-title">留言洽谈<span class="js-close" style=""></span></div>
+			<div class="sol-customer-content" style="width:auto;height:auto;overflow:hidden;">
+					<form class="layui-form" action="">
+						<div class="layui-form-item converse-item" style="">
+							<label class="layui-form-label"><i class="xinxin"></i>方案报价:</label>
+							<div class="layui-input-block">
+								<input type="text" name="yusuan" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input input-add the_value1" maxlength="10">
+							</div>
+						</div>
+
+						<div class="layui-form-item converse-item">
+							<label class="layui-form-label"><i class="xinxin"></i>交付日期:</label>
+							<div class="layui-input-block">
+								<input type="text" name="zhouqi" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input input-add the_value1" maxlength="20">
+							</div>
+						</div>
+
+						<div class="layui-form-item layui-form-text converse-item">
+							<label class="layui-form-label"><i class="xinxin"></i>开发思路描述:</label>
+							<div class="layui-input-block">
+								<textarea name="silu" placeholder="请输入开发思路,限1000字" class="layui-textarea converse-text input-add the_value1 " maxlength="1000"></textarea>
+							</div>
+						</div>
+					</form>
+					<div class="quxiao float_L">取消</div>
+					<div class="queding float_L">确定</div>
+			</div>
+		</div>
+	</div>
+
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','layer'], function ($, modal, pikaday, jlTool) {
+                var jlTool = layui.jlTool;
+                //获取关键词,方案小类型,方案大类型的值;
+                var request= {$req|json_encode};
+                var sear_data={};/*搜索数据*/
+				var data ={};/*保存点击数据*/
+                var _val = $(".sol-serach2").children('input');//
+                var type1= $("#sol-provider").data('type');
+                var type2= $("#sol-desired").data('type');
+                var form =layui.form;
+                form.on("select(sol_types)",function(obj){
+                    sear_data.types=obj.value;//小分类
+                });
+                form.on("select(sol_pub_status)",function(obj){
+                    sear_data.pub_status=obj.value;//发布状态
+				})
+				//方案类型选中
+                var types_value = request.types;
+                $("select[name='sol_types'] option").each(function(obj){
+                    var option_obj = $(this);
+                    if(option_obj.val() == types_value){
+                        option_obj.attr('selected',true);
+                    }
+                    form.render('select');
+                });
+				var def_type = "{$req.types}";//默认状态
+				$('.sol-types option').each(function(i){
+				    if(def_type == $(this).val()){
+				        $(this).attr('selected','selected');
+				        form.render();
+					};
+				});
+
+                //搜索框
+                $(".sol-serach3").on("click", function () {
+                    sear_data.keyword= _val.val();
+                    sear_data.type1  = type1;//大分类
+                    sear_data.type2  = type2;
+                    sear_data.types  = jQuery("#sol-types-id  option:selected").val();
+                    sear_data.pub_status  = jQuery("#modules-id  option:selected").val();
+//                    console.log(sear_data);return;
+                    if(type1 == 1&& type2 != 2){
+                        //type1 ==1表示供应方案
+                        var url	= "{:U('Home/Solution/provider')}";
+                        	url	= (sear_data) ? url + '?' + jlTool.urlEncode(sear_data) : url;
+//						console.log(url);
+                        window.location = url;
+                    }else if(type1 !=1 && type2 == 2){
+                        //type2 ==2表示需求方案.
+                        var url	= "{:U('Home/Solution/desired')}";
+                        	url	= (sear_data) ? url + '?' + jlTool.urlEncode(sear_data) : url;
+//						console.log(url);
+                        window.location = url;
+                    }
+                });
+                //发布者搜索
+                $('.the_auth').on('click',function(event){
+                    event.stopPropagation();
+                    var url = $(this).parent('a').attr('href');
+                    location.href= url;
+                });
+				//供应方案
+                $('#sol-provider').on('click',function(){
+                    var url	= "{:U('Home/Solution/provider')}";
+                    window.location = url;
+                });
+                //需求方案
+                $('#sol-desired').on('click',function(){
+                    var url	= "{:U('Home/Solution/desired')}";
+                    window.location = url;
+                });
+                //页面条数转
+                var selfurl=window.location;
+                var request ={$request|json_encode};
+                $(".pageSize").val(request["pageSize"]?decodeURIComponent(request["pageSize"]) : "10");
+                $(".pageSize").change(function(){
+                    var nums=parseInt($(this).val());
+                    if(selfurl.search){
+                        location.href=location.href.split("pageSize")[0]+(location.href.split("pageSize")[1] ? "":"&")+("pageSize="+nums);
+                        //location.href=location.href;
+                    }else{
+                        location.href=location.href.split("pageSize")[0]+"&pageSize="+nums;
+                    }
+                });
+                //收藏
+                $('.sol_collect').on('click',function(event){
+                    event.stopPropagation();
+                    var _this = $(this);
+                    var data = _this.data();
+                    if(data.collected ==1){
+                        modal.confirm({
+                            title:'收藏夹已存在,立即查看?',
+                            isCenter:true,
+                            confirmText:'确定',
+                            confirm:function(){
+                                console.log(1);
+                                window.location.href="/Home/Solution/solCollectList";
+                            }
+                        });
+                    }else{
+                        data.collected =1;
+                        $.ajax({
+                            type:'get',
+                            url:'/Home/Solution/solCollectAdd',
+                            data:data,
+                            success:function(res){
+                                if(res.status==999) {
+                                    window.location.href = '/Home/Account/login';
+                                    return;
+                                }
+                                modal.alert({
+                                    title:res.content,
+                                });
+                                if(res.status==1000){
+                                    _this.html("<i style='background: url(/Public/Home/Solution/img/shop.png) no-repeat 1px -435px;'></i>已收藏");
+                                }
+                                if(res.status==1001){
+                                    modal.confirm({
+                                        title:res.content,
+                                        isCenter:true,
+                                        confirmText:'确定',
+                                        confirm:function(){
+                                            window.location.href="/Home/Solution/solCollectList";
+                                        }
+                                    });
+                                }else{
+                                    data.collected =0;
+								}
+                            },
+                            error:function(res){
+                                console.log(res);
+                                alert('系统繁忙,请稍后再试!');
+                            }
+                        });
+                    }
+
+                });
+                //洽谈
+                $('.need-service').on('click',function(event){
+                    event.stopPropagation();
+                    $('#sol-customer2').show();
+                    data=$(this).parents('.sol-list').find('.sol_collect').data();
+
+                });
+                //关闭洽谈
+                $('.quxiao').on('click',function(){
+                    $('#sol-customer2').hide();
+                });
+                //提交洽谈
+				$('.queding').on('click',function(){
+				    var data2	 = {};
+                    data2.sol_sn = data.sol_sn;
+				    $('.the_value1').each(function(i){
+				        var _value= $(this).val();
+				        var _name = $(this).attr('name');
+							data2[_name]=_value;
+						if(_value == ''){
+						    modal.alert({
+								title:'提示',
+								brief:'洽谈内容不能为空!'
+							});
+						    return ;
+						}
+					});
+					$.ajax({
+						type:'post',
+						data:data2,
+						url:"/Home/Solution/converse2",
+						success:function(res){
+						    console.log(res.status);
+						    if(res.status==999){
+                                window.location.href = '/Home/Account/login';
+                                return;
+							}
+							/*会员功能不启用时的替代*/
+                            if(res.status==888){
+                                modal.confirm({
+                                    title:'提示',
+                                    brief:res.content,
+                                    confirmText: "点击前往",
+                                    cancelText:'取消',
+                                    isCenter:true,
+                                    confirm:function(){
+                                        window.open("/Home/SolutionVip/vipIndex");
+                                    }
+								});
+                                return;
+                            }
+						    modal.alert({
+								title:res.content
+							});
+                            $('#sol-customer2').hide();
+						}
+					});
+				});
+                //排序
+                var _sork = "{$req.sork}";
+                $('.jl-sort').children('li').each(function(){
+                    if($(this).data('sork')==_sork){
+                        $(this).addClass('jl-cur');
+					}
+				})
+				//时间排序
+				$('.jl-defa').on('click',function(){
+				    window.location.href="/Home/Solution/desired?sork=pubtime";
+				});
+				//浏览量
+				$('.jl-news').on('click',function(){
+				    window.location.href="/Home/Solution/desired?sork=browse";
+				});
+				//方案上传
+				$('.upload-sol').on('click',function(){
+				    window.location.href="/Home/Solution/myDesiredUpload";
+				});
+				//方案详情
+//				$('.sol-list').on('click',function(){
+//				    var _this = $(this);
+//				    var desir_data={} ;
+//				    var data_info = _this.find('.collect_img').data();
+//				    desir_data.sol_id = data_info.sol_id;
+//				    desir_data.sol_sn = data_info.sol_sn;
+//				    var url = "/Home/Solution/desirDetail";
+//                    	url	= (desir_data) ? url + '?' + jlTool.urlEncode(desir_data) : url;
+//				    	window.open(url);
+//				});
+				//查看更多;
+				$('.check-more').on('click',function(event){
+				    event.stopPropagation();
+				    var _this = $(this).parent().prev();
+				    var old_height = _this.css('height');
+				    if(old_height=='50px'){
+						var auto_height= _this.css('height','auto').height();
+						if(auto_height>50){
+							_this.height(old_height).animate({height:auto_height},'fast');
+						}else{
+						    console.log(11);
+							_this.css('height','50px');
+						}
+					}else{
+				        _this.animate({height:'50px'},'fast');
+					}
+				});
+
+            });
+        });
+	</script>
+</block>

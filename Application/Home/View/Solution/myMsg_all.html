@@ -1,0 +1,61 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout-sol-center" />
+
+<block name="title">我的供应方案</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project_upload.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.4/css/layui.css" rel="stylesheet"  media="all">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		.myPro_desir{
+			color:#e84343;
+		}
+	</style>
+</block>
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main"><!-- 主要内容 -->
+	<!--面包屑导航系统-->
+	<!--{$breadcrum}-->
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--项目管理中心具体内容-->
+		<div class="projectContent">
+			<if condition="$res eq null">
+				<div id="jl-purchase-fault">
+					<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+					<p class="jl-fault">还没有任何内容哦!</p>
+					<a href="{:U('Home/Solution/myProviderUpload')}" class="jl-browse">点击发布方案</a>
+				</div>
+				<else />
+				<foreach name="res" item="vo">
+
+				</foreach>
+			</if>
+		</div>
+		<div class="clear" ></div>
+		{$page}
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool', ,'layer','webuploader'], function ($, modal, pikaday, jlTool,WebUploader) {
+
+            });
+        });
+	</script>
+</block>

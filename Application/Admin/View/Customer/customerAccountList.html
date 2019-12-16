@@ -1,0 +1,364 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">账期列表</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="overflow: hidden">
+            <span>
+                 <span style="padding: 9px 15px">客户名称</span>
+                <input value="{$request.user_name}" type="hidden" name="user_name" placeholder="请输入客户名称" class="layui-input jl-select-customers" style="display: inline-block;width: auto">
+                <input value="{$request.user_name_name}" type="text" name="user_name_name" placeholder="请输入客户名称" class="layui-input jl-select-customers layui-form-label-pinyin-customer" style="display: inline-block;width: auto">
+            </span>
+           <span>
+                <span style="padding: 9px 15px">业务员</span>
+                <input value="{$request.saleId}" type="hidden" name="saleId" placeholder="请选择业务员" class="layui-input jl-select-users" style="display: inline-block;width: auto">
+                <input value="{$request.saleId_name}" type="text" name="saleId_name" placeholder="请选择业务员" class="layui-input jl-select-users layui-form-label-pinyin-admin" style="display: inline-block;width: auto">
+           </span>
+            <div class="layui-btn-group">
+                <button class="layui-btn search-btn">检索</button>
+                <button class="layui-btn layui-btn-primary clear-btn">清空</button>
+            </div>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box">
+                    <!--{{#  if((d.status==1)){ }}-->
+                    <!--<span lay-event="stop">停用</span>-->
+                    <!--{{#  } }}-->
+                    <!--{{#  if((d.status==2)){ }}-->
+                    <!--<span lay-event="goon">恢复正常</span>-->
+                    <!--{{#  } }}-->
+                    {{#  if(d.account_temp && d.account_temp.status!=1){ }}
+                    <span lay-event="check">审核</span>
+                    {{#  } }}
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+        <div class="jl-check-container" style="display: none">
+            <div class="layui-form" style="padding: 6px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账期类型</label>
+                    <div class="layui-input-block">
+                        <select name="day_type" lay-verify="">
+                            <option value="1">周结（个人）</option>
+                            <option value="2">周结（企业）</option>
+                            <option value="2">半月结</option>
+                            <option value="4">月结</option>
+                            <option value="5">月结（15）</option>
+                            <option value="6">月结（30）</option>
+                        </select>
+                    </div>
+                </div>
+               <!-- <div class="layui-form-item">
+                    <label class="layui-form-label">账期额度</label>
+                    <div class="layui-input-block">
+                        <input type="number" readonly name="quota" placeholder="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号码</label>
+                    <div class="layui-input-block">
+                        <input type="number" readonly name="mobile" placeholder="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">身份证号</label>
+                    <div class="layui-input-block">
+                        <input type="number" readonly name="human_id" placeholder="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">银行卡号</label>
+                    <div class="layui-input-block">
+                        <input type="number" readonly name="bank_acount" placeholder="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">法人身份证</label>
+                    <div class="layui-input-block" style="float:left;margin:0 1%">
+                        <img id="com_human_id_img1" src="" style="width: 190px;height: 104px;"/>
+                    </div>
+                    <div class="layui-input-block" style="float:left;margin:0 1%">
+                        <img id="com_human_id_img2" src="" style="width: 190px;height: 104px;"/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="padding:0;margin-left:2%" >月结协议</label>
+                    <div class="layui-input-block">
+                        <a id="com_quota_img" download="月结协议" href="" style="color:#009688">查看月结协议</a>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="padding:0;margin-left:2%">账期协议</label>
+                    <div class="layui-input-block">
+                        <a id="account_agreement" download="账期协议" href="" style="color:#009688">查看账期协议</a>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">审核签字图片</label>
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-btn" id="upload-sys_user_signature_img">
+                            <i class="layui-icon">&#xe67c;</i>上传图片
+                        </button><br/>
+                        <img id="sys_user_signature_img" src="" style="width: 200px;height: 200px;"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','upload','selectUser','selectCustomer'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var upload = layui.upload;
+            var selectUser = layui.selectUser;
+            var selectCustomer=layui.selectCustomer;
+            selectUser.initInput(false,false,"fullname");
+            selectCustomer.initInput(false,false,false);
+            //搜索输入拼音首字母自动补全
+            initInput({"admin":"","customer":""});
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#upload-sys_user_signature_img'
+                ,url: '/Admin/Excel/fileUpload'
+                , data: {path: 'account_signature'}
+                ,done: function(res){
+                    if(res.error===0){
+                        $('#sys_user_signature_img').attr('src',res.data.path);
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                }
+            });
+            var list_data = {$list|json_encode};
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Customer/customerAccountList?'+query
+            };
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                unresize:true,
+                cellMinWidth: 160,
+                height:'full-196',
+                cols: [[ //表头
+                    {field: 'id', title: 'ID',width:100, fixed: 'left'}
+                    ,{field: 'user_name', title: '客户名称'}
+                    ,{field: 'sale_name', title: '业务员'}
+                    ,{field: 'quota', title: '额度',templet:function(d){
+                            if(d.since_name=="现金" || !d.since_name){
+                                return "0.00";
+                            }else{
+                                return d.quota;
+                            }
+                        }}
+                    ,{field: 'type', title: '类型',templet:function (d) {
+                        return d.type==2?'企业':'个人'
+                    }}
+                    ,{field: 'status', title: '状态',templet:function (d) {
+                        var status = parseInt(d.status);
+                        switch (status){
+                            case 1:
+                                return '正常';
+                            case 2:
+                                return '停用';
+                            case 3:
+                                return '审核';
+                            case 4:
+                                return '审核不通过';
+                            default:
+                                return '不正常'
+                        }
+                    }}
+                    ,{field: 'account_type', title: '账期类型',templet:function (d) {
+                        return d.since_name ? d.since_name : "现金" ;
+                        var status = parseInt(d.account_type);
+                        switch (status){
+                            case 1:
+                                return '周结（个人）';
+                            case 2:
+                                return '周结(企业)';
+                            case 3:
+                                return '半月结';
+                            case 4:
+                                return '月结';
+                            case 5:
+                                return '月结（15）';
+                            default:
+                                return '月结（30）'
+                        }
+                    }}
+                    ,{field: 'mobile', title: '电话'}
+                    ,{field: 'human_id', title: '身份证',width:180}
+                    ,{field: 'bank_acount', title: '银行账号',width:180}
+                    ,{field: 'com_human_id_img1', title: '法人身份证正面',templet: function(d){ return (
+                        '<button class="js-check-img layui-btn layui-btn-sm" data-img="'+d.com_human_id_img1+'">查看图片信息</button>'
+                    )}}
+                    ,{field: 'com_human_id_img2', title: '法人身份证反面',templet: function(d){ return (
+                        '<button class="js-check-img layui-btn layui-btn-sm" data-img="'+d.com_human_id_img2+'">查看图片信息</button>'
+                    )}}
+                    ,{field: 'com_quota_img', title: '账期协议',templet: function(d){ return d.com_quota_img?(
+                        '<a href="'+d.com_quota_img+'" download="" class="layui-btn layui-btn-sm">下载账期协议</a>'
+                    ):'无'}}
+                    ,{field: 'account_agreement', title: '账号使用协议',templet: function(d){ return d.account_agreement?(
+                        '<a href="'+d.account_agreement+'" download="" class="layui-btn layui-btn-sm">下载账号使用协议</a>'
+                    ):'无'}}
+                    ,{field: 'com_business_img', title: '营业执照',templet: function(d){ return (
+                        '<button class="js-check-img layui-btn layui-btn-sm" data-img="'+d.com_business_img+'">查看图片信息</button>'
+                    )}}
+                    ,{field: 'com_bank_img', title: '银行开户许可证',templet: function(d){ return (
+                        '<button class="js-check-img layui-btn layui-btn-sm" data-img="'+d.com_bank_img+'">查看图片信息</button>'
+                    )}}
+                    ,{field: 'com_bank_img', title: '审核签字',templet: function(d){ return (
+                        '<button class="js-check-img layui-btn layui-btn-sm" data-img="'+d.sys_user_signature_img+'">查看图片信息</button>'
+                    )}}
+                    ,{field: 'sys_uid', title: '审核人'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right', toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            var changStatus = function (data) {
+                $.post('/Admin/Customer/customerAccountCheck',data,function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        layer.msg('操作成功');
+                        setTimeout(function () {
+                            window.location.reload()
+                        },500)
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                })
+            };
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                var data = {
+                    id:source.id,
+                    day_type:source.day_type,
+                };
+                if(layEvent === 'stop'){
+                    data['status'] = 2;
+                    changStatus(data)
+                } else if(layEvent === 'goon'){
+                    data['status'] = 1;
+                    changStatus(data)
+                } else if(layEvent === 'check'){
+                    layer.open({
+                        type: 1,
+                        title:'账期审核',
+                        area:['700px','60%'],
+                        btn: ['通过'],
+                        content: $('.jl-check-container'),
+                        success:function () {
+                            var self = source.account_temp;
+                           /// console.log(obj,self);
+                            $('select[name="day_type"]').val(self.day_type);
+                            $('input[name="quota"]').val(self.quota);
+                            $('input[name="mobile"]').val(self.mobile);
+                            $('input[name="human_id"]').val(self.human_id);
+                            $('input[name="bank_acount"]').val(self.bank_acount);
+                            $('#com_human_id_img1').attr('src',self.com_human_id_img1);
+                            $('#com_human_id_img2').attr('src',self.com_human_id_img2);
+                            $('#com_quota_img').attr('href',self.com_quota_img);
+                            $('#account_agreement').attr('href',self.account_agreement);
+                            $('#sys_user_signature_img').attr('src','');
+                            form.render()
+                        },
+                        yes: function(index, layero){
+                            var data ={
+                                status:1,
+                                id:source.id,
+                                user_id:source.user_id,
+                                quota:$('input[name="quota"]').val(),
+                                day_type:$('select[name="day_type"]').val(),
+                                sys_user_signature_img:$('#sys_user_signature_img').attr('src'),
+                            };
+                            changStatus(data)
+                        },
+                        btn2: function(index, layero){
+                            var data ={
+                                status:4,
+                                id:source.id,
+                                user_id:source.user_id,
+                                quota:$('input[name="quota"]').val(),
+                                day_type:$('select[name="day_type"]').val(),
+                                sys_user_signature_img:$('#sys_user_signature_img').attr('src'),
+                            };
+                            changStatus(data)
+                        }
+                    });
+                }
+            });
+            $('.js-check-img').click(function () {
+                var img = $(this).data('img');
+                if(img){
+                    layer.open({
+                        title:'图片',
+                        type: 0,
+                        area:['470px'],
+                        shadeClose:true,
+                        content: (
+                            '<div style="text-align: center">' +
+                            '<img style="width: 430px;height: 270px;" src="'+img+'"/>' +
+                            '</div>'
+                        )
+                    })
+                }
+                else {
+                    layer.msg('没有图片');
+                }
+            });
+            //分页初始化
+            var request={$request|json_encode};
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request,{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            //检索按钮
+            $('.search-btn').on('click',function (obj) {
+                var sendDate={};
+                if($('input[name="saleId"]').val()){
+                    sendDate.saleId=$('input[name="saleId"]').val();
+                    sendDate.saleId_name=$('input[name="saleId_name"]').val();
+                }
+                if($('input[name="user_name"]').val()){
+                    sendDate.user_name=$('input[name="user_name"]').val();
+                    sendDate.user_name_name=$('input[name="user_name_name"]').val();
+                }
+                queryTable(sendDate);
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            })
+        });
+    </script>
+</block>

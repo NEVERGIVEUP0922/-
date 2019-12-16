@@ -1,0 +1,282 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-cart" />
+
+<block name="title">退货/退款完毕</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/retreatCargo.css">
+</block>
+
+<block name="nav-title">退货/退款</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <ul class="jl-brands">
+        <li><a>您的位置</a></li>
+        <li>&gt;</li>
+        <li><a href="{:U('Home/Default/index')}">首页</a></li>
+        <li>&gt;</li>
+        <li><a href="{:U('Home/User/index')}">个人中心</a></li>
+        <li>&gt;</li>
+        <li class="jl-last"><a href="{:U('Home/Order/myOrder')}">我的订单</a></li>
+    </ul>
+
+    <if condition="$data['retreat']['retreat_type'] eq 0">
+        <ul class="jl-progress-money jl-cle" style="display:block">
+            <li class="jl-old">
+                <p>
+                    <span class="jl-serial">1</span>
+                    买家申请退款退款
+                </p>
+                <i class="jl-arr"></i>
+            </li>
+            <li class="jl-old">
+                <i class="jl-arr-white"></i>
+                <p>
+                    <span class="jl-serial">2</span>
+                    玖隆处理退款申请
+                </p>
+                <i class="jl-arr"></i>
+            </li>
+            <li class="jl-cur jl-progress-last">
+                <i class="jl-arr-white"></i>
+                <p>
+                    <span class="jl-serial">3</span>
+                    退款完毕
+                </p>
+            </li>
+        </ul>
+        <else />
+        <ul class="jl-progress-cargo jl-cle">
+            <li class="jl-old">
+                <p>
+                    <span class="jl-serial">1</span>
+                    买家申请退货/退款
+                </p>
+                <i class="jl-arr"></i>
+            </li>
+            <li class="jl-old">
+                <i class="jl-arr-white"></i>
+                <p>
+                    <span class="jl-serial">2</span>
+                    玖隆处理退货/退款申请
+                </p>
+                <i class="jl-arr"></i>
+            </li>
+            <li class="jl-old">
+                <i class="jl-arr-white"></i>
+                <p>
+                    <span class="jl-serial">2</span>
+                    买家退货
+                </p>
+                <i class="jl-arr"></i>
+            </li>
+            <li class="jl-cur jl-progress-last">
+                <i class="jl-arr-white"></i>
+                <p>
+                    <span class="jl-serial">3</span>
+                    退货/退款完毕
+                </p>
+            </li>
+        </ul>
+    </if>
+
+
+    <div class="jl-retreat jl-cle">
+        <div class="jl-return-left">
+            <if condition="$isCancle eq 1">
+                <h3><?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>已关闭</h3>
+                <p>完结时间：{$data.retreat.close_time|date="Y-m-d H:i:s",###}</p>
+                <p>由于买家主动撤销<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>申请，<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>交易已关闭。</p>
+                <else />
+                    <h3><?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>已完成</h3>
+                    <p>完结时间：{$data.retreat.close_time|date="Y-m-d H:i:s",###}</p>
+                    <p>
+                        <if condition="$data['retreat']['retreat_type'] eq 0">
+                            <empty name="data['retreat']['close_desc']">玖隆芯城已完成退款!<else />{$data.retreat.close_desc}</empty>
+                            <else />
+                            <empty name="data['retreat']['close_desc']">玖隆芯城已收到您的货物,符合<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>条件,<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>成功<else />{$data.retreat.close_desc}</empty>
+                        </if>
+                    </p>
+                <if condition="$data['retreat']['retreat_type'] neq 1">
+                    <p>退款去向：退款金额已原路退回,请查收！</p>
+                </if>
+            </if>
+
+            <div class="jl-line"></div>
+
+            <h3>协商历史</h3>
+            <?php $len = count($data['log'])  ?>
+            <volist name="data.log" id="log">
+                <if condition="$i eq $len">
+                    <div class="jl-negotiate jl-last jl-cle ">
+                        <else />
+                        <div class="jl-negotiate jl-cle ">
+                </if>
+                <if condition="$log['user_type'] eq 0" >
+                    <div class="jl-head">
+                        <?php $avator = session('userInfo.avator');if( !file_exists(SITE_PATH.$avator) || empty($avator) ){echo '<img src="__UPLOAD__/User/avator/default.png" alt="">';}else{echo "<img src=".$avator.">";}?>
+                    </div>
+                    <else />
+                    <div class="jl-head">
+                        <img src="__PUBLIC__/Home/Public/img/head02.png" alt="">
+                    </div>
+                </if>
+                <switch name="log.action_type">
+                    <case value="0">
+                        <ul class="jl-negotiate-content">
+                            <li>{:session('userInfo.nick_name')}<span> {$log.create_time} </span></li>
+                            <li>买家（{:session('userInfo.nick_name')}）于 {$log.create_time} 创建了<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>申请</li>
+                            <li>退款类型：<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?></li>
+                            <li>退款金额：¥{$data.retreat.retreat_money}</li>
+                            <li>退款说明：{$data.retreat.retreat_desc}</li>
+                        </ul>
+                    </case>
+                    <case value="1">
+                        <ul class="jl-negotiate-content">
+                            <li>玖隆芯城<span> {$log.create_time} </span></li>
+                            <li>玖隆 于 {$log.create_time} 同意<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>申请！</li>
+                        </ul>
+                    </case>
+                    <case value="2">
+                        <ul class="jl-negotiate-content">
+                            <li>玖隆芯城<span> {$log.create_time} </span></li>
+                            <li>玖隆 于 {$log.create_time} 驳回<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>申请！</li>
+                            <li>驳回理由:{$log.action_desc}</li>
+                        </ul>
+                    </case>
+                    <case value="3">
+                        <ul class="jl-negotiate-content">
+                            <li>{:session('userInfo.nick_name')}<span> {$log.create_time} </span></li>
+                            <li>买家（{:session('userInfo.nick_name')}）于 {$log.create_time} 修改了<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>申请</li>
+                        </ul>
+                    </case>
+                    <case value="4">
+                        <ul class="jl-negotiate-content">
+                            <li>{:session('userInfo.nick_name')}<span> {$log.create_time} </span></li>
+                            <li>买家（{:session('userInfo.nick_name')}）于 {$log.create_time} 进行退货,并上传了退货物流单号</li>
+                        </ul>
+                    </case>
+                    <case value="5">
+                        <ul class="jl-negotiate-content">
+                            <li>玖隆芯城<span> {$log.create_time} </span></li>
+                            <li>玖隆 于 {$log.create_time} 确认收到退货物品！</li>
+                        </ul>
+                    </case>
+                    <case value="6">
+                        <ul class="jl-negotiate-content">
+                            <li>玖隆芯城 <span> {$log.create_time} </span></li>
+                            <li>玖隆 于{$log.create_time} 执行了<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>操作！<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>交易成功!</li>
+                        </ul>
+                    </case>
+                    <case value="7">
+                        <ul class="jl-negotiate-content">
+                            <li>{:session('userInfo.nick_name')}<span> {$log.create_time} </span></li>
+                            <li>买家（{:session('userInfo.nick_name')}）于 {$log.create_time} 撤销了<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>申请!<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>交易关闭</li>
+                        </ul>
+                    </case>
+                    <case value="8">
+                        <ul class="jl-negotiate-content">
+                            <li>玖隆芯城<span> {$log.create_time} </span></li>
+                            <li>玖隆 于 {$log.create_time} 部分审核<?php
+                            if($data['retreat']['retreat_type']==0)
+                            {echo "仅退款";}
+                            elseif($data['retreat']['retreat_type']==1)
+                            {echo "仅退货";}
+                            else{{echo "退货退款";}}?>申请！</li>
+                        </ul>
+                    </case>
+                </switch>
+        </div>
+        </volist>
+        </div>
+    <include file="Public:retreat_order_detail" />
+    </div>
+
+    <div class="jl-line"></div>
+
+</block>
+
+
+<block name="js">
+</block>

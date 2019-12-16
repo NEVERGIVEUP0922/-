@@ -1,0 +1,306 @@
+@import "../../Public/css/init.less";
+
+#jl-release-banner,#jl-purchase-order{
+  width: 1200px;
+  margin: 0 auto;
+}
+
+//错误提示
+.js-false .jl-false-note{
+  right: 39px;
+}
+//关闭按钮
+.js-close{
+  float: right;
+  margin-right: 20px;
+  margin-top: 14px;
+}
+
+#jl-release-banner{
+  height: 160px;
+  background: @bg-color;
+  margin-bottom: 60px;
+}
+
+.jl-order,.jl-contact,.jl-tender,.jl-replenish{
+  text-align: center;
+  margin-bottom: 20px;
+  h3{
+    width: 212px;
+    height: 38px;
+    border:1px solid @dark-grey;
+    margin: 0 auto 28px;
+    .font20(@dark-grey);
+    line-height: 38px;
+  }
+  h4{
+    .font18(@dark-grey);
+    margin-bottom: 5px;
+  }
+}
+.jl-order{
+  .jl-mandatory{
+    margin-left: 20px;
+    margin-right: 8px;
+  }
+}
+
+.jl-requisition{
+  >li{
+    margin-top: 30px;
+  }
+}
+
+.jl-order-title{
+  height: 40px;
+  line-height: 40px;
+  color: @dark-grey;
+  background: @bg-color;
+  margin-bottom: 10px;
+  span{
+    margin-left: 28px;
+  }
+}
+
+.jl-order-details{
+  border:@border02;
+}
+.jl-content-left,.jl-content-center,.jl-content-right{
+  float: left;
+  border-right:@border02;
+  height: 188px;
+  box-sizing: border-box;
+}
+
+.jl-content-left{
+  width: 167px;
+  padding-top:25px;
+  a{
+    color:@dark-grey;
+    margin-left: 28px;
+  }
+  .jl-inland{
+    padding-bottom: 20px;
+    position: relative;
+  }
+}
+.jl-area{
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 20px;
+  opacity: 0;
+  filter:alpha(opacity=0);
+  width: 100px;
+  height: 25px;
+}
+
+.jl-content-center{
+  width: 420px;
+  color:@dark-grey;
+  padding-left:35px;
+  padding-top: 14px;
+}
+//输入框布局
+.jl-input{
+  position: relative;
+  margin-bottom: 18px;
+  span{
+    display: inline-block;
+    width: 90px;
+  }
+  .jl-mandatory{
+    margin-right: 10px;
+  }
+  input{
+    width: 252px;
+    height: 40px;
+    line-height: 40px;
+    border:1px solid @grey;
+    box-sizing: border-box;
+    padding-left: 20px;
+  }
+}
+.js-select-popup{
+  display: none;
+  position: absolute;
+  z-index: 10;
+  top: 40px;
+  left: 94px;
+  border:@border06;
+  border-top:none;
+  width: 252px;
+  box-sizing: border-box;
+  background: #fff;
+  li{
+    height: 27px;
+    line-height: 27px;
+    padding-left: 20px;
+  }
+  li:hover{
+    background: @color;
+    color:#fff;
+  }
+}
+.jl-content-right{
+  width: 188px;
+  border: none;
+  text-align: center;
+  h5{
+    color:@dark-grey;
+    margin-top: 65px;
+    margin-bottom: 10px;
+  }
+  p{
+    color:@color;
+  }
+}
+.jl-add-order,.jl-publish{
+  .font18(#fff);
+  display: block;
+  width: 410px;
+  height: 40px;
+  margin: 40px auto;
+  background: @green;
+  border: none;
+  cursor: pointer;
+}
+
+.jl-line{
+  border-color:@light-gray ;
+}
+
+.jl-contact,.jl-tender,.jl-replenish{
+  margin-top: 38px;
+  margin-bottom: 50px;
+}
+
+.jl-contact-content,.jl-tender-content{
+  padding-left: 203px;
+  padding-top: 30px;
+  text-align: left;
+  .jl-input{
+    width: 384px;
+    float: left;
+    margin-right:35px;
+    margin-bottom: 0;
+  }
+}
+.jl-tender-content{
+  .js-false{
+    .jl-false-note{
+      right: 88px;
+    }
+  }
+}
+
+.jl-date>span{
+  color:@color;
+}
+.jl-end-time{
+  position: relative;
+  z-index:100;
+  background: rgba(0,0,0,0);
+}
+.jl-calendar{
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  right: 37px;
+  width: 21px;
+  height: 18px;
+  padding: 11px;
+  border-left:1px solid @grey;
+  background:url("../../Public/img/sprite.png") no-repeat -10px -230px;
+}
+
+.jl-replenish{
+  margin-bottom: 0;
+}
+.jl-replenish-content{
+  width: 100%;
+  height: 200px;
+  border:1px solid @light-gray;
+  margin-top: 28px;
+  padding-left:25px;
+  padding-top: 15px;
+  box-sizing: border-box;
+}
+
+.jl-publish{
+  background: @color;
+  margin-bottom: 80px;
+}
+
+
+#jl-purchase-order{
+  //display: none;
+}
+
+#jl-purchase-success ,#jl-purchase-fault{
+  .font18(@color);
+  //min-height: 680px;
+  //min-height: 700px;
+  min-height: 622px;
+  text-align: center;
+  box-sizing: border-box;
+  padding-top: 100px;
+  margin-top: 80px;
+  p {
+    margin-top: 26px;
+    margin-bottom: 60px;
+  }
+}
+//#jl-purchase-fault{
+//  min-height: 720px;
+//  box-sizing: border-box;
+//  margin-top: 180px;
+//}
+
+.jl-browse{
+  display: inline-block;
+  width: 410px;
+  height: 40px;
+  .font18(#fff);
+  line-height: 40px;
+  border: none;
+  background: @color;
+}
+a.jl-browse:hover{
+  color:#fff;
+}
+.jl-fault{
+  color:@medium-grey;
+}
+
+//日期
+.js-data{
+  width: 250px;
+  .pika-lendar{
+    width:234px;
+  }
+  .pika-button{
+    text-align: center;
+  }
+  .pika-button:hover{
+    background: @color;
+    color:#fff;
+  }
+  .is-today{
+    .pika-button:hover{
+      background: @color;
+      color:#fff;
+    }
+    .pika-day{
+      color:@color;
+    }
+  }
+  .is-selected .pika-button{
+    background: @color;
+    box-shadow:inset 0 1px 3px @color;
+  }
+}
+
+.js-close{
+  display: none;
+}

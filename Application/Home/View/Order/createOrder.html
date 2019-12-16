@@ -1,0 +1,1261 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-cart" />
+<block name="title">购物车</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/cartOrder.css">
+</block>
+<block name="nav-title">购物车</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul id="jl-cart-progress" class="jl-cle">
+        <li class="jl-old">
+            <p>
+                <span class="jl-serial">1</span>
+                我的购物车
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-cur">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">2</span>
+                确认订单信息
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-progress-last">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">3</span>
+                成功提交订单
+            </p>
+        </li>
+    </ul>
+    <!-- 收货信息 -->
+    <div id="jl-cart-order">
+        <!-- 收货人 -->
+        <div class="jl-consignee">
+            <h4 class="jl-cartOrder-title">收货人信息</h4>
+            <!-- 没有收货人信息 -->
+            <div class="jl-no-consignee js-address-empty">
+                <div class="jl-add-consignee js-address-add"></div>
+            </div>
+            <!-- 有收货人 -->
+            <ul class="jl-has-consignee js-address-list"></ul>
+            <a href="#" class="jl-add-consignee js-address-add">新增收货人信息</a>
+        </div>
+        <!-- 送货方式 -->
+        <div class="jl-shipping-method">
+            <h4 class="jl-cartOrder-title">运输方式</h4>
+            <ul class="jl-shipping-way jl-cle">
+                <volist name="delivery.level1" id="level1">
+                    <li data-value="{$level1.id}" class="{$key==1?'jl-cur':''}">
+                        <a href="javascript:">{$level1.name}<i></i></a>
+                    </li>
+                </volist>
+            </ul>
+            <volist name="delivery.level2" id="level2">
+                <div class="jl-shipping-content {$key==1?'jl-delivery-cur':''}">
+                    <p class="jl-special-delivery">{$delivery['level1'][$key]['describe']}</p>
+                    <ul class="jl-cle">
+                        <volist name="level2" id="lv2">
+                            <li data-value="{$lv2.id}">
+                                <notempty name="lv2.img">
+                                    <img src="{$lv2.img}" alt="">
+                                    <else />
+                                    {$lv2.name}
+                                </notempty>
+                                <i></i>
+                            </li>
+                        </volist>
+                    </ul>
+                </div>
+            </volist>
+        </div>
+        <!-- 选择发票 -->
+        <div class="jl-invoice">
+            <h4 class="jl-cartOrder-title">
+                选择发票
+                <span style="color:#e84343;margin-left: 20px;">
+                    本商城订单累计2万元以上才能开增值税专票
+                    <!--<a href="#" style="color:#05baae;margin-left: 20px;">查看详情</a>-->
+                </span>
+            </h4>
+            <ul class="jl-invoice-class jl-cle">
+                <li data-id="1" class="js-has-tax jl-cur"><a href="javascript:">开发票<i></i></a></li>
+                <li data-id="0" class=""><a href="javascript:">不开发票<i></i></a></li>
+                <!--<li data-type="3"><a href="javascript:">增值税普票<i></i></a></li>-->
+            </ul>
+            <!--<ul class="jl-special-invoice" style="display: none"></ul>-->
+            <!--<ul class="jl-ordinary-invoice" style="display: none"></ul>-->
+            <!--<div class="jl-no-invoice">-->
+                <!--<div class="jl-add-consignee js-add-invoice"></div>-->
+            <!--</div>-->
+            <!--<a href="javascript:" class="jl-add-consignee js-add-invoice">新增收票人信息</a>-->
+        </div>
+        <!-- 备注 -->
+        <div class="jl-note">
+            <h4 class="jl-cartOrder-title">备注</h4>
+            <textarea name="" class="jl-note-main" placeholder="请你输入备注内容....."></textarea>
+            <span class="jl-remark"><span class="js-textarea-length">0</span>/100</span>
+        </div>
+        <!-- 支付方式 -->
+        <div class="jl-pay-way">
+            <h4 class="jl-cartOrder-title">支付方式</h4>
+            <ul class="jl-pay-class jl-cle">
+                <li class="js-pay-type-1 jl-cur" data-type="1"><a href="javascript:">在线支付<i></i></a></li>
+                <li class="js-pay-type-2" data-type="2"><a href="javascript:">账期支付<i></i></a></li>
+                <li class="js-pay-type-5" data-type="5"><a href="javascript:">银行转账<i></i></a></li>
+                <li class="js-pay-type-6" data-type="6" style="display: none"><a href="javascript:">线下支付<i></i></a></li>
+                <li class="js-pay-type-3" data-type="3" style="display: none"><a href="javascript:">快递代收<i></i></a></li>
+                <!--<li class="js-pay-type-4" data-type="4" style="display: none"><a href="javascript:">面对面付款<i></i></a></li>-->
+            </ul>
+        </div>
+        <div class="jl-deposit-pay-way">
+            <h4 class="jl-cartOrder-title">订金支付方式</h4>
+            <ul class="jl-deposit-pay-class jl-cle">
+                <li class="js-pay-type-1" data-type="1"><a href="javascript:">在线支付<i></i></a></li>
+                <li class="js-pay-type-5" data-type="5" style="display: none"><a href="javascript:">银行转账<i></i></a></li>
+                <li class="js-pay-type-6" data-type="6" style="display: none"><a href="javascript:">线下支付<i></i></a></li>
+               <!-- <li class="js-pay-type-4" data-type="4" style="display: none"><a href="javascript:">面对面付款<i></i></a></li>-->
+            </ul>
+        </div>
+    </div>
+    <!-- 订单信息 -->
+    <div id="jl-order-news">
+        <!-- 确认订单 -->
+        <div class="jl-confirm-order">
+            <h4 class="jl-cartOrder-title">确认订单信息</h4>
+            <dl class="jl-goods-detail">
+                <dt class="jl-cle">
+                <p class="jl-confirm-goods">商品</p>
+                <p class="jl-confirm-brand">名称</p>
+                <p class="jl-confirm-detail">详情</p>
+                <p class="jl-confirm-price">单价（元）</p>
+                <p class="jl-confirm-count">数量（PCS）</p>
+                <p class="jl-confirm-subtotal">小计（元）</p>
+                </dt>
+                <volist name="product_list" id="product">
+                    <dd class="jl-cle jl-product-table">
+                        <p class="jl-confirm-goods">
+                            <notempty name="product.cover_image">
+                                <img src="{$product.cover_image}" alt="">
+                                <else />
+                                <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                            </notempty>
+                        </p>
+                      <!--  <?php print_r($product.sample );?>-->
+                        <p class="jl-confirm-brand">{$product.p_sign}</p>
+                        <p class="jl-confirm-detail">
+                            <s>封装：{$product.package}</s>
+                            <s>分类：{$product.cate_name}</s>
+                            <s>交期：{$product.delivery}{$product['delivery']?'天':''}</s>
+                        </p>
+                        <p class="jl-confirm-price">{$product.price_show}</p>
+                        <p class="jl-confirm-count">{$product.num}</p>
+                        <p class="jl-confirm-subtotal"></p>
+                    </dd>
+                </volist>
+            </dl>
+        </div>
+        <!-- 付款详情 -->
+        <div class="jl-pay-goods">
+            <p >
+                <b>￥<span class="js-all-price"></span></b>
+                <span>{$product_list|count}件商品，总商品金额</span>
+            </p>
+            <p>
+                <b class="integral_money">￥<span class="integral_money_text">0.00</span></b>
+                <span class="jl-integral"><i class="js-integral"></i>积分抵扣</span>
+            </p>
+            <p class="js-deposit-tips" style="display: none">
+                <s>￥<span class="js-all-deposit"></span></s>
+                <span >支付订金</span>
+                <!--<span class="deposit-money" style="display:none">现货 + 订金</span>-->
+            </p>
+            <p>
+                <s>￥<span class="js-delivery-price">0.00</span></s>
+                <span class="js-delivery-type">
+                    <!--<span class="js-address-type-checkbox">-->
+                    <!--<i data-type="1" class="jl-select"></i>到付-->
+                    <!--</span>-->
+                    <!--<span style="margin-right: 14px" class="js-address-type-checkbox">-->
+                    <!--<i data-type="2" class="jl-select jl-active"></i>寄付-->
+                    <!--</span>-->
+                    <span style="color:#a8a8a8">（商品总价格1000元以上免邮，1000元以下到付）</span>
+                    <span>运费</span>
+                </span>
+            </p>
+            <p class="js-deposit-checkbox-container">
+                <s><i data-type="1" class="js-deposit-checkbox jl-select"></i></s>
+                <span>
+                    <span>仅付订金<span style="color: #e84343;">（如果勾选此项，货源充足后再付尾款）</span></span>
+<!--
+                    <span class="deposit-money" style="display:none">现货 + 订金<span style="color: #e84343;">（如果勾选此项，货源充足后再付尾款）</span></span>
+-->
+                </span>
+            </p>
+        </div>
+        <div class="jl-pay-payment js-balance-need" style="display: none">
+            <p>
+                <s>￥<span>{$userAccount.data}</span></s>
+                <span>账期余额</span>
+            </p>
+            <p>
+                <s>
+                    <span class="js-balance-text"></span>
+                    <span class="">￥</span>
+                </s>
+                <span>账期支付<i>（不含订金和运费）</i></span>
+            </p>
+            <p>
+                <b>￥<span class="js-balance-left">{$userAccount.data}</span></b>
+                <b>账期剩余余额</b>
+            </p>
+        </div>
+        <div class="jl-pay-result">
+            <p class="jl-p-first">
+                <s class="jl-total">￥<span class="js-final-price"></span></s>
+                <span>实付金额</span>
+            </p>
+            <p class="js-balance-need" style="display: none;">
+                <b>￥<span class="js-final-balance">0.00</span></b>
+                <span>使用账期</span>
+            </p>
+            <!--<p class="js-balance-need" style="display: none;">-->
+                <!--<s style="min-height: 1px">{$account_repayment_date}</s>-->
+                <!--<span>应付日期</span>-->
+            <!--</p>-->
+            <p class="jl-addr js-selected-address"></p>
+        </div>
+        <div class="jl-submit-btn jl-cle">
+            <button class="jl-submit-orders jl-active">提交订单</button>
+        </div>
+    </div>
+    <div class="jl-line"></div>
+    <!-- 弹窗 -->
+    <!-- 收货人弹窗 -->
+    <div class="js-popup-consignee">
+        <div class="jl-bg"></div>
+        <div class="jl-consignee-main" style="top:50%;transform: translate(0,-50%)">
+            <div class="jl-title">新增收货人信息<span class="jl-close"></span></div>
+            <ul class="jl-popup-content">
+                <li class="jl-cle">
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">收货人</span>
+                        <input class="js-enter-next js-check-input" type="text" placeholder="请输入收货人" name="consignee">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">手机号码</span>
+                        <input class="js-enter-next js-check-input js-check-input-phone" type="text" placeholder="请输入手机号码" name="mobile">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">所在地址</span>
+                    </p>
+                    <div class="jl-c-de js-selector-container0">
+                        <input type="text"
+                               class="js-selector-input jl-c-hidden js-enter-next jl-y-select-input jl-check-address"
+                               name="company_area"  placeholder="" data-title="所在地址">
+                        <div class="jl-c-address jl-y-select js-select-first">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-second">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-third">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <i class="jl-input-error-icon jl-address-error"></i>
+                    </div>
+                </li>
+                <li class="jl-cle">
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">详细地址</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入详细地址" name="address">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <button class="jl-popup-submit">保存收货人信息</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- 增值税普票弹窗 -->
+    <div class="js-popup-ordinary">
+        <div class="jl-bg"></div>
+        <div class="jl-consignee-main">
+            <div class="jl-title">新增收票人信息<span class="jl-close"></span></div>
+            <ul class="jl-popup-content">
+                <li class="jl-cle">
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">发票抬头</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入发票抬头" name="invoice_header" data-title="发票抬头">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">收票人</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入收票人" name="invoice_owner" data-title="收票人">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">手机号码</span>
+                        <input class="js-enter-next js-check-input js-check-input-phone"
+                               type="text" placeholder="请输入手机号码" data-title="手机号码" name="mobile">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">所在地址</span>
+                    </p>
+                    <div class="jl-c-de js-selector-container3">
+                        <input type="text"
+                               class="js-selector-input jl-c-hidden js-enter-next jl-y-select-input jl-check-address"
+                               name="area_code"  placeholder="" data-title="注册地址">
+                        <div class="jl-c-address jl-y-select js-select-first">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-second">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-third">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <i class="jl-input-error-icon jl-address-error"></i>
+                    </div>
+                </li>
+                <li class="jl-cle">
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">详细地址</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入详细地址" name="address" data-title="详细地址">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <button class="jl-popup-submit">保存收票人信息</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- 增值税专票弹窗 -->
+    <div class="js-popup-special">
+        <div class="jl-bg"></div>
+        <div class="jl-consignee-main">
+            <div class="jl-title">新增收票人信息<span class="jl-close"></span></div>
+            <ul class="jl-popup-content">
+                <li class="jl-cle">
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">发票抬头</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入发票抬头" name="invoice_header" data-title="发票抬头">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">企业电话</span>
+                        <input class="js-enter-next js-check-input js-check-input-phone-2"
+                               type="text" placeholder="请输入企业电话" name="company_phone" data-title="企业电话">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">注册地址</span>
+                    </p>
+                    <div class="jl-c-de js-selector-container1">
+                        <input type="text"
+                               class="js-selector-input jl-c-hidden jl-y-select-input js-enter-next jl-check-address"
+                               name="company_area_code"  placeholder="" data-title="注册地址">
+                        <div class="jl-c-address jl-y-select js-select-first">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-second">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-third">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <i class="jl-input-error-icon jl-address-error"></i>
+                    </div>
+                </li>
+                <li class="jl-cle">
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">详细地址</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入详细地址" name="company_address" data-title="详细地址">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">税务登记号</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入税务登记" name="company_tax_code" data-title="税务登记号">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">开户银行</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入开户银行" name="company_bank_name" data-title="开户银行">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">银行账号</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入银行账号" name="company_bank_acount" data-title="银行账号">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">收票人</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入收票人" name="invoice_owner" data-title="收票人">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">手机号码</span>
+                        <input class="js-enter-next js-check-input js-check-input-phone"
+                               type="text" placeholder="请输入手机号码" data-title="手机号码" name="mobile">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li class="jl-cle">
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">所在地址</span>
+                    </p>
+                    <div class="jl-c-de js-selector-container2">
+                        <input type="text"
+                               class="js-selector-input jl-c-hidden js-enter-next jl-y-select-input jl-check-address"
+                               name="area_code"  placeholder="" data-title="所在地址">
+                        <div class="jl-c-address jl-y-select js-select-first">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-second">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-third">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <i class="jl-input-error-icon jl-address-error"></i>
+                    </div>
+                </li>
+                <li class="jl-cle">
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">详细地址</span>
+                        <input class="js-enter-next js-check-input"
+                               type="text" placeholder="请输入详细地址" name="address" data-title="详细地址">
+                        <i class="jl-input-error-icon"></i>
+                    </p>
+                </li>
+                <li>
+                    <button class="jl-popup-submit">保存收票人信息</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery','jl-modal'], function ($,modal) {
+                var error = {$error|json_encode};
+                if(error&&error.error!==0){
+                    modal.alert({
+                        title:'系统繁忙',
+                        brief:'不好意思哦！系统繁忙，请稍后重试！',
+                        top:100,
+                        hiddenCloseIcon:true,
+                        confirm:function () {
+                            window.location.href = "{:U('Home/Basket/basketDetail')}"
+                        }
+                    });
+                }
+                var product_data = {$product_list|json_encode};
+                var address_data = {$address|json_encode};
+                var user_id = {$user_id|json_encode};
+                var integral = {$allintegral|json_encode};
+                var userAccount = {$userAccount|json_encode};
+                var account_balance = userAccount ? userAccount.data : 0;
+                console.log(product_data,integral);
+                //抵扣积分
+                var integral_deduction=Math.floor((integral>0?integral:0)/100)||0;
+                $('.integral_money_text').text(integral_deduction.toFixed(2));
+                //后退检查
+                $.post("{:U('Home/Order/basketDetail')}",function (res) {
+                    res = $.parseJSON(res);
+                    if(!res||!$.isArray(res)){
+                        res = []
+                    }
+                    //!对比数据
+                    var pool =[];
+                    $.each(res,function (index,value) {
+                        if(value&&value.id){
+                            pool.push(value.id)
+                        }
+                    });
+                    var isPass = true;
+                    //console.log(product_data);
+                    $.each(product_data,function (index,value) {
+                        if(pool.indexOf(value.id)===-1){
+                            isPass = false;
+                            return false
+                        }
+                    });
+                    if(!isPass){
+                        modal.alert({
+                            title:'信息错误',
+                            brief:'商品已经提交，请到订到列表中查询',
+                            top:100,
+                            hiddenCloseIcon:true,
+                            confirm:function () {
+                                window.location.href = "{:U('Home/Order/myOrder')}"
+                            }
+                        });
+                    }
+                });
+                if(!product_data){
+                    modal.alert({
+                        title:'信息错误',
+                        brief:'购物车中没有信息',
+                        top:100,
+                        hiddenCloseIcon:true,
+                        confirm:function () {
+                            window.location.href = "{:U('Home/Basket/basketDetail')}"
+                        }
+                    });
+                    return
+                }
+                require(['Home/Public/js/address-select'],function (selector) {
+                    selector.init($('.js-selector-container0'));
+                    selector.init($('.js-selector-container1'));
+                    selector.init($('.js-selector-container2'));
+                    selector.init($('.js-selector-container3'))
+                });
+                require(['Home/Order/js/createOrder','jl-price'],function (order,jlPrice) {
+                    /*与世无争的一段**************************************************************************************/
+                    //收货人
+                    order.address.init(address_data,"{:U('Home/Order/editUserOrderAddress')}");
+                    //添加发票各种处理事件
+                    //order.invoice.init(invoice_data,"{:U('Home/Order/editUserOrderInvoice')}");
+                    //enter下一个
+                    $('.js-enter-next').on('keydown',function (e) {
+                        var nextInputArray = $('.js-enter-next');
+                        if(parseInt(e.keyCode)===13){
+                            var index = nextInputArray.index(this);
+                            if(nextInputArray[index+1]){
+                                nextInputArray[index+1].focus()
+                            }
+                        }
+                    });
+                    //积分抵扣
+                    $('.jl-integral').on('click',function () {
+                        var $this=$(this);
+                        $this.find('.js-integral').toggleClass('js-integral-active');
+                       // var isIntegral=$this.find('.js-integral').hasClass('js-integral-active');
+                        updatePrice();
+                        /*if(isIntegral){
+                           $.ajax({
+                               url:'/Home/Order/orderIntegral',
+                               type:'post',
+                               data:'user_id='+user_id,
+                               dataType:'json',
+                               success:function(res){
+                                   if(res.error===0){
+                                       $this.siblings('.integral_money').text('￥'+res.money);
+                                   }else{
+                                       layer.msg(res.msg,{icon:5},function(){
+                                           $this.find('.js-integral').toggleClass('js-integral-active');
+                                       });
+                                   }
+                               }
+                           });
+                        }*/
+                    });
+                    //选择邮寄方式
+                    $('.js-address-type-checkbox').on('click',function () {
+                        $('.js-address-type-checkbox .jl-select').removeClass('jl-active');
+                        var checkbox = $(this).children('.jl-select');
+                        checkbox.addClass('jl-active');
+                        var type = parseInt(checkbox.data('type'));
+                        if(type===1){
+                            $('.js-delivery-price').text(0)
+                        }
+                        else {
+                            $('.js-delivery-price').text(8)
+                        }
+                        updatePrice();
+                    });
+                    //备注
+                    $('.jl-note-main').on('keyup',function () {
+                        var text = $(this).val();
+                        var length = text.length;
+                        if(length>100){
+                            $('.jl-note-main').val(text.substr(0,99));
+                            length = 100
+                        }
+                        $('.js-textarea-length').text(length);
+                    });
+                    /**************************************************************************************************/
+                    var showPayType = function (arr) {
+                        $('.jl-pay-class').children().hide();
+                        if(arr&&$.isArray(arr)){
+                            $.each(arr,function (index,value) {
+                                $('.jl-pay-class .js-pay-type-'+value).show()
+                            })
+                        }
+                    };
+                    var updatePayType = function () {
+                        var is_invoice = parseInt($(".jl-invoice-class li.jl-cur").data("id"))===1;
+                        var ship_type = parseInt($('.jl-shipping-way').children('.jl-cur').data('value'));
+                        if(is_invoice){
+                            showPayType([1,2,5])
+                        }
+                        else {
+                            if(ship_type===1){
+                                showPayType([1,6,2,3])
+                            }
+                            else {
+                                showPayType([1,6,2])
+                            }
+                        }
+                    };
+                    var showDepositPayType = function (arr) {
+                        $('.jl-deposit-pay-class').children().hide();
+                        if(arr&&$.isArray(arr)){
+                            $.each(arr,function (index,value) {
+                                $('.jl-deposit-pay-class .js-pay-type-'+value).show()
+                            })
+                        }
+                    };
+                    var updateDepositPayType = function () {
+                        var pay_type = parseInt($('.jl-pay-class').children('.jl-cur').data('type'));
+                        var is_invoice=parseInt($(".jl-invoice-class li.jl-cur").data("id"))===1;
+                        if((pay_type===1)||(pay_type===5)){
+                            pay_type == 1 ?showDepositPayType([1]):showDepositPayType([1,5]);
+                        }
+                        else if(pay_type===2){
+                            if(is_invoice){
+                                showDepositPayType([1,5,6,4])
+                            }else{
+                                showDepositPayType([6])
+                            };
+                        }
+                        else if((pay_type===3)||(pay_type===4)){
+                            showDepositPayType([6,4])
+                        }
+                        else if(pay_type===6){
+                            if(is_invoice){
+                                showDepositPayType([1,5])
+                            }
+                            else {
+                                showDepositPayType([6,4])
+                            }
+                        }
+                    };
+                    //全款或者订金的勾选框
+                    var $onlyDepositCheckbox = $('.js-deposit-checkbox-container');
+                    $onlyDepositCheckbox.hide();
+                    //选择订金支付方式的选择框
+                    var $selectDepositPayBox = $('.jl-deposit-pay-way');
+                    $selectDepositPayBox.hide();
+                    //订金相关的文本
+                    var $deposit = $('.js-deposit-tips');
+                    $deposit.hide();
+                    //判断是否没库存
+                    var isNoStore = (function () {
+                        var itemStore=[];
+                        var isAllTrue = 0;
+                        var single = product_data;
+                        $.each(single,function(index,value){
+                            var num = parseInt(value.num);
+                            var store = parseInt(value.store);
+                            //console.log(num,store);
+                            if(num - store >0){ isAllTrue++;};
+                            //console.log(product_data,num,store,num>store);
+                             itemStore.push(num>store);
+                        });//console.log(isAllTrue,single.length);
+                        if(isAllTrue == single.length ){
+                            return [itemStore,true];
+                        }else{
+                            return [itemStore,false];
+                        };
+
+                    })();
+                    if(isNoStore[1]){
+                        $deposit.show();
+                        $onlyDepositCheckbox.show();
+                    }
+                    //判断有没有订金
+                    var hasDeposit = (function () {
+                        var bool = false;
+                        var allDeposite = 0;
+                        $.each(product_data,function (index, value) {
+                            var earnest_scale = parseFloat(value.earnest_scale);
+                            if(earnest_scale){
+                                bool = true;
+                                allDeposite ++;
+                                return true;
+                            }
+                        });
+                        if(product_data.length == allDeposite){
+                            return [bool,true];
+                        }else{
+                            return [bool,false];
+                        };
+
+                    })();
+                    if(!hasDeposit[0]){
+                        $(".js-deposit-tips").hide(10);
+                        $(".js-deposit-checkbox-container").hide(10);
+                    }else{
+                        if(hasDeposit[1]&&isNoStore[1]){
+                            $(".js-deposit-tips").find(".deposit-money").show(10).siblings("span").hide(10);
+                            $(".js-deposit-checkbox-container").find(".deposit-money").show(10).siblings("span").hide(10);
+                        }else{
+                            $(".js-deposit-tips").find(".deposit-money").hide(10).siblings("span").show(10);
+                            $(".js-deposit-checkbox-container").find(".deposit-money").hide(10).siblings("span").show(10);
+                        }
+                    };
+                    if(isNoStore[1]&&hasDeposit[0]){
+                        $selectDepositPayBox.show();
+                    }
+                    //送货方式
+                    $('.jl-shipping-way').on('click','li',function () {
+                        $(this).addClass('jl-cur').siblings().removeClass('jl-cur');
+                        var index = $(this).index();
+                        var $ul = $('.jl-shipping-content').eq(index);
+                        $ul.addClass('jl-delivery-cur').siblings('.jl-shipping-content').removeClass('jl-delivery-cur');
+                        $ul.find('li').eq(0).trigger("click");
+                        updatePayType()
+                    });
+                    $('.jl-shipping-content li').on('click',function () {
+                        $(this).addClass('jl-cur').siblings().removeClass('jl-cur');
+                    });
+                    //选择发票
+                    $('.jl-invoice-class').on('click','li',function(){
+                        $(this).addClass('jl-cur').siblings().removeClass('jl-cur');
+                        updatePayType();
+                        updateDepositPayType();
+                        updatePrice()
+                    });
+                    //支付方式
+                    $('.jl-pay-class').on('click','li',function () {
+                        var type = parseInt($(this).data('type'));
+                        //点击账期的话，先要查看账期相关资质
+                        var $balance = $('.js-balance-need');
+                        if(type===2){
+                            if(userAccount.error===0){
+                                if(parseFloat(userAccount.data)<=0){
+                                    modal.alert({
+                                        title:'账期支付',
+                                        brief:'你的账期额度为0'
+                                    });
+                                    return
+                                }
+                                else {
+                                    //通过,使用显示账期相关文本
+                                    if(isNoStore[1] && hasDeposit[0]){
+                                        updatePrice(true);
+                                    }
+                                    $balance.show();
+                                    $onlyDepositCheckbox.hide()
+                                }
+                            }
+                            else if(userAccount.error===1){
+                                modal.confirm({
+                                    title:'账期支付',
+                                    brief:'你还没有申请账期额度哦～',
+                                    confirmText:'马上申请',
+                                    confirm:function () {
+                                        window.open("{:U('Home/Order/accountExplain')}");
+                                    }
+                                });
+                                return
+                            }
+                            else if(userAccount.error===2){
+                                modal.confirm({
+                                    title:'账期支付',
+                                    brief:'上期账期未结清',
+                                    confirmText:'去结算',
+                                    confirm:function () {
+                                        window.open("{:U('Home/Order/accountOrderList')}");
+                                    }
+                                });
+                                return
+                            }
+                        }
+                        else {
+                            $balance.hide();
+                            if(isNoStore[1] && hasDeposit[0]){
+                                $onlyDepositCheckbox.show();
+                            }
+                        }
+                        //选了快递代收，送货方式只能是快递
+                        var $ship = $('.jl-shipping-way');
+                        if(type===3){
+                            $ship.children().hide();
+                            $ship.children().eq(0).show()
+                        }
+                        else {
+                            $ship.children().show();
+                        }
+                        //3,4不能选择开票
+                        if((type===3)||(type===4)){
+                            $('.js-has-tax').hide()
+                        }
+                        else {
+                            $('.js-has-tax').show()
+                        }
+                        $(this).addClass('jl-cur').siblings().removeClass('jl-cur');
+                        updateDepositPayType();
+                        updatePrice();
+                    });
+                    //订金支付方式
+                    $('.jl-deposit-pay-class').on('click','li',function () {
+                        $(this).addClass('jl-cur').siblings().removeClass('jl-cur');
+                    });
+//                    //账期输入
+//                    $('.js-balance-input').on('change',function () {
+//                        var value = parseFloat($(this).val());
+//                        value = value ? value.toFixed(2) : 0;
+//                        $('.js-balance-input').val(value);
+//                        updatePrice();
+//                    });
+                    //全款订金勾选框
+                    $('.js-deposit-checkbox.jl-select').click(function () {
+                        $(this).toggleClass('jl-active');
+                        updatePrice()
+                    });
+                    //更新价格:只处理跟价格有关系的
+                    var updatePrice = function (is_case_deposite) {
+                        //商品总价
+                        var price_product = 0;
+                        //总订金
+                        var price_only_deposite = 0;
+                        var price_deposit = 0;
+                        //是否开票
+                        var is_invoice=parseInt($(".jl-invoice-class li.jl-cur").data("id"))===1;
+                        //支付类型
+                        var type = parseInt($('.jl-pay-class').children('li.jl-cur').data('type'));
+                        if((type===1)||(type===5)){
+                            is_invoice = true
+                        }
+                        //统计计算
+                       // console.log("product_data",product_data);
+                        $.each(product_data,function (index,value) {
+                            value.price_section[0].start = 0;
+                            if(value.bargainInfo){
+                                if(!is_invoice && value.bargainInfo.price_tax_pass == 1 && value.bargainInfo.discount_price_tax * value.num>value.discount_num && value.bargainInfo.price_invoice_change_pass){
+                                    value.tax = 1.1;
+                                }
+                            }
+                            var c_price = jlPrice.get_correct_price({
+                                num:value.num,
+                                isTax:is_invoice,
+                                product:value
+                            });
+                            var $dd = $('.jl-goods-detail').children('dd').eq(index);
+                            //$dd.children('.jl-confirm-price').text(jlPrice.fixed_float(c_price.should_pay,4));
+                            var r_subtotal = jlPrice.fixed_float((c_price.real_pay).toFixed(4)*parseInt(value.num));
+                           if(isNoStore[0][index]){ price_only_deposite += Number(value.earnest_scale) ? r_subtotal*Number(value.earnest_scale) :0;} ;
+                            price_deposit += Number(value.earnest_scale)&&isNoStore[0][index] ? r_subtotal*Number(value.earnest_scale) :r_subtotal;
+                            //console.log('test',value.earnest_scale,isNoStore[0][index]);
+                            var s_subtotal = c_price.should_pay*value.num;
+                            if(value.sample > 0){
+                                $dd.children('.jl-confirm-subtotal').html(
+                                    '<div style="text-decoration: line-through;text-align:right">'+jlPrice.fixed_float(r_subtotal)+'</div>'+
+                                    '<div style="color: #e84343;text-align:right"><div>0.00</div> <div>样品</div>'
+                                );
+                            }else{
+                                var price_depisite_self = '';
+                                if(value.earnest_scale > 0 && isNoStore[0][index]){ price_depisite_self = '<div style="color: #e84343;text-align:right"><div>订金 : '+(r_subtotal*Number(value.earnest_scale)).toFixed(2)+'</div> ';};
+                                price_product += parseFloat(r_subtotal);
+                                if(c_price.real_pay!==c_price.should_pay){
+                                    $dd.children('.jl-confirm-subtotal').html(
+                                        '<span style="text-decoration: line-through">'+jlPrice.fixed_float(s_subtotal)+'</span><br/>'+
+                                        '<span style="color: #e84343">'+jlPrice.fixed_float(r_subtotal)+'</span>'+price_depisite_self+''
+                                    );
+                                }
+                                else {
+                                    $dd.children('.jl-confirm-subtotal').html(jlPrice.fixed_float(r_subtotal)+price_depisite_self);
+                                }
+                            }
+
+                        });         //console.log('price_deposit',price_deposit,price_product);
+                        //返回计算结果
+                        $('.js-all-price').text(jlPrice.fixed_float(price_product));
+                        $('.js-all-deposit').text(jlPrice.fixed_float(price_deposit));
+                        //是否仅付订金
+                        var isOnlyDeposit = $('.js-deposit-checkbox').hasClass('jl-active');
+                        //应付,原本有运费的添加
+                        var price_should = price_product;
+                        //实付
+                        var price_paid;
+                        if(type===2){
+                            $(".js-deposit-tips").find(".deposit-money").hide(10).siblings("span").show(10);
+                            $(".js-all-deposit").text(parseFloat(price_only_deposite).toFixed(2));
+                            var price_balance_origin = (function () {   //原账期余额
+                                var origin = parseFloat(account_balance);
+                                return origin ? origin : 0
+                            })();
+                            var price_balance;//使用的账期
+                            if(isNoStore[1]){
+                                price_balance = price_product - price_only_deposite;
+                                price_paid = price_only_deposite;
+                            }
+                            else {
+                                price_balance = price_product;
+                                price_paid = 0;
+                            }
+                            $('.js-balance-text').text(jlPrice.fixed_float(price_balance));
+                            $('.js-final-balance').text(jlPrice.fixed_float(price_balance));
+                            $('.js-balance-left').text((price_balance_origin - price_balance).toFixed(2));
+                        }
+                        else {
+                            if(hasDeposit[0] && !hasDeposit[1]){
+                                $(".js-deposit-tips").find(".deposit-money").show(10).siblings("span").hide(10);
+                            }
+                            if(isNoStore[1]){
+                                if(isOnlyDeposit){
+                                    //if(){}
+                                    price_paid = price_deposit;
+                                }
+                                else {
+                                    price_paid = price_should;
+                                }
+                            }
+                            else {
+                                price_paid = price_should;
+                            }
+                        }
+                        //积分抵扣
+                        var integral_money=$('.integral_money_text').text();
+                        var isIntegral=$('.js-integral').hasClass('js-integral-active');
+                        if(isIntegral){
+                            if(price_paid>integral_money &&integral_money>10){
+                                price_paid-=integral_money
+                            }else{
+                                modal.alert({
+                                    title:'抵扣提示',
+                                    brief:'积分抵扣数不得小于订单的金额数且大于1000！',
+                                    top:100,
+                                    hiddenCloseIcon:true,
+                                    confirm:function () {
+                                        $('.js-integral').removeClass('js-integral-active');
+                                    }
+                                });
+                                return;
+                            };
+                        }
+                        //数值返回页面
+                        $('.js-final-price').text(parseFloat(price_paid).toFixed(2));
+                    };
+                    updatePrice();
+                    //提交！
+                    var isSubmit = false;
+                    $('.jl-submit-orders').on('click',function () {
+                        if(isSubmit){ return }
+                        //地址
+                        var address_id = $('.jl-consignee-title.jl-cur').data('id');
+                        var delivery_id = $(".jl-shipping-way").find(".jl-cur").data("value");
+                        if(!address_id && delivery_id!=3){
+                            modal.alert({
+                                title:'收货人信息为空',
+                                brief:'收货人信息必须要填的哦!!赶紧去填一下吧～'
+                            });
+                            return;
+                        }
+                        //快递方式
+                        var ship_type = $('.jl-shipping-way').children('.jl-cur').data('value');
+                        var ship_type_level2 = $('.jl-shipping-content.jl-delivery-cur').find('.jl-cur').attr("data-value");
+                        //发票
+                        var is_invoice=$(".jl-invoice-class li.jl-cur").data("id");
+                        var note = $('.jl-note-main').val();
+                        //支付方式
+                        var pay_type = $('.jl-pay-class').children('.jl-cur').data('type');
+                        var deposits_pay_type = $('.jl-deposit-pay-class').children('.jl-cur:visible').data('type');
+                        if(isNoStore[1]&&hasDeposit[0]&&!deposits_pay_type){
+                            modal.alert({
+                                title:'请选择订金的支付方式'
+                            });
+                            return
+                        }
+                        //商品信息
+                        var good = (function () {
+                            var array = [];
+                            $.each(product_data,function (index,value) {
+                                array.push({
+                                    pid:value.id,
+                                    num:value.num
+                                })
+                            });
+                            return array
+                        })();
+                        /*//账期
+                        var account_pay = (function () {
+                            if(parseInt(pay_type)===2){
+                                var balance = parseFloat($('.js-balance-input').val());
+                                if(!balance){
+                                    modal.alert({
+                                        title:'错误',
+                                        brief:'账期支付金额不能为￥0.00'
+                                    });
+                                    return false
+                                }
+                                return balance
+                            }
+                            else {
+                                return 0
+                            }
+                        })();
+                        if(account_pay===false){
+                            return
+                        }*/
+                        if(pay_type===2){
+                            var accountLeft = parseFloat($('.js-balance-left').text());
+                            if(accountLeft<0){
+                                modal.alert({
+                                    title:'提交失败',
+                                    brief:'账期余额不足，请确认后再试'
+                                });
+                                return;
+                            }
+                        }
+                        //全款还是仅订金
+                        var order_type = $('.js-deposit-checkbox').hasClass('jl-active')?1:0;
+                        var data = {
+                            active:'newOrder',
+                            is_invoice:is_invoice,
+                            pay_type:pay_type,
+                            deposits_pay_type:deposits_pay_type,//1,4,5,6
+                            ship_type:ship_type,
+                            delivery_id:ship_type_level2?ship_type_level2:ship_type,
+//                            account_pay:account_pay,
+                            address_id:address_id,
+                            note:note,
+                            goods:good,
+                            order_type:order_type//0全款，1仅订金
+                        };
+                        var isIntegral=$('.js-integral').hasClass('js-integral-active');
+                        if(isIntegral){
+                            data.consume_integral=integral_deduction*100;
+                        }else{
+                            data.consume_integral=0;
+                        }
+                        isSubmit = true;
+                        $.post("{:U('Home/Order/createOrder')}",data, function (res) {
+                            debugger
+                            res = $.parseJSON(res);
+                            //console.log(res);
+                            if(res.error===0){
+                                if(parseInt(res.order_status)===1){
+                                    _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':0}}, 'unload' ] );
+                                    modal.alert({
+                                        title:'提交成功',
+                                        brief:'进入人工审核<br>请咨询客服或等待客服回复',
+                                        confirm:function () {
+                                            window.location.href = "{:U('Home/Order/myOrder')}";
+                                        },
+                                        close:function () {
+                                            window.location.href = "{:U('Home/Order/myOrder')}";
+                                        }
+                                    });
+                                }
+                                else {
+                                    var real_pay;
+                                    var isPass = true;
+                                    //处理付订金
+                                    if(isNoStore[1]&&(hasDeposit[0] )&&(order_type===1)){
+                                        switch(deposits_pay_type){
+                                            case 5:
+                                                _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':0}}, 'unload' ] );
+                                                window.location.href = "{:U('Home/Order/publicAccount')}?order_sn="+res.data.order_sn;//
+                                                isPass = false;
+                                                break;
+                                            case 1:
+                                                if(pay_type != 2){break};
+                                                isPass = false;
+                                                _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':0}}, 'unload' ] );
+                                                window.location.href = "{:U('Home/Order/userPayPlatform')}&order_sn=" + res.data.order_sn
+                                                isPass = false;
+                                                break;
+                                        }
+                                        real_pay = deposits_pay_type;
+                                    }
+                                    //全款
+                                    else {
+                                        switch(pay_type){
+                                            case 5:
+                                                _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':1}}, 'unload' ] );
+                                                window.location.href = "{:U('Home/Order/publicAccount')}?order_sn="+res.data.order_sn;;//Order/orderSuccess
+                                                isPass = false;
+                                                break;
+                                            case 2:
+                                                if(deposits_pay_type == 1){
+                                                    _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':0}}, 'unload' ] );
+                                                    window.location.href = "{:U('Home/Order/userPayPlatform')}&order_sn=" + res.data.order_sn
+                                                    isPass = false;
+                                                }else if(deposits_pay_type == 5){
+                                                    _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':0}}, 'unload' ] );
+                                                    window.location.href = "{:U('Home/Order/publicAccount')}?order_sn="+res.data.order_sn;//
+                                                    isPass = false;
+                                                }else{};
+                                                break;
+                                        }
+                                        real_pay = pay_type;
+                                        //特殊情况
+                                        if(isNoStore[1]&&(!hasDeposit[0])&&(order_type===1)){
+                                            _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':1}}, 'unload' ] );
+                                            window.location.href = "{:U('Home/Order/orderSuccess')}";
+                                            isPass = false;
+                                        }
+                                    }
+                                    if(isPass){
+                                        //统一处理
+                                        switch (real_pay) {
+                                            case 6:
+                                                _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':0}}, 'unload' ] );
+                                                modal.alert({
+                                                    title: '提交成功',
+                                                    brief: '请找客服索要付款信息支付订单',
+                                                    confirm: function () {
+                                                        window.location.href = "{:U('Home/Order/myOrder')}";
+                                                    },
+                                                    close: function () {
+                                                        window.location.href = "{:U('Home/Order/myOrder')}";
+                                                    }
+                                                });
+                                                break;
+                                            default:
+                                                if (res.data.online_pay > 0) {
+                                                    _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':0}}, 'unload' ] );
+                                                    window.location.href = "{:U('Home/Order/userPayPlatform')}&order_sn=" + res.data.order_sn
+                                                }
+                                                else {
+                                                    _uba.push( ['addTraceEvent',{"name":'order_pay_success',"data":{"order_no":res.data.order_sn,'success':1}}, 'unload' ] );
+                                                    window.location.href = "{:U('Home/Order/orderSuccess')}"
+                                                }
+                                        }
+                                    }
+                                }
+                            }
+                            else if(res.error==300){
+                                isSubmit = true;
+                                modal.alert({
+                                    title:'提交订单成功',
+                                    brief:res.msg,
+                                    hiddenCloseIcon:true,
+                                    confirm:function () {
+                                        window.location.href = "{:U('Home/Order/myOrder')}"
+                                    }
+                                });
+                            } else {
+                                isSubmit = false;
+                                modal.alert({
+                                    title:'提交订单失败',
+                                    brief:res.msg
+                                });
+                            }
+                        });
+                    })
+                })
+            });
+        });
+    </script>
+</block>

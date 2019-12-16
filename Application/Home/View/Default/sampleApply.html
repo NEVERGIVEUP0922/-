@@ -1,0 +1,556 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout"/>
+<block name="title">免费样品申请</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/freeSample.css">
+    <style>
+        .jl-report-apply-container{  width: 1200px;  margin: 0 auto;  }
+        .jl-report-apply-title{
+            width: 212px;
+            height: 38px;
+            border: 1px solid #393939;
+            margin: 0 auto 28px;
+            color: #393939;
+            line-height: 38px;
+            text-align: center;
+            font-size: 20px;
+        }
+        .jl-report-apply-brief{  text-align: left;width: 630px;margin: 0 auto;  }
+        .jl-mandatory{  margin-right: 8px;  }
+        .jl-report-apply-table{
+            margin:0 auto;
+            margin-top: 26px;
+            font-size: 18px;
+            width: 100%;
+        }
+        .jl-report-apply-table th{
+            background-color: #f0f0f0;
+            padding:8px 0;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+        .jl-report-apply-table th:first-child{
+            border-top: 1px solid #ddd;
+        }
+        .jl-report-apply-table td{
+            border:1px solid #ddd;
+            min-height: 26px;
+            text-align: center;
+            padding:6px 8px;
+        }
+        .jl-handle-btn{
+            margin-bottom: 80px;
+            font: 18px "Microsoft YaHei";
+            width: 410px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+        }
+        .jl-report-apply-submit{
+            background: #e84343;
+            color: #fff;
+            margin-right: 32px;
+            border-radius: 2px
+        }
+        .jl-report-cancel-submit{
+            background: white;
+            border: 1px solid #ddd;
+        }
+        .jl-report-apply-table .jl-report-apply-require{
+            color: #e84343;
+        }
+        .jl-report-apply-table .jl-report-apply-input{
+            display: block;
+            width: 120%;
+            height: 100%;
+            border:none;
+            padding:6px 0;
+        }
+        .jl-report-apply-table .jl-report-item>td input{
+            text-align: center;
+        }
+        .jl-report-apply-table .jl-report-item>td{
+            box-sizing:border-box;
+            -webkit-box-sizing:border-box;
+        }
+        .jl-report-apply-table .jl-report-apply-select{
+            display: block;
+            width: 100%;
+            height: 100%;
+            border:none;
+        }
+        .jl-add-product-btn{
+            width: 100%;
+            line-height: 36px;
+            font-size: 16px;
+            background-color: white;
+            border:1px solid #ddd;
+            border-top: none;box-sizing:border-box;
+            -webkit-box-sizing:border-box;
+            text-align:right;
+
+        }
+        .jl-add-product-btn-child{
+            color:#fff;
+            background-color:#e84343;
+            line-height: 24px;
+            padding:4px 30px;
+            margin:0.5% 3% 0.5% 0;
+            border-radius:2px;
+            outline: none;
+            border:none;
+            font-size: 16px;
+            cursor:pointer;
+        }
+        .sample-class .layui-input.modal-search-input{
+            width:70%;
+            display:inline-block;
+        }
+        .sample-class .layui-btn.modal-search-btn{
+            margin-left:2%;
+            background:#e84343;
+        }
+        .sample-class .layui-layer-title{
+            background-color:#e84343;
+            text-align:center;
+            color:#fff;
+        }
+        .sample-class .layui-layer-btn .layui-layer-btn0{
+            border-color: #e84343;
+            background-color: #e84343
+        }
+        .sample-class .layui-layer-btn .layui-layer-btn0:hover{
+            color:#fff !important;
+        }
+    </style>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-report-apply-container">
+        <div class="jl-report-apply-header" >
+                <p style="color: #e84343; ;"><i class="jl-mandatory"></i>说明：</p>
+                <p>免费样品申请提交成功后，玖隆芯城客服会仔细核对信息的真实性和样品需求可执行性给出审核结果，请在用户中心样品申请列表查看结果。如申请通过，点下单完成免费样品订单；如申请没通过，系统将自动关闭样品申请。原则上每款商品每次不能免费申请超过20PCS，原则上每张样品单不超过100PCS，但实际情况实际分析，申请数量可多可少，玖隆芯城客服一定给您满意答复！</p>
+
+        </div>
+        <form class="jl-report-apply-body">
+            <table class="jl-report-apply-table">
+                <colgroup>
+                    <col width="126">
+                    <col width="170">
+                    <col>
+                    <col>
+                    <col width="140">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <tr>
+                    <th colspan="9">信息录入</th>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">项目名称:</td>
+                    <td colspan="3"><input type="text" class="jl-report-apply-input" placeholder="请填写项目名称" data-require="require" name="project_name"></td>
+                    <td class="jl-report-apply-require">月产量(K/M):</td>
+                    <td colspan="4"><input type="number" class="jl-report-apply-input" placeholder="请填写月产量" data-require="require" name="month_num"></td>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">应用领域:</td>
+                    <td colspan="3"><input type="text" class="jl-report-apply-input" placeholder="请填写应用领域" data-require="require" name="application_area"></td>
+                    <td class="jl-report-apply-require">原型日期:</td>
+                    <td colspan="4"><input type="text" class="jl-report-apply-input" placeholder="请填写原型日期" data-require="require" id="prototype_date" name="prototype_date"/></td>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">项目状态:</td>
+                    <td colspan="3">
+                        <select class="jl-report-apply-select" name="project_status">
+                            <option value="1">概念</option>
+                            <option value="2">原型</option>
+                            <option value="3">完成设计</option>
+                            <option value="4">量产</option>
+                        </select>
+                    </td>
+                    <td class="jl-report-apply-require">量产日期:</td>
+                    <td colspan="4"><input type="text" class="jl-report-apply-input" placeholder="请填写量产日期" data-require="require" id="batch_date" name="batch_date"></td>
+                </tr>
+                <tr>
+                    <td colspan="8"><input type="text" class="jl-report-apply-input" name="describe" style="visibility: hidden"></td>
+                </tr>
+
+                <tr>
+                    <th colspan="9">需求产品</th>
+                </tr>
+                <tr class="jl-report-item sample-head">
+                    <td class="jl-report-apply-require ">申请样品</td>
+                    <td class="jl-report-apply-require">商品型号</td>
+                    <td class="jl-report-apply-require">封装</td>
+                    <td class="jl-report-apply-require">品牌</td>
+                    <td class="jl-report-apply-require">需求数量</td>
+                    <td class="jl-report-apply-require">分类</td>
+                </tr>
+                <tr class="jl-report-item">
+                    <td>
+                        <div class="layui-form" action="">
+                            <div class="layui-form-item" pane="" style="margin-bottom:0">
+                                <div class="layui-input-block" style="margin-left:0">
+                                    <input type="checkbox" class="jl-report-apply-checkbox" name="is_request" lay-skin="primary" title="" >
+                                </div>
+                            </div>
+                        </div>
+                       <!-- <input type="checkbox" class="jl-report-apply-checkbox"  name="is_request"/>-->
+                    </td>
+                    <td><input type="text" class="jl-report-apply-input jl-sample-set-value" name="p_sign"  data-require="require" placeholder="请填写样品型号" style="width:100%" value="{$product.p_sign}" /></td>
+                    <td><input type="text" class="jl-report-apply-input jl-sample-set-value" name="package" placeholder="请填写样品封装"/></td>
+                    <td><input type="test" class="jl-report-apply-input jl-sample-set-value" data-require="require" placeholder="请填写商品品牌" name="brand" /></td>
+                    <td><input type="number" class="jl-report-apply-input" name="pnum" placeholder="请填写样品数量"/></td>
+                    <td><input type="text" class="jl-report-apply-input jl-sample-set-value" name="cate" placeholder="请填写样品分类" /></td>
+                </tr>
+            </table>
+            <div class="jl-add-product-btn" style="position:relative;text-align:center;">
+                <span style="display:inline-block;margin-right:30px;position:relative">
+                    <input class="jl-add-product-btn-child jl-commom-css" data-type="bomInput" type="button" value="BOM表导入"/>
+                    <input class="jl-add-product-btn-child jl-commom-css" data-type="bomInput" style="opacity:0;max-width:150px;position:absolute;right:0px;top:0" type="file" value="BOM表导入"/>
+               </span>
+                    <!-- <input class="jl-add-product-btn-child" data-type="bomInput" type="button" value="BOM表导入"/>-->
+                <input class="jl-add-product-btn-child" data-type="add" type="button" value="添加" />
+                <input class="jl-add-product-btn-child" data-type="delete" type="button" value="删去" />
+            </div>
+        </form>
+        <div style="text-align: center;margin-top: 24px">
+            <button class="jl-handle-btn jl-report-apply-submit">确认提交</button>
+        </div>
+    </div>
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js', 'layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'bomUp','__PUBLIC__/Admin/Public/js/select-product.js'], function ($, modal, Pikaday) {
+               // console.log(layui,layui.selectProduct);
+                    var form=layui.form;
+                    var selectProduct = layui.selectProduct;
+                    var product = {$product | json_encode};
+                    var isLogin = {$isLogin | json_encode};
+                    var  bomup = require('bomUp');
+                    var product_init=function(){
+                        selectProduct.initInput(".jl-sample-set-value",function(data,self){
+                            getModel(data,{isproductList:true},function(){
+                                self.parents("tr").remove();
+                            });
+                           /* inputs.each(function(ind,val){
+                                data[val.name]&&$(val).val(data[val.name]);
+                            });*/
+
+                        },false,false,{skin:"sample-class",Home:'home',emptyErp:true,checkBox:true,css_fn:function(){
+                           /* $(".layui-input.modal-search-input").css({"width":"70%","display":"inline-block"});
+                            $(".layui-btn.modal-search-btn").css({"background":"#e84343"});*/
+                        }});
+                    };
+                    //商品导入
+                    product_init();
+                    //判断是否登录
+                    if (!isLogin) {
+                        window.location.href = '/Home/Account/login';
+                        return
+                    }
+                    var picker1 = new Pikaday({
+                        field: document.getElementById('batch_date'),
+                        theme: 'js-data',
+                        i18n: {
+                            previousMonth: '上个月',
+                            nextMonth: '下个月',
+                            months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                            weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                            weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                        },
+                        format: 'YYYY-M-D',
+                        toString: function (date, format) {
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+                            return year + '-' + month + '-' + day;
+                        },
+                        parse: function (dateString, format) {
+                            var parts = dateString.split('/');
+                            var day = parseInt(parts[0], 10);
+                            var month = parseInt(parts[1] - 1, 10);
+                            var year = parseInt(parts[1], 10);
+                            return new Date(year, month, day);
+                        }
+                    });
+                    var picker2 = new Pikaday({
+                        field: document.getElementById('prototype_date'),
+                        theme: 'js-data',
+                        i18n: {
+                            previousMonth: '上个月',
+                            nextMonth: '下个月',
+                            months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                            weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                            weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                        },
+                        format: 'YYYY-M-D',
+                        toString: function (date, format) {
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+                            return year + '-' + month + '-' + day;
+                        },
+                        parse: function (dateString, format) {
+                            var parts = dateString.split('/');
+                            var day = parseInt(parts[0], 10);
+                            var month = parseInt(parts[1] - 1, 10);
+                            var year = parseInt(parts[1], 10);
+                            return new Date(year, month, day);
+                        }
+                    });
+                    var $table = $('.jl-report-apply-table');
+                    //添加按钮----删去
+                    $('.jl-add-product-btn-child').click(function () {
+                        var types = $(this).data("type");
+                        if (types == "add") {
+                            getModel([{
+                                p_sign: [{value: ""}],
+                                cate: [{value: ""}],
+                                brand: [{value: ""}],
+                                package: [{value: ""}],
+                                pnum: [{value: ""}]
+                            }],{});
+                        } else if (types == "delete") {
+                            var isEmpty = true;
+                            $('.jl-report-item').not(".sample-head").each(function (index) {
+                                var $tr = $(this);
+                                var isChoose = $tr.find('.jl-report-apply-checkbox').prop("checked") ? 1 : 0;
+                                if (isChoose) {
+                                    isEmpty = false;
+                                    $tr.remove();
+                                }
+                                ;
+                            });
+                            if (isEmpty) {
+                                return layer.msg("请勾选选项");
+                            }
+                        }
+                    });
+                    var getModel = function (list,obj,fn) {
+                        list=Array.prototype.slice.call(list);
+                        var str = "";
+                        if (!list || list.length < 1 || !(list instanceof Array)) {
+                            return layer.msg("没有匹配到数据或数据格式有问题");
+                        }
+                        $.each(list, function (ind, val) {
+                            var storeData={};
+                            if(obj.isproductList){
+                                 storeData = {
+                                    p_sign: val.p_sign ? val.p_sign : "",
+                                    cate: val.cate_name ? val.cate_name : "",
+                                    brand: val.brand_name ? val.brand_name : "",
+                                    package: val.package ? val.package : "",
+                                    id: val.id ? val.id : "",
+                                     pnum: val.pnum ? val.pnum : "",
+                                    //    delivery: val.delivery ? obj.delivery : 1,
+                                };
+                            }else{
+                                 storeData = {
+                                    p_sign: val.p_sign ? val.p_sign[0].value : "",
+                                    cate: val.cate ? val.cate[0].value : "",
+                                    brand: val.brand ? val.brand[0].value : "",
+                                    package: val.package ? val.package[0].value : "",
+                                    pnum: val.pnum ? val.pnum[0].value : "1",
+                                     id:""
+                                    //    delivery: val.delivery ? obj.delivery : 1,
+                                };
+                            };
+                            var inputs=obj.check_obj?(obj.check_obj[ind] ? '<input type="checkbox" class="jl-report-apply-checkbox" name="is_request" lay-skin="primary" title="" checked="" />':'<input type="checkbox" class="jl-report-apply-checkbox" name="is_request" lay-skin="primary" title="" />'):'<input type="checkbox" class="jl-report-apply-checkbox" name="is_request" lay-skin="primary" title="" />';
+                            str += '<tr class="jl-report-item" data-id="'+storeData.id+'">\n' +
+                                '     <td><div class="layui-form" action="" lay-filter="sample">\n' +
+                                '                            <div class="layui-form-item" pane="" style="margin-bottom:0">\n' +
+                                '                                <div class="layui-input-block" style="margin-left:0">\n' +
+                                inputs +
+                                '                                </div>\n' +
+                                '                            </div>\n' +
+                                '      </div></td>\n' +
+                                '     <td><input type="text" class="jl-report-apply-input jl-sample-set-value" name="p_sign" data-require="require"  placeholder="请填写样品型号" style="width:100%" value="' + storeData.p_sign + '" ></td>\n' +
+                                '     <td><input type="text" class="jl-report-apply-input jl-sample-set-value" name="package" placeholder="请填写样品封装" value="' + storeData.package + '" ></td>\n' +
+                                '     <td><input type="text" class="jl-report-apply-input jl-sample-set-value" data-require="require" name="brand" placeholder="请填写样品品牌" value="' + storeData.brand + '" ></td>\n' +
+                                '     <td><input type="number" class="jl-report-apply-input" name="pnum" placeholder="请填写样品数量" value="' + storeData.pnum + '" ></td>\n' +
+                                '     <td><input type="text" class="jl-report-apply-input jl-sample-set-value" name="cate" placeholder="请填写样品分类" value="' + storeData.cate + '" ><input type="hidden"  name="id"  value="' + storeData.id + '" ></td>\n' +
+                                '</tr>'
+                        });
+                        $(".sample-head").after(str);
+                        form.render("checkbox","sample");
+                        if(fn)fn();
+                        product_init();
+                    }
+                    //提交按钮
+                    var isAgain = true;
+                    $('.jl-report-apply-submit').on('click', function () {
+                        if (!isAgain) return;
+                        isAgain = false;
+                        var form_key = [
+                            'project_name',
+                            'month_num',
+                            'application_area',
+                            'prototype_date',
+                            'project_status',
+                            'batch_date'
+                        ];
+                        var data = {};
+                        var checkAgent = 0;
+                        var isOk = true;
+                        var checkValue = function ($input) {
+                            if ($input.data("require") && !$input.val()) {
+                                isOk = false;
+                                modal.alert({
+                                    title: '提示信息',
+                                    brief: '项目信息的红色部分必须填写...'
+                                });
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        };
+                        $.each(form_key, function (index, value) {
+                            var $input = $table.find('[name="' + value + '"]');
+                            if ($input.length === 1) {
+                                data[value] = $input.val();
+                                if (!checkValue($input)) {
+                                    return false
+                                }
+                                ;
+                            }
+                        });
+                        data['item'] = [];
+                        var isPass = true;
+                        $('.jl-report-item').not(".sample-head").each(function (index) {
+                            var $tr = $(this);
+                            var p_sign = $tr.find('[name="p_sign"]').val();
+                            var package = $tr.find('[name="package"]').val();
+                            var brand = $tr.find('[name="brand"]').val();
+                            var isChoose = $tr.find('.jl-report-apply-checkbox').prop("checked") ? 1 : 0;
+                            if (!isChoose) {
+                                return true;
+                            }
+                            ;
+                            if (!p_sign || !package || !brand) {
+                                isPass = false;
+                                isAgain = true;
+                                modal.alert({
+                                    title: '提示信息',
+                                    brief: '需求产品的红色部分第' + (1 + index) + '行未填写...',
+                                    "type": "fade"
+                                });
+                                return false;
+                            }
+                            ;
+                            if (p_sign.trim()) {
+                                var item = {};
+                                item['p_sign'] = p_sign;
+                                var item_key = [
+                                    'package',
+                                    'p_sign',
+                                    'brand',
+                                    'pnum',
+                                    'cate',
+                                    'id'
+                                ];
+                                $.each(item_key, function (index, value) {
+                                    item[value] = $tr.find('[name="' + value + '"]').val() || 1;//默认数量
+                                });
+                                item.id=$tr.data("id")||"";
+                                data['item'].push(item)
+                            }
+                        });
+                        if (!isOk || !isPass) {
+                            isAgain = true;
+                            return;
+                        }
+                        ;
+                        data.user_id = isLogin;
+                        //console.log(data);
+                        if (data['item'].length < 1) {
+                            isAgain = true;
+                            return layer.msg("请添加样品");
+                        }
+                        ;
+                        $.post('/Home/Sample/storeSample', data, function (res) {
+                            isAgain = true;
+                            res = $.parseJSON(res);
+                            //console.log(res);
+                            if (res.error === 0) {
+                                /*layer.confirm("是否去样品管理查看",{icon:1,title:"提交成功"},function(index){
+                                window.location.href = "{:U('Home/sample/userSampleList')}";
+                            });*/
+                                modal.confirm({
+                                    title: "提交成功",
+                                    brief: "是否去样品管理查看",
+                                    confirmtText: "确定",
+                                    cancelText: "取消",
+                                    confirm: function () {
+                                        window.location.href = "{:U('Home/sample/userSampleList')}";
+                                    },
+                                    cancel: function () {
+
+                                    }
+                                });
+                            }
+                            else {
+                                modal.alert({
+                                    title: '提交失败',
+                                    brief: '请确认提交信息后再试'
+                                });
+                            }
+                        })
+                    });
+                    //bom表导入
+                    $(".jl-commom-css").off("change").on('change', function () {
+                        bomup({
+                            self: this, sample: true, fn: function (data) {
+                                //console.log(data);
+                               /* var check_obj={};
+                                if(data.bom.length>0){
+                                    $.each(data.bom,function(ind,val){
+                                        if(val.complete.length>0){
+                                            check_obj[ind]=true;
+                                        }
+                                    });
+                                };*/
+                                window.sessionStorage.setItem("sampleBom",JSON.stringify(data));
+                                layer.open({
+                                    type:2,
+                                    area:["1300px","80%"],
+                                    content:"/Home/Default/sampleBom",
+                                    btn:["确认"],
+                                    cancel:function(obj){
+                                        layer.closeAll();
+                                    },
+                                    yes:function(ind){
+                                        $("#layui-layer-iframe"+ind)[0].contentWindow.Besure();
+                                        layer.closeAll();
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    window.bomAssignment=function(data){
+                        var check_obj={};
+                        console.log(data);
+                        if(data.length>0){
+                            $.each(data,function(ind,val){
+                                if(val.complete){
+                                    check_obj[ind]=true;
+                                }
+                            });
+                        };
+                        getModel(data,{check_obj:check_obj,isproductList:true});
+                    }
+                    window.bomClick=function(){
+                        layer.closeAll();
+                        $(".jl-add-product-btn-child ").click();
+                    };
+                })
+            })
+    </script>
+</block>

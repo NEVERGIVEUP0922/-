@@ -1,0 +1,104 @@
+@import "init.less";
+.vertical-box{text-align: center}
+.vertical-box:before{content: '';display: inline-block;height: 100%;vertical-align: middle}
+.vertical-box>.vertical-middle{display: inline-block;vertical-align: middle}
+.jl-modal-container{
+  position: fixed;
+  top:0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  min-width: 400px;
+}
+.jl-modal-mask{
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1001;
+  background-color: black;
+  opacity: .1;
+  filter: alpha(opacity=10);
+}
+.jl-modal-box{
+  position: relative;
+  z-index: 1002;
+  width: 365px;
+  background: white;
+  outline:6px solid rgba(0,0,0,.22);
+}
+.jl-modal-header{
+  height: 40px;
+  text-align: right;
+}
+.jl-modal-close-btn{
+  display: inline-block;
+  margin-right: 12px;
+  margin-top: 10px;
+  padding: 4px;
+  cursor: pointer;
+}
+.jl-modal-close-icon{
+  float: left;
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  background-image: url("../../Public/img/sprite.png");
+  background-repeat:no-repeat;
+  background-position: -129px -114px;
+}
+.jl-modal-body{
+  min-height: 80px;
+  text-align: left;
+  color: #393939;
+}
+.jl-modal-title{
+  padding: 0 34px;
+  font-size: 16px;
+  height: 36px;
+  line-height: 36px;
+  font-weight: bold;
+}
+.jl-modal-brief{
+  padding: 0 34px;
+  font-size: 14px;
+  margin-top: 6px;
+}
+.jl-modal-footer{
+  height: 96px;
+  padding: 16px 34px 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.jl-modal-footer>button{
+  height: 40px;
+  width: 136px;
+  border:none;
+  box-sizing: border-box;
+  font-size: 16px;
+  cursor: pointer;
+}
+.jl-modal-footer>.jl-modal-primary-btn{
+  background: @color;
+  color:white;
+  float: left;
+}
+.jl-modal-footer>.jl-modal-secondary-btn{
+  background: white;
+  color: #393939;
+  border:1px solid #ddd;
+  float: right;
+  margin-left:5%;
+}
+.jl-modal-text-center .jl-modal-body{
+  text-align: center;
+}
+.jl-modal-text-center .jl-modal-body,
+.jl-modal-text-center .jl-modal-footer{
+  text-align: center;
+}
+.jl-modal-text-center button{
+  float: none !important;
+}

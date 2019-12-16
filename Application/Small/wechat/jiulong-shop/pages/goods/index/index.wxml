@@ -1,0 +1,198 @@
+<view class="page header-sort navbar">
+  <view class="fui-header">
+    <view class="searchbar">
+     <icon size="12" type="search"></icon>
+      <input name="search" bindconfirm="bindInput" data-type="search" bindfocus="bindFocus"  focus="{{focusin}}" placeholder="输入关键字进行搜索" value="{{params.keywords}}" /> 
+    </view>
+     <!-- <text class="cancel" bindtap="searchKey" >搜索</text> -->
+     <view class="cancel" bindtap="bindclear" >清空</view>
+  </view>
+  <view class="sort">
+    <view data-order="store" bindtap="bindSort" class="item {{params.order == 'store'  ? 'on' : ''}}">
+      <view class="text">库存
+         <image class="icon" src="{{listorder.store}}"></image>
+      </view>
+    </view>
+    <view bindtap="bindSort" class="item {{params.order == 'sales' ? 'on' : ''}}" data-order="sales">
+      <view class="text">销量
+        <image class="icon" src="{{listorder.sales}}"></image>
+      </view>
+    </view>
+    <view bindtap="bindSort" class="item item-price {{params.order == 'minprice' ? 'on' : ''}}" data-order="minprice">
+      <view class="text">价格
+        <image class="icon" src="{{listorder.minprice}}"></image>
+      </view>
+    </view>
+    <view bindtap="showFilter" class="item {{isfilter ? 'on' : ''}}">
+      <view class="text">筛选
+        <image class="icon small" src="/static/images/icon/filter.png"></image>
+      </view>
+    </view>
+  </view>
+  <view class="fui-goods-group {{listmode}}">
+    <template is="tpl_list" data="{{list}}"></template>
+  </view>
+  <view class="fui-loading" wx:if="{{loading}}">
+    <view class="icon"></view>
+    <view class="text">正在加载...</view>
+  </view>
+  <view class="fui-loading empty" wx:if="{{empty}}">
+    <view class="text">没有更多了</view>
+  </view>
+  <view class="fui-loading empty" wx:if="{{list.length <= 0 && !loading}}">
+    <view class="text">没有数据</view>
+  </view>
+  <view class="records" wx:if="{{fromsearch}}">
+    <view class="records-title" wx:if="{{searchRecords.length > 0}}">
+      <view bindtap="delRecord" class="pull-right text-danger">清除</view>
+      <view>历史搜索</view>
+    </view>
+    <view class="navs">
+      <block wx:for="{{searchRecords}}" wx:key="">
+        <nav data-text="{{item}}" bindtap="bindnav">{{item}}</nav>
+      </block>
+    </view>
+  </view>
+  <view class="screen {{isFilterShow ? 'in' : ''}}">
+    <view class="weui-cells weui-cells_form">
+      <template is="area-two-choose" data="{{...searchitem}}"></template>
+      <!-- <view class="weui-cell area-choose" >
+          <view class="weui-cell__hd"><label class="weui-label">体积</label></view>
+          <view class="weui-cell__bd ">
+             <input class="weui-input" type="number" style="background-color:#f8f8f8;height:40rpx;line-height:40rpx;min-height:40rpx;text-align:center;border-radius:5rpx;padding:10rpx 2%;margin:10rpx 0" pattern="[0-9]*" placeholder="体积"/>
+          </view>
+      </view> -->
+     <template is="area-one-choose" data="{{...searchitem}}"></template>
+    </view>
+
+    <!-- <view class="attribute">
+      <view class="item on">
+        <view bindtap="btnFilterBtns" class="btn btn-default-o block {{filterBtns.isrecommand ? 'btn-danger-o' : ''}}" data-type="isrecommand">
+          <icon color="#fd5454" size="12" type="success_no_circle" wx:if="{{filterBtns.isrecommand}}" /> 推荐商品</view>
+      </view>
+      <view class="item">
+        <view bindtap="btnFilterBtns" class="btn btn-default-o block {{filterBtns.isnew ? 'btn-danger-o' : ''}}" data-type="isnew">
+          <icon color="#fd5454" size="12" type="success_no_circle" wx:if="{{filterBtns.isnew}}" /> 新品上市
+        </view>
+      </view>
+      <view class="item">
+        <view bindtap="btnFilterBtns" class="btn btn-default-o block {{filterBtns.ishot ? 'btn-danger-o' : ''}}" data-type="ishot">
+          <icon color="#fd5454" size="12" type="success_no_circle" wx:if="{{filterBtns.ishot}}" /> 热销商品</view>
+      </view> 
+      <view class="item">
+        <view bindtap="btnFilterBtns" class="btn btn-default-o block {{filterBtns.isspecialoffer ? 'btn-danger-o' : ''}}" data-type="isspecialoffer">
+          <icon color="#fd5454" size="12" type="success_no_circle" wx:if="{{filterBtns.isspecialoffer}}" /> 特卖商品</view>
+      </view>
+    </view> -->
+    <block wx:if="{{catlevel != '-' && opencategory}}">
+      <view class="title">选择分类</view>
+      <view class="cate" data-catlevel="{$catlevel}">
+        <view class="item">
+          <block wx:for="{{category_parent}}" wx:key="">
+            <view>
+              <nav data-level="1" bindtap="bindCategoryEvents" class="{{category_parent_selected == item.id ? 'on' : ''}}" data-id="{{item.id}}">{{item.name}}</nav>
+            </view>
+          </block>
+        </view>
+        <view class="item" wx:if="{{catlevel >= 2}}">
+          <block wx:for="{{category_child}}" wx:key="">
+            <view>
+              <nav data-level="2" bindtap="bindCategoryEvents" class="{{category_child_selected == item.id ? 'on' : ''}}" data-id="{{item.id}}">{{item.name}}</nav>
+            </view>
+          </block>
+        </view>
+        <view class="item" wx:if="{{catlevel >= 3}}">
+          <block wx:for="{{category_third}}">
+            <view>
+              <nav data-level="3" bindtap="bindCategoryEvents" class="{{category_third_selected == item.id ? 'on' : ''}}" data-id="{{item.id}}">{{item.name}}</nav>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+    <view class="btns">
+      <view class="cancel" bindtap="bindFilterCancel">重置</view>
+      <view class="confirm" bindtap="bindFilterSubmit" >确认</view>
+    </view>
+  </view>
+  <block wx:if="{{moreShow}}">
+    <template is="choose-chechbox" data="{{...searchitem}}"></template>
+  </block>
+</view>
+<view bindtap="showFilter" class="fui-mask hide"></view>
+
+<template name="tpl_list">
+  <block wx:for="{{list}}" wx:key="">
+    <navigator class="fui-goods-item" url="/pages/goods/detail/index?id={{item.id}}" data-goodsid="{{item.id}}" data-type="{{item.type}}">
+      <view style="width:36%">
+        <view class="image" style="background-image:url('{{item.img}}');"></view>
+      </view>
+      <view class="detail">
+        <view >
+           <view class="name" style="font-size:34rpx;white-space:nowrap;text-overflow:ellipsis;height:50rpx">
+             {{item.title}}
+            </view>
+        </view>
+        <view class="index_detail">
+           <text class="text">{{item.detail}}</text>
+        </view>         
+        <view class="index_sale" style="color:#323">
+            <text class="text">库存：{{item.store}}</text>
+            <!-- <text class="text" style="margin-left:4%">已售：{{item.salenum}}</text> -->
+          </view>
+        <view class="index_buy">
+          <view class="text" style="float:left;width:64%;overflow:hidden;text-overflow:ellipsis">单价：<text style="float:right;color:#DF433E;width:176rpx;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">￥{{item.rangeprice}}</text></view>
+          <view class="text02"  style="float:right;margin-right:1%;color:#DF433E">立即购买 </view>
+        </view>
+      </view>
+    </navigator>
+  </block>
+ </template>
+ <template name="area-one-choose">
+  <block wx:for="{{oneInput}}" wx:key="">
+      <view class="weui-cell weui-cell_access" bindtap="moreChoose" data-type="{{item.keyword}}"> 
+        <view class="weui-cell__hd"><label class="weui-label">{{item.name}}</label></view>
+        <view class="weui-cell__ft" style="width:80%;overflow:hidden;color:{{item.choose =='全部'?'#999':'#e84343'}}"> 
+          <text wx:if="{{hasContent[item.keyword].length>2}}" style="float:right;margin-left:2%;line-height:60rpx;line-height:20rpx;">
+              共{{hasContent[item.keyword].length}}个             
+          </text>
+          <text style="height:60rpx;line-height:20rpx;width:70%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;float:right;">
+            {{item.choose}}
+          </text>
+        </view>
+      </view>
+  </block>
+ </template>
+ <template name="area-two-choose">
+  <block wx:for="{{twoInput}}" wx:key="">
+      <view class="weui-cell area-choose" >
+          <view class="weui-cell__hd"><label class="weui-label">{{item.name}}</label></view>
+          <view class="weui-cell__bd search-two-input">
+             <input class="weui-input" type="digit" bindinput='bindInput' value="{{params[item.keyword_start]}}" data-type="{{item.keyword_start}}" pattern="[0-9]*" placeholder="最小值"/>
+             <text style="float:left;line-height:60rpx;margin:0 1%;">——</text>
+             <input class="weui-input" type="digit" bindinput='bindInput' value="{{params[item.keyword_end]}}" data-type="{{item.keyword_end}}" pattern="[0-9]*" placeholder="最大值"/>
+          </view>
+          <view wx:if="{{recommend[item.keyword].length>0}}">
+            <text style="color:#888">推荐区间</text> {{recommend[item.keyword][0]+'-'+recommend[item.keyword][1]}}
+          </view>
+      </view>
+  </block>
+ </template>
+ <template name="choose-chechbox">
+   <view class="choose-text" >
+      <view style="border-bottom:1rpx solid #ddd;padding:10rpx 15rpx;overflow:hidden;">
+        <text style="color:#000;margin-right:2%;float:left">已选择:</text>
+         <view style="float:left;overfloat:hidden;width:80%;"><text style="width:80%;float:left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">{{hasContentJoin[chooseOneid]}}</text><text style="float:left" wx:if="{{hasContent_station[chooseOneid].length>2}}">等{{hasContent_station[chooseOneid].length}}个</text></view>
+      </view>
+      <checkbox-group bindchange="checkboxChange">
+        <label class="checkbox" wx:for="{{getContent}}" wx:key="">
+          <checkbox  value="{{index}}"  checked="{{item.checked}}"/>
+         <text style="margin-left:4%">{{item.name}}</text>
+        </label>
+      </checkbox-group>
+      <view class="choose-bottom">
+        <text bindtap="chooseResult" data-type="cancel">取消</text>
+        <text bindtap="chooseResult" data-type="sure" style="background-color:#e84343;color:#fff">确认</text>
+      </view>
+   </view>
+ </template>

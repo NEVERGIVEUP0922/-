@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册测试</title>
+    <script src="__PUBLIC__/Common/module/jquery/1.11.3/jquery.min.js"></script>
+    <script src="__PUBLIC__/Common/toolkit/global.js"></script>
+    <script src="__PUBLIC__/Common/module/layer/3.0.3/layer.js"></script>
+</head>
+<body>
+    <form id="reg" action="" method="post">
+        <input type="text" name="userName" required  placeholder="请输入用户名" autocomplete="off" class="layui-input qing" value="">
+        <br>
+        <input type="text" name="mobile" required  placeholder="请输入手机号码" autocomplete="off" class="layui-input qing" value="">
+        <br>
+        <div style="display: inline-table;clear:both;">
+            <input type="text" name="mobile_code" required  placeholder="请输入短信验证码" autocomplete="off" value="">
+        </div>
+        <button type="button" id="sendVerify" class="layui-btn layui-btn-small" style="" >发送手机验证码
+        </button>
+        <br>
+        <input type="password" id="pass" name="password" required placeholder="请输入密码"
+               autocomplete="off" class="layui-input qing" value="">
+        <br>
+        <input type="submit" value="立即注册" class="liji">
+    </form>
+    <script>
+//        $('form#reg').on('submit', function(){
+//            var data = $('form#reg').serialize();
+//            $.post("", data, function(res){
+//                if( res.status == 0000 ){
+//                    layer.msg(res.content, {icon:6, time:2000});
+//                }else{
+//                    layer.msg(res.content, {icon:2, time:2000});
+//                }
+//            });
+//            return false;
+//        });
+        $('input[name=userName]').on('focusout', function(){
+            var name = $('input[name=userName]').val();
+            if( name != '' ){
+                $.post('{:U("Home/Index/ajaxCheckUserName")}', {userName:name}, function(res){
+                    if( res.status == 0000 ){
+                        layer.msg(res.content, {icon:6, time:2000});
+                    }else{
+                        layer.msg(res.content, {icon:2, time:2000});
+                    }
+                });
+            }
+        });
+        $('input[name=mobile]').on('focusout', function(){
+            var mb = $('input[name=mobile]').val();
+            if( mb != '' ){
+                $.post('{:U("Home/Index/ajaxCheckMobile")}', {mobile:mb}, function(res){
+                    if( res.status == 0000 ){
+                        layer.msg(res.content, {icon:6, time:2000});
+                    }else{
+                        layer.msg(res.content, {icon:2, time:2000});
+                    }
+                });
+            }
+        });
+        $('button#sendVerify').on('click', function(){
+            var mb = $('input[name=mobile]').val();
+            if( mb == '' ){
+                layer.msg('请填写手机号码');
+            }else{
+                $.post('{:U("Home/Index/send")}', {mobile:mb, content:'感谢您注册玖隆芯城!祝您生活愉快(5分钟内有效)'}, function(res){
+                    if( res.status == 0000 ){
+                        layer.msg(res.content, {icon:6, time:2000});
+                    }else{
+                        layer.msg(res.content, {icon:2, time:2000});
+                    }
+                });
+            }
+        });
+        $('input[name=mobile_code]').on('focusout', function(){
+            var code = $('input[name=mobile_code]').val();
+            if( code != '' ){
+                $.post('{:U("Home/Index/check")}', {mobile_code:code}, function(res){
+                    if( res.status == 0000 ){
+                        layer.msg(res.content, {icon:6, time:2000});
+                    }else{
+                        layer.msg(res.content, {icon:2, time:2000});
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

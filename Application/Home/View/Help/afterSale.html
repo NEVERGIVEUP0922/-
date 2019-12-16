@@ -1,0 +1,34 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-l"><a href="javascript:;">售后说明</a></li>
+    </ul>
+
+    <!-- 账期支付 -->
+    <ul class="jl-question">
+        <li>
+            <h4>玖隆芯城所买商品，经有原厂或代理商货源，保证原装正品。如使用过程中发现使用异常，请联系客服人员安排FAE解决，解决流程:客户提交<问题反馈表>------FAE进行分析-------FAE给出report------进入商务谈判-----结束。
+            </h4>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

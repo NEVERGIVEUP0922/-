@@ -1,0 +1,307 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">手机绑定</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/settingUser.css">
+</block>
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+<block name="main">
+    <form method="post">
+        <div class="jl-per-information jl-cle">
+            <div class="jl-per-cell jl-cle jl-item-top">
+                <div class="jl-per-left jl-bind-left">
+                    <label for class="jl-per-label">原手机号码：</label>
+                </div>
+                <div class="jl-per-right">
+                    <input type="text" value="{:session('userInfo.user_mobile')}" disabled class="jl-per-input jl-per-name">
+                    <i class="jl-add-import"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left jl-bind-left">
+                    <label for class="jl-per-label">输入密码：</label>
+                </div>
+                <div class="jl-per-right">
+                    <input type="password" placeholder="请输入当前密码" class="jl-per-input js-next-input" id="js-bind-paw">
+                    <i class="jl-add-import"></i>
+                    <div class="jl-bind-tips jl-acc-none">
+                        <i class="jl-bind-bg"></i>
+                        <span class="jl-bind-text">密码不能为空</span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left jl-bind-left">
+                    <label for class="jl-per-label">新手机号码：</label>
+                </div>
+                <div class="jl-per-right">
+                    <input type="text" placeholder="请输入手机号码" class="jl-per-input js-next-input" id="js-bind-mobile">
+                    <i class="jl-add-import"></i>
+                    <div class="jl-bind-tips jl-acc-none">
+                        <i class="jl-bind-bg"></i>
+                        <span class="jl-bind-text">手机号码不能为空</span>
+                    </div>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <input type="text" class="js-next-input jl-c-hidden">
+                <div class="jl-per-left jl-bind-left">
+                    <label for class="jl-per-label">手机验证码：</label>
+                </div>
+                <div class="jl-per-right">
+                    <input type="text" class="jl-per-input js-next-input js-submit-input" placeholder="请输入手机验证码" id="js-bind-num"><input type="button"  value="获取短信验证码" class="jl-bind-code">
+                    <i class="jl-add-import "></i>
+                    <div class="jl-bind-cc jl-bind-cc2">
+                        <i class="jl-bind-image"></i>
+                        <span>验证码已发送</span>
+                    </div>
+                    <div class="jl-bind-tips jl-acc-none">
+                        <i class="jl-bind-bg"></i>
+                        <span class="jl-bind-text">验证码不能为空</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button"  class="jl-per-submit jl-save-submit">保 存</button>
+    </form>
+
+</block>
+
+<block name="js">
+    <script>
+
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery','jl-modal'], function ($,modal) {
+                modal.option({
+                    left:-77
+                });
+                require(['Account/js/common_register']);
+                var $mobile_num = $('#js-bind-mobile');
+                var $first_paw = $('#js-bind-paw');
+                var $bind_code = $('.jl-bind-code'); // 发送验证码按钮
+                var $bind_num = $('#js-bind-num');//输入验证码
+                var $submit = $('.jl-per-submit');
+
+
+
+                /**
+                 * input 如果为空，则不能为空text
+                 *
+                 */
+
+                    //验证手机   前台验证正则，传到后台验证是否存在 需要添加参数，type =1 验证不存在才正确   "{:U('Home/Account/ajaxCheckMobile',['type'=>2])}"
+
+
+                var reg_mobile =/^1(3|4|5|7|8)+\d{9}$/;
+                var $mobile_tips = $mobile_num.siblings('.jl-bind-tips');
+                var isChecked = false
+                $mobile_num.on('blur',function () {
+                    var mobile = $mobile_num.val();
+                    if(mobile==''){
+                        $mobile_tips.removeClass('jl-acc-none');
+                        $mobile_tips.find('.jl-bind-text').html('手机号不能为空');
+                    }
+                    else {
+                        if(reg_mobile.test(mobile)){
+                            $.post("{:U('Home/Account/ajaxCheckMobile',['type'=>1])}",
+                                {user_mobile:mobile},
+                                function (res) {
+                                    if(res.status===0){
+                                        $mobile_tips.addClass('jl-acc-none');
+                                        $mobile_num.data('mobile','mobile_value');
+                                        isChecked = true
+                                    }
+                                    else {
+                                        $mobile_tips.removeClass('jl-acc-none');
+                                        $mobile_tips.find('.jl-bind-text').html('手机号已存在');
+                                        isChecked = false
+                                    }
+                                }
+                            )
+                        }
+                        else {
+                            $mobile_tips.removeClass('jl-acc-none');
+                            $mobile_tips.find('.jl-bind-text').html('请输入正确的手机号');
+                        }
+                    }
+                });
+
+                var input_paw = $first_paw.siblings('.jl-bind-tips');
+                //输入密码
+                $first_paw.on('blur',function () {
+                    var  first_paw=$first_paw.val();
+                    if(first_paw===''){
+                        input_paw.removeClass('jl-acc-none');
+                        input_paw.find('.jl-bind-text').html('密码不能为空');
+                    }
+                    else {
+                        $.post(
+                            "{:U('Home/User/checkPass')}",
+                            {user_pass:first_paw},
+                            function (res) {
+                                if(res.status===0){
+                                    input_paw.addClass('jl-acc-none');
+                                }
+                                else {
+                                    input_paw.removeClass('jl-acc-none');
+                                    input_paw.find('.jl-bind-text').html('密码错误');
+                                }
+                            }
+                        )
+                    }
+                });
+
+                //手机验证码
+                $bind_code.on('click',function () {
+                    var $disabled = $bind_code.attr('disabled');
+                    if($disabled){
+                        return false;
+                    }
+                    if($mobile_num.val()===''){
+                        $mobile_tips.removeClass('jl-acc-none');
+                        $mobile_tips.find('.jl-bind-text').html('手机号不能为空');
+                    }
+                    else {
+                        var data_value = $mobile_num.data('mobile');
+                        if($mobile_tips.hasClass('jl-acc-none')&&data_value==='mobile_value'){
+                            var mobile = $mobile_num.val();
+                            $.post(
+                                "{:U('Home/Account/sendSms')}",
+                                {mobile:mobile},
+                                function (res) {
+                                    if(res.status===0){
+                                        $('.jl-bind-cc').css('display','inline-block');
+                                        codeSend();
+                                        timer=setInterval(codeSend,1000);
+                                    }
+                                }
+                            );
+                        }
+                        else {
+                            $mobile_tips.removeClass('jl-acc-none');
+                            $mobile_tips.find('.jl-bind-text').html('手机号已存在');
+                        }
+                    }
+                });
+
+                var timer;
+                var num = 60;
+                function codeSend() {
+                    if(num===0){
+                        $bind_code.val('重新发送验证码');
+                        num = 60;
+                        clearInterval(timer);
+                        $bind_code.attr('disabled',false);
+                        $('.jl-bind-cc').css('display','none');
+                    }
+                    else {
+                        $bind_code.css('color','#777');
+                        $bind_code.attr('disabled','disabled');
+                        $bind_code.val(num+'秒后发送');
+                        num--;
+                    }
+                }
+//                $bind_num.on('focus',function () {
+//                    $('.jl-bind-cc').css('display','none');
+//                });
+                var $code_num=$bind_num.siblings('.jl-bind-tips');
+                $bind_num.on('blur',function () {
+                    if($bind_num.val()!==''){
+                        var mobile_code = $bind_num.val();
+                        $.post(
+                            "{:U('Home/Account/checkSms')}",
+                            {mobile_code:mobile_code},
+                            function (res) {
+                                if(res.status===0){
+                                    $code_num.css('display','none');
+                                }
+                                else {
+                                    $code_num.css('display','block');
+                                    $code_num.find('.jl-bind-text').html('验证码错误');
+                                }
+                            }
+                        )
+                    }
+                    else {
+                        $code_num.css('display','block');
+                        $code_num.find('.jl-bind-text').html('验证码不能为空');
+                    }
+                });
+
+
+
+//                $('.js-submit-input').on('keydown',function (e) {
+//                    if(e.keyCode===13){
+//                        $submit.trigger('click');
+//                    }
+//                });
+
+
+
+                //提交按钮
+                $submit .on('click',function () {
+                    var new_mobile = $mobile_num.val();
+                    var mobile_code = $bind_num.val();
+                    var   user_pass=$first_paw.val();
+                    //1、判断所有的input 里面是否填入内容，如果为空，就移除类 jl-acc-none,停止发送，
+                    //2、然后再发送
+
+                    var  $inputs = $('.jl-per-right').find('.jl-per-input');
+
+                    var isPass = true;
+                    $inputs.each(function () {
+                        if($(this).val()===''){
+                            $(this).siblings('.jl-bind-tips').removeClass('jl-acc-none');
+                            isPass = false;
+                            return false
+                        }
+
+                        //等验证码正常后就打开
+//                        if(!$(this).siblings('.jl-bind-tips').hasClass('jl-acc-none')){
+//                            isPass = false;
+//                            return false
+//                        }
+                    });
+                        if(isPass){
+                            var data ={
+                                new_mobile:new_mobile,
+                                mobile_code:mobile_code,
+                                user_pass:user_pass
+                            };
+                            $.post(
+                                "{:U('Home/User/bindPhone')}",
+                                data,
+                                function (res) {
+                                    if(res.status===0){
+                                        modal.alert({
+                                            title:'绑定成功',
+                                            brief:'新手机号码已绑定成功!',
+                                            confirm:function () {
+                                                window.location.reload();
+                                            }
+                                        })
+                                    }
+                                    else {
+                                        modal.alert({
+                                            title: res.content
+                                        })
+                                    }
+                                }
+                            )
+                        }
+                })
+            });
+        })
+    </script>
+</block>

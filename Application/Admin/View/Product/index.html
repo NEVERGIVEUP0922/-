@@ -1,0 +1,121 @@
+<extend name="Layout:layout-open" />
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/css/list.css" media="all" />
+</block>
+<block name="content">
+	<blockquote class="layui-elem-quote list_search">
+		<div class="layui-inline">
+			<div class="layui-input-inline">
+				<input type="text" value="" placeholder="请输入关键字" class="layui-input search_input">
+			</div>
+			<a class="layui-btn search_btn">查询</a>
+		</div>
+		<div class="layui-inline">
+			<a class="layui-btn layui-btn-normal add_btn">添加商品</a>
+		</div>
+		<div class="layui-inline">
+			<a class="layui-btn recommend" style="background-color:#5FB878">推荐文章</a>
+		</div>
+		<div class="layui-inline">
+			<a class="layui-btn audit_btn">审核文章</a>
+		</div>
+		<div class="layui-inline">
+			<a class="layui-btn layui-btn-danger batchDel">批量删除</a>
+		</div>
+	</blockquote>
+	<div class="layui-form list_list">
+		<table class="layui-table" lay-data="{url:'{:U('getList')}', page:true, id:'test2'}">
+			<thead>
+			<tr>
+				<th lay-data="{field:'name',  width:300, templet: '#usernameTpl'}">名称</th>
+				<th lay-data="{field:'p_sign', width:200, sort: true}">编号</th>
+				<th lay-data="{field:'cate_name', width:300}">分类</th>
+				<th lay-data="{field:'brand_name', width:200}">品牌</th>
+				<th lay-data="{field:'store', width:200, sort: true}">库存量</th>
+				<th lay-data="{field:'sell_num', width:200, sort: true}">销售量</th>
+				<th lay-data="{field:'click_num', width:200,sort: true}">点击量</th>
+				<th lay-data="{field:'is_earnest', width:200, sort: true}">是否定金</th>
+				<th lay-data="{width: 520, align:'center', toolbar: '#barDemo1'}">操作</th>
+			</tr>
+			</thead>
+		</table>
+
+		<script type="text/html" id="usernameTpl">
+			<a href="/?table-demo-id={{d.id}}" class="layui-table-link" target="_blank">{{ d.name }}</a>
+		</script>
+
+		<script type="text/html" id="barDemo1">
+			<a class="layui-btn layui-btn-mini" lay-event="detail" lay-data="{{d.id}}">查看</a>
+			<a class="layui-btn layui-btn-mini" lay-event="edit" lay-data="{{d.id}}">编辑</a>
+			<a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del" lay-data="{{d.id}}">删除</a>
+		</script>
+	</div>
+	<div id="page"></div>
+</block>
+<block name="js">
+	<!--<script type="text/javascript" src="__PUBLIC__/Admin/js/productlist.js"></script>-->
+	<script>
+		layui.define(['table','layer'], function(){
+		    var table = layui.table, layer = layui.layer;
+
+            //方法级渲染
+            var ins1 = table.render({
+                elem: '#LAY_table_user'
+                ,url: "{:U('getList')}"
+                ,cols: [[
+                    {checkbox: true, fixed: true}
+                    ,{field:'name', title: '名称', width:80}
+                    ,{field:'p_sign', title: '编号', width:80, sort: true}
+                    ,{field:'cate_name', title: '分类', width:80}
+                    ,{field:"brand_name", title: '品牌', width:177}
+                    ,{field:'store', title: '库存量', sort: true, width:80}
+                    ,{field:'sell_num', title: '销售量', sort: true, width:80}
+                    ,{field:'click_num', title: '点击量', sort: true, width:80 ,fixed: true}
+                    ,{field:'is_earnest', title: '是否定金', sort: true, width:135}
+                ]]
+                ,skin: 'row' //表格风格
+                ,even: true
+                ,page: true //是否显示分页
+                ,limits: [3,5,10]
+                ,limit: 3 //每页默认显示的数量
+            });
+
+            //添加文章
+            //改变窗口大小时，重置弹窗的高度，防止超出可视区域（如F12调出debug的操作）
+            $(window).one("resize",function(){
+                $(".add_btn").click(function(){
+                    var index = layui.layer.open({
+                        title : "添加商品",
+                        type : 2,
+                        content : "add",
+                        success : function(layero, index){
+                            setTimeout(function(){
+                                layui.layer.tips('点击此处返回文章列表', '.layui-layer-setwin .layui-layer-close', {
+                                    tips: 3
+                                });
+                            },500)
+                        }
+                    });
+                    layer.full(index);
+                });
+                //编辑
+                $("body").on("click",".edit",function(){
+                    var id = $(this).data('id');
+                    var index = layer.open({
+                        title : "编辑商品",
+                        type : 2,
+                        content : "edit",
+                        success : function(layero, index){
+                            setTimeout(function(){
+                                layer.tips('点击此处返回列表页', '.layui-layer-setwin .layui-layer-close', {
+                                    tips: 3
+                                });
+                            },500)
+                        }
+                    });
+                    layer.full(index);
+                })
+            }).resize();
+		});
+		</script>
+</block>

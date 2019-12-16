@@ -1,0 +1,42 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page footer" wx:if="{{show}}">
+  <block wx:if="{{list.length > 0}}">
+    <block wx:for="{{list}}" wx:key="" wx:for-index="idx">
+      <view class="fui-list-group" style="margin:0;border-top:20rpx solid #efeff4">
+        <view class="fui-list address-item noclick">
+          <view class="fui-list-inner">
+            <view bindtap="chooseThis" data-item="{{item}}" data-id="{{item.id}}" data-index="{{idx}}">
+              <view class="title">{{item.consignee}} {{item.mobile}}</view>
+              <view class="text">{{item.addressDetail}}{{item.address}}</view>
+            </view>  
+            <view class="bar">
+              <view bindtap="deleteItem" class="pull-right btn-del" data-id="{{item.id}}">
+                <image class="image-32" src="/static/images/icon/delete.png"></image>
+                <text>删除</text>
+              </view>
+              <navigator hover-class="none" class="pull-right btn-edit" url="/pages/member/address/post?id={{item.id}}&type=member">
+                <image class="image-32" src="/static/images/icon/edit.png"></image>
+                <text>编辑</text>
+              </navigator>
+              <label bindtap="setDefault" data-id="{{item.id}}" data-index="{{idx}}">
+                <radio color="#fd5454" checked="{{item.status > 0 ? true : false}}" class="zoom-70" name="default" />设为默认地址
+              </label>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </block>
+  <view class="fui-loading empty" wx:if="{{list.length < 1 && loaded}}">
+    <view class="text">没有数据</view>
+  </view>
+  <view class="fui-toast {{FoxUIToast.show ? 'in' : 'out'}}">
+    <view class="text">{{FoxUIToast.text}}</view>
+  </view>
+  <view class="fui-navbar">
+    <navigator hover-class="none" class="nav-item i_btn btn-danger" url="/pages/member/address/post?type=member">
+        <image class="image-48" src="/static/images/icon-white/add.png"></image>
+        <text>添加收货地址</text>
+    </navigator>
+  </view>
+</view>

@@ -1,0 +1,74 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-center" />
+<block name="title">账期额度</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+</block>
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <notempty name="accountRequestInfo">
+        <switch name="accountRequestInfo.status">
+            <case value="1">
+                <notempty name="userAccount">
+                    <if condition="$userAccount['error']==0">
+                        <div class="jl-empty">
+                            <img src="/Public/Home/Public/img/success.png" alt="">
+                            <h4 style="color: #393939;">
+                                你已有额度，你的账期可用额度为
+                                <span class="jl-account-price">
+                                    <assign name="can_use" value="$userAccount['data']" />
+                                    ￥{$userAccount.data1|sprintf="%.2f",###}
+                                </span>
+                            </h4>
+                            <if condition='$userAccount.data1 egt 0 '>
+                                <a href="{:U('Home/Order/accountRequest')}"><button class="jl-apply">再次申请</button></a>
+                            </if>
+                        </div>
+                        <elseif condition="$userAccount['error']==1"/>
+                        <div class="jl-empty">
+                            <img src="__PUBLIC__/Home/Public/img/no-product.png" alt="">
+                            <h4 style="color: #e84343;">没有可用账期</h4>
+                            <a href="{:U('Home/Order/accountRequest')}"><button class="jl-apply">再次申请</button></a>
+                        </div>
+                        <elseif condition="$userAccount['error']==2"/>
+                        <div class="jl-empty">
+                            <img src="__PUBLIC__/Home/Public/img/no-product.png" alt="">
+                            <h4 style="color: #e84343;">账期有预期未还</h4>
+                        </div>
+                    </if>
+                </notempty>
+            </case>
+            <case value="2">
+                <div class="jl-empty">
+                    <img src="__PUBLIC__/Home/Public/img/no-product.png" alt="">
+                    <h4 style="color: #e84343;">你的账期已经停用(欠款额度 > 0)</h4>
+                    <a href="{:U('Home/Order/accountRequest')}"><button class="jl-apply">再次申请</button></a>
+                </div>
+            </case>
+            <case value="3">
+                <div class="jl-empty">
+                    <img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+                    <h4 style="color: #e84343;">你的账期申请已提交，正在审核中...</h4>
+                </div>
+            </case>
+            <case value="4">
+                <div class="jl-empty">
+                    <img src="__PUBLIC__/Home/Public/img/no-product.png" alt="">
+                    <h4 style="color: #e84343;">你的账期审核不通过</h4>
+                    <a href="{:U('Home/Order/accountRequest')}"><button class="jl-apply">再次申请</button></a>
+                </div>
+            </case>
+        </switch>
+    </notempty>
+</block>
+<block name="js">
+</block>

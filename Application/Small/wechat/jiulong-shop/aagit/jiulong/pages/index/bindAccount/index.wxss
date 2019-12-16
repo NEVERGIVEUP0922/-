@@ -1,0 +1,15 @@
+@import "/pages/common/css/weui";
+.fui-page {
+  background-color:#EFEFF4;
+  border-top:1px solid #fff;
+  height:calc(100vh - 1px)
+}
+.weui-btn_sure{
+  width:80%;
+  margin:10% auto;
+  font-size:32rpx;
+  text-align:center;
+  background-color:#DF423D;
+  color:#fff;
+  border-radius:2px;
+}

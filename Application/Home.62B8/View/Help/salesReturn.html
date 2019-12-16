@@ -1,0 +1,92 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">退换货/退款说明</a></li>
+    </ul>
+    <ul class="jl-online">
+        <li>
+            <h4>退换货/退款服务受理条件和需求</h4>
+            <p>
+                1、因采购需求调整或无理由、实际收货数量不对、型号不符、产品质量问题需要退换货的客户，在收货后的15天内可提出退换货申请，逾期恕不受理。
+            </p>
+            <p>
+                2、如收货数量不对、型号不符申请退换货，需提供图片为证。
+            </p>
+            <p>
+                3、如因产品质量问题申请退换货，需提供详细的性能检测报告。如有必要，还需提供双方认可的第三方检测报告。
+            </p>
+            <p>
+                4、退换货产品，请务必保留完整的原包装(包括外包装、内填充物)及确保货物标签完好，如有遗失或损坏，将无法退换。
+            </p>
+            <p>
+                5、已开具发票的订单在退换货申请通过后，需退回发票，如不能退回发票需按17%扣除税点。
+            </p>
+        </li>
+        <li>
+            <h4>退换货/退款服务不受理情况</h4>
+            <p>
+                1、产品原包装和货物标签有损坏缺失。
+            </p>
+            <p>
+                2、已上机使用/测试过的产品。
+            </p>
+            <p>
+                3、收货时间超过15天（以快递签收日期为准）。
+            </p>
+        </li>
+        <li>
+            <h4>退换货/退款快递及费用说明：</h4>
+            <p>
+                1、因个人原因、无理由退换货，快递费用自付。
+            </p>
+            <p>
+                2、因收货数量不对、型号不符收货退换货，客服人员审核通过，快递费玖隆芯城付，否则自付。
+            </p>
+            <p>
+                3、因产品品质退换货，客服人员审核通过，快递费玖隆芯城付，否则自付。
+            </p>
+            <p>
+                4、需玖隆芯城支付快递费的，请先本人预付，后扫描快递单上传，两个工作日内返还回原订单支付账户，拒绝到付，玖隆芯城有权拒收到付件。
+            </p>
+        </li>
+
+        <li>
+            <h4>退换货/退款服务处理时间</h4>
+            <p>
+                用户提交售后申请后，玖隆芯城客服人员会在两个工作日内受理并反馈。
+            </p>
+        </li>
+        <li>
+            <h4>退换货/退款服务处理结果</h4>
+            <p>
+                用户可在玖隆芯城（个人中心/企业中心）-我的订单直接查看受理结果及处理进度
+            </p>
+        </li>
+        <li class="jl-laster">
+            <p>更多资讯，请联系玖隆芯城在线客服人员：</p>
+            <p>联系时间：周一至周六 09:00-18:00</p>
+            <p>企业QQ:4008655630</p>
+            <p>客服中心：400-8665530</p>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

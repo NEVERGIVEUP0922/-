@@ -1,0 +1,200 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-cart" />
+<block name="title">搜索</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/orderSuccee.css">
+    <style>
+        #js-upload-container .jl-upload-btn{
+            margin: 0;
+            width: 190px;
+            height: 100px;
+        }
+        #js-upload-container .jl-upload-img{
+            display: none;
+            margin: 0;
+            width: 190px;
+            height: 100px;
+            border: 1px solid #ddd;
+        }
+        #js-upload-container .jl-change-btn{
+            display: none;
+            padding: 6px 10px;
+            border: none;
+            background: #e84343;
+            color: #fff;
+            cursor: pointer;
+            margin-left: 10px;
+            position: relative;
+            top: -12px;
+        }
+        #js-upload-container.js-uploaded #js-upload{
+            display: none;
+        }
+        #js-upload-container.js-uploaded .jl-upload-img{
+            display: inline-block;
+        }
+        #js-upload-container.js-uploaded .jl-change-btn{
+            display: inline-block;
+        }
+    </style>
+</block>
+<block name="nav-title">购物车</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul id="jl-cart-progress" class="jl-cle">
+        <li class="jl-old">
+            <p>
+                <span class="jl-serial">1</span>
+                我的购物车
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-old">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">2</span>
+                确认订单信息
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-progress-last jl-cur">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">3</span>
+                成功提交订单
+            </p>
+        </li>
+    </ul>
+    <div id="jl-cart-empty">
+        <div style="text-align: left; margin: 100px auto 0;width: 520px;">
+            <div style="color: #333;margin-bottom: 16px">
+                <span>订单号：{$get.order_sn}{$get.account_pay_sn}</span>
+                <span style="margin-left: 16px">支付方式：银行转账</span>
+                <if condition="$get.order_sn ">
+
+                    <else/>
+                    <p>还款金额：<span style="color:rgb(192, 0, 0)">￥{$get.account_pay_total}</span></p>
+                </if>
+            </div>
+            <div style="color: #777">
+                <p>
+                    请将款项转到下面的对公银行账号中
+                </p>
+                <p>
+                    公司名称：<span style="color: rgb(192, 0, 0);">深圳市天玖隆科技有限公司</span>
+                </p>
+                <p class="p1">
+                    地址：<span class="s1"> </span>深圳市福田区华强北街道华强北路深纺大厦<span class="s1">A座1008-9</span>
+                </p>
+                <p class="p2">
+                    电话：&nbsp;0755- 82754881
+                </p>
+                <p class="p2">
+                    <span class="s2">开户行及账号：广发银行深圳华强支行</span> &nbsp;<span style="color: rgb(192, 0, 0);">102003516010006058</span>
+                </p>
+                <p>
+                    <br/>
+                </p>
+            </div>
+            <div class="">
+                <div id="js-upload-container" style="text-align: center">
+                    <div id="js-upload">
+                        <img class="jl-upload-btn" style="" src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                    </div>
+                    <img class="jl-upload-img" src="" alt=""><button class="jl-change-btn">更换图片</button>
+                    <div>点击上传水单<br>也可以稍后在点击付款上传</div>
+                </div>
+            </div>
+        </div>
+        <p>
+            <button style="margin-top: 16px;background: #fdecec;color: #e84343;border: 1px solid #e84343;" class="jl-continue js-submit">提交水单</button>
+        </p>
+        <a href="{:U('Home/Order/myOrder')}"><button style="margin-top: 16px" class="jl-continue">查询订单</button></a>
+    </div>
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery','jl-modal','webuploader'], function ($,modal,WebUploader) {
+                //console.log("get",{$get|json_encode});
+                var uploader1 = WebUploader.create({
+                    pick:'#js-upload',
+                    auto: true,
+                    swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                    server: "{:U('Home/Order/upload')}",
+                    formData:{
+                        path: 'bank_receipt'
+                    },
+                    accept: {
+                        title: 'Images',
+                        extensions: 'jpg,jpeg,png',
+                        mimeTypes: 'image/jpg,image/jpeg,image/png'
+                    }
+                });
+                uploader1.on('uploadSuccess',function (file,res) {
+                    if(res&&res[0]){
+                        $('.jl-upload-img').attr('src',res[0]);
+                        $('#js-upload-container').addClass('js-uploaded')
+                    }
+                });
+                uploader1.on( 'uploadError', function () {
+                    modal.alert({
+                        title:'上传失败'
+                    })
+                });
+                $('.jl-change-btn').on('click',function () {
+                    $('#js-upload-container').removeClass('js-uploaded')
+                });
+                var order = {$order|json_encode};
+                var get = {$get|json_encode};
+                //console.log(order);
+                $('.js-submit').on('click',function () {
+                    if($('#js-upload-container').hasClass('js-uploaded')){
+                        var img = $('.jl-upload-img').attr('src');
+//                        var img_type = (function () {
+//                            var deposits = Number(order.total_deposits);
+//                            var status = parseInt(order.deposits_pay_status);
+//                            if(deposits&&status===0){
+//                                return 1
+//                            }
+//                            else return 2
+//                        })();
+                        var data = {
+                            order_sn: order ? order.order_sn : "",
+//                           img_type:img_type,
+                            pay_img:img
+                        };
+                        if(get.account_select_id){ data.pay_type=1;data.account_pay_sn=get.account_pay_sn;}
+                        $.post('/Home/Order/publicAccount',data,function (res) {
+                            ///console.log(res);
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                modal.alert({
+                                    title:'提交成功',
+                                    confirm:function () {
+                                        window.location.href='/Home/Order/myOrder'
+                                    }
+                                })
+                            }
+                            else {
+                                modal.alert({
+                                    title:'提交失败',
+                                    brief:res.msg
+                                })
+                            }
+                        })
+                    }
+                    else {
+                        modal.alert({
+                            title:'请先点击加号上传水单图片'
+                        })
+                    }
+                })
+            })
+        })
+    </script>
+</block>

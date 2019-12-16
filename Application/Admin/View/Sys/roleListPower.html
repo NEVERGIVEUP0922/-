@@ -1,0 +1,132 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Category/category.css"/>
+    <style>
+        .role-power-header>span{
+            margin-left: 24px;
+        }
+    </style>
+</block>
+<block name="content">
+    <div class="category-top-div">
+        <if condition="$request['role_id']"><assign name="data" value="$list.list.0" /></if>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">设置角色权限</a>
+            </span>
+        </blockquote>
+        <div class="category-container">
+            <div id="jstree-category"></div>
+            <div class="left-container clearFix">
+                <blockquote class="layui-elem-quote role-power-header">
+                    <p>角色名称：{$data['role_name']}</p>
+                    <p>角色描述：{$data['role_desc']}</p>
+                    <p>角色等级：{$data['role_level']}</p>
+                </blockquote>
+                <blockquote class="layui-elem-quote role-power-header" style="display: none">
+                    <p>功能简称：<span class="role-power-name"></span></p>
+                    <p>功能全称：<span class="role-power-name2"></span></p>
+                    <p>功能描述：<span class="role-power-desc"></span></p>
+                    <p>功能等级：<span class="role-power-level"></span></p>
+                </blockquote>
+                <button class="layui-btn save-btn">保存</button>
+                <button class="layui-btn layui-btn-primary reload-btn">恢复</button>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['layer', 'jlTool','element','form'], function () {
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var request = {$request|json_encode};
+            var functionTree = {$functionTree|json_encode};
+            console.log('functionTree',functionTree,request);
+            (function reduce(value,level) {
+                level = level ? level : 1;
+                if(value&&$.isArray(value)){
+                    $.each(value,function (i,v) {
+                        v["state"] = {};
+                        if(level===1){
+                            v['text'] = v.name;
+                            v["state"]["opened"] = true;
+                        }
+                        else if(level===2){
+                            v['text'] = v.name;
+                        }
+                        else {
+                            v['text'] = v.function_name;
+                            if((v['spread']==='1')||(v['spread']==='2')){
+                                v["state"]["selected"] = true;
+                            }
+                        }
+                        if(v.children){
+                            reduce(v.children,level+1)
+                        }
+                    });
+                }
+            })(functionTree);
+            $('#jstree-category').jstree({
+                'core': {
+                    'data': functionTree,
+                    'check_callback':true,
+                },
+                "checkbox" : {
+                    "keep_selected_style" : false
+                },
+                "plugins" : [ "checkbox" ]
+            }).on("changed.jstree", function (e, data,b,c) {
+                if ((data.action==='select_node')&&data.selected.length) {
+                    data.instance.open_node(data.node.id);
+                }
+            }).on("hover_node.jstree",function (e,data) {
+                var original = data.node.original;
+                renderDetail(original)
+            });
+            var $container = $('.role-power-header');
+            var $name = $('.role-power-name');
+            var $name2 = $('.role-power-name2');
+            var $desc = $('.role-power-desc');
+            var $level = $('.role-power-level');
+            var renderDetail = function (data) {
+                $container.show();
+                $name.text(data.text);
+                $name2.text(data.function_name);
+                $desc.text(data.function_desc);
+                $level.text(data.function_level);
+            };
+            $('.save-btn').on('click',function () {
+                var instance = $('#jstree-category').jstree(true);
+                var select_arr = instance.get_selected(true);
+                var functionId_arr = {};
+                $.each(select_arr,function (index,value) {
+                    var function_id = value.original.function_id;
+                    if(function_id){
+                        functionId_arr[function_id] = function_id;
+                    }
+                });
+                var data = {
+                    role_id:request.role_id,
+                    functionId_arr:functionId_arr,
+                };
+                $.post('/Admin/Sys/roleFunctionAction',data,function (res) {
+                    res = $.parseJSON(res);
+                    layer.msg(res.msg);
+                    if(res.error===0){
+                        setTimeout(function () {
+                            window.location.reload()
+                        },500);
+                    }
+                });
+            });
+            $('.reload-btn').on('click',function () {
+                window.location.reload()
+            })
+        })
+    </script>
+</block>

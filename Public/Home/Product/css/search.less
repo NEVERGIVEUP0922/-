@@ -1,0 +1,524 @@
+@import "../../Public/css/init.less";
+
+
+#jl-result,#jl-product{
+  width: 1200px;
+  margin: 0 auto;
+}
+.jl-in-width{
+  width: 1200px;
+  margin: 0 auto;
+}
+
+//面包屑导航
+.jl-brand{
+  padding-top: 18px;
+  //height: 54px;
+  >p{
+    //line-height: 54px;
+    font-size: 12px;
+    color:@medium-grey;
+    >span{
+      color:@dark-grey;
+    }
+  }
+  .jl-brands{
+    float: left;
+    >span{
+      color:@color;
+    }
+  }
+  .jl-count{
+    float: right;
+  }
+}
+.jl-banner-container{
+  border: 1px solid #DDD;
+  border-bottom:none;
+  margin:10px auto;
+}
+.ji-banner-show-first{
+    position: relative;
+    _zoom: 1;
+    line-height: 34px;
+     min-height:34px;
+    border-bottom: 1px solid #DDD;
+    background: #f3f3f3;
+  .ji-banner-show-first-left{
+    float: left;
+    width: 100px;
+    padding-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+  .ji-banner-show-first-center{
+    margin-left: 110px;
+    padding-right: 130px;
+    padding-left: 10px;
+    color:#005aa0;
+    overflow: hidden;
+    zoom: 1;
+    background: #fff;
+    li{
+      float: left;
+      display: inline;
+      margin-right: 32px;
+      margin-bottom: 4px;
+      height: 32px;
+      line-height: 32px;
+      input{
+        float: left;
+        margin-top: 10px;
+        margin-right:5px;
+      }
+    }
+  .ji-banner-show-first-bottom{
+    text-align: center;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  input{
+    border: 1px solid #DDD;
+    padding: 2px 10px 3px;
+    margin-left:10px;
+    border-radius:5px;
+    background-color:#fff;
+    cursor: pointer;
+    /*color: #666;
+    background-color: #f7f7f7;
+    background-repeat: repeat-x;*/
+  }
+    input:first-child{
+      background: #3a82ff;
+      color:#fff;
+    }
+  }
+  }
+  .ji-banner-show-first-right{
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  width: 110px;
+  height: auto;
+  line-height: 22px;
+  overflow: hidden;
+  zoom: 1;}
+  a{
+    float: left;
+    margin-right: 10px;
+    position: relative;
+    width: 39px;
+    height: 23px;
+    line-height: 23px;
+    padding: 0 7px 0 4px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+}
+//banner
+.jl-banner{
+  height: 100px;
+  background: @bg-color;
+}
+
+.jl-list-fixed-header.jl-list-fixed-clone{
+  position: fixed;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  background: white;
+}
+//产品信息
+//.message{
+//  border:@border02;
+//  border-bottom:none;
+//  margin-top: 20px;
+//  margin-bottom: 58px;
+//  >li{
+//    height: 38px;
+//    line-height: 38px;
+//    border-bottom:@border02;
+//    >p{
+//      float: left;
+//      width: 118px;
+//      padding-left:30px;
+//      background: @bg-color;
+//      margin-right: 20px;
+//    }
+//    >span{
+//      margin: 0 20px;
+//    }
+//  }
+//}
+
+//产品详情
+#jl-product{
+  margin-top:20px;
+}
+.jl-title{
+  height: 38px;
+  padding-top: 6px;
+  padding-left: 30px;
+  box-sizing: border-box;
+  background:@bg-color;
+  border:@border02;
+}
+.jl-sort{
+  float: left;
+  >li{
+    float: left;
+    width: 58px;
+    height: 23px;
+    line-height: 21px;
+    padding-left: 10px;
+    box-sizing: border-box;
+    border:@border02;
+    border-right:none;
+    cursor: pointer;
+    position: relative;
+    background: #fff;
+    >b{
+      display: inline-block;
+      width: 8px;
+      height: 12px;
+      margin-left: 6px;
+      background:url("../../Public/img/sprite.png") no-repeat -89px 0;
+      position: relative;
+      top: 1px;
+    }
+    >s,>i{
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 7px;
+      height: 5px;
+      background: url("../../Public/img/sprite.png") no-repeat -106px 0;
+    }
+    >i{
+      top: 12px;
+      background-position:-106px -6px;
+    }
+  }
+  .jl-bd-last{
+    border-right:@border02;
+  }
+  >li:hover{
+    border:1px solid @color;
+    color:@color;
+    >b{
+      background-position:-65px 0 ;
+    }
+  }
+  >li.jl-cur{
+    color:#fff;
+    background:@color;
+    border-color: @color;
+    >b{
+      background-position:-77px 0 ;
+    }
+  }
+  >li.rise{
+    color:#fff;
+    background:@color;
+    border-color: @color;
+    >s{
+      background-position-x: -117px;
+    }
+    >i{
+      background-position-x: -128px;
+    }
+  }
+  >li.desc{
+    color:#fff;
+    background:@color;
+    border-color: @color;
+    >s{
+      background-position-x: -128px;
+    }
+    >i{
+      background-position-x: -117px;
+    }
+  }
+}
+.jl-title-right{
+  float: right;
+  margin-right: 30px;
+}
+.checkbox{
+  float: left;
+  line-height: 23px;
+  margin-right: 16px;
+  i{
+    margin-right: 5px;
+    border-radius:0;
+  }
+}
+a.checkbox:hover{
+  color:@medium-grey;
+  i{
+    border-color: @color;
+  }
+}
+.jl-result-search{
+  float: left;
+
+  ::-webkit-input-placeholder{
+    color:@grey;
+  }
+  :-moz-placeholder{
+    color:@grey;
+  }
+  ::-moz-placeholder{
+    color:@grey;
+  }
+  :-ms-input-placeholder{
+    color:@grey;
+  }
+
+  .jl-result-search-input,.jl-result-submit{
+    float: left;
+  }
+  .jl-result-search-input{
+    width: 144px;
+    height: 23px;
+    border: 1px solid @grey;
+    border-right:none;
+    padding-left: 10px;
+    color:@dark-grey;
+    font-size: 12px;
+
+  }
+  .jl-result-submit{
+    width: 54px;
+    height: 25px;
+    border: 1px solid @grey;
+    background: @bg-color;
+    color:@medium-grey;
+    cursor: pointer;
+  }
+}
+.jl-classify-title{
+  height: 38px;
+  line-height: 38px;
+  border:@border02;
+  border-top:none;
+  background: #f9f9f9;
+  li{
+    float: left;
+    box-sizing: border-box;
+    text-align: center;
+  }
+}
+.jl-sort-product{
+  width: 170px;
+  img{
+    width: 100px;
+    height: 100px;
+    border: 2px solid transparent/*#4d7ff9*/;
+    display: inline-block;
+    cursor: pointer;
+  }
+}
+.jl-sort-name{
+  width: 180px;
+}
+.jl-sort-brand{
+  width: 280px;
+  .js-pdf{
+    display: inline-block;
+    width: 17px;
+    height: 20px;
+    background: url("../../Public/img/sprite.png") no-repeat 0 -24px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  .js-pdf:hover{
+    background-position-x: -22px;
+  }
+}
+.jl-sort-package{
+  width: 140px;
+  box-sizing: border-box;
+  padding:0 6px;
+  .jl-minus,.jl-add{
+    float: left;
+    width: 30px;
+    height: 40px;
+    box-sizing: border-box;
+    font-size: @big-size;
+    border:1px solid @grey;
+    background: @bg-color;
+    cursor: pointer;
+  }
+  input{
+    float: left;
+    width: 56px;
+    height: 40px;
+    box-sizing: border-box;
+    line-height: 38px;
+    border: none;
+    border-top:1px solid @grey;
+    border-bottom:1px solid @grey;
+    text-align: center;
+  }
+  p{
+    display: block;
+  }
+  .jl-product-subtotal{
+    color:@color;
+    clear: both;
+    padding-top: 10px;
+  }
+}
+.jl-price-range{
+  width: 230px;
+}
+.jl-goods-category{
+  width: 80px;
+  padding:0 8px;
+  text-align: center;
+}
+.jl-sort-inventory{
+  width: 84px;
+  text-align: center;
+}
+.jl-sort-operation{
+  width: 100px;
+  text-align: center;
+}
+.jl-classify{
+  //margin-bottom: 80px;
+  >li{
+    min-height: 156px;
+    border:@border02;
+    margin-top: 20px;
+  }
+  >li:hover{
+    box-shadow:0 0 8px @light-gray;
+  }
+  >.jl-search-list>div{
+    float: left;
+    //text-align: center;
+    padding-top: 22px;
+    color:@dark-grey;
+    box-sizing: border-box;
+  }
+  .jl-sort-product{
+    padding-top:0;
+    text-align: center;
+  }
+  .jl-sort-name{
+    text-align: left;
+    padding-left: 20px;
+    s{
+      display: block;
+      height: 22px;
+      overflow: hidden;
+    }
+    .js-pdf{
+      display: inline-block;
+      width: 17px;
+      height: 20px;
+      background: url("../../Public/img/sprite.png") no-repeat 0 -24px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .js-pdf:hover{
+      background-position-x: -22px;
+    }
+  }
+  .jl-price-range{
+    text-align: left;
+    padding-left: 6px;
+    >div{
+      margin-bottom: 24px;
+      overflow: hidden;
+      span{float:left};
+    }
+    a{
+      color:@green;
+      text-decoration: none;
+    }
+  }
+  .jl-price-left{
+    width: 84px;
+    text-align: right;
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .jl-price-split{
+    color: @color;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
+    width:44px;
+    float:left;
+  }
+  .jl-sort-brand{
+    height: 140px;
+    text-align: left;
+    overflow: hidden;
+  }
+}
+.jl-addTo-cart,.jl-enquiry{
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  line-height: 30px;
+  background: @color;
+  color:#fff;
+  margin-bottom: 15px;
+  border:@border03;
+  box-sizing: border-box;
+}
+.jl-enquiry{
+  background: #fdecec;
+  color:@color;
+}
+.jl-classify .jl-price-range .jl-min-enquiry{
+  display: inline-block;
+  padding: 0 4px;
+  background: #fdecec;
+  color:@color;
+  border:@border03;
+  margin-left: 4px;
+}
+.jl-addTo-cart:hover{
+  color: #fff !important;
+}
+//判断有无搜索结果
+.jl-has-product{
+  //display: none;
+}
+.jl-no-product{
+  display: none;
+  min-height: 650px;
+  text-align: center;
+  padding-top: 210px;
+  box-sizing: border-box;
+  .font18(@grey);
+  p{
+    margin-top: 22px;
+  }
+}
+//询价盒子
+.jl-price-inquiry-box{
+  display: inline-block;
+  position: relative;
+
+  &:hover{
+    .jl-price-qq-list-box{
+      display: block;
+    }
+  }
+  .jl-price-qq-list-box{
+    display: none;
+    position: absolute;
+    left: 4px;
+    top:100%;
+    background: white;
+    border: 1px solid #ddd;
+  }
+}

@@ -1,0 +1,657 @@
+@import "../../Public/css/init.less";
+
+
+a.jl-user-title{
+  display: block;
+  color:@medium-grey;
+  border:@border02;
+  padding: 30px 0 30px 54px;
+}
+.jl-title-head{
+  float: left;
+  width: 100px;
+  height: 100px;
+  margin-right: 65px;
+  box-sizing: border-box;
+  border-radius:50%;
+  border:@border02;
+  overflow: hidden;
+  img{
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+.jl-user-news{
+  float: left;
+  width: 752px;
+  margin-top: 10px;
+  li{
+    float: left;
+    width: 50%;
+    height: 30px;
+  }
+}
+
+.jl-logistics,.jl-history,.jl-recommend{
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  background: url("../../Public/img/sprite.png") 0 -414px;
+  position: relative;
+  top: 5px;
+}
+.jl-history{
+  background-position-x: -42px;
+}
+.jl-recommend{
+  background-position-x: -90px;
+}
+//标题
+.jl-title{
+  .font16(@dark-grey);
+  height: 40px;
+  line-height: 40px;
+  background: #f9f9f9;
+  padding-left: 20px;
+  margin-top: 20px;
+  border:@border02;
+}
+.jl-user-logistics{
+  border:@border02;
+  border-top:none;
+  border-bottom:none;
+  li{
+    height: 120px;
+    padding-left: 27px;
+    padding-top: 24px;
+    padding-right: 30px;
+    box-sizing:border-box;
+    border-bottom:@border02;
+    img,.jl-logistics-detail{
+      float: left;
+    }
+    button{
+      float: right;
+      width: 100px;
+      height: 30px;
+      background: @green;
+      border: none;
+      color:#fff;
+      margin-top: 13px;
+      cursor: pointer;
+    }
+    img{
+      border:@border02;
+      width: 70px;
+      box-sizing: border-box;
+    }
+  }
+}
+.jl-logistics-detail{
+  margin-left: 30px;
+  p,>div{
+    line-height: 32px;
+    span{
+      margin-right: 15px;
+      float: left;
+    }
+  }
+}
+//物流弹框
+.jl-logistics-way{
+  height: 40px;
+  margin-left: 20px;
+  position: relative;
+  float: left;
+  a{
+    color:@color;
+  }
+}
+.jl-logistics-way:hover{
+  .jl-logistics-popup{
+    display: block;
+  }
+}
+.jl-logistics-popup{
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  top: 40px;
+  left: -40px;
+  width: 350px;
+  margin-left: -108px;
+  min-height: 250px;
+  padding-bottom: 20px;
+  border:@border02;
+  background: #fff;
+  box-shadow: 0 0 8px @light-gray;
+  .jl-logistics-title{
+    height: 44px;
+    line-height: 44px;
+    background: none;
+    padding-left: 20px;
+    border-bottom:@border02;
+  }
+  >ul{
+    padding-bottom: 10px;
+    li{
+      height:auto;
+      padding:0;
+      margin-top: 10px;
+      padding-left: 40px;
+      padding-right: 20px;
+      border:none;
+      position: relative;
+      i{
+        position: absolute;
+        top: 9px;
+        left: 24px;
+        width: 5px;
+        height: 5px;
+        background: @medium-grey;
+        border-radius:50%;
+      }
+      p{
+        line-height: 22px;
+      }
+    }
+    .jl-check-more{
+      height: 30px;
+      margin-top: 0;
+      a{
+        color:@medium-grey;
+      }
+      a:hover{
+        color:@color;
+      }
+    }
+    li.jl-cur{
+      color:@color;
+      i{
+        background: @color;
+      }
+    }
+  }
+
+}
+.jl-arr-top{
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  margin-left: -5px;
+  width: 12px;
+  height: 12px;
+  border:@border02;
+  border-bottom:none;
+  border-right:none;
+  transform: rotate(45deg);
+  background: #fff;
+}
+
+
+.jl-logistics-more{
+  height: 42px;
+  line-height: 42px;
+  border:@border02;
+  border-top:none;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 40px;
+  i{
+    display: inline-block;
+    width: 11px;
+    height: 6px;
+    background: url("../../Public/img/sprite.png") no-repeat -39px -114px;
+    vertical-align: middle;
+    margin-left: 10px;
+  }
+}
+
+.jl-history-product{
+  li{
+    cursor: pointer;
+    position: relative;
+    float: left;
+    width: 283px;
+    height: 327px;
+    padding: 0 20px 30px;
+    background: #fff;
+    box-sizing: border-box;
+    border:@border01;
+    text-align: center;
+    margin-right: 62px;
+    margin-top: 20px;
+    >.jl-img{
+      height: 150px;
+      padding-top: 16px;
+      box-sizing: border-box;
+      img{
+        width: 120px;
+        height:120px;
+      }
+    }
+    .jl-describe{
+      text-align: left;
+      min-height: 100px;
+      h4{
+        .font14(@dark-grey);
+      }
+      >p{
+        color:@medium-grey;
+        line-height: 22px;
+      }
+      .jl-p-describe{
+        margin-bottom:8px;
+      }
+    }
+    >p{
+      margin-top:25px;
+      span{
+        float: left;
+        .price;
+      }
+      a{
+        float: right;
+        .a-dir;
+      }
+    }
+  }
+  li.jl-hot-li-last{
+    margin-right: 0;
+  }
+  li:hover{
+    box-shadow:0 0 8px @light-gray;
+  }
+
+}
+
+
+.jl-payment-limit{
+  border:@border02;
+  padding-top: 40px;
+  padding-left: 32px;
+  padding-bottom: 30px;
+  line-height: 40px;
+  >p{
+   position: relative;
+    margin-bottom: 20px;
+  }
+  b{
+    color:@bg-color;
+    font-size: 50px;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  span{
+    display: inline-block;
+    margin-left: 60px;
+    padding-left: 20px;
+    padding-right: 145px;
+    height: 40px;
+    line-height: 40px;
+    background: #f9f9f9;
+  }
+}
+.jl-apply,.jl-submit,.jl-submit-firm{
+  width: 180px;
+  height: 40px;
+  border: none;
+  background: @color;
+  .font18(#fff);
+  display: block;
+  margin: 50px auto 0;
+  cursor: pointer;
+}
+
+#jl-payment-apply{
+  border:@border02;
+  padding-left: 30px;
+  padding-bottom: 50px;
+  color:@dark-grey;
+  >p{
+    margin-left: 98px;
+    margin-top: 15px;
+    color:@color;
+  }
+}
+.jl-note{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: url("../../Public/img/bg-big.png") no-repeat -24px 0;
+  position: relative;
+  top: 1px;
+  margin-right: 10px;
+}
+.jl-form-group{
+  margin-top: 20px;
+  label{
+    width: 98px;
+    display: inline-block;
+  }
+  input{
+    width: 253px;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 20px;
+    box-sizing: border-box;
+    border: 1px solid @grey;
+  }
+  .jl-mandatory{
+    margin-left: 12px;
+  }
+}
+
+//选择账期类型
+.js-protocol-select{
+  width: 253px;
+  height: 40px;
+  margin-top: 5px;
+  padding-left: 20px;
+  color:@dark-grey;
+  border:@border06;
+}
+//.jl-month{
+//  display: none;
+//}
+
+.jl-payment-apply-firm{
+  border:@border02;
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-bottom: 30px;
+  li{
+    overflow: hidden;
+    margin-bottom: 20px;
+    >p,.jl-protocol{
+      float: left;
+    }
+    >p{
+      width: 125px;
+      line-height: 48px;
+      color:@dark-grey;
+    }
+  }
+}
+.jl-protocol{
+  margin-right: 20px;
+  .jl-mandatory{
+    vertical-align: top;
+    margin-top: 15px;
+    margin-left: 15px;
+  }
+  p{
+    text-align: center;
+    width: 190px;
+    font-size:  12px;
+    a{
+      display: block;
+      width: 190px;
+      text-align: center;
+      margin-top: 5px;
+      color:@green;
+      font-size: 12px;
+    }
+  }
+}
+.jl-protocol-photo{
+  margin-right: 20px;
+  width: 190px;
+  height: 85px;
+  border:@border02;
+  background: @bg-color;
+  float: left;
+  text-align: center;
+  padding-top: 15px;
+  overflow: hidden;
+  position: relative;
+  img{
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
+    height: 100px;
+  }
+  .jl-remove{
+    display: none;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 14px;
+    height: 14px;
+    background: url("../../Public/img/sprite.png") no-repeat -128px -114px;
+  }
+}
+.jl-protocol-photo:hover{
+  .jl-remove{
+    display: block;
+  }
+}
+
+.jl-note-news{
+  margin-left: 30px;
+  margin-top: 15px;
+  color:@color;
+}
+
+.jl-apply-complete{
+  text-align: center;
+  padding-top: 180px;
+  p{
+    font-size: 22px;
+    color:@color;
+    margin-top: 20px;
+    margin-bottom: 60px;
+  }
+  a{
+    display: inline-block;
+    width: 180px;
+    height: 40px;
+    .font18(#fff);
+    line-height: 40px;
+    background: @color;
+  }
+}
+
+//上传照片
+.a-upload {
+  width: 190px;
+  height: 100px;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  //background: url("../../Public/img/add.png");
+  overflow: hidden;
+  display: inline-block;
+}
+
+.a-upload  input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 190px;
+  height: 100px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  cursor: pointer
+}
+
+.jl-pic-box{
+  display: none;
+}
+.js-upload-container.js-uploaded .jl-upload-box{
+  display: none;
+}
+.js-upload-container.js-uploaded .jl-pic-box{
+  display: block;
+}
+//错误处理
+.jl-input-error-container{
+  width: 420px;
+  position: relative;
+}
+.jl-input-error-icon{
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  right: 66px;
+  z-index: 99;
+  width: 15px;
+  height: 14px;
+  background: url("../../Public/img/sprite.png") no-repeat -104px -151px;
+}
+.js-check-input.js-input-error{
+  border-color: @color;
+}
+.jl-input-error-icon.jl-address-error{
+  position: relative;
+  top:0;
+  left: 0;
+}
+.jl-input-error-icon.jl-cur{
+  display: inline-block;
+}
+.jl-y-select.js-input-error .jl-y-select-title{
+  border-color: @color;
+}
+
+
+//企业子账号
+#jl-account{
+  .jl-add-main{
+    border:@border02;
+    padding: 40px 30px;
+  }
+  dt,dd{
+    height: 40px;
+    line-height: 40px;
+    padding-left: 22px;
+  }
+  dt{
+    background: #fdecec;
+    color:@color;
+  }
+  dd{
+    margin-top: 20px;
+    background: @bg-color03;
+    .jl-account-content{
+      color:@dark-grey;
+    }
+  }
+  span{
+    float: left;
+  }
+  >p{
+    color:@color;
+    margin-left: 50px;
+    margin-top: 20px;
+  }
+}
+.jl-account-titles{
+  width: 80px;
+}
+a.jl-deletes{
+  float: right;
+  margin-right: 20px;
+  color:@green;
+}
+.jl-falses{
+  display: inline-block;
+  width: 15px;
+  height: 14px;
+  background: url("../../Public/img/sprite.png") no-repeat -104px -151px;
+  margin-right: 8px;
+}
+.jl-add-btn{
+  display: block;
+  width: 150px;
+  height: 40px;
+  margin: 40px auto 0;
+  border:none;
+  background: @color;
+  .font16(#fff);
+  cursor: pointer;
+}
+//弹框
+.jl-account-pop{
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height:100%;
+}
+.jl-pop-out{
+  width: 100%;
+  height:100%;
+  background: #000;
+  filter:alpha(opacity=10);
+  opacity: .1;
+}
+.jl-pop-in{
+  width: 440px;
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 800;
+  top: 340px;
+  left: 50%;
+  margin-left:-143px;
+  border:10px solid rgba(0,0,0,0.2);
+  background:#fff;
+  .jl-title{
+    height: 40px;
+    line-height: 40px;
+    background: @color;
+    color:#fff;
+    padding-left: 20px;
+    margin-top: 0;
+    .jl-close{
+      cursor: pointer;
+      position: absolute;
+      top: 14px;
+      right: 20px;
+      width: 14px;
+      height: 14px;
+      background: url(../../Public/img/sprite.png) no-repeat 0 -180px;
+    }
+  }
+}
+.jl-pop-main{
+  padding: 40px 0 20px;
+  .jl-false-note{
+    right: -5px;
+  }
+  >li{
+    margin-bottom: 20px;
+  }
+  .jl-names{
+    width: 70px;
+    display: inline-block;
+    margin-left: 70px;
+  }
+  .jl-text,.jl-inputs{
+    .font14(@dark-grey);
+  }
+  .jl-text{
+    font-weight: bold;
+  }
+  .jl-inputs{
+    width: 180px;
+    height: 30px;
+    padding-left: 10px;
+    border:@border02;
+  }
+  .jl-ensure{
+    width: 160px;
+    height: 40px;
+    display: block;
+    margin: 40px auto 0;
+    border: none;
+    background: @color;
+    .font16(#fff);
+    cursor: pointer;
+  }
+}

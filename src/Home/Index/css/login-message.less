@@ -1,0 +1,192 @@
+@import "../../Public/css/init.less";
+
+.jl-login-wrap{
+  margin-top: 26px;
+  width: 100%;
+  margin-bottom: 21px;
+  background: #4E7FF8;
+  .jl-login-item{
+    position: relative;
+    width: 1200px;
+    margin: 0 auto;
+  }
+  .jl-login-msg{
+    position: absolute;
+    right: 100px;
+    top:92px;
+    width: 360px;
+    height: auto;
+    z-index: 10;
+    background-color: #fff;
+  }
+  .jl-login-banner{
+    width: 1200px;
+    height: 600px;
+    margin: 0 auto;
+    z-index: 5;
+  }
+}
+.jl-login-de{
+  width: 306px;
+  height: auto;
+  margin: 0 auto;
+  .jl-login-tit{
+    margin-top: 37px;
+    margin-bottom: 29px;
+    .font20(@dark-grey);
+    font-weight: bold;
+  }
+  .jl-login-item{
+    width: 304px;
+    height: 43px;
+    border: @border02;
+    .jl-lab{
+      float: left;
+      display: block;
+      width: 55px;
+      height: 43px;
+    }
+    .jl-login-user{
+      width: 249px;
+      padding-top: 11px;
+      padding-bottom: 10px;
+      border:   none;
+    }
+    .jl-bg01{
+      background: url(../../Public/img/images/login_name.png) no-repeat center;
+    }
+    .jl-bg02{
+      background: url("../../Public/img/images/login_password.png") no-repeat center;
+    }
+
+  }
+ .jl-login-check{
+   visibility: hidden;
+   height: 25px;
+   .font12(@color);
+   .jl-lo-bg{
+     display: inline-block;
+     position: relative;
+     top: 2px;
+     margin-top: 3px;
+     width: 14px;
+     height: 14px;
+     background: url(../../Public/img/bg-big.png) no-repeat -24px 0;
+   }
+   span{
+     display: inline-block;
+     line-height: 25px;
+   }
+ }
+  .jl-login-for{
+    display:block;
+    margin-bottom: 1px;
+    border: none;
+    .jl-forget-pw{
+      float: right;
+    }
+  }
+}
+
+#js-login-submit{
+  margin-top: 0;
+  width: 100%;
+  height: 40px;
+  background: @color;
+  border: none;
+  .font20(#fff);
+  cursor: pointer;
+  //display: none;
+}
+
+//choose
+.jl-choose{
+  margin-top: 48px;
+  border-top: @border02;
+  width: 100%;
+  height: 55px;
+  background-color: @bg-color03;
+  .jl-choose-de{
+    width: 306px;
+    height: 55px;
+    margin: 0 auto;
+    li{
+      float: left;
+      height: 55px;
+      .jl-way{
+        position: relative;
+        display: inline-block;
+        line-height: 55px;
+        padding-left: 39px;
+        font-size: 14px;
+        .jl-choose-qq-bg{
+          position: absolute;
+          left: 0;
+          top: -15px;
+          width: 25px;
+          height: 55px;
+          background: url(../../Public/img/images/qq.png) no-repeat center;
+        }
+        .jl-choose-weiXin{
+          position: absolute;
+          left: 0;
+          top: -15px;
+          width: 25px;
+          height: 55px;
+          background: url(../../Public/img/images/weiixn.png) no-repeat center;
+        }
+        .jl-choose-weiBo{
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 25px;
+          height: 55px;
+          background: url(../../Public/img/bg-big.png) no-repeat -38px 0;
+        }
+      }
+      .jl-vertical-line{
+          margin: 0 16px;
+
+      }
+    }
+    .jl-last-choose{
+      float: right;
+      .jl-run-reg{
+        position: relative;
+        line-height: 55px;
+        .font16(color);
+        b{
+          position: absolute;
+          right: 73px;
+          top: -16px;
+          width: 19px;
+          height: 55px;
+          background: url(../../Public/img/images/login_register.png) no-repeat center;
+        }
+        span{
+          .font16(@color);
+          line-height: 55px;
+        }
+      }
+    }
+  }
+}
+//footer
+.jl-login-footer{
+  padding-top: -7px;
+}
+
+
+.js-company,.js-person{
+  display: none;
+  width: 45%;
+  height: 40px;
+  float: left;
+  border: none;
+  background: @color;
+  .font16(#fff);
+  cursor: pointer;
+}
+.js-person{
+  float: right;
+}

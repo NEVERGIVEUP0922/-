@@ -1,0 +1,408 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">我的报表</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/myOrder.css">
+</block>
+<block name="nav-title">
+    企业中心
+</block>
+<block name="main">
+    <style>
+        #jl-center-main{
+            width:1330px
+        }
+        #jl-center-right{
+            width:1101px
+        }
+        #jl-table{
+            overflow:hidden
+        }
+        #jl-table .container{
+            margin-top:5%;
+            position:relative;
+            z-index:1;
+            box-sizing:border-box;
+            color:#666;
+            border:1px solid transparent;
+            border-spacing: 0;
+            vertical-align: middle;
+            text-align: center;
+            overflow-x: hidden;
+        }
+        table{
+            font-size: 14px;
+        }
+        thead,tbody{
+
+        }
+        #jl-table th{
+            border:1px solid #e6e6e6;
+            padding: 10px 5px;
+            background-color:#f2f2f2;
+        }
+        #jl-table th>div{
+             background-color:#f2f2f2;
+             width:84px;
+             text-align:center
+         }
+        #jl-table td{
+            border:1px solid #e6e6e6;
+            padding: 0px 5px;
+
+        }
+        #jl-table td div{
+            overflow:hidden;
+            text-overflow: ellipsis;
+        }
+        #jl-table td>div{
+            width:84px;
+            text-align:center;
+        }
+        #jl-table .last_td>section table td{
+            padding: 10px 5px;
+        }
+        #jl-table .last_td>section{
+            width: 356px;
+            box-sizing: border-box
+        }
+        #jl-table .last_td>section>div{
+            padding:2% 4%
+        }
+        .table-body{
+            height:64vh;
+            overflow: auto;
+        }
+    </style>
+    <div id="jl-table" style="position:relative">
+        <!-- 搜索条件 -->
+        <form class="formDate" style="position:absolute;left:0;top:0;width:100%;z-index:10;background-color:#fff;">
+            <div class="jl-conditions jl-cle" >
+                <a class="orderDownLoad" style="float:left;margin:1% 0 0 1%;cursor: pointer">报表下载</a>
+                <div class="jl-conditions-search">
+
+                    <input class="jl-search-input" name="p_sign" type="text" value="{$request.p_sign}" placeholder="请输入商品名称或订单编号">
+                    <button class="jl-conditions-btn">编号搜索</button>
+                    <span class="jl-more-conditions">更多筛选条件<i class="jl-arrs"></i></span>
+                </div>
+            </div>
+            <div class="jl-conditions-pop jl-cle" style="border-bottom:1px solid #ddd">
+            <ul>
+                <li>
+                    <span>支付状态</span>
+                    <select class="js-order-type jl-select-chang" name="pay_status">
+                        <option value="">全部</option>
+                        <option value="0" {$request['pay_status'] == '0' ? 'selected' : ''}>未付款</option>
+                        <option value="1" {$request['pay_status'] == '1' ? 'selected' : ''}>部分支付</option>
+                        <option value="2" {$request['pay_status'] == '2' ? 'selected' : ''}>全部支付</option>
+                        <!--<option value="4" {$request['pay_type'] == '4' ? 'selected' : ''}>面对面付款</option>
+                        <option value="5" {$request['pay_type'] == '5' ? 'selected' : ''}>银行转账</option>
+                        <option value="6" {$request['pay_type'] == '6' ? 'selected' : ''}>线下支付</option>-->
+                    </select>
+                </li>
+                <li>
+                    <span>下单时间</span>
+                    <input type="text" id="datepicker" unselectable="on" readonly class="jl-end-time"
+                           placeholder="请选择时间范围起始" name="time_start" value="{$request.time_start}">
+                    <b>-</b>
+                    <input type="text" id="datepickerr" unselectable="on" readonly class="jl-end-time"
+                           placeholder="请选择时间范围结束" name="time_end" value="{$request.time_end}">
+                </li>
+                <li>
+                    <span>订单状态</span>
+
+                    <select class="js-order-status jl-select-chang" name="order_status">
+                        <option value="">全部</option>
+                        <option value="0" {$request['order_status'] == '0' ? 'selected' : ''}>新单</option>
+                        <option value="1" {$request['order_status'] == '1' ? 'selected' : ''}>锁单</option>
+                        <option value="2" {$request['order_status'] == '2' ? 'selected' : ''}>部分完成</option>
+                        <option value="3" {$request['order_status'] == '3' ? 'selected' : ''}>已完成</option>
+                        <option value="4" {$request['order_status'] == '100' ? 'selected' : ''}>已取消</option>
+                    </select>
+                </li>
+                <li>
+                    <span>货运状态</span>
+                    <select class="js-appraise-status jl-select-chang" name="ship_status">
+                        <option value="">全部</option>
+                        <option value="0" {$request['ship_status'] == '0' ? 'selected' : ''}>待发货</option>
+                        <option value="1" {$request['ship_status'] == '1' ? 'selected' : ''}>部分发货</option>
+                        <option value="2" {$request['ship_status'] == '2' ? 'selected' : ''}>待收货</option>
+                        <option value="3" {$request['ship_status'] == '3' ? 'selected' : ''}>部分收货</option>
+                        <option value="4" {$request['ship_status'] == '4' ? 'selected' : ''}>全部收货</option>
+                    </select>
+                </li>
+                <li>
+                    <div><span class="jl-clear" type="button" style="padding:2px 6px ;background-color:#009688;color:#fff;border:none;cursor: pointer" >清空</span></div>
+                </li>
+            </ul>
+        </div>
+        </form>
+        <div class="container" >
+            <div class="bodyHeader" style="overflow:hidden;border-right: 17px solid #f2f2f2">
+             <table cellspacing="0" cellpadding="0">
+                <thead>
+                   <th ><div style="width:120px">订单编号</div></th>
+                   <th > <div >订单状态</div></th>
+                   <th ><div >货运状态</div></th>
+                   <th ><div >支付状态</div></th>
+                   <!-- <th>商品编号</th>-->
+                   <th ><div style="width:120px">商品型号</div></th>
+                   <th><div>需发贷总量</div></th>
+                   <th><div>已发贷数量</div></th>
+                   <th><div >优惠前金额</div></th>
+                   <th><div >优惠后金额</div></th>
+                   <th><div >已付金额</div></th>
+                   <th><div >时    间</div></th>
+                   <!--<th><div >总计实付</div></th>-->
+                   <th><div style="width:356px">订单统计</div></th>
+                </thead>
+              </table>
+            </div>
+            <div class="table-body">
+              <table>
+                <tbody>
+                <?php
+                $maxItemLength = 0 ;$length = count($orderData['list']);
+                foreach($orderData['list'] as $selfList){
+                     $maxItemLength += count($selfList) ;
+                };
+                $allLength = $length + $maxItemLength ;
+                  ?>
+                  <volist  name="orderData.list" id="list" key="i">
+
+                        <?php $listLength = count($list);?>
+                        <volist name="list" id="listItem" key="j">
+                            <tr>
+                                <if condition="$j eq 1">
+                                    <td rowspan="{$listLength}"><div style="width:120px">{$listItem['order_sn']}</div></td>
+                                    <td rowspan="{$listLength}"><div>{$listItem.order_status}</div></td>
+                                    <td rowspan="{$listLength}"><div>{$listItem.ship_status}</div></td>
+                                    <td rowspan="{$listLength}"><div>{$listItem.pay_status}</div></td>
+                                </if>
+                                    <td><div style="width:120px">{$listItem.p_sign}</div></td>
+                                    <td><div>{$listItem.current_num}</div></td>
+                                    <td><div>{$listItem.erp_num}</div></td>
+                                <if condition="$j eq 1">
+                                    <td rowspan="{$listLength}"><div>{$listItem.show_total_current}</div></td>
+                                    <td rowspan="{$listLength}"><div>{$listItem.total_current}</div></td>
+                                    <td rowspan="{$listLength}"><div>{$listItem.orderHasPay}</div></td>
+                                    <td rowspan="{$listLength}"><div>{$listItem.create_at}</div></td>
+                                </if>
+
+                               <if condition="$i eq 1 and $j eq 1">
+                                    <td rowspan="{$allLength}" class="last_td" style="vertical-align:top">
+                                        <section style="padding:0 2%;">
+                                        <div><span>待付总额 : </span>{$orderData.money_total}</div>
+                                        <div><span>已付总额 : </span>{$orderData.money_total_has_pay}</div>
+                                        <div>
+                                            <table >
+                                                <tr><td><div>型号</div></td><td><div>数量</div></td><td><div>金额</div></td></tr>
+
+                                                    <volist name="orderData.pSign_total" id="p_sign" key="names">
+                                                        <tr>
+                                                            <td><div style="width:120px">{$p_sign.p_sign}</div></td> <td><div>{$p_sign.num_total_current}</div></td><td><div>{$p_sign.money_total_current}</div></td>
+                                                        </tr>
+                                                    </volist>
+                                            </table>
+                                        </div>
+                                        </section>
+                                    </td>
+                                    <!--<td rowspan="{$listLength}"><div>{$orderData.money_total}</div></td>-->
+                               </if>
+                            </tr>
+                      </volist>
+                  </volist>
+                </tbody>
+              </table>
+            </div>
+       </div>
+    </div>
+    {$page}
+</block>
+
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool'], function ($, modal, Pikaday, jlTool) {
+                var sons_info = {$orderData|json_encode};
+                var jlTool = layui.jlTool;
+                var get = {$request|json_encode};
+                //console.log(sons_info,get);
+                //同步滚动条
+                var isZero=true;
+                $('.table-body').scroll( function() {
+                    //$('#sourceDiv').scrollTop($(this).scrollTop());
+                   // console.log($(this).scrollLeft());
+                    var scrollLeft =$(this).scrollLeft();
+                    $('.bodyHeader').scrollLeft(scrollLeft);
+                    scrollLeft ==0 &&(isZero=true);
+                    if(isZero){
+                        if(scrollLeft >0.1){
+                            isZero=false;
+                            $("#jl-table .container").css("border-color","#e6e6e6");
+                        }else{
+                            $("#jl-table .container").css("border-color","transparent");
+                        }
+                    }
+                });
+               /* if(!$.isArray(get)){
+                    $(".jl-conditions-pop").slideToggle("fast");
+                }*/
+                //更多搜索
+                $(".jl-more-conditions").on("click",function(){
+                    $(".jl-conditions-pop").toggle(800);
+                });
+                //搜索
+                $(".jl-select-chang").on("change",function(){
+                    var values = $(this).val();
+                    var data={};
+                    data[$(this).attr("name")] = values;
+                    get = $.extend(get,data);
+                    var url = "{:U('Home/User/myStatement')}";
+                    url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+
+                    window.location = url;
+                });
+                //清空
+                $(".jl-clear").on("click",function(){
+                    window.location = "{:U('Home//User/myStatement')}";
+                });
+                //分页赋值跳转
+                $(".pageSize").val(get.pageSize || 10).on("change",function(){
+                    var pageSize = $(this).val();
+                    get = $.extend(get,{"pageSize":pageSize});
+                    var url = "{:U('Home//User/myStatement')}";
+                    url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+                    window.location = url;
+                });
+                //时间选择初始化
+                var pickerr = new Pikaday({
+                    field: document.getElementById('datepicker'),
+                    theme: 'js-data',
+                    i18n: {
+                        previousMonth: '上个月',
+                        nextMonth: '下个月',
+                        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                        weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                        weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                    },
+                    format: 'YYYY-M-D',
+                    defaultDate: new Date(get.time_start),
+                    setDefaultDate: new Date(get.time_start),
+                    toString: function (date, format) {
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function (dateString, format) {
+                        var parts = dateString.split('/');
+                        var day = parseInt(parts[0], 10);
+                        var month = parseInt(parts[1] - 1, 10);
+                        var year = parseInt(parts[1], 10);
+                        return new Date(year, month, day);
+                    },
+                    onSelect: function (value) {
+                        var date = value.toLocaleDateString();
+                        date = date.replace(/\//ig, "-");
+                        var data = get ;
+                        data.time_start = date;
+                        var url = "{:U('Home/User/myStatement')}";
+                        url = (data) ? url + '?' + jlTool.urlEncode(data) : url;
+                        window.location = url;
+                    }
+                });
+                var pickerr = new Pikaday({
+                    field: document.getElementById('datepickerr'),
+                    theme: 'js-data',
+                    i18n: {
+                        previousMonth: '上个月',
+                        nextMonth: '下个月',
+                        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                        weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                        weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                    },
+                    format: 'YYYY-M-D',
+                    defaultDate: new Date(get.time_end),
+                    setDefaultDate: new Date(get.time_end),
+                    toString: function (date, format) {
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function (dateString, format) {
+                        var parts = dateString.split('/');
+                        var day = parseInt(parts[0], 10);
+                        var month = parseInt(parts[1] - 1, 10);
+                        var year = parseInt(parts[1], 10);
+                        return new Date(year, month, day);
+                    },
+                    onSelect: function (value) {
+                        var date = value.toLocaleDateString();
+                        date = date.replace(/\//ig, "-");
+                        var data = get ;
+                        data.time_end = date;
+                        var url = "{:U('Home/User/myStatement')}";
+                        url = (data) ? url + '?' + jlTool.urlEncode(data) : url;
+                        window.location = url;
+                    }
+                });
+                //订单下载
+                $(".orderDownLoad").on("click",function(){
+                    downLoad();
+                });
+                function downLoad(){
+                        var formDate = $(".formDate").serializeArray();
+                        var data={};
+                        formDate.filter(function(value){
+                            if(value.value){
+                                data[value.name]=value.value;
+                            }
+                        });
+                        data.excelDownload='excelDownload';
+                        $.ajax({
+                            type: 'GET',
+                            url: "{:U('Home/user/myStatement')}",
+                            data: data,
+                            success: function (res) {
+                               // console.log(res);
+                                var data = JSON.parse(res);
+                                if (data.error == "0") {
+                                    var url = '/'+data.data.one;
+                                    var a = document.createElement("a");
+                                    a.href = url;
+                                    a.download ="订单信息.xlsx";
+                                    a.click();
+
+                                   /* modal.alert({
+                                        title:  '表格下载',
+                                        brief: data.one,
+                                        top: 100,
+                                        confirm: function () {
+                                            location.reload();
+
+                                        }
+                                    });*/
+                                } else {
+                                    modal.alert({
+                                        title:  '下载失败',
+                                        brief: data.msg,
+                                        top: 100
+                                    });
+                                }
+                            }
+                        })
+                    }
+
+            })
+        })
+    </script>
+</block>

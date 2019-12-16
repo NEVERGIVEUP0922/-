@@ -1,0 +1,61 @@
+<!-- 前台首页模板文件  -->
+
+<extend name="Layout:layout-user-center" />
+
+<block name="title">个人注册</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/logo-header.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/register.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-reg-wrap">
+        <h3 class="jl-reg-tit">
+            <a href="#">我已经注册，马上登录></a>
+        </h3>
+        <div class="jl-reg-msg">
+            <div class="jl-reg-p-tit">
+                <i class="jl-reg-p-bg"></i>
+                <span class="jl-reg-user">个人用户注册</span>
+            </div>
+            <div class="jl-reg-de">
+                <form method="post">
+                    <div class="jl-reg-pi">
+                        <label for="jl-reg-name" class="jl-reg-p">用户名</label>
+                        <input id="jl-reg-name" class="jl-reg-text" type="text" value="请输入用户名" >
+                    </div>
+                    <div class="jl-reg-pi">
+                        <label for="jl-reg-phone" class="jl-reg-p">手机号码</label>
+                        <input id="jl-reg-phone" class="jl-reg-text" type="text" value="请输入手机号码">
+                    </div>
+                    <div class="jl-reg-pi">
+                        <label for="jl-reg-code" class="jl-reg-p">手机验证码</label>
+                        <input type="button" class="jl-reg-btn" value="获取验证码">
+                        <input id="jl-reg-code" type="text" class="jl-reg-text jl-p-code" value="请输入手机验证码">
+                    </div>
+                    <div class="jl-reg-pi">
+                        <label for="jl-reg-set" class="jl-reg-p">设置密码</label>
+                        <input id="jl-reg-set" class="jl-reg-text" type="text" value="请输入请输入密码">
+                    </div>
+                    <div class="jl-form-agree">
+                        <span href="#" class="jl-check"></span>
+                        <a href="#">阅读并同意《用户注册协议》</a><a href="#">《隐私政策》</a>
+                    </div>
+                    <input type="button" class="jl-reg-put" value="注册">
+                </form>
+                <div class="jl-reg-switch">
+                    <a href="#" >
+                        <b class="jl-bg-r"></b>
+                        <span>企业用户注册></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+
+</block>

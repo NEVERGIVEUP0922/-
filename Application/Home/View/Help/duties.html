@@ -1,0 +1,48 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-l"><a href="javascript:;">关税说明</a></li>
+    </ul>
+
+    <!-- 账期支付 -->
+    <ul class="jl-question">
+        <li class="jl-indent">
+            <h4>1、关税、商检、3C费用</h4>
+            <p>• 集成电路（IC）类的进口免关税</p>
+            <p>• 非集成电路类的元器件（如继电器、带通滤波器、衰减器、各类模块、线缆等）可能需要额外增收3%-12%的关税</p>
+            <p>• 开关、保险丝、气体放电管等需要商检和3C认证费用</p>
+        </li>
+        <li>
+            <h4>如果您所提交的订单中包含需要缴纳关税或其他报关费用的型号，我们客服人员将第一时间通知您并告知补款相关事宜。（网站优惠：用户单个型号金额≤5000元的订单可免关税）</h4>
+        </li>
+        <li class="jl-indent">
+            <h4>2、关于禁运型号</h4>
+            <p>• 玖隆芯城严格遵守海外供应商的相关出口限制规定，但凡涉及出口限制/禁运的型号均不予下单采购，具体情况需根据供应商的出货情况而定。</p>
+            <p>• 若在发货前临时被告知型号属于出口限制/禁运范围，导致需撤单退款的情况，因此而产生的任何损失，玖隆芯城将不承担责任。给您带来不便我们深表歉意，敬请谅解。</p>
+        </li>
+        <li>
+            <h4>3、订单审核机制</h4>
+            <p>由于货物可能存在的关税、禁运等情况，玖隆芯城设置订单审核机制。用户成功提交订单后，需要由玖隆芯城客服人员确认订单，没有问题后再进行付款。订单审核的具体状态可登陆会员中心查看，或者联系在线客服了解详情。</p>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

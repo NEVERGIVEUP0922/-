@@ -1,0 +1,130 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page navbar order" wx:if="{{show}}" style="padding:0;min-height:100vh;background-color:#f8f8f8">
+  <view class="contain" wx:if="{{list.length != 0}}" wx:key="*this">
+    <block wx:for="{{list}}" wx:for-index="idd" wx:key="">
+
+      <view class="fui-cell-group" style="border-bottom:10px solid #efeff4">
+        <view hover-class="none"  >  
+          <view class="list-padding" >
+            <view class="fui-list" style="padding:0;background-color:#fff;">
+              <view class="fui-list-item">订单编号</view>
+              <view class="fui-list-item">下单时间</view>
+              <view class="fui-list-item">已支付金额</view>
+            </view>
+            <block wx:for="{{item.invoiceOrderList}}" wx:for-index="idx" wx:key="self" wx:for-item="val">  
+              <view class="fui-list" style="padding:0;">
+                <view class="fui-list-item">{{val.order_sn}}</view>
+                <view class="fui-list-item">{{val.create_at}}</view>
+                <view class="fui-list-item">{{val.order_has_pay}}</view>
+              </view>           
+            </block>
+        </view>
+
+          <view class="fui-list list-padding" >
+            <view class="morehandle" bindtap="moreHandle" data-self="{{idd}}" style="color:#05baae">查看详情 <text class="{{isTurn == idd ? 'changeTurn' : ''}}">{{buttonText}}</text></view>
+          </view>
+        </view>
+        <view class="fui-cell-group"  wx:if="{{buttonStatus == idd}}">
+          <view class="fui-cell">
+            <view class="fui-cell-label">发票抬头</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="发票抬头" value="{{item.invoice_header}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">地址</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="详细地址" value="{{item.company_addressDetail}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">详细地址</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="地址" value="{{item.company_address}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">电话</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="电话" value="{{item.company_phone}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">税务登记号</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="税务登记号" value="{{item.company_tax_code}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">发票类型</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="发票类型" value="{{item.invoice_type_text}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">开户行</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="开户行" value="{{item.company_bank_name}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">开户账号</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="开户账号" value="{{item.company_bank_acount}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">收票人电话</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="收票人电话" value="{{item.mobile}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">收票人地址</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="收票人地址" value="{{item.area_codeDetail}}" />
+            </view>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">详细地址</view>
+            <view class="fui-cell-info">
+              <input class="fui-input" data-type="invoice_header" disabled='true' placeholder="收票人地址" value="{{item.address}}" />
+            </view>
+          </view>
+        </view>
+        <!-- <view class="list-padding" wx:if="{{buttonStatus == idd}}">
+            <view class="fui-list" style="padding:0;border: 1px solid #ddd;background: #f9f9f9;">
+              <view class="fui-list-item">订单编号</view>
+              <view class="fui-list-item">下单时间</view>
+              <view class="fui-list-item">已支付金额</view>
+            </view>
+            <block wx:for="{{item.invoiceOrderList}}" wx:for-index="idx" wx:key="self" wx:for-item="val">  
+              <view class="fui-list" style="padding:0;border: 1px solid #ddd;background: #f9f9f9;">
+                <view class="fui-list-item">{{val.order_sn}}</view>
+                <view class="fui-list-item">{{val.create_at}}</view>
+                <view class="fui-list-item">{{val.order_has_pay}}</view>
+              </view>           
+            </block>
+        </view> -->
+      </view>
+    </block>
+    <view style="background-color:#f8f8f8">
+      <view class="fui-loading empty " style="color:#999;margin:0 auto;padding:1em 0" wx:if="{{loaded && list.length > 0}}">
+        <view class="text">没有更多了</view>
+      </view>
+    </view>
+  </view>
+  <view class="center" style="margin-top:90rpx;" wx:if="{{list.length == 0 && empty}}">
+    <view class="empty">
+      <image class="light" src="/static/images/icon/lights-128.png"></image>
+      <view class="text-cancel">暂时已开发票</view>
+      <navigator open-type="switchTab" url="/pages/index/index" class="btn btn-default-o">
+        到处逛逛
+      </navigator>
+    </view>
+  </view>
+  <navigator hover-class="none" open-type="switchTab" url="/pages/member/index/index" class="fui-dot">
+    <image src="/static/images/icon-white/people.png"></image>
+  </navigator>
+  <include src="/pages/order/public/verify.wxml" />
+</view>

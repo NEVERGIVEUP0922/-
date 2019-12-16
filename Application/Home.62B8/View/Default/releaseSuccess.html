@@ -1,0 +1,30 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout" />
+
+<block name="title">发布需求</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+
+    <!-- 采购成功 -->
+    <div id="jl-purchase-success">
+        <img src="__PUBLIC__/Home/Public/img/success.png" alt="">
+        <p>发布成功啦，我们会尽快联系你的！</p>
+        <a href="{:U('Home/Default/index')}" class="jl-browse">继续逛逛</a>
+    </div>
+
+
+    <div class="jl-line"></div>
+
+</block>
+
+<block name="js">
+
+
+</block>

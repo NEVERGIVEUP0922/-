@@ -1,0 +1,271 @@
+<extend name="Layout:layout-tab" />
+<block name="css">
+
+    <style>
+        .layui-form-item .layui-input-inline{
+            width:55%;
+        }
+        .layui-form-mid{ float:none}
+        .layui-form-radio{ font-size:12px !important;}
+    </style>
+</block>
+<block name="content">
+    <style>
+        .containers{
+            width:1200px;margin:1% auto;text-align: center
+        }
+        .containers>p{
+            font-family:'苹方 粗体',sans-serif;
+            text-align:left;
+        }
+        .lefts{
+            overflow:hidden;
+            width:100%;
+        }
+        .lefts>div{
+            font-family:'苹方 粗体',sans-serif;
+            float:left;
+            width:40%;
+            text-align:left;
+            margin:0 5%;
+            font-size:18px;
+            color:#000
+        }
+    </style>
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <form class="layui-form jl-form" id="add" method="post">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">公告标题</label>
+                    <div class="layui-input-inline" >
+                       <!-- <button type="button" class="layui-btn" id="upload">
+                            <i class="iconfont-jl icon-jl-help"></i>上传图片
+                        </button>-->
+                        <input type="text" name="text_titile" placeholder="公告标题" class="layui-input"/>
+                        <!--<img src=""  style="height:50px;" id="uploadImg">
+                        <div class="layui-form-mid layui-word-aux">图片大小为745*400</div>-->
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">公告内容</label>
+                    <div class="layui-input-inline choose-types" >
+                        <input type="radio" value="1" lay-filter="radios" name="isedit" checked title="文本编辑"/>
+                        <input type="radio" value="2" lay-filter="radios" name="isedit" title="链接URL"/>
+                    </div>
+                    <div class="layui-input-inline">
+                       <div class="url-show" style="display:none">
+                            <input type="text" name="text" placeholder="默认不填为自动跳转首页" autocomplete="off" class="layui-input">
+                            <div class="layui-form-mid layui-word-aux">请填写完整以http://开头的完整地址</div>
+                        </div>
+                        <div class="describe-container">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="sort" required  lay-verify="required" placeholder="默认为0" autocomplete="off" class="layui-input" value="1">
+                        <div class="layui-form-mid layui-word-aux">不参与排序默认为1,值越大，越靠前</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">显示状态</label>
+                    <div class="layui-input-inline checked_01">
+                        <input type="checkbox" name="status" lay-skin="switch" lay-filter="status"  lay-text="开|关"  value="0">
+                    </div>
+                    <div class="layui-input-inline checked_02" style="display:none">
+                        <input type="checkbox" name="status" lay-skin="switch" lay-filter="status" checked="true" lay-text="开|关"  value="1">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <span class="layui-btn" lay-submit="submit" lay-filter="add">立即提交</span>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/ueditor/1.4.3.3/ueditor.config.js"></script>
+    <script src="__PUBLIC__/Common/module/ueditor/1.4.3.3/ueditor.all.min.js"></script>
+    <script>
+        layui.use(['layer','form','upload','jlTool'],function(){
+            var form = layui.form,
+                jlTool = layui.jlTool,
+                layer = layui.layer;
+            var ue;
+            var id = window.location.search.split("=")[1];
+            var getData = function(id){
+                $.ajax({
+                    url:"infoText",
+                    data:{id:id},
+                    type:"post",
+                    dataType:"json",
+                    success:function(res){
+                        //console.log(res);
+                        if(res.status == 0){
+                            var data =res.msg;
+                            var inputs = $("#add").find("input");
+                            var str = '';
+                            inputs.each(function(index,val){
+                                $(val).val(data[val.name]);
+                                if(val.name =="status"){
+                                    if(data['status'] >0){
+                                        $(".checked_01").hide(10).remove();
+                                        $(".checked_02").show(10);
+                                    }else{
+                                        $(".checked_02").remove();
+                                    }
+                                }
+
+                                if(val.name =="text" ){
+                                   if(data.isedit == 1) {
+                                       str = ' <input type="radio" value="1" lay-filter="radios" name="isedit" checked="true" title="文本编辑"/><input type="radio" value="2" lay-filter="radios" name="isedit" title="链接URL"/>';
+                                       $(".url-show").find("input").val('');
+                                   }else{
+                                       str = '<input type="radio" value="1" lay-filter="radios" name="isedit"  title="文本编辑"/><input type="radio" value="2" lay-filter="radios" checked="true" name="isedit" title="链接URL"/>';
+                                       $(".url-show").show(400).next(".describe-container").hide(400);
+                                   };
+                                    $(".describe-container").html('<script id="describe-container" name="content" type="text/plain">'+decodeURIComponent(data['text'])+' <\/script>');
+                                    setTimeout(function(){
+                                        getEdit();
+                                    },100);
+                                };
+                            });
+                            $(".choose-types").html(str);
+                            form.render('radio');
+                        }else{
+                            layer.msg(res.msg);
+                        }
+                    }
+                })
+            };
+            if(id){getData(id);}else{
+                $(".checked_02").remove();
+                $(".describe-container").html('<script id="describe-container" name="content" type="text/plain"> <\/script>');
+                $(".choose-types").html(' <input type="radio" value="1" lay-filter="radios" name="isedit" checked title="文本编辑"/><input type="radio" value="2" lay-filter="radios" name="isedit" title="链接URL"/>');
+                getEdit();
+                form.render('radio');
+            };
+
+            function getEdit(){
+                    var height =400 ;
+                    var width = $(".jl-form").width();
+                    ue = UE.getEditor('describe-container',{
+                        autoHeightEnabled:true,
+                        allowDivTransToP: false,
+                        scaleEnabled:false,
+                        initialFrameWidth:970,
+                        initialFrameHeight:height,
+                        topOffset:43
+                    })
+                    setTimeout(function(){
+                        $($("#ueditor_0").contents()[0]).find("body").css('width','960').addClass("containers");
+                    },100)
+            }
+            //单选框监听
+            form.on('radio(radios)',function(data){
+                var types=data.value;
+                if(types == 1){
+                    $(".url-show").hide(400).next("div.describe-container").show(400);
+                }else{
+                    $(".url-show").show(400).next("div.describe-container").hide(400);
+                }
+
+            });
+            //状态
+            form.on('switch(status)', function(data){
+                var status = this.checked ? 'true' : 'false';
+                if( status == 'true' ){
+                    $('input[name=status]').val(1);
+                }else{
+                    $('input[name=status]').val(0);
+                }
+            });
+
+            //提交
+            form.on('submit(add)', function(data){
+                if( data.field){
+                    var html = ue.getContent();
+                    if(data.field.isedit == 1)data.field.text = encodeURIComponent(html);
+                    var index = layer.load();
+                    delete data.field.file;
+                    if(id)data.field.id=id;
+                    //console.log(data);
+                    data.field.status=data.field.status =="1"?"1":"0";
+                    $.ajax({
+                        url: '/admin/advert/addText',
+                        type: 'POST',
+                        data: data.field,
+                        dataType:'json',
+                        success: function(res){
+                            if( res.status == 0 ){
+                                layer.close(index);
+                                layer.msg(id?"修改成功":'添加成功',{
+                                    icon: 6,
+                                    time: 500 //2秒关闭（如果不配置，默认是3秒）
+                                }, function(){
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    parent.layer.close(index);
+                                    jlTool.sendIframeMsg('go',{
+                                        title:'公告管理',
+                                        url:"/admin/advert/textAdevert",
+                                        icon:''
+                                    });
+                                    parent.location.reload();
+                                });
+                            }else{
+                                layer.close(index);
+                                layer.msg(id?"修改失败":'添加失败',{
+                                    icon: 2,
+                                    time: 500
+                                });
+                            }
+                        }
+                    });
+                }
+                return false;
+            });
+        });
+        /*//公告内容编辑
+        var ue;
+        $(".describe-tpl").on("click",function(){
+            var $this = $(this);
+            var describe = $this.data('describe');
+            var index = layer.open({
+                title:'公告编辑',
+                //area: ['500px', '300px'],
+                type: 0,
+                content:
+                    '<script id="describe-container" name="content" type="text/plain"> '+describe+'<\/script>',
+                success:function () {
+                //$(".layui-layer.layui-layer-dialog").css({"width":"60%","height":"60%"});
+                setTimeout(function () {
+                $(".layui-layer-btn").css({"text-align":"center"});
+                var $content = $('.layui-layer-content');
+                var height = $content.height();
+                ue = UE.getEditor('describe-container',{
+                autoHeightEnabled:true,
+                scaleEnabled:false,
+                initialFrameHeight:height-120,
+                topOffset:43
+                });
+                },200)
+                },
+                end:function () {
+                ue.destroy();
+                },
+                yes:function (index, layero) {
+                var html = ue.getContent();
+                console.log(html);
+                $this.data('describe',html).prev('input[name=text]').val(html);
+                layer.close(index);
+                }
+                });
+                layer.full(index);
+    });*/
+    </script>
+</block>

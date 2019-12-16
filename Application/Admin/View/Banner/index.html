@@ -1,0 +1,172 @@
+<extend name="Layout:layout-tab" />
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/css/list.css" media="all" />
+</block>
+<block name="content">
+	<blockquote class="layui-elem-quote list_search">
+		<div class="layui-inline">
+			<a class="layui-btn layui-btn-normal add_btn">添加Banner</a>
+		</div>
+		<div class="layui-inline">
+			<a class="layui-btn layui-btn-danger batchDel">批量删除</a>
+		</div>
+	</blockquote>
+	<div class="layui-form list_list">
+		<table class="layui-table">
+			<colgroup>
+				<col width="50">
+				<col width="100">
+				<col>
+				<col width="15%">
+				<col width="15%">
+				<col width="25%">
+			</colgroup>
+			<thead>
+			<tr>
+				<th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"></th>
+				<th>排序</th>
+				<th>banner图片</th>
+				<th>跳转地址</th>
+				<th>是否展示</th>
+				<th>操作</th>
+			</tr>
+			</thead>
+			<tbody class="list_content"></tbody>
+		</table>
+	</div>
+	<div id="page"></div>
+</block>
+<block name="js">
+	<script>
+        layui.use(['table','layer', 'form'], function(){
+            var table = layui.table, layer = layui.layer, form=layui.form;
+			var data;
+            //列表展示
+	        $.ajax({
+		        url:'getList',
+		        type:'post',
+		        success:function(res){
+					data = res;
+					newTable(data);
+		        }
+	        });
+
+            //添加
+	        $(".add_btn").click(function(){
+                    var index = layer.open({
+                        title : "添加Banner",
+                        type : 2,
+                        content : "add",
+                        area: ['800px', '400px'],
+                        success : function(layero, index){
+                            setTimeout(function(){
+                                layer.tips('点击此处返回列表页', '.layui-layer-setwin .layui-layer-close', {
+                                    tips: 3
+                                });
+                            },100)
+                        }
+                    });
+                });
+
+	        //编辑
+	        $('body').on('click', '.edit', function(){
+	            var t = $(this),id = t.attr('data-id');
+                var index = layer.open({
+                    title : "编辑Banner",
+                    type : 2,
+                    content : "{:U('Admin/Banner/edit')}?id="+id,
+                    area: ['800px', '400px'],
+                    success : function(layero, index){
+                        setTimeout(function(){
+                            layer.tips('点击此处返回列表页', '.layui-layer-setwin .layui-layer-close', {
+                                tips: 3
+                            });
+                        },100)
+                    }
+                });
+	        });
+            //删除
+            $('body').on('click', '.del', function(){
+                var t = $(this),id = t.attr('data-id');
+					var open = layer.open({
+						title:'提醒',
+						shade: 0.3,
+                        fixed: true,
+						content:'确定要删除吗?',
+						btn:['确定','取消'],
+						yes:function(){
+						    var index = layer.load();
+						    $.ajax({
+							    url: '{:U("Admin/Banner/delete")}',
+							    type: 'POST',
+							    data : {id:id},
+							    dataType: 'json',
+							    success: function(res){
+							        if( res.status == 0 ){
+							            layer.close(index);
+                                        layer.close(open);
+                                        t.parent().parent().remove();
+							            layer.msg('删除成功',{icon:6,time:2000});
+							        }
+							    }
+						    });
+
+						}
+					});
+            });
+
+            //改变状态
+	        form.on("switch(status)", function(){
+               var check = this.checked ? 'true' : 'false',
+	               id = $(this).attr('data-id'),
+	               value = check == 'true'?0:1;
+                   var index = layer.load();
+                   $.ajax({
+                       url: '{:U("Admin/Banner/changeStatus")}',
+                       type: 'POST',
+                       data : {id:id,status:value},
+                       dataType: 'json',
+                       success: function(res){
+                           if( res.status == 0 ){
+                               layer.close(index);
+                               layer.msg('修改成功',{icon:6,time:2000});
+                               this.checked = check;
+                           }else{
+                               layer.close(index);
+                               layer.msg('修改失败',{icon:6,time:2000});
+                           }
+                       }
+                   });
+	        });
+
+            function newTable(data)
+            {
+                var html = '';
+                if ( data.length != 0 ) {
+                    for( i=0; i<data.length; i++ ){
+                        html  += '<tr>'
+                            +'<td><input type="checkbox" name="checked" lay-skin="primary" lay-filter="choose"></td>'
+                            + '<td>'+ data[i].order +'</td>'
+                            + '<td><img src="/'+ data[i].img +'"  style="max-width: 182px;" ></td>'
+                            + '<td>'+ data[i].url +'</td>';
+                        if( data[i].status == 0 ){
+                            html += '<td><input type="checkbox" name="status" lay-skin="switch" lay-filter="status" lay-text="开启|关闭" checked="true" value="0" data-id="'+ data[i].id +'"></td>';
+                        }else{
+                            html += '<td><input type="checkbox" name="status" lay-skin="switch" lay-filter="status" lay-text="开启|关闭" checked="false" value="1" data-id="'+ data[i].id +'"></td>';
+                        }
+
+                        html += '<td>'
+                            + '<a class="layui-btn  edit"  data-id="'+ data[i].id +'"><i class="iconfont-jl icon-jl-help"></i> 编辑</a>'
+                            + '<a class="layui-btn layui-btn-danger  del"  data-id="'+ data[i].id +'"><i class="iconfont-jl icon-jl-help"></i> 删除</a>'
+                            +'</td>'
+                            +'</tr>';
+                    }
+                }else{
+                    html = '<tr><td colspan="8">暂无数据</td></tr>';
+                }
+                $('.list_content').html(html);
+                form.render();
+            }
+        });
+	</script>
+</block>

@@ -1,0 +1,190 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page footer" wx:if="{{show}}" style="border-top:10px solid #f2f2f2;background-color:#f2f2f2;">
+  <view class="nav" wx:if="{{list.showTab}}">
+    <view data-type="1" bindtap="dispatchtype" class="{{data.dispatchtype == 1 ? 'red' : 'default'}}">快递配送</view>
+    <view data-type="3" bindtap="dispatchtype" class="{{data.dispatchtype == 3 ? 'red' : 'default'}}">上门自提</view>
+    <view data-type="4" bindtap="dispatchtype" class="{{data.dispatchtype == 4 ? 'red' : 'default'}}">送货上门</view>
+  </view>
+  <view>
+    <block >
+      <view class="fui-cell-group" wx:if="{{(data.dispatchtype == 1 || data.dispatchtype == 4) }}">
+        <view wx:if="{{data.dispatchtype == 2}}" style="color:#ef4f4f;padding:20rpx 40rpx">仅限华强化地区</view>
+        <navigator class="fui-cell" hover-class="none" url="/pages/member/address/index?action=choose">
+          <image class="fui-cell-icon" src="{{icons.location}}"></image>
+          <view class="fui-cell-text textl info">
+            <view wx:if="{{list.address && list.address}}">
+              <text class="name">{{list.address.consignee}} </text>
+              <text>{{list.address.mobile}}</text>
+            </view>
+            <view class="adress" wx:if="{{list.address}}">{{list.address.addr + list.address.address}}</view>
+            <view class="text no-address" wx:if="{{!list.address}}">添加收货地址</view>
+          </view>
+          <view class="fui-cell-remark"></view>
+        </navigator>
+      </view>
+      <view class="fui-cell-group" wx:if="{{data.dispatchtype == 3}}">
+        <view style="color:#ef4f4f;padding:20rpx 40rpx">深圳市福田区高科德12921（西门6号门正门口）</view>
+      </view>
+    </block>
+    <block >
+      <view class="fui-list-group" style="margin-top:0;border-top:10px solid #efeff4">
+        <navigator hover-class="none" class="fui-list-group-title" open-type="switchTab" url="/pages/index/index">
+           <image src="/static/images/icon/shop.png" class="round "></image> 
+          <text class="shop">{{list.shopname}}</text>
+        </navigator>
+        <block wx:for="{{list.goods}}" wx:for-index="key" wx:for-item="val">
+          <navigator class="fui-list goods-item noclick" hover-class="none" url="/pages/goods/detail/index?id={{val.id}}">
+            <view class="fui-list-media" >
+              <image src="{{val.img}}" class="round goods_img" style="width:150rpx;height:150rpx"></image>
+            </view>
+            <view class="fui-list-inner" bindtap="url" >
+              <view class="sure_subtitle" >
+                <text style="font-size:32rpx;font-weight:600">{{val.p_sign}}</text>
+              </view>
+              <view class="text cart-option" >
+                <view class="choose-option">{{val.parameter}}</view>
+              </view>
+              
+              <view class="fui-list-angle">
+                <text class="price" style="float:left;margin:1% 0">单价：<text  style="color:#DF433E;">￥{{val.price}}</text></text>
+                <view class="text-right" style="font-size:30rpx;margin:2% 0" >x{{val.num}}</view>
+              </view>
+
+            </view>
+            
+          </navigator>
+        </block>
+        <view class="fui-cell">
+          <view class="fui-cell-info" style="text-align: right;">共
+            <text class="text-danger">{{list.pnum}}</text> 件商品 合计：
+            <text class="text-danger" style="display:inline-block">
+              <text style="text-decoration:line-through;color:#888;display:block" wx:if="{{list.goodsTotal != list.originTotal}}">¥{{list.originTotal}}</text>
+                
+                <text>¥ {{list.goodsTotal}}</text>
+            </text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view class="fui-cell-group" style="margin-top:0;border-top:10px solid #efeff4">
+      <view class="fui-cell">
+        <view class="fui-cell-info">
+          <input id="remark" bindinput="dataChange" data-id="remark" placeholder="选填：买家留言（50字以内）" />
+        </view>
+      </view>
+    </view>
+    <view class="fui-cell-group" style="margin-top:0;border-top:10px solid #efeff4">
+      <view class="fui-cell" >
+        <view class="fui-cell-text" style="text-align:left;width:auto">
+          是否开发票
+        </view>
+        <view class="fui-cell-info">
+          <switch bindchange="dataChange" data-id="involist" value="1" class="switch-80 pull-right" id="involist" checked='true' />
+        </view>
+      </view>
+    </view>
+    <view class="fui-cell-group screen" style="margin-top:0;border-top:0px solid #efeff4">
+      <view class="fui-cell" >
+        <view class="fui-cell-text" style="text-align:left;width:auto">
+          选择支付方式
+        </view>
+      </view>
+     <view class="attribute">
+      <block wx:for="{{payType}}" wx:key="" >
+        <view class="item on" wx:if="{{item.show}}">
+            <view bindtap="btnFilterBtns" class="btn btn-default-o block {{typeChoose == item.type ? 'btn-danger-o' : ''}}" data-type="{{item.type}}">
+              <icon color="#fd5454" size="12" type="success_no_circle" wx:if="{{typeChoose == item.type}}" /> {{item.name}}</view>
+        </view>
+      </block> 
+     </view>
+    </view>
+    <view class="fui-cell-group" style="margin-top:0;border-top:10px solid #efeff4" wx:if="{{list.earnest && despositeSwitchShow}}">
+      <view class="fui-cell" >
+        <view class="fui-cell-text" style="text-align:left;width:auto">
+          仅支付定金
+        </view>
+        <view class="fui-cell-info">
+          <switch bindchange="dataChange" data-id="order_type" checked="{{sendData.isOrder_type}}" value="1" class="switch-80 pull-right"  />
+        </view>
+      </view>
+    </view>
+    <view class="fui-cell-group screen" style="margin-top:0;border-top:0px solid #efeff4" wx:if="{{list.earnest}}">
+      <view class="fui-cell" >
+        <view class="fui-cell-text" style="text-align:left;width:auto">
+          选择定金支付方式
+        </view>
+      </view>
+      <view class="attribute">
+        <block wx:for="{{order_payType}}" wx:key="" >
+          <view class="item on" wx:if="{{item.show}}">
+              <view bindtap="depositsPayType" class="btn btn-default-o block {{depositeChoose == item.type ? 'btn-danger-o' : ''}}" data-type="{{item.type}}">
+                <icon color="#fd5454" size="12" type="success_no_circle" wx:if="{{depositeChoose == item.type}}" /> {{item.name}}</view>
+          </view>
+        </block> 
+      </view>
+    </view>
+
+    <view class="fui-cell-group" style="margin-top:0;border-top:10px solid #efeff4" wx:if="{{list.earnest}}">
+      <view class="fui-cell">
+        <view class="fui-cell-text"><text class="text-danger">{{list.pnum}}</text> 件商品 总金额：</view>
+        <view class="fui-cell-remark noremark">
+          <text style="color:#e84343">¥{{list.goodsTotal}}</text>
+        </view>
+      </view>
+      <view class="fui-cell">
+        <view class="fui-cell-text">支付定金</view>
+        <view class="fui-cell-remark noremark">¥
+          <text>{{list.earnest}}</text>
+        </view>
+      </view> 
+    </view>
+    <view class="fui-cell-group" style="margin:0;border-top:none">
+      <view class="fui-cell">
+        <view class="fui-cell-text">运费（总价格1000元以上免邮，否则到付）</view>
+        <view class="fui-cell-remark noremark">¥
+          <text>0.00</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="fui-cell-group" style="margin-top:0;border-top:10px solid #efeff4" wx:if="{{payment.show}}">
+      <view class="fui-cell">
+        <view class="fui-cell-text">账期余额</view>
+        <view class="fui-cell-remark noremark">¥
+          <text>{{payment.data}}</text>
+        </view>
+      </view>
+      <view class="fui-cell">
+        <view class="fui-cell-text">账期支付</view>
+        <view class="fui-cell-remark noremark">¥
+          <text>{{payment.pay}}</text>
+        </view>
+      </view> 
+      <view class="fui-cell">
+          <view class="fui-cell-text">账期剩余余额</view>
+          <view class="fui-cell-remark noremark">
+            <text style="color:#e84343">¥{{payment.stillBalance}}</text>
+          </view>
+       </view>
+    </view>
+    
+  </view>
+  <view class="fui-footer" style="overflow:hidden">
+    <view class="tool nopadding">
+      <view class="text">
+        <view class="title text-right">实付：
+          <text class="text-danger">{{list.realPrice}}元</text>
+        </view>
+      </view>
+      <view class="btns">
+        <text bindtap="submit" class="btn btn-danger {{submit && disabled}}">提交订单</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="fui-toast {{FoxUIToast.show ? 'in' : 'out'}}">
+    <view class="text">{{FoxUIToast.text}}</view>
+  </view>
+ 
+
+</view>

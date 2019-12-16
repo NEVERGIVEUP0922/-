@@ -1,0 +1,34 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">找回密码</a></li>
+    </ul>
+    <div class="jl-retrieve-password">
+        <p>1.  在登录页面，点击忘记密码。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img6.png" alt="">
+        <p>2.  输入注册时的手机号码，并查收手机短信玖隆芯城发送的验证码，进行密码重置，设置密码和确认密码一致点击确定即可。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img7.png" alt="">
+        <p>3. 找回密码成功，点击按钮可马上登录。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img8.png" alt="">
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

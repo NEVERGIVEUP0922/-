@@ -1,0 +1,419 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人信息<else /> 企业信息
+    </if>
+</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/settingUser.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/select_address.css">
+</block>
+<block name="nav-title">企业中心</block>
+<block name="main">
+    <form method="post">
+        <div class="jl-per-information jl-cle">
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left">
+                    <label for>当前头像:</label>
+                </div>
+                <div class="jl-per-right jl-info-images">
+                    <div class="jl-per-item" id="js-info-img">
+                        <?php $avator = session('userInfo.avator');  ?>
+                        <?php if( !file_exists(SITE_PATH.$avator) || empty($avator) ){echo '<img src="__UPLOAD__/User/avator/default.png" alt="">';}else{echo "<img src=".$avator.">";}?>
+                        <span class="jl-per-write">点击编辑</span>
+                    </div>
+                    <span class="jl-info-request">建议上传100×100像素的图片</span>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left">
+                    <label for class="jl-per-label">用户名：</label>
+                </div>
+                <div class="jl-per-right jl-info-right" style="margin:1% auto">
+                    <input type="text" name="user_name" value="{$info['user_name']}" style="background-color:#fff" class="jl-per-input jl-per-name js-next-input" />
+                    <i class="jl-add-import"></i>
+                    <if condition="$userAccountChange eq 2 ">
+                        <span class="mendUser_name" style="color:#009688;cursor: pointer" data-id="{:session('userInfo.user_id')}">修改用户名</span>
+                        <p style="color:#F63333">用户名只能修改一次(数字加字母的6位数以上)</p>
+                        <else/>
+                    </if>
+
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">公司名称：</label>
+                </div>
+                <div class="jl-per-right jl-info-right js-false-info">
+
+                    <if condition="$isedit_user_name eq 0">
+                        <input type="text" name="company_name" id="js-c-name" disabled value="{$company_info['company_name']}" class="jl-per-input js-next-input" >
+                        <else/>
+                        <input type="text" name="company_name" id="js-c-name"  value="{$company_info['company_name']}" class="jl-per-input js-next-input" >
+                    </if>
+                    <i class="jl-false-note"></i>
+                    <i class="jl-add-import"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left">
+                    <label for class="jl-per-label">公司所在地：</label>
+                </div>
+                <div class="jl-per-right jl-info-right">
+                    <div class="jl-c-de js-selector-container2">
+                        <input type="text" class="js-selector-input jl-c-hidden jl-y-select-input js-next-input"
+                               name="area_code"  placeholder="" data-title="所在地址">
+                        <div class="jl-c-address jl-y-select js-select-first">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-second">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-third">
+                            <div class="jl-y-select-title">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box"></ul>
+                        </div>
+                        <i class="jl-false-note jl-false-note02"></i>
+                        <i class="jl-add-import jl-add-import02"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">详细地址：</label>
+                </div>
+                <div class="jl-per-right jl-info-right js-false-info">
+                    <input type="text" name="company_address" value="{$company_info['company_address']}" class="jl-per-input jl-info-add js-next-input">
+                    <i class="jl-false-note jl-note02"></i>
+                    <i class="jl-add-import"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">企业人数：</label>
+                </div>
+                <div class="jl-per-right jl-info-right">
+                    <input type="text" class="jl-c-hidden jl-c-po js-next-input" name="company_people_num" placeholder="" value="{$company_info['company_people_num']}">
+                    <div class="jl-c-address jl-y-select jl-c-people-num">
+                        <div class="jl-y-select-title jl-c-bor">
+                            <span class="jl-c-c text-ellipsis">{:C("COMPANY_SETING.people_num")[$company_info['company_people_num']]}</span>
+                            <b class="jl-top-tri"></b>
+                            <b class="jl-bottom-tri"></b>
+                        </div>
+                        <ul class="lj-option-box jl-list-bor js-people-num">
+                            <li data-id="1">少于50人</li>
+                            <li data-id="2">50-150人</li>
+                            <li data-id="3">150-500人</li>
+                            <li data-id="4">500-1000人</li>
+                            <li data-id="5">1000-5000人</li>
+                            <li data-id="6">5000-10000人</li>
+                            <li data-id="7">10000人以上</li>
+                        </ul>
+                    </div>
+                    <i class="jl-false-note jl-false-note02"></i>
+                    <i class="jl-add-import jl-add-import02"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">企业电话：</label>
+                </div>
+                <div class="jl-per-right jl-info-right jl-per-h">
+                    <input type="text" name="company_phone_num" value="{$company_info['company_phone_num']}" class="jl-per-input js-next-input" id="js-c-phone">
+                    <i class="jl-false-note jl-note02"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">联系人姓名：</label>
+                </div>
+                <div class="jl-per-right jl-info-right js-false-info">
+                    <input type="text" name="company_user_name" id="js-contact-name" value="{$company_info['company_user_name']}" class="jl-per-input js-next-input">
+                    <i class="jl-false-note"></i>
+                    <i class="jl-add-import"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">联系人职务：</label>
+                </div>
+                <div class="jl-per-right jl-info-right js-false-info ">
+                    <input type="text" name="company_user_sector" id="js-branch" value="{$company_info['company_user_sector']}" class="jl-per-input js-next-input">
+                    <i class="jl-false-note"></i>
+                    <i class="jl-add-import"></i>
+                </div>
+            </div>
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">联系人电话：</label>
+                </div>
+                <div class="jl-per-right jl-info-right js-false-info">
+                    <input type="text" name="company_user_phone" value="{$company_info['company_user_phone']}" class="jl-per-input js-next-input" id="js-c-mobile">
+                    <i class="jl-false-note"></i>
+                    <i class="jl-add-import"></i>
+                </div>
+            </div>
+
+            <div class="jl-per-cell jl-cle">
+                <div class="jl-per-left ">
+                    <label for class="jl-per-label">联系人邮箱：</label>
+                </div>
+                <div class="jl-per-right jl-info-right jl-per-h">
+                    <input type="text" name="nick_name" value="{$company_info['company_user_email']}" class="jl-per-input js-last-input js-next-input" id="js-c-email">
+                    <i class="jl-false-note jl-note02"></i>
+                </div>
+            </div>
+        </div>
+        <button class="jl-per-submit jl-save-submit" type="button">保 存</button>
+    </form>
+</block>
+
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function () {
+            require(['jquery','jl-modal'],function($,modal){
+                //console.log({$isedit_user_name|json_encode});
+                modal.option({
+                    left:-77
+                });
+                //console.log("info",{$info|json_encode});
+                //判断字母账号
+                var user_type="{$info['user_type']}";
+                require(['Account/js/common_register']);
+                require(['Public/js/address-select'],function (address) {
+                    address.init($('.js-selector-container2'), "{$company_info['company_area']}");
+                    //address.init($('.js-selector-container2'),340103)：当你要固定传某个地址的时候。就会传一个地址的code
+                });
+
+                    //企业人数
+                    $('.jl-c-people-num').on('click',function(){
+                        $('.js-people-num').toggle();
+                        $('.jl-c-people-num .lj-option-box').on('click','li',function () {
+                            var $this = $(this);
+                            var id = $this.data('id');
+                            $this.addClass('jl-active-li').siblings().removeClass('lj-active-li');
+                            $('input[name="company_people_num"]').val(id).change();
+                            $('.jl-c-people-num').removeClass('jl-y-select-active')
+                                .children('.jl-y-select-title').children('.jl-c-c').text($this.text());
+                        });
+                    });
+
+                    //人数提交时未选择，再点击选择后提示错误消失
+                    $('input[name=company_people_num]').on('change',function () {
+                        isTipsEmpty($(this));
+                    });
+                    //判断是否能为空
+                    var isTipsEmpty = function (input) {
+                        if($(input).val()===''){
+                            $(input).parent().addClass('js-false');
+                        }
+                        else {
+                            $(input).parent().removeClass('js-false');
+                        }
+                    };
+                    //判断是否符合正则表达式
+                    var isTipsReg = function (input,reg) {
+                        var $false_tips = $(input).parent();
+                        if(reg.test($(input).val())){
+                            $false_tips.removeClass('js-false');
+                        }
+                        else {
+                            $false_tips.addClass('js-false');
+                        }
+                    };
+                    //验证手机号
+                    var  $mobile = $('#js-c-mobile');
+                    var reg_mobile =/^1(3|4|5|7|8)+\d{9}$/;
+                    $mobile.on('blur',function () {
+                        isTipsReg($mobile,reg_mobile);
+                    });
+                    //验证固定电话
+                    //var reg_phone = /^0\d{2,3}-\d{7,8}(-\d{1,6})?$/;
+                    var reg_phone =/\d/;
+                    var $phone= $('#js-c-phone');
+                    $phone.on('blur',function () {
+                        if($phone.val()===''){
+                            $phone.parent().removeClass('js-false');
+                        }
+                        else {
+                            isTipsReg($phone,reg_phone);
+                        }
+                    });
+
+                    $('input[name=area_code]').on('change',function () {
+                        isTipsEmpty($(this));
+                    });
+
+                    //邮箱
+                    var reg_email = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
+                    var $email = $('#js-c-email');
+                    $email.on('blur',function () {
+                        if($(this).val()===''){
+                            $(this).parent().removeClass('js-false');
+                        }
+                        else {
+                            isTipsReg($email,reg_email);
+                        }
+                    });
+                if(user_type==2){
+                    //上传照片
+                    require(['webuploader'],function(WebUploader){
+                        var uploader = WebUploader.create({
+                            pick:'#js-info-img',
+                            auto: true,
+                            swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                            server: "{:U('Home/Order/upload')}",
+                            formData:{
+                                path: 'User',
+                                act: 'avator',
+                            }
+                        });
+                        uploader.on( 'uploadSuccess', function( file ,res) {
+                            $('#js-info-img img').attr("src",res[0]);
+                        });
+                        uploader.on( 'uploadError', function() {
+                            modal.alert({
+                                title:'上传失败'
+                            })
+                        });
+                    });
+                }else{
+                    var inputs=$("#jl-center-right").find('input');
+
+                    var rejectArray = [0,6,7,8,9];
+                    //if(userAccountChange == 2){ rejectArray.push(0);};
+                    $.each(inputs,function(index,el){
+                        if($.inArray(index,rejectArray)>-1){return false;};
+                        $(el).css("background","#f0f0f0");
+                        $(el).attr("disabled","disabled");
+                    });
+                    $(".jl-c-people-num,.jl-c-address").css("background","#f0f0f0");
+                   // $(".jl-save-submit").css("background","#a8a8a8");
+                }
+                var userAccountChange = {$userAccountChange|json_encode};
+                if(userAccountChange != 2){
+                    $("input[name=user_name]").attr("disabled","disabled").css("background-color","#f0f0f0");
+                }else{
+                    $("input[name=user_name]").css("background-color","#fff");
+                };
+                console.log(userAccountChange);
+                //修改用户名
+                $(".mendUser_name").on("click",function(){
+                    var user_name = $(".mendUser_name").siblings("input").val();
+                    if(!user_name){
+                        modal.alert({
+                            title:'错误提示',
+                            brief:'用户名不能为空...',
+                            confirm:function(){
+                            }
+                        })
+                    }else{
+                        user_name = user_name.trim();
+                    }
+                    $.post("{:U('Home/User/customerAccountChange')}",{"user_name":user_name},function(res){
+                        if(res.error == 0){
+                            modal.alert({
+                                title:'修改成功',
+                                brief:'用户名修改成功',
+                                confirm:function(){
+                                    window.location.reload();
+                                }
+                            })
+                        }else{
+                            modal.alert({
+                                title:'修改失败',
+                                brief:res.msg,
+                                confirm:function(){
+                                    //location.reload();
+                                }
+                            })
+                        }
+                    },"json");
+                });
+                //获取到文本框
+                //获取到所有jl-add-import的同级的input文本框,
+                var $inputs = $('.jl-add-import').siblings('input');
+                $inputs.each(function (index,element) {
+                    $(element).on('blur',function () {
+                        isTipsEmpty($(element));
+                    })
+                });
+                //点击保存的时候发送请求
+                var submitMethod = function () {
+                    $inputs.each(function (index,element) {
+                        if($(element).val()===''){
+                            $(element).parent().addClass('js-false');
+                        }
+                        else {
+                            $(element).parent().removeClass('js-false');
+                        }
+                    });
+
+                    if($('#js-c-email').parent().hasClass('js-false')){
+                        return false
+                    }
+                    var data = {
+                        active:'edit',
+                        avator:$('#js-info-img img').attr('src'),
+                        company_name:$('#js-c-name').val(),  //企业名称
+                        company_area:$('input[name=area_code]').val(),//企业地址编码
+                        company_address:$('input[name=company_address]').val(),// 详细地址
+                        company_people_num:$('input[name=company_people_num]').val(),//公司人数
+                        company_user_name:$('#js-contact-name').val(),//联系人名称
+                        company_user_sector:$('#js-branch').val(),//部门
+                        company_user_phone:$('#js-c-mobile').val(),//手机号
+                        company_phone_num:$('#js-c-phone').val(),//固定电话
+                        user_email:$('#js-c-email').val()//邮箱
+                    };
+
+                    $.post(
+                        "{:U('Home/User/editCompanyInfo')}",
+                        data,
+                        function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                modal.alert({
+                                    title:'保存成功',
+                                    brief:'企业信息保存成功',
+                                    confirm:function(){
+                                        location.reload();
+                                    }
+                                })
+                            }
+                            else {
+                                modal.alert({
+                                    title:'提交失败',
+                                    brief:res.msg
+                                })
+                            }
+                        }
+                    )
+                };
+                $('.jl-per-submit').on('click',function () {
+                    submitMethod();
+                });
+            })
+        })
+    </script>
+</block>

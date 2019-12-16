@@ -1,0 +1,575 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout" />
+<block name="title">方案详情页</block>
+<block name="keywords"></block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Product/css/detail.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/solCenter.css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.4/css/layui.css" rel="stylesheet"  media="all">
+	<style>
+		.redboard1,.redboard2{
+			width:1160px;
+			margin:0 auto;
+			text-indent: 25px;
+			letter-spacing:2px;
+			line-height: 24px
+		}
+		.jl-cs-qr{/*kefu*/
+			display: none;
+			position: absolute;
+			bottom: 96px;
+			right: 205px;
+			width: 150px;
+			height: 150px;
+			border: 1px solid #ddd;
+		}
+		.jl-specification-content .jl-specification-brief{
+			min-height: 400px;
+		}
+	</style>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+	<!-- 面包屑导航 -->
+	<div id="jl-brand">
+		<ul class="jl-brand-url">
+			<li><a href="{:U('Home/Default/index')}">首页</a></li>
+			<li>></li>
+			<li><a href="#">采购中心</a></li>
+			<li>></li>
+			<li><a href="{:U('Home/Solution/provider')}">供应方案</a></li>
+			<li>></li>
+			<li><a href="#">{$res.pro_name}</a></li>
+		</ul>
+	</div>
+	<!-- 商品详情 -->
+	<div id="jl-detail" class="jl-cle pro-detail">
+		<div class="detail-left">
+			<div class="detail-left-top">
+				<!--<div class="cover-img">-->
+				<notempty name="res.conver_image">
+					<!--<img src="/Uploads/{$res.conver_image}"  data-url="{$res.cover_image}"  class="jl-detail-picture-img" alt="">-->
+					<img src="{$prefix}{$res.conver_image}{$suffix}"  data-url="{$res.cover_image}"  class="jl-detail-picture-img" alt="">
+				<else />
+					<img src="http://www.17sucai.com/preview/869565/2017-12-12/fdj/img/a1.png" data-url="http://www.17sucai.com/preview/869565/2017-12-12/fdj/img/a1.png" style='width:100%;' alt="">
+				</notempty>
+				<!--</div>-->
+			</div>
+			<div class="detail-left-bottom">
+				<div class="imgs-change1"></div>
+				<notempty name="res['imgs']">
+					<?php  $describe_image_Array = explode(",",$res["imgs"]);?>
+					<volist name="describe_image_Array" id="src">
+						<div class="min-img-div">
+							<!--<img src="/Uploads/{$src}" data-url="{$src}" />-->
+							<img src="{$prefix}{$src}{$suffix}" data-url="{$src}" />
+						</div>
+					</volist>
+				<else />
+				</notempty>
+				<div class="imgs-change2"></div>
+			</div>
+		</div>
+
+		<div class="detail-right">
+			<div class="detail-right-top">
+				<div class="pro-info" >
+					<ul>
+						<li style="line-height: 30px;">
+							<div style="color:#e84343;margin:0 0 0 0px;max-width:450px;font-size:18px;overflow: hidden;">{$res.pro_name}
+							</div>
+							<div class="detail-ziying">
+								<if condition="$res[jl_self] eq 1">
+									<div class="detail-ziying-s">自营</div>
+								</if>
+							</div>
+						</li>
+						<li>
+							<div class="info-name">方案编号:</div>
+							<div class="info-name-a" style="margin:0 0 0 15px;width:150px">{$res.pro_sn}</div>
+							<div class="info-name" style="text-align:center;">类型:</div>
+							<div class="info-name-a" style="margin:0 10px 0 15px;;width:120px">{$res.types}</div>
+							<div class="info-name" style="width:70px">供应PCBA:</div>
+							<div class="info-name-a" style="margin:0 0 0 15px; width:200px;">
+								<if condition="$res[pcba] eq 1">
+									<if condition="$res[jl_self] eq 1">
+										<a href="/Home/Product/detail.html?sign={$res.pcba_list}" style="color:#e84343;">
+											{$res.pcba_list}
+										</a>
+										<else />
+										<a href="javascript:;" style="color:#e84343;">
+											是
+										</a>
+									</if>
+								<else />否
+								</if>
+							</div>
+						</li>
+						<li>
+							<div class="nick_picture3">
+								<empty name="vo.nick_picture"><img src="/Public/Home/Solution/img/avator.png" alt="">
+									<else /><img src="{$vo.nick_picture}" alt="">
+								</empty>
+							</div>
+							<div class="info-name" style="margin-left:80px;width:auto">发布者:</div>
+							<div class="info-name-a wathet_word" style="margin:0 0 0 15px;width:80px;">
+								<if condition="$res[jl_self] eq 1">玖隆芯城
+									<else />{$res.nick_name}
+								</if>
+							</div>
+							<div class="info-name">发布日期:</div>
+							<div class="info-name-a" style="margin:0 16px 0 15px;width:90px">{$res.pubtime}</div>
+							<div class="info-name">浏览量:</div>
+							<div class="info-name-a" style="margin:0 15px 0 10px;width:40px">{$res.browse}</div>
+							<div class="info-name">成交量:</div>
+							<!--<div class="info-name-a" style="margin:0 15px 0 10px;width:40px">{$res.volume}</div>-->
+							<div class="info-name-a" style="margin:0 15px 0 10px;width:40px">{$res['sell_num'] ? $res['sell_num']:'<i class="xinxin2"></i>'}</div>
+							<div class="collect_img sol_collect" style="padding-left:0px;" data-collected="{$res.collected}">
+								<if condition="$res['collected'] eq 1"><i style="background: url(/Public/Home/Solution/img/shop.png) no-repeat 1px -435px;"></i>已收藏
+									<else /><i></i>收藏
+								</if>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<div class="pro-desc">
+					<div class="">
+						方案简要描述:
+					</div>
+					<div class="">
+						{$res.synopsis}
+					</div>
+					<div class="need-service baiZiHongDi" style="text-align:center;" data-sysInfo="{$res.sys_owner}" data-jl_self="{$res.jl_self}">咨询客服</div>
+					<i data-qq="{$res.qq}" data-wechat="{$res.wechat}" data-mobile="{$res.mobile}" data-nick_name="{$res.nick_name}"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 商品规格 -->
+	<div id="jl-specification">
+		<div class="jl-specification-title">
+			<p class="jl-cle">方案介绍</p>
+			<p >数据手册</p>
+		</div>
+		<!--方案介绍-->
+		<div class="jl-specification-content jl-cle">
+			<div class="jl-specification-brief redboard1">
+				<iframe id="descFrame" src="{$res.pro_desc}" frameborder="0" scrolling="no" width="100%"></iframe>
+			</div>
+		</div>
+		<!--数据手册-->
+		<div class="jl-specification-content ">
+			<div class="jl-specification-brief redboard2">
+				<if condition="$res.jl_self eq 1"><!--待补充-->
+				<else />
+					<div style="width:115px;float:left;line-height: 30px;height:30px;color:#000;font-size: 17px;">文件下载:</div>
+					<notempty name="res.bom">
+						<!--<a class="jl-pdf-btn jl-disabled ">BOM表</a>-->
+						<div class="files-download " style="width:95px;" data-files="{$res.bom}"data-name="BOM表">
+							BOM表
+						</div>
+					</notempty>
+					<notempty name="res.code">
+						<!--<a class="jl-pdf-btn jl-disabled ">代码包下载</a>-->
+						<div class="files-download " style="width:95px;" data-files="{$res.code}" data-name="code">
+							代码包
+						</div>
+					</notempty>
+					<notempty name="res.files">
+						<!--<a class="jl-pdf-btn jl-disabled">其他文件下载</a>-->
+						<div class="files-download " style="width:105px;" data-files="{$res.files}" data-name="BOM表">
+							其他文件
+						</div>
+					</notempty>
+					<notempty name="res.pcbas">
+						<!--<a class="jl-pdf-btn jl-disabled">PCBAS文件下载</a>-->
+						<div class="files-download " style="width:125px;" data-files="{$res.pcbas}" data-name="BOM表">
+							PCBA文件
+						</div>
+					</notempty>
+				</if>
+			</div>
+		</div>
+	</div>
+	<div class="jl-line" ></div>
+	<!--咨询客服弹窗-->
+	<div id="sol-customer">
+		<div class="sol-customer-title">咨询客服<span class="js-close" style="display: inline-block;margin-right: 0px;
+    margin-top: 0px;"></span></div>
+		<div class="sol-customer-content">
+			<ul class="service-window">
+				<li style="font-weight: 600;">
+					<div style="width:100px;">昵称</div>
+					<div style="width:150px;">手机</div>
+					<div style="width:80px;">QQ	</div>
+					<div style="width:170px;">微信</div>
+				</li>
+				<li>
+					<div style="width:100px;" id="service-nickname"></div>
+					<div style="width:150px;" id="service-mobile"></div>
+					<div style="width:80px;">
+						<a href="" target="_blank" id="service-qq">
+							<img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" alt="丢失了">
+						</a>
+					</div>
+					<div style="width:170px;" id="weixin">
+						<a href="javascript:;">
+							<img class="jl-cs-wx" src="__PUBLIC__/Home/Index/img/qrcode.png" >
+							<img class="jl-cs-qr" src="" id="service-wechat"><!--测试-->
+							<div style="display:none;overflow:hidden;width:160px;height:35px;text-align:center;"></div>
+						</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</block>
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js', 'layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday','layer'], function ($, modal, pikaday) {
+				var pro_data={$res|json_encode};
+				var pro_sn = "{$res.pro_sn}";
+				var id	= "{$res.id}";
+				var data= {'sol_sn':pro_sn};
+					data.sol_id=id;
+                //添加收藏
+                $('.sol_collect').on('click',function(){
+					var _this = $(this);
+					var is_collected = _this.data('collected');
+					if(is_collected ==1){
+                        modal.confirm({
+                            title:'收藏夹已存在,立即查看?',
+                            isCenter:true,
+                            confirmText:'确定',
+                            confirm:function(){
+                                window.location.href="/Home/Solution/solCollectList";
+                            }
+                        });
+					}else{
+					    data.collected =1;
+//					    console.log(data);
+					    $.ajax({
+							type:'get',
+							url:'/Home/Solution/solCollectAdd',
+							data:data,
+							success:function(res){
+                                if(res.status==999) {
+                                    window.location.href = '/Home/Account/login';
+                                    return;
+                                }
+							    modal.alert({
+							        title:res.content,
+								});
+							    if(res.status==1000){
+							        _this.html("<i style='background: url(/Public/Home/Solution/img/shop.png) no-repeat 1px -435px;'></i>已收藏");
+								}
+								if(res.status==1001){
+                                    modal.confirm({
+                                        title:res.content,
+                                        isCenter:true,
+                                        confirmText:'确定',
+                                        confirm:function(){
+                                            window.location.href="/Home/Solution/solCollectList";
+                                        }
+                                    });
+								}
+							},
+							error:function(res){
+							    console.log(res);
+							    alert('系统繁忙,请稍后再试!');
+							}
+						});
+					}
+				});
+                /*咨询客服*/
+                $('.need-service').on('mouseover',function(event){
+                    event.stopPropagation();
+                    var sysInfo = $(this).data('sysinfo');
+                    var is_self	= $(this).data('jl_self');
+                    if(sysInfo && is_self==1) {
+                        $.get('/Home/solution/solService',{'sysInfo':sysInfo}, function (res) {
+                            if(res.status == 1000){
+                                $('#weixin').find('.jl-cs-wx').css('display','block');
+                                $('#weixin').find('div').css('display','none');
+                                $('#service-wechat').attr('src',res.data.wechat);
+                                $('#service-qq').attr('href',"http://wpa.qq.com/msgrd?v=3&uin="+res.data.qq+"&site=在线客服&menu=yes");
+                                $('#service-nickname').html(res.data.nickname);
+                                $('#service-mobile').html(res.data.mobile);
+                                $('#sol-customer').show();
+                            }
+                        },"json");
+                    }else if(!sysInfo && is_self==0){
+//                        var link_man = $(this).prev().data();
+                        $('#weixin').find('.jl-cs-wx').css('display','none');
+                        $('#weixin').find('div').css('display','block');
+                        $('#weixin').find('div').html(pro_data.wechat);
+                        $('#service-qq').attr('href',"http://wpa.qq.com/msgrd?v=3&uin="+pro_data.qq+"&site=在线客服&menu=yes");
+                        $('#service-nickname').html(pro_data.nick_name);
+                        $('#service-mobile').html(pro_data.mobile);
+                        $('#sol-customer').show();
+                    }
+                });
+                //关闭弹窗
+                $('.js-close').on('click',function(){
+                    $('body').css('overflow','auto');
+                    $("#sol-customer").css('display','none');
+                });
+                //方案介绍
+//				var desc_board = $('.redboard1');
+//				if(pro_data.pro_desc){
+//                    desc_board.html(pro_data.pro_desc);
+//				}else{
+//                    desc_board.html('暂无介绍');
+//				};
+				//数据手册(文件下载与浏览)
+				$('.files-download').on('click',function(){
+				  /* var _this = $(this), file_data = _this.data('files');
+                    if(file_data){
+                        var houzhui = String(file_data).substring(String(file_data).lastIndexOf('.')+1);
+                        var file_path = "{$prefix}"+file_data;
+                        /!*var file_path = '/Uploads/'+file_data;*!/
+                        var file_name = _this.text()+'.'+houzhui;
+                        	file_name = file_name.replace(/\s/g,"");
+                        var a = document.createElement("a");
+                        a.href = file_path;
+                        a.download = file_name;
+                        a.click();
+                    }*/
+				 var _this = $(this), file_data = _this.data('files');
+				 if(file_data){
+					var rez =  matchType(file_data);
+					if(rez == 'imgae'){
+
+					}else if(rez == 'office'){
+
+					}else if(rez == 'pdf'){
+
+					}else if(rez == 'rar'){
+
+					}else{
+					}
+				 }
+
+	  });
+	  //类型判断
+	  function matchType(fileName) {
+		  // 后缀获取
+		  var suffix = '';
+		  // 获取类型结果
+		  var result = '';
+		  try {
+			  var flieArr = fileName.split('.');
+			  suffix = flieArr[flieArr.length - 1];
+		  } catch (err) {
+			  suffix = '';
+		  }
+		  // fileName无后缀返回 false
+		  if (!suffix) {
+			  result = false;
+			  return result;
+		  }
+		  // 图片格式
+		  var imglist = ['png', 'jpg', 'jpeg', 'bmp', 'gif'];
+		  // 进行图片匹配
+		  result = imglist.some(function (item) {
+			  return item == suffix;
+		  });
+		  if (result) {
+			  result = 'image';
+			  return result;
+		  };
+		  // 匹配office
+		  var officeList = ['txt','xls','xlsx','doc', 'docx','word'];
+				result  = officeList.some(function(item){
+				  return item == suffix;
+			  });
+		  if(result){
+			  return 'office'
+		  }
+		  // 匹配 pdf
+		  var pdfList = ['pdf'];
+			  result = pdfList.some(function (item) {
+			  return item == suffix;
+		  });
+		  if (result) {
+			  result = 'pdf';
+			  return result;
+		  };
+		  // 匹配压缩包
+		  var rarList = ['rar','7.zip','zip','jar'];
+			  result 	= rarList.some(function(item){
+				  return item == suffix;
+			  });
+		  if(result){
+			  return 'rar';
+		  }
+		  //其他
+		  return false;
+//                    // 匹配txt
+//                    var txtlist = ['txt'];
+//                    result = txtlist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'txt';
+//                        return result;
+//                    };
+//                    // 匹配 excel
+//                    var excelist = ['xls', 'xlsx'];
+//                    result = excelist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'excel';
+//                        return result;
+//                    };
+//                    // 匹配 word
+//                    var wordlist = ['doc', 'docx'];
+//                    result = wordlist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'word';
+//                        return result;
+//                    };
+//                    // 匹配 pdf
+//                    var pdflist = ['pdf'];
+//                    result = pdflist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'pdf';
+//                        return result;
+//                    };
+//                    // 匹配 ppt
+//                    var pptlist = ['ppt'];
+//                    result = pptlist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'ppt';
+//                        return result;
+//                    };
+//                    // 匹配 视频
+//                    var videolist = ['mp4', 'm2v', 'mkv'];
+//                    result = videolist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'video';
+//                        return result;
+//                    };
+//                    // 匹配 音频
+//                    var radiolist = ['mp3', 'wav', 'wmv'];
+//                    result = radiolist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'radio';
+//                        return result;
+//                    }
+//                    // 其他 文件类型
+//                    result = 'other';
+//                    return result;
+	  }
+
+	  //切换手册和介绍
+	  var all_p = $('.jl-specification-title p');
+	  var all_board = $('.jl-specification-content');
+//				console.log(all_board[0]);
+//				console.log(all_board[1]);
+	  $(all_board[0]).attr('display','block');
+	  $(all_board[1]).attr('display','none');
+		  all_p.on('click',function(){
+			  var _this = $(this);
+			  var _index= all_p.index(_this);
+			  if( _index== 0 ){
+				  $(all_p[0]).addClass('jl-cle');
+				  $(all_p[1]).removeClass('jl-cle');
+				  $(all_board[0]).css('display','block');
+				  $(all_board[1]).css('display','none');
+
+			  }else if(_index== 1){
+				  $(all_p[1]).addClass('jl-cle');
+				  $(all_p[0]).removeClass('jl-cle');
+				  $(all_board[1]).css('display','block');
+				  $(all_board[0]).css('display','none');
+			  };
+		  });
+	  //微信二维码
+//                $(".jl-cs-wx-container").mouseover(function(){
+//                    console.log(1);
+//                });
+//                console.log($(".jl-cs-wx-container"));
+//                $(".jl-cs-wx-container").mouseout(function(){
+//                    console.log(2);
+//                });
+	  //相册效果1(点击切换)
+//				$('.detail-left-bottom img').on('click',function(){
+//                    var _src = $(this).attr('src');
+//                    $('.detail-left-bottom img').removeClass('imgs_hongkuang');
+//				    $(this).addClass('imgs_hongkuang');
+//                    $('.detail-left-top img').attr('src',_src);
+//				});
+	  //相册效果2(鼠标移动切换)
+	  $('.detail-left-bottom img').mouseover(function(){
+		  var _src = $(this).attr('src');
+		  $('.detail-left-bottom img').removeClass('imgs_hongkuang');
+		  $(this).addClass('imgs_hongkuang');
+		  $('.detail-left-top img').attr('src',_src);
+	  });
+	  $('.detail-left-bottom').mouseover(function(){
+		  $('.imgs-change1').show();
+		  $('.imgs-change2').show();
+	  });
+	  $('.detail-left-bottom').mouseout(function(){
+		  $('.imgs-change1').hide();
+		  $('.imgs-change2').hide();
+	  });
+	  //kefu
+	  $('.fugai').mouseover(function(){
+		  $(this).next().css('display','block');
+	  });
+	  $('.fugai').mouseout(function(){
+		  $(this).next().css('display','none');
+	  });
+	  //图片切换
+
+	  //图片列表
+//
+//				//iframe自适应高度(浏览器适应)
+//                function setIframeHeight(iframe) {
+//                    if (iframe) {
+//                        var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+//                        if (iframeWin.document.body) {
+//                            iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+//                        }
+//                    }
+//                };
+//                window.onload = function () {
+//                    setIframeHeight(document.getElementById('descFrame'));
+//                };
+
+	  //iframe自适应高度(浏览器适应)
+		  function setIframeHeight(iframe) {
+			  if (iframe) {
+				  var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+				  if (iframeWin.document.body) {
+					  iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+					  var autoHeight = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+					  console.log(autoHeight);
+				  }
+			  }
+		  };
+		  $(document).one('scroll',function(){
+			  setIframeHeight(document.getElementById('descFrame'));
+		  });
+
+  });
+});
+</script>
+</block>

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div id="app">
+    <h2>{{title}}</h2>
+    <a href="javascript:;" @click="add">add</a>
+    <ul>
+        <table>
+            <tr>
+                <th>选择</th>
+                <th>编号</th>
+                <th>封面</th>
+                <th>名称</th>
+                <th>单价</th>
+                <th>上架时间</th>
+                <th>数量</th>
+                <th>小记</th>
+                <th>删除</th>
+            </tr>
+            <tr v-for="(item,index) in productList" v-bind:class="{'productDel':item.productDel}">
+                <td><input type="checkbox" v-bind:class="{'check__':item.checked}" @click="productSelect(item)"></td>
+                <td v-text="item.id"></td>
+                <td><img v-bind:src="item.img" alt=""></td>
+                <td v-text="item.name"></td>
+                <td>{{item.cate_id | forMatMoney}}</td>
+                <td v-text="item.create_time"></td>
+                <td>
+                    <a href="javascript:;" v-on:click="changeMoney(item,1)"><b>+</b></a>
+                    <input type="text" class="num" v-model="item.num">
+                    <a href="javascript:;" @click="changeMoney(item,-1)"><b>-</b></a>
+                </td>
+                <td><div class="total">{{item.cate_id*item.num | money('元')}}</div></td>
+                <td><b><a href="javasript:;" @click="toproductDel">X</a></b></td>
+            </tr>
+        </table>
+
+        <input type="checkbox" :class="{'check__':checkAllFlag}" @click="checkAll(true)"><span>全选</span>
+        <button @click="checkAll(false)">取消全选</button>
+        <span class="totalMoney">总金额:{{totalMoney | forMatMoney()}}</span>
+    </ul>
+</div>
+<style>
+    #app {
+        width: 1200px;
+        /*height: 800px;*/
+        border: 1px solid red;
+    }
+    .productDel{
+        display:none;
+    }
+    .check__{
+        width:20px;
+        height:20px;
+    }
+    img{
+        width:80px;
+        height:80px;
+    }
+    a{
+        padding:0px 20px 0px 20px;
+    }
+    .num{
+        width:20px;
+    }
+    td,th{
+        padding:20px;
+    }
+    table,tr,td,th{
+        border: 1px solid red;
+        border-collapse: collapse;
+    }
+    .totalMoney{
+        float:right;
+    }
+</style>
+</body>
+<script type="text/javascript" src="__PUBLIC__/Common/vue/dist/vue.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Common/vue-resource/dist/vue-resource.js"></script>
+<script>
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            title:'hello vue',
+            productList:[],
+            totalMoney:0,
+            checkAllFlag:false,
+        },
+        filters:{
+            forMatMoney:function(value){
+                return '$'+value;
+            }
+        },
+        mounted:function(){
+            this.$nextTick(function(){
+                this.cartView();
+            });
+        },
+        methods:{
+            add:function(){
+                alert(123);
+            },
+            cartView:function(){
+                this.$http.get("{:U('productList')}",{'id':123}).then(res=>{
+                    this.productList=res.body;
+                });
+            },
+            changeMoney:function(product,way){
+                if(way>0){
+                    product.num++;
+                }else{
+                    if(product.num<1){
+                        product.num=0;
+                    }else{
+                        product.num--;
+                    }
+                }
+                this.calcTotalPrice();
+            },
+            productSelect:function(item){
+                if(typeof item.checked=='undefined'){
+//                    Vue.set(item,'checked',true);
+                    this.$set(item,'checked',true);
+                }else{
+                    item.checked=!item.checked;
+                }
+                this.calcTotalPrice();
+            },
+            checkAll:function(flag){
+                this.checkAllFlag=flag;
+                console.log(this);
+                var this__=this;
+                this.productList.forEach(function(item,index){
+                    if(typeof item.checked=='undefined'){
+                        this__.$set(item,'checked',this__.checkAllFlag);
+                    }else{
+                        item.checked=this__.checkAllFlag;
+                    }
+                });
+                this.calcTotalPrice();
+            },
+            calcTotalPrice:function(){
+                var this_=this;
+                this.totalMoney=0;
+                this.productList.forEach(function(item,index){
+                    if(item.checked){
+                        this_.totalMoney+=item.num*item.cate_id;
+                    }
+                });
+            },
+            toproductDel:function(test){
+                var this__=this;
+                this.productList.forEach(function(item,index){
+                    if(typeof item.productDel=='undefined'){
+                        this__.$set(item,'productDel',false);
+                    }
+                });
+                test.productDel=true;
+            }
+        }
+    });
+
+    Vue.filter('money',function(value,argument){
+        return '$'+value+argument;
+    });
+</script>
+</html>

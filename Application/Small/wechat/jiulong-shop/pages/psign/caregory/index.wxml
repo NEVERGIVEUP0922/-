@@ -1,0 +1,59 @@
+<!--index.wxml-->
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page navbar" wx:if="{{show}}">
+  <!-- <view class="category-search">
+    <view class="weui-flex">
+      <view class="weui-flex__item category-search-form">
+        <view class="flex-head-search" id="searchBar">
+          <navigator hover-class="none" class="weui-search-bar__form" url="/pages/goods/index/index?fromsearch=1">
+            <view class="weui-search-bar__box category-search-box">
+              <view class="flex-icon-search">
+                <image class="icon20" src="{{icons.search}}"></image>
+              </view>
+              <view class="weui-search-bar__input flex-input">输入关键字进行搜索</view>
+              <navigator class="weui-icon-clear" id="searchClear" url="javascript:"></navigator>
+            </view>
+          </navigator>
+        </view>
+      </view>
+    </view>
+  </view> -->
+  <view class="category-content category-search-bar weui-flex">
+    <view class="category-content-left" wx:if="{{set.level > 1}}">
+      <scroll-view scroll-y="true" class="scroll-view_H" style="height: 100%;">
+        <view bindtap="tabCategory" class="content-left-item {{'all'==selector ? 'active' : ''}}" data-child="{{brandCateChildren}}" data-id="all" >全部品牌</view>
+         <view bindtap="tabCategory" class="content-left-item {{0==selector ? 'active' : ''}}" data-child="{{brandCateChildren}}" data-id="0" >热门品牌</view>
+        <block wx:for="{{brandCate}}" wx:for-index="idx" wx:key="*this">
+          <view bindtap="tabCategory" class="content-left-item {{item==selector ? 'active' : ''}}" data-id="{{item}}">{{item}}</view>
+        </block>
+      </scroll-view>
+    </view>
+    <view class="category-ceontet-right weui-flex__item">
+      <scroll-view scroll-y="true" class="scroll-view_H" style="height:100%;background-color:#f8f8f8">
+        <view class="content-right-item">
+          <view class="" style="width:100%;display:block;" wx:if="{{set.level > 1 && advimg}}">
+           
+          </view>         
+          <block wx:if="{{set.level > 1}}">
+             <block wx:if="{{set.level == 2}}">
+              <view class="fui-icon-group col-3" > 
+                
+                  <block wx:for="{{child}}" wx:for-index="idx" wx:key="*this"> 
+                      <navigator class="fui-icon-col"  url="/pages/goods/index/index?brand_id={{item.id}}" style="border-bottom:4rpx solid #f8f8f8">
+                        <view class="icon radius">
+                          <image src="{{imgHttp}}{{item.logo}}" style="width:120rpx;min-height:60rpx;height:inherit"></image>
+                        </view>
+                        <view class="text">{{item.brand_name}}</view>
+                      </navigator>
+                  </block>
+                                      
+              </view>
+          
+            </block>  
+          </block>     
+        </view>
+    </scroll-view>
+  </view>
+  </view>
+  <include src="/pages/common/menu.wxml"/>
+</view>

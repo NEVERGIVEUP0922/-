@@ -1,0 +1,284 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .data-table-screen .layui-input,
+        .data-table-screen .layui-select,
+        .data-table-screen .layui-textarea{
+            height: 30px;
+        }
+        .data-table-screen>div{
+            margin-bottom: 10px;
+        }
+        .data-table-screen-title{
+            display: inline-block;
+        }
+    </style>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title navBar" href="javascript:">免费样品申请列表</a>
+            </span>
+            <button style="margin-left: 16px;margin-bottom: 4px" class="add-btn layui-btn layui-btn-sm">添加新样品</button>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="padding-bottom: 5px">
+            <form class="data-table-screen layui-row layui-form layui-input-inline" action="" lay-filter="screen-form">
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6 ">
+                    <span class="data-table-screen-title">客户：</span>
+                    <div class="layui-input-inline">
+                        <input name="nick_name" value="{$request['nick_name']}" placeholder="请选择客户" class="layui-input jl-select-customers layui-form-label-pinyin-customer" type="text">
+                        <input name="uid" value="{$request['uid']}" placeholder="请选择客户" class="layui-input jl-select-customers" type="hidden">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">产品型号：</span>
+                    <div class="layui-input-inline">
+                        <input name="p_sign" value="{$request['p_sign']}" placeholder="请选择商品型号" class="layui-input jl-select-products layui-form-label-pinyin-product " type="text">
+                        <input name="pid" value="{$request['pid']}" placeholder="请选择商品型号" class="layui-input jl-select-products" type="hidden">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">业务员：</span>
+                    <div class="layui-input-inline">
+                        <input name="sale_name" value="{$request['sale_name']}" placeholder="请选择业务员" class="layui-input jl-select-users layui-form-label-pinyin-admin" type="text">
+                        <input name="sale_id"  value="{$request['sale_id']}" placeholder="请选择业务员" class="layui-input jl-select-users" type="hidden">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <button class="layui-btn-sm layui-btn" lay-submit lay-filter="screen" style="width: 100px">
+                        筛选
+                    </button>
+                    <span class="clear-btn layui-btn-sm layui-btn layui-btn-primary" style="width: 100px">清空</span>
+                </div>
+            </form>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','selectCustomer','selectUser',
+            'selectProduct','laypage','tabController'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var tabController = layui.tabController;
+            var selectCustomer = layui.selectCustomer;
+            var selectUser = layui.selectUser;
+            var selectProduct = layui.selectProduct;
+            var laypage = layui.laypage;
+            var  request={$request|json_encode};
+            selectCustomer.initInput(false,false,'user_name');
+            selectUser.initInput(false,false,'fullname');
+            selectProduct.initInput(false,false,'p_sign',true);
+            selectProduct.initInput('.jl-select-erp',false,'fitemno',true);
+            var list_data = {$list|json_encode};
+            table.render({
+                elem: '.data-table',
+                data: list_data?list_data.list:[],
+                page: false,
+                //url:"{:U(Admin/Customer/customerProductSampleList)}",
+                limit: request.pageSize || 10,
+                cellMinWidth: 160,
+                height:'full-244',
+                cols: [[
+                    {field: 'id', title: 'ID', fixed: 'left',width:100}
+                    ,{field: 'customerName', title:'客户'}
+                    ,{field: 'sale_name', title:'业务员'}
+                   /* ,{field: 'pid', title:'产品id'}*/
+                    ,{field: 'p_sign', title:'产品型号'}
+                    ,{field: 'fitemno', title:'erp型号'}
+                    ,{field: 'handle_name', title: '录入人'}
+                    ,{field: 'step', title: '有效次数'}
+                    ,{field: 'max_num', title: '最大个数'}
+                    ,{field: 'update_at',width:200, title:'操作时间'}
+                    ,{field: 'create_time',width:200, title: '创建时间'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right',templet:function(d){
+                            var retrun_str='';
+                            retrun_str +='<div class="data-table-handle-box" data-id="{{ d.id }}">';
+                            if(d.step==0){retrun_str +='<span lay-event="active" >激活</span>';};
+                            retrun_str +='<span lay-event="del">删除</span>';
+                            if(d.is_pass=='否') retrun_str +='<span lay-event="check">审核</span> </div>';
+                            return retrun_str;
+                        }}
+                ]]
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'edit'){
+                    jlTool.sendIframeMsg('go',{
+                        title:'样品详情',
+                        url:'/Admin/Customer/customerProductSampleActions?Action=edit&id'+source.id,
+                        icon:''
+                    });
+                }
+                else if(layEvent === 'active'){
+                    $.post('/Admin/customer/customerProductSampleActions',{
+                        action_arr:[source]
+                    },function (res) {
+                        res=JSON.parse(res);
+                        if(res.error == 0){
+                            layer.open({title:'提示',content:"激活成功...",yes:function(){
+                                    location.reload(true);
+                                }});
+
+                        }else{
+                            layer.msg("激活失败...");
+                        }
+                    })
+                }
+                else if(layEvent === 'del'){
+                    layer.confirm('确定要删除吗？',function (index) {
+                        layer.close(index);
+                        $.post('/Admin/customer/customerProductSampleActions',{
+                                action_arr:[{uid:source.uid,pid:source.pid}],
+                                delete:1
+                            }
+                           ,
+                            function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                obj.del();
+                            }
+                        })
+                    })
+                }
+               /* else if(layEvent === 'check'){
+                    layer.confirm('通过',function (index) {
+                        layer.close(index);
+                        var data={
+                            check_id:source.id
+                        };
+                        $.post('/Admin/Customer/oneBargain',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                obj.del();
+                            }else{
+                                alert(res.msg);
+                            }
+                        })
+                    })
+                }*/
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: request.pageSize||10,
+                count: list_data.count?list_data.count:0,
+                curr: request.page||1,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},request,{
+                            pageSize:obj.limit,
+                            page:/*String(obj.limit)===String(request.pageSize) ? */obj.curr
+                        }));
+                    }
+                }
+            });
+            $('.add-btn').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'样品添加',
+                    url:'/Admin/Customer/customerProductSampleActions?Action=add',
+                    icon:''
+                });
+            });
+            //筛选
+            form.on('submit(screen)', function(data){
+                //data.field.pid=data.field.p_id;
+                queryTable(data.field);
+                return false;
+            });
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Customer/customerProductSampleList?'+query
+            };
+            $('.clear-btn').on('click',function () {
+                queryTable()
+            });
+            $('.jl-main-title').on('click',function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'免费样品申请列表',
+                    url:'/Admin/Sample/storeSampleList',
+                    icon:''
+                });
+            })
+        })
+        //搜索输入拼音首字母自动补全
+        var response_data=[];
+        $( ".layui-form-label-pinyin-customer" ).autocomplete({
+            source: "/Admin/Customer/companyPinyinSearch?disable20=disable20",
+            minLength: 2,
+            close:function(event,ui){
+
+
+            },
+            select:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-customer" );
+                var value = ui.item.value;
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+        $( ".layui-form-label-pinyin-product" ).autocomplete({
+            source: "/Admin/Product/productList?autoComplete=autoComplete",
+            minLength: 2,
+            close:function(event,ui){
+            },
+            select:function(event,ui){
+            var $this =$( ".layui-form-label-pinyin-product" );
+            var value = ui.item.value;
+            var id=JSON.parse($("#autoComplete_index_data").val());
+            var index = response_data.indexOf(value);
+            $this.siblings("input").val(id[index]);
+            setTimeout(function(){ response_data = [];},0)
+
+        },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+        $( ".layui-form-label-pinyin-admin" ).autocomplete({
+            source: "/Admin/Customer/adminPinyinSearch",
+            minLength: 2,
+            close:function(event,ui){
+
+            },select:function(event,ui){
+                var $this =$( ".layui-form-label-pinyin-admin" );
+                var value = ui.item.value;
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+    </script>
+</block>

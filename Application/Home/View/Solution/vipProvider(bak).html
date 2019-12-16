@@ -1,0 +1,240 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout" />
+
+<block name="title">方案中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/settingUser.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project_vip.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		.mysol{
+			width:355px;
+		}
+		.td-file{
+			width:80px;
+		}
+		.converseList:hover,.mysol:hover {
+			/*background:#eee;*/
+			/*box-sizing: border-box;*/
+			box-shadow: 0 0 0 #ddd;
+		}
+	</style>
+</block>
+<block name="main">
+	<!-- 主要内容 -->
+	<!--面包屑导航系统-->
+	{$breadcrum}
+	<!--页面布局主区域-->
+	<div class="vipState">
+		<div class="VS_1_a float_L" style="padding-left:6%;width:auto">会员政策说明:</div>
+		<div class="VS_1_b float_L">无会员等级    只能查看方案和发布需求方案，不能发布供应方案和洽谈；月会员（一个月）   200元     发布1个供应方案、5次洽谈；季度会员（三个月）  500元   发布5个方案、20次洽谈；半年会员（六个月）   900元   发布20个方案、40次洽谈；年度会员（一年）    1600元   50个方案、100次洽谈 </div>
+		<div class="clear"></div>
+	</div>
+	<div class="vip_main clear">
+		<div class="vip_info">
+			<ul>
+				<li>
+					<div class="vipInfo_a">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号:</div>
+					<div class="vipInfo_b">{$_SESSION['userInfo']['nick_name']}</div>
+				</li>
+				<li>
+					<div class="vipInfo_a">昵&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;称:</div>
+					<div class="vipInfo_b">
+						<if condition="empty($res['nick_name']) neq true">{$res.nick_name}
+						<else/>{$_SESSION['userInfo']['nick_name']}
+						</if>
+					</div>
+				</li>
+				<li>
+					<div class="vipInfo_a">手机号码:</div>
+					<div class="vipInfo_b">
+						<if condition="empty($res['mobile']) neq true">{$userInfo.user_mobile}
+						<else/>{$res.mobile}
+						</if>
+					</div>
+				</li>
+				<li>
+					<div class="vipInfo_a">QQ号码:</div>
+					<div class="vipInfo_b">
+						<if condition="empty($res['qq']) neq true">还没有填写qq号
+						<else/>{$res.mobile}
+						</if>
+					</div>
+				</li>
+				<li>
+					<div class="vipInfo_a">微信账号:</div>
+					<div class="vipInfo_b">
+						<if condition="empty($res['qq']) neq true">还没有填写微信号
+						<else/>{$res.wechat}
+						</if>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="VC_1_Avator float_L"><!--会员头像等-->
+			<div class="VC_img" id="VC_Avator_btn">
+
+			</div>
+		</div>
+	</div>
+	<!--方案-->
+	<div class="vip_main clear" style="padding: 10px 0 40px 0;">
+		<empty name="proInfo" >
+			<div id="jl-purchase-fault" style="margin-top:0;min-height:430px">
+				<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+				<p class="jl-fault">还没有任何内容哦!</p>
+				<a href="{:U('Home/Default/index')}" class="jl-browse">返回首页</a>
+			</div>
+		<else />
+			<foreach name="proInfo" item="vo">
+				<div class="mysol">
+					<i class="save-data"  style="overflow: hidden" data-draft="{$vo.draft}" data-check_status="{$vo.check_status}" data-publish_status="{$vo.publish_status}" data-pro_id="{$vo.id}" data-pro_sn="{$vo.pro_sn}"></i>
+					<table>
+						<tr>
+							<td colspan="3" rowspan="4" style="with:40%;">
+								<div id="myProvider-img"><img src="__PUBLIC__/Home/Public/img/logo.png" alt="图片丢失" style="width:100%;"></div>
+							</td>
+							<td colspan="5" class="redword">{$vo.pro_name}</td>
+						</tr>
+						<tr>
+							<td style="text-align: right">方案编号:</td>
+							<td colspan="4"><div style="width:150px;">{$vo.pro_sn}</div></td>
+						</tr>
+						<tr>
+							<td style="text-align: right">方案类型:</td>
+							<td colspan="4">
+								<empty name="vo.types">
+									未定义类型
+									<else/>
+									{$vo.types}
+								</empty>
+							</td>
+						</tr>
+						<tr>
+							<td style="text-align: right">浏览量:</td>
+							<td colspan="4">{$vo.browse}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						</tr>
+						<tr>
+							<td colspan="3"></td>
+							<td style="text-align: right">状&nbsp;&nbsp;&nbsp;态:</td>
+							<td colspan="4" id="pub_status1">
+								<if condition="$vo.publish_status eq 1">发布中
+									<else/>未发布
+								</if>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="8">
+								<a href="javascript:;">
+									<div class="td-file" data-method="confirmTrans" data-file="{$vo.bom}" data-file_type="bom">
+										<img src="__PUBLIC__/Home/Solution/img/BOM_file.png" alt="" class="img-file"><span>BOM表</span>
+										<empty name="vo.bom">
+											<div class="w-tip">
+												<div class="w-inner1"></div>
+												<div class="w-inner2">没有文件</div>
+											</div>
+										</empty>
+									</div>
+								</a>
+								<a href="javascript:;">
+									<div class="td-file" data-method="confirmTrans" data-file="{$vo.pcbas}" data-file_type="pcbas">
+										<img src="__PUBLIC__/Home/Solution/img/PCBA_file.png" alt="" class="img-file"><span>PCBA</span>
+										<empty name="vo.pcbas">
+											<div class="w-tip">
+												<div class="w-inner1"></div>
+												<div class="w-inner2">没有文件</div>
+											</div>
+										</empty>
+									</div>
+								</a>
+								<a href="javascript:;">
+									<div class="td-file" data-method="confirmTrans" data-file="{$vo.code}" data-file_type="code">
+										<img src="__PUBLIC__/Home/Solution/img/CODE_file.png" alt="" class="img-file"><span>代码包</span>
+										<empty name="vo.code">
+											<div class="w-tip">
+												<div class="w-inner1"></div>
+												<div class="w-inner2">没有文件</div>
+											</div>
+										</empty>
+									</div>
+								</a>
+								<a href="javascript:;">
+									<div class="td-file" data-method="confirmTrans" data-file="{$vo.files}" data-file_type="files">
+										<img src="__PUBLIC__/Home/Solution/img/ANOTHER_file.png" alt="" class="img-file"><span>其他文档</span>
+										<empty name="vo.files">
+											<div class="w-tip">
+												<div class="w-inner1"></div>
+												<div class="w-inner2">没有文件</div>
+											</div>
+										</empty>
+									</div>
+								</a>
+								<div class="clear"></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="textAlign-top">方案简要描述:</td>
+							<td colspan="6" class="text-font-size"><div class="desc-hidden1"  style="height:80px;margin-bottom:10px;" data-method="describe">{$vo.synopsis}</div></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="textAlign-top">方案详细描述:</td>
+							<td colspan="6" class="text-font-size"><div class="desc-hidden2" style="height:80px;margin-bottom:10px;">{$vo.pro_desc};</div></td>
+						</tr>
+						<tr>
+							<td colspan="8" style="text-align:right;">
+								<!--<a href="javascript:;"  class="checkmore" data-method="describe">查看更多>>></a>-->
+							</td>
+						</tr>
+						<tr>
+							<td colspan="8">
+								<div class="ziying">私营</div>
+								<div class="check_status" data-method="updataInfo">
+									<if condition ="$vo.draft eq 1 "><span>草稿</span>
+										<elseif condition="$vo.draft eq 0 && $vo.check_status eq 0 "/><span>审核中</span>
+										<elseif condition="$vo.draft eq 0 && $vo.check_status eq 1 && $vo.publish_status eq 0 "/><span>未发布</span>
+										<elseif condition="$vo.draft eq 0 && $vo.check_status eq 1 && $vo.publish_status eq 1 "/><span>发布中</span>
+										<elseif condition="$vo.draft eq 0 && $vo.check_status eq 1 && $vo.publish_status eq 2 "/><span>已结束</span>
+										<elseif condition="$vo.draft eq 0 && $vo.check_status eq 2 "/>
+										不通过
+										<else/>
+									</if>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</foreach>
+		</empty>
+	</div>
+	<div class="sure_main">
+		<div class="sure"style="padding:2px 0;width:120px;text-align:center">返回项目中心</div>
+	</div>
+</block>
+
+<block name="js">
+	<script>
+		require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+			require(['jquery'], function ($) {
+			    //确定
+			    $('.sure').on('click',function(){
+					window.location.href="{:U('Home/solution/myProvider')}";
+				});
+                /*文件为空的提示框*/
+                $('.td-file').mouseover(function(){
+                    $(this).find('.w-tip').css('display','block');
+                });
+                $('.td-file').mouseout(function(){
+                    $(this).find('.w-tip').css('display','none');
+                });
+            })
+		})
+	</script>
+</block>

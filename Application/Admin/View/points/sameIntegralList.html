@@ -1,0 +1,311 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .data-table-screen .layui-input,
+        .data-table-screen .layui-select,
+        .data-table-screen .layui-textarea{
+            height: 30px;
+        }
+        .data-table-screen>div{
+            margin-bottom: 10px;
+        }
+        .data-table-screen-title{
+            display: inline-block;
+        }
+    </style>
+</block>
+<block name="content">
+    <div style="height: calc(100vh - 20px);">
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title navBar" href="javascript:">同订单积分列表</a>
+            </span>
+        </blockquote>
+         <blockquote class="layui-elem-quote" style="padding-bottom: 5px">
+             <form class="data-table-screen layui-row layui-form layui-input-inline" action="" lay-filter="screen-form">
+                 <div class="layui-col-xs12 layui-col-sm6 layui-col-md6 ">
+                     <span class="data-table-screen-title">用户：</span>
+                     <div class="layui-input-inline">
+                         <input name="nick_name" value="{$request['nick_name']}" placeholder="请选择客户" class="layui-input jl-select-customers layui-form-label-pinyin-customer" type="text">
+                         <input name="user_id" value="{$request['user_id']}" placeholder="请选择客户" class="layui-input jl-select-customers" type="hidden">
+                     </div>
+                 </div>
+                 <div class="layui-col-xs4 layui-col-sm4">
+                     <label class="layui-form-label">积分收支</label>
+                     <div class="layui-input-block">
+                         <select name="d_status">
+                             <option value="">全部</option>
+                             <option value="0" {$request['d_status']==='0'?'selected':''}>收入</option>
+                             <option value="1" {$request['d_status']==='1'?'selected':''}>支出</option>
+                         </select>
+                     </div>
+                 </div>
+                 <!--<div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                     <span class="data-table-screen-title">业务员：</span>
+                     <div class="layui-input-inline">
+                         <input name="sale_name" value="{$request['sale_name']}" placeholder="请选择业务员" class="layui-input jl-select-users layui-form-label-pinyin-admin" type="text">
+                         <input name="sale_id"  value="{$request['sale_id']}" placeholder="请选择业务员" class="layui-input jl-select-users" type="hidden">
+                     </div>
+                 </div>-->
+                 <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                     <button class="layui-btn-sm layui-btn" lay-submit lay-filter="screen" style="width: 100px">
+                         筛选
+                     </button>
+                     <span class="clear-btn layui-btn-sm layui-btn layui-btn-primary" style="width: 100px">清空</span>
+                 </div>
+             </form>
+         </blockquote>
+        <table lay-filter="data-table" class="data-table">
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','laypage','tabController','handleDistrict'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var handleDistrict = layui.handleDistrict;
+            var tabController = layui.tabController;
+            var laypage = layui.laypage;
+            var  request={$request|json_encode};
+            var list_data = {$list|json_encode};
+            console.log(list_data,request);
+            table.render({
+                elem: '.data-table',
+                data: list_data?list_data.list:[],
+                page: false,
+                //url:"{:U(Admin/Customer/customerProductSampleList)}",
+                limit: request.pageSize || 10,
+                cellMinWidth: 160,
+                height:'full-252',
+                cols: [[
+                    {field: 'id', title: 'ID', fixed: 'left',align:'center',width:100}
+                    ,{field: 'nick_name',align:'center', title:'用户户名'}
+                    ,{field: 'integral_amount', title:'积分收支',align:'center',templet:function(d){
+                            return (d.integral_amount>0?(d.d_status>0?("-"+d.integral_amount):d.integral_amount) :0);
+                        }
+                     }
+                    ,{field: 'integral', title:'积分规则名称',align:'center',templet:function(d){
+                        return d.integral_id>0?(d.integral?d.integral.integral_name:'错误规则'):"";
+                        }}
+                    /*,{field: 'use_reward_id', title:'兑换奖品',align:'center',templet:function(d){
+                            return d.use_reward_id>0?d.reward.goods_name:"";
+                        }}
+                    ,{field: 'reward_status', title:'奖品发货状态',align:'center',templet:function(d){
+                            return d.use_reward_id>0?(d.reward_status>0?'<span style="color:#009688">已发货</span>':'未发货'):'';
+                        }}*/
+                    ,{field: 'erp_th_no', align:'center',title:'erp提货单'}
+                    ,{field: 'order_sn', align:'center',title: '积分订单号'}
+                    ,{field: 'update_time',width:200, align:'center',title:'操作时间'}
+                    ,{field: 'create_time',width:200,align:'center', title: '创建时间'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right',templet:function(d){
+                            var retrun_str='';
+                            retrun_str +='<div class="data-table-handle-box" >';
+                            //if(d.reward_status<1&&d.use_reward_id>0){retrun_str +='<span lay-event="reward" data-id="{{ d.use_reward_id }}">发货</span>';};
+                            //retrun_str +='<span lay-event="del">删除</span>';
+                            retrun_str +=' </div>';
+                            return retrun_str;
+                        }
+                }
+                ]]
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                console.log(source);
+                if(layEvent === 'lookMore'){
+                    jlTool.sendIframeMsg('go',{
+                        title:'积分列表同类型',
+                        url:'/Admin/Integral/sameIntegral?user_id='+source.user_id+'&integral_id'+source.integral_id,
+                        icon:''
+                    });
+                }
+                else if(layEvent === 'reward'){
+                    var str="<div class='js-popup-consignee'><span style='font-weight:600'>发货地址</span></div><div class=\"jl-consignee\" style='min-height: 10vh;margin-left:40px'>\n" +
+                        "                <ul class=\"jl-has-consignee js-address-list\"></ul>\n" +
+                       // "                <a href=\"#\" class=\"jl-add-consignee js-address-add\" style='top:10px'>新增收货人信息</a>\n" +
+                        "            </div>";
+                    layer.open({
+                        title:"积分奖品兑换",
+                        content:str,
+                        area:["500px"],
+                        maxHeight:"",
+                        skin: 'sample-class',
+                        btn:["发货","取消"],
+                        success :function(){
+                            //地址处理
+                            var $address = $('.jl-consignee');
+                            if(String(source.address_code).length>3){
+                                var address_code = source.address_code;
+                                if(address_code){
+                                    var address = handleDistrict.getData(address_code);
+                                    $address.text(address.join(' '))
+                                }
+                            }else{
+                                layer.msg('发货地址信息错误',{icon:5},function(){
+                                    return;
+                                });
+
+                            };
+                        },
+                        yes:function(){
+                            var check_id=$(".jl-consignee-title.jl-cur").data("id");
+                            $.ajax({
+                                url:'/Admin/Integral/integralProductTransfer',
+                                type:'post',
+                                data:{'id':source['id'],'reward_status':'1'},
+                                dataType:'json',
+                                success:function(res){
+                                    if(res.error === 0){
+                                        layer.msg(res.msg,{icon:6,time:1500},function(){
+                                            window.location.reload(true);
+                                        });
+                                    }else{
+                                        layer.msg(res.msg,{icon:5});
+                                    }
+                                }
+                            });
+
+                        },
+                        btn2:function(){
+
+                        }
+                    })
+                    /*$.post('/Admin/customer/customerProductSampleActions',{
+                        action_arr:[source]
+                    },function (res) {
+                        res=JSON.parse(res);
+                        if(res.error == 0){
+                            layer.open({title:'提示',content:"激活成功...",yes:function(){
+                                    location.reload(true);
+                                }});
+
+                        }else{
+                            layer.msg("激活失败...");
+                        }
+                    })*/
+                }
+                else if(layEvent === 'del'){
+                    layer.confirm('确定要删除吗？',function (index) {
+                        layer.close(index);
+                        $.post('/Admin/customer/customerProductSampleActions',{
+                                action_arr:[{uid:source.uid,pid:source.pid}],
+                                delete:1
+                            }
+                            ,
+                            function (res) {
+                                res = $.parseJSON(res);
+                                if(res.error===0){
+                                    obj.del();
+                                }
+                            })
+                    })
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: request.pageSize||10,
+                count: list_data.count?list_data.count:0,
+                curr: request.page||1,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},request,{
+                            pageSize:obj.limit,
+                            page:/*String(obj.limit)===String(request.pageSize) ? */obj.curr
+                        }));
+                    }
+                }
+            });
+            //筛选
+            form.on('submit(screen)', function(data){
+                //data.field.pid=data.field.p_id;
+                queryTable(data.field);
+                return false;
+            });
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Integral/sameIntegralList?'+query
+            };
+            $('.clear-btn').on('click',function () {
+                queryTable()
+            });
+
+            //搜索输入拼音首字母自动补全
+            var response_data=[];
+            $( ".layui-form-label-pinyin-customer" ).autocomplete({
+                source: "/Admin/Customer/companyPinyinSearch?disable20=disable20",
+                minLength: 2,
+                close:function(event,ui){
+
+
+                },
+                select:function(event,ui){
+                    var $this = $( ".layui-form-label-pinyin-customer" );
+                    var value = ui.item.value;
+                    var id=JSON.parse($("#autoComplete_index_data").val());
+                    var index = response_data.indexOf(value);
+                    $this.siblings("input").val(id[index]);
+                    setTimeout(function(){ response_data = [];},0)
+
+                },
+                response:function( event, data ) {
+                    response_data = [];
+                    $.each(data.content,function(item,value){
+                        response_data.push(value.value);
+                    });
+                }
+            });
+            $( ".layui-form-label-pinyin-product" ).autocomplete({
+                source: "/Admin/Product/productList?autoComplete=autoComplete",
+                minLength: 2,
+                close:function(event,ui){
+                },
+                select:function(event,ui){
+                    var $this =$( ".layui-form-label-pinyin-product" );
+                    var value = ui.item.value;
+                    var id=JSON.parse($("#autoComplete_index_data").val());
+                    var index = response_data.indexOf(value);
+                    $this.siblings("input").val(id[index]);
+                    setTimeout(function(){ response_data = [];},0)
+
+                },
+                response:function( event, data ) {
+                    response_data = [];
+                    $.each(data.content,function(item,value){
+                        response_data.push(value.value);
+                    });
+                }
+            });
+            $( ".layui-form-label-pinyin-admin" ).autocomplete({
+                source: "/Admin/Customer/adminPinyinSearch",
+                minLength: 2,
+                close:function(event,ui){
+
+                },select:function(event,ui){
+                    var $this =$( ".layui-form-label-pinyin-admin" );
+                    var value = ui.item.value;
+                    var id=JSON.parse($("#autoComplete_index_data").val());
+                    var index = response_data.indexOf(value);
+                    $this.siblings("input").val(id[index]);
+                    setTimeout(function(){ response_data = [];},0)
+
+                },
+                response:function( event, data ) {
+                    $.each(data.content,function(item,value){
+                        response_data.push(value.value);
+                    });
+                }
+            });
+        })
+    </script>
+</block>

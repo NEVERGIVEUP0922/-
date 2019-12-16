@@ -1,0 +1,178 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link href="/Public/Common/module/layui/2.2.4/css/layui.css?v=118" rel="stylesheet">
+    <style>
+        .table-container .layui-table-body .layui-table-cell,
+        .table-container .layui-table-fixed .layui-table-body .layui-table-cell{
+            height: 120px;
+            white-space: normal;
+        }
+        img.data-table-img{
+            max-width: 170px;
+            max-height: 120px;
+            height: 120px;
+        }
+        .first-array a:after{  content: '、';color:#333  }
+        .first-array a:last-child:after{  content: '';  }
+        .data-table-handle-box span:after{content:""}
+
+    </style>
+</block>
+<block name="content">
+    <div class="table-container">
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">封装列表</a>
+            </span>
+<!--
+            <span class="layui-btn action-submit" style="margin-left:10px;padding:0 10px;height:30px;line-height:30px;">提交</span>
+-->
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="overflow: hidden">
+            <span style="padding: 9px 15px">封装</span>
+            <input value="{$request.package}" type="text" name="package" placeholder="请输入封装" class="layui-input" style="display: inline-block;width: auto">
+            <div class="layui-btn-group">
+                <button class="layui-btn search-btn">检索</button>
+                <button class="layui-btn layui-btn-primary clear-btn">清空</button>
+            </div>
+        </blockquote>
+        <table class="data-table" lay-filter="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" data-id="{{ d.id }}">
+                    <span class="action-upload-img" lay-event="edit">修改封装图片</span>
+
+                   <!-- <span lay-event="del">删除</span>
+                    <span lay-event="hot1">{{ d.is_hot==1?'取消':'' }}热卖</span>
+                    <span lay-event="hot2">{{ d.is_hot==2?'取消':'' }}优势</span>-->
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','upload'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var upload = layui.upload;
+            var list_data = {$list|json_encode};
+            var request = {$request|json_encode};
+            var dataCols= [
+                {field: 'package', title: '封装'}
+                ,{field: 'img',width: 200,title: '封装图片',templet: function(d){
+                        return  '<div style="width:200px;text-align:center;vertical-align: middle;display: table-cell;"><img class="data-table-img" src="'+d.img+'"></div>'
+                    }}
+                ,{field: 'update_time', title: '修改时间'}
+                ,{field: 'handle', title: '操作',align:'center', fixed: 'right', toolbar: '#data-table-handle-tpl'}
+            ];
+            //提交
+          function sendData(json){
+                $.ajax({
+                    type: 'post',
+                    url: '/Admin/Product/productPackageAction',
+                    data: json,
+                    dataType:"json",
+                    success: function (res) {
+                        if(res.error == 0){
+                            layer.msg("上传成功");
+                        }else{
+                            layer.msg(res.msg);
+                        }
+                    }
+
+                });
+            };
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Product/productPackageList?'+query
+            };
+            table.render({
+                id: 'brand',
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-200',
+                cols: [dataCols],
+                done:function(){
+                    var uploadInst = upload.render({
+                        elem: '.action-upload-img'
+                        ,url: '/admin/excel/fileUpload'
+                        ,data:{
+                            path: 'product'
+                        }
+                        ,done: function(res){
+                            var itme = this.item[0];
+                            var index = $(itme).parents("tr").data("index");
+                            if(res.error===0){
+                                $($('img.data-table-img')[index]).attr("src",res.data.path).data('img',res.data.path);
+                                var json = {img:res.data.path,package:$(itme).parents("tr").find(".layui-table-cell.laytable-cell-1-package").text()};
+                                sendData(json);
+                            }
+                            else {
+                                layer.msg(res.msg);
+                            }
+                        }
+                    });
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize || 10,
+                count: list_data.count || 10,
+                curr: list_data.page || 1,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request,{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+          //封装图片上传
+            $(".action-upload-img").on("click",function(){
+                    $('.action-upload-img').removeClass('active-upload');
+                    $(this).addClass('active-upload');
+            });
+            //检索按钮
+            $('.search-btn').on('click',function () {
+                queryTable({
+                    package:$('input[name="package"]').val()
+                });
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            })
+        });
+
+        //获取数据
+        function getListData(dataCols) {
+            var array = [];
+            $('.layui-form .layui-table-box>.layui-table-body').find('tr').each(function () {
+                var single = {};
+                var $_this = $(this);
+                $.each( dataCols ,function (index,value) {
+
+                    if(value.field==='package'){
+                        single[value.field] = $_this.find('.laytable-cell-1-'+value['field']).text();;
+                    }
+                    else if(value.field == 'img'){
+                        single[value['field']] = $_this.find('.laytable-cell-1-'+value['field']).find("img").data("img");
+                    }
+                });
+                if(array)array.push(single);
+            });
+            return array
+        };
+    </script>
+</block>

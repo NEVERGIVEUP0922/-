@@ -1,0 +1,213 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+	<style>
+	</style>
+</block>
+<block name="content">
+	<div class="table-container">
+		<blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">方案类型管理</a>
+            </span>
+		</blockquote>
+		<blockquote class="layui-elem-quote">
+			<button class="jl-add-btn layui-btn layui-btn-sm">增加方案</button>
+			<button class="jl-deletes-btn layui-btn layui-btn-sm">批量删除</button>
+		</blockquote>
+		<blockquote class="layui-elem-quote" style="overflow: hidden">
+			<span style="padding: 9px 15px">方案名称</span>
+			<input value="{$request.keyword}" type="text" name="keyword" placeholder="请输入品牌名称" class="layui-input" style="display: inline-block;width: auto">
+			<div class="layui-btn-group">
+				<button class="layui-btn search-btn">检索</button>
+				<button class="layui-btn layui-btn-primary clear-btn">清空</button>
+			</div>
+		</blockquote>
+		<table class="data-table" lay-filter="data-table">
+			<script type="text/html" id="data-table-handle-tpl">
+				<div class="data-table-handle-box" data-id="{{ d.id }}">
+					<span lay-event="edit">修改</span>
+					<span lay-event="del">删除</span>
+				</div>
+			</script>
+		</table>
+		<div id="data-table-page"></div>
+	</div>
+</block>
+<block name="js">
+	<script>
+        layui.use(['table', 'layer', 'jlTool','element','form','upload'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var upload = layui.upload;
+            var list_data = {$solTypes|json_encode};
+            var request = {$request|json_encode};
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Solution/typesList?'+query
+            };
+            table.render({
+				id:'solTypes',
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+				width:600,
+                height:'full-328',
+                cols: [[
+                    {field: 'checkbox', type: 'checkbox', fixed: 'left'}
+                    ,{field: 'id',title: '方案ID',width:100, fixed: 'left'}
+                    ,{field: 'types', title: '方案类型'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right', toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+//                    console.log(obj);return;
+                    if (!first) {
+                        queryTable($.extend(request,{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'edit'){ //查看
+                    layer.open({
+                        title:'修改方案类型',
+                        type: 0,
+                        area: '440px',
+                        content: detailHtml(source.types),
+                        success:function () {
+                            form.render(null, 'add');
+                        },
+                        yes:function (index) {
+                            var data = {
+                                id:source.id,
+								types:String($("input[name='type_name2']").val()).trim(),
+								action:4
+                            };
+                            $.post('/Admin/Solution/updataTypes',data,function (res) {
+                                if(res.status===1000){
+                                    layer.msg('修改成功',{time:500}, function(){
+                                        window.location.reload()
+                                    });
+                                }else{
+                                    layer.msg(res.content);
+                                }
+                            })
+                        },
+                        cancel:function () {
+
+                        }
+                    })
+                }else if(layEvent === 'del'){
+
+                    layer.confirm('确认删除吗？',function(index){
+                        $.post('/Admin/Solution/updataTypes',{typesId:source.id,action:3},function (res) {
+                            if(res.status===1000){
+                                layer.msg('删除成功',{time:500}, function(){
+                                    window.location.reload()
+                                });
+                            }
+                            else {
+                                layer.tips(res.content, '.layui-layer-btn');
+                            }
+                        })
+                    });
+                }
+            });
+            //添加按钮
+            $('.jl-add-btn').click(function () {
+                layer.open({
+                    title:'增加方案类型',
+                    type: 0,
+                    area: '440px',
+                    content: detailHtml(),
+                    success:function () {
+                        form.render(null, 'add');
+                    },
+                    yes:function (index) {
+                        var add_data = {};
+                        	add_data.types = String($('input[name="type_name2"]').val()).trim(),
+							add_data.action=2;
+						$.post('/Admin/Solution/updataTypes',add_data,function(rez){
+							if(rez.status===1000){
+								layer.msg('添加成功!',{time:500}, function(){
+                                    window.location.reload()
+                                });
+							}else{
+								layer.msg(rez.content);
+							}
+						});
+                    },
+                })
+            });
+            //批量删除
+            $('.jl-deletes-btn').click(function () {
+                layer.confirm('确认删除选中值吗？',function(index){
+                    var ids = table.checkStatus('solTypes');
+                    var arr = [];
+                    $.each(ids.data,function (index,value) {
+                        arr.push(value.id)
+                    });
+                    if(arr.length!==0){
+                        $.post('/Admin/Solution/updataTypes',{typesId:arr,action:3},function (res) {
+//                            res = $.parseJSON(res);
+                            if(res.status===1000){
+                                layer.msg('删除成功',{time:500}, function(){
+                                    window.location.reload()
+                                });
+                            }else {
+                                layer.msg(res.content);
+                            }
+                        })
+                    }else {
+                        layer.msg('请先勾选目标')
+                    }
+                });
+            });
+            //检索按钮
+            $('.search-btn').on('click',function () {
+                queryTable({
+                    keyword:$('input[name="keyword"]').val(),
+					action:1
+                });
+            });
+            //清空
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            })
+            //渲染detial
+            var detailHtml = function (detail) {
+                return (
+                    '<div> ' +
+                    '<form class="layui-form" action="" lay-filter="add"> ' +
+                    '<div class="layui-form-item layui-required"> ' +
+                    '<label class="layui-form-label" style="padding:9px 0;width:100px;">方案类型名称:</label> ' +
+                    '<div class="layui-input-block"> ' +
+                    '<input type="text" name="type_name2" value="'+detail+'" required lay-verify="required" ' +
+                    'placeholder="请输入方案类型名称" autocomplete="off" class="layui-input"> ' +
+                    '</div> ' +
+                    '</div> ' +
+                    '</form> ' +
+                    '</div>'
+                )
+            };
+        });
+	</script>
+</block>

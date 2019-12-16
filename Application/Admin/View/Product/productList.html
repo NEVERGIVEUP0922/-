@@ -1,0 +1,963 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/pikaday/1.6.1/css/pikaday.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Product/css/productList.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+</block>
+<block name="content">
+    <div class="jl-drag-container">
+        <div class="tree-container">
+            <div id="jstree_demo_div"></div>
+            <div class="jl-drag-handle layui-box"></div>
+        </div>
+        <div class="productList-container table-container">
+            <blockquote class="jl-title layui-elem-quote">
+                <span class="layui-breadcrumb cate-breadcrumb">
+                    <a class="jl-main-title" href="javascript:">商品列表</a>
+                    <a href="javascript:">商品分类</a>
+                </span>
+                <div class="layui-btn-group" style="margin-left: 16px;margin-bottom: 4px">
+                    <button class="one-key-move-all layui-btn layui-btn-sm">一键移动</button>
+                </div>
+                <div class="layui-btn-group" style="margin-bottom: 4px">
+                    <button class="query-btn layui-btn layui-btn-sm">检索</button>
+                </div>
+                <div class="layui-btn-group" style="margin-bottom: 4px">
+                    <button  class="layui-btn layui-btn-sm jl-main-attr">属性列表</button>
+                </div>
+            </blockquote>
+            <blockquote class="layui-elem-quote query-container">
+                <form class="data-table-screen layui-row layui-form layui-input-inline" action="" lay-filter="screen-form">
+                    <div class="layui-col-xs12 layui-col-sm6 layui-col-md6 ">
+                        <span class="data-table-screen-title">型号：</span>
+                        <div class="layui-input-inline">
+                            <input name="p_sign" value="{$request['p_sign']}" class="layui-input list-clear-input " type="text">
+                        </div>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                        <span class="data-table-screen-title">品牌：</span>
+                        <div class="layui-input-inline">
+                            <input name="brand_name" value="{$request['brand_name']}" placeholder="请输入品牌首字母" class="layui-input list-clear-input jl-select-brand layui-form-label-pinyin-p_sign" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                        <span class="data-table-screen-title">封装：</span>
+                        <div class="layui-input-inline">
+                            <input name="package" value="{$request['package']}" class="layui-input list-clear-input jl-select-package layui-form-label-pinyin-package" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                        <span class="data-table-screen-title">产品负责人：</span>
+                        <div class="layui-input-inline">
+                            <input name="person_liable_name" value="{$request['person_liable_name']}" class="layui-input list-clear-input jl-select-pm layui-form-label-pinyin-vm" type="text">
+                            <input name="person_liable" value="{$request['person_liable']}" class="layui-input list-clear-input jl-select-pm" type="hidden">
+                        </div>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                        <span class="data-table-screen-title">类别：</span>
+                        <?php $isin = in_array("1",$request['show_site']); ?>
+                        <if condition="$isin">
+                            <input type="checkbox" name="show_site1" title="最新" checked lay-skin="primary" class="list-clear-checkbox">
+                            <else />
+                            <input type="checkbox" name="show_site1" title="最新" lay-skin="primary" class="list-clear-checkbox">
+                        </if>
+                        <?php $isin = in_array("2",$request['show_site']); ?>
+                        <if condition="$isin">
+                            <input type="checkbox" name="show_site2" title="推荐" checked lay-skin="primary" class="list-clear-checkbox">
+                            <else />
+                            <input type="checkbox" name="show_site2" title="推荐" lay-skin="primary" class="list-clear-checkbox">
+                        </if>
+                        <?php $isin = in_array("3",$request['show_site']); ?>
+                        <if condition="$isin">
+                            <input type="checkbox" name="show_site3" title="特卖" checked lay-skin="primary" class="list-clear-checkbox">
+                            <else />
+                            <input type="checkbox" name="show_site3" title="特卖" lay-skin="primary" class="list-clear-checkbox">
+                        </if>
+                        <!---->
+                        <if condition="$request['min_open'] eq 'on'">
+                            <input type="checkbox" name="min_open" title="不可拆" checked lay-skin="primary" class="list-clear-checkbox">
+                            <else />
+                            <input type="checkbox" name="min_open" title="不可拆" lay-skin="primary" class="list-clear-checkbox">
+                        </if>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                        <span class="data-table-screen-title">更新时间：</span>
+                        <div class="layui-input-inline">
+                            <input name="start_time" value="{$request['start_time']}" class="layui-input list-clear-input" type="text" id="datepicker1">
+                        </div>
+                        <span>-</span>
+                        <div class="layui-input-inline">
+                            <input name="end_time" value="{$request['end_time']}" class="layui-input list-clear-input" type="text" id="datepicker2">
+                        </div>
+                    </div>
+                    <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                        <button class="screen—btn layui-btn layui-btn-sm" lay-submit lay-filter="screen" style="width: 100px">
+                            筛选
+                        </button>
+                        <span class="clear-btn layui-btn layui-btn-sm layui-btn-primary" style="width: 100px">清空</span>
+                    </div>
+                </form>
+            </blockquote>
+            <div class="layui-tab" lay-filter="type" style="position: relative;">
+                <ul class="layui-tab-title">
+                    <li lay-id="1" class="{$request['is_online']==='1'?'layui-this':''}">已上架（<if condition="!$productList.count neq true">{$productList.count.is_online1} <else/> {$request.count.is_online1}</if>）</li>
+                    <li lay-id="2" class="{$request['is_online']==='2'?'layui-this':''}">待上架（<if condition="!$productList.count neq true">{$productList.count.is_online2} <else/> {$request.count.is_online2}</if>）</li>
+                    <li lay-id="0" class="{$request['is_online']==='0'?'layui-this':''}">已下架（<if condition="!$productList.count neq true">{$productList.count.is_online0} <else/> {$request.count.is_online0}</if>）</li>
+                </ul>
+                <div class="batch-handle-container">
+                    <span class="layui-breadcrumb" lay-separator="|">
+                        <a class="data-table-moves" href="javascript:">批量移动类别</a>
+                        <a class="data-table-add" href="javascript:">新增商品</a>
+                        <a class="data-table-upDowns" href="javascript:">批量{$request['is_online']!=='1'?'上':'下'}架</a>
+                        <a class="data-table-download" href="javascript:">
+                            <span>商品下载</span>
+                            <ul >
+                                <li data-id="0">分类下载</li>
+                                <li data-id="1" class="">vm下载</li>
+                            </ul>
+                        </a>
+                        <a class="data-table-edits" href="javascript:">批量编辑</a>
+                        <a class="data-table-batchDelete" href="javascript:">批量删除</a>
+                    </span>
+                </div>
+            </div>
+            <div class="layui-form data-table-container">
+                <table class="data-table" lay-filter="data-table">
+                    <script type="text/html" id="data-table-name-tpl">
+                        <div>
+                            <p>型号：{{d.p_sign}}</p>
+                            <p>品牌：{{d.brand_name}}</p>
+                        </div>
+                    </script>
+                    <script type="text/html" id="data-table-package-tpl">
+                        <div>
+                            <p>封装：{{d.package}}</p>
+                            <p>最小包装数：{{d.min}}</p>
+                        </div>
+                    </script>
+                    <script type="text/html" id="data-table-parameter-tpl">
+                        <div>
+                            <p>{{d.parameter}}</p>
+                        </div>
+                    </script>
+                    <script type="text/html" id="data-table-stock-tpl">
+                        <div>
+                            <p>库存：{{d.store}}</p>
+                            <p>货期：{{d.delivery}}天</p>
+                        </div>
+                    </script>
+                    <script type="text/html" id="data-table-show-tpl">
+                        <div>
+                            {{#  if(d.show_site==1){            }}
+                                    最新
+                            {{#  } else if(d.show_site==2){     }}
+                                    推荐
+                            {{#  } else if(d.show_site==3){     }}
+                                    特卖
+                            {{#  } }}
+                        </div>
+                    </script>
+                    <script type="text/html" id="data-table-handle-tpl">
+                        <div class="data-table-handle-box">
+                            <span lay-event="edit">编辑</span>
+                            {{#  if(d.is_online!=0){                    }}
+                                    <span lay-event="down">下架</span>
+                            {{#  }                                      }}
+                            {{#  if(d.is_online!=1){                    }}
+                                    <span lay-event="up">上架</span>
+                            {{#  }                                      }}
+                            {{#  if(d.show_site!=1){                    }}
+                                    <span lay-event="site1">最新</span>
+                            {{#  }                                      }}
+                            {{#  if(d.show_site!=2){                    }}
+                                    <span lay-event="site2">推荐</span>
+                            {{#  }                                      }}
+                            {{#  if(d.show_site!=3){                    }}
+                                    <span lay-event="site3">特卖</span>
+                            {{#  }                                      }}
+                            <span lay-event="move">移动类别</span>
+                            <!--<span lay-event="update">更新ERP数据</span>-->
+                            {{#  if(d.is_online!=1){                    }}
+                                    <span lay-event="del">删除</span>
+                            {{#  }                                      }}
+                            {{#  if(d.pdf!=null){                    }}
+                            <span lay-event="delPdf">删PDF</span>
+                            {{#  }                                      }}
+                        </div>
+                    </script>
+                    <script type="text/html" id="data-table-price-tpl">
+                        <ul>
+                            {{#     if(d.price_section && $.isArray(d.price_section)){
+                                        $.each(d.price_section,function(index,value){                                   }}
+                                            <li>{{value.start}}~{{value.end!=0?value.end-1:'以上'}}:{{value.price}}</li>
+                            {{#         })
+                                    }                                                                                   }}
+                        </ul>
+                    </script>
+                    <script type="text/html" id="data-table-tax-tpl">
+                        <div class="layui-table-cell laytable-cell-1-min_price">{{value}}</div>
+                    </script>
+                </table>
+                <div id="data-table-page"></div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script src="__PUBLIC__/Common/module/pikaday/1.6.1/pikaday.min.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','pikadayOption','form','selectPm','selectBrand'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var pikadayOption = layui.pikadayOption;
+            var form = layui.form;
+            var selectPm = layui.selectPm;
+            var selectBrand = layui.selectBrand;
+            var list_data = {$productList|json_encode};
+            var tree_data = {$categoryTree|json_encode};
+            var cate_path = {$cate_path|json_encode};
+            var request = {$request|json_encode};
+           /* selectBrand.initInput(false,false,'brand_name');*/
+           initInput({"p_sign":"","vm":"","package":"","product":""});
+            var jsTree_checkBox=false;
+            console.log(cate_path);
+            $(function () {
+                //商品下载
+                var isLoad=sessionStorage.getItem('isLoad')? sessionStorage.getItem('isLoad'):"false";
+                var exp = new Date();
+                exp.setTime(exp.getTime() + 60 * 2000);//过期时间 2分钟
+                if(isLoad == "checkbox"){
+                    //document.cookie='isLoad=load;expires='+exp.toGMTString();
+                    jsTree_checkBox=true;
+                    $("a.data-table-download").on({"mouseenter":function(){
+                            $(this).find("ul").show();
+                        }});
+                    $("a.data-table-download ").on({"mouseleave":function(){
+                            $(this).find("ul").hide();
+                        }});
+                    $("a.data-table-download li").on({"mouseenter":function(){
+                            $(this).css("color","#1E9FFF");
+                        },"mouseleave":function(){
+                            $(this).css("color","#999");
+                        }})
+                }
+                $(".data-table-download>span").on("click",function(){
+                    if(isLoad == "checkbox"){
+                        sessionStorage.setItem("isLoad","Load");
+                    }else{
+                        sessionStorage.setItem("isLoad","checkbox");
+                        //document.cookie="isLoad=checkbox"
+                    }
+                    setTimeout(function(){
+                        queryTable({
+                            pageSize:list_data.pageSize,
+                            page:1
+                        },true);
+                    },100)
+                });
+                //查询跳转
+                var queryTable = function (query,isSession) {
+                    if(!isSession){/*document.cookie="isLoad="+isLoad+"";*/sessionStorage.setItem("isLoad",isLoad);}
+                    query = jlTool.urlEncode(query);
+                    window.location.href = '/Admin/Product/productList?'+query
+                };
+                //树初始化
+                var parent_cate = [];
+                var reduceTree = (function reduce(value) {
+                    if(value && $.isArray(value)){
+                        $.each(value,function (i,v) {
+                            v['text'] = v.cate_name+'（'+v.num+'）';
+                            $.each(cate_path,function (j,cate_path_item) {
+                                if(cate_path_item.pathRht && cate_path_item.pathRht.indexOf(v.rht)>-1){
+                                    v['state'] = {"opened": false};
+                                }
+                                if(cate_path_item&&cate_path_item.id===v.id){
+                                    parent_cate.push(v);
+                                    v['state'] = {"selected": true};
+                                }
+                                /*if(v['state']){
+                                    //v['state']/!*['opened']*!/ =  "closed";
+                                    v.initialState="collapsed"
+                                }else{
+                                    //v['state'] ="closed";
+                                    v.initialState="collapsed"
+                                }*/
+
+                            });
+                            if(v.children){
+                                reduce(v.children)
+                            }
+                        });
+                    }
+                    return value;
+                })(tree_data.category);
+                //标题
+                var renderBreadcrumb = (function () {
+                    var html = '';
+                    $.each(parent_cate,function (index,value) {
+                        if(index>30){
+                            html += '<span lay-separator="">/</span><a href="javascript:">'+value.cate_name+'</a>';
+                        }else if(index==30){
+                            html +="...";
+                        }
+                    });
+                   if(isLoad !="checkbox")$('.cate-breadcrumb').append(html);
+                })();
+                tree_data.opened=false;
+                $('#jstree_demo_div').jstree({
+                    'core': {
+                        'data': [{
+                            "multiple":false,
+                            "text": "商品分类",
+                            "state": {"opened":true},
+                            "children": reduceTree/*(tree_data.category)*/
+                        }],
+                        "themes" : { "stripes" : true }
+                    },
+                    "force_text": true,
+                     "plugins" : jsTree_checkBox ? ["checkbox"] :[]
+                    ,"checkbox" : {
+                       // "keep_selected_style" : false,
+                      //  "three_state":true,
+                        //"tie_selection":false
+                    }
+                }).on("ready.jstree",function(){
+                    //$('#jstree_demo_div').jstree({"state":"closed"});
+                }).on("changed.jstree", function (e, data) {
+                    if ((data.action==='select_node') ||data.action==='deselect_node') {
+                        var category = data.instance.get_node(data.selected[0]);
+                        var cate_id = category.id;
+                        if(data.selected.length >0 && data.selected.length == data.instance._cnt){
+                            queryTable({
+                                pageSize:list_data.pageSize,
+                                page:1
+                            });
+                        }
+                        else {
+                            //alert(data.selected );
+                            queryTable({
+                                cateId_arr:data.selected || [],//cate_id,//
+                                pageSize:list_data.pageSize,
+                                page:1
+                            });
+                        }
+                    }
+                });
+
+                $('.jl-main-attr').on('click',function () {
+                    console.log(111);
+                    jlTool.sendIframeMsg('go',{
+                        title:'属性列表',
+                        url:'/Admin/Product/addAttribute',
+                        icon:''
+                    });
+                })
+                //时间选择初始化
+                var picker1 = new Pikaday($.extend({},pikadayOption,{
+                    field: document.getElementById('datepicker1'),
+                }));
+                var picker2 = new Pikaday($.extend({},pikadayOption,{
+                    field: document.getElementById('datepicker2'),
+                }));
+                //query
+                $('.query-btn').click(function () {
+                    $('.query-container').toggle(100)
+                });
+                //类型标签页
+                element.on('tab(type)', function(data){
+                    var id = $(this).attr('lay-id');
+                    var query = {
+                        pageSize:list_data.pageSize,
+                        page:1,
+                        count:list_data.count || request.count
+                    };
+                    if(request.cate_id){ query['cate_id'] = request.cate_id }
+                    if(id==='del'){ query['is_del'] = 1 }
+                    else { query['is_online'] = id }
+                    queryTable(query);
+                });
+                //表格初始化
+                var sort = {
+                    field:request.field || "create_time",
+                    type:request.type || "desc"
+                };
+                //console.log(list_data.list,request);
+                table.render({
+                    initSort:sort,
+                    id:'product',
+                    elem: '.data-table',
+                    data: list_data.list?list_data.list:[],
+                    page: false,
+                    limit: list_data.pageSize,
+                    cellMinWidth: 90,
+                    height:'full-178',
+                    cols: [[
+                        {field: 'checkbox', type: 'checkbox', width: 50, fixed: 'left'},
+                        {field: 'cover_image', title: '图片', width: 100,
+                            templet: '<div ><img class="data-table-cover-image" style="margin-top:11px;width:70px;height:70px" src="{{d.cover_image}}"></div>'
+                        },
+                        {field: 'name', title: '型号信息',width: 140,templet: '#data-table-name-tpl'},
+                        {field: 'package', title: '封装',width: 120,templet: '#data-table-package-tpl'},
+                        {field: 'parameter', title: '功能描述',width: 260,templet: '#data-table-parameter-tpl'},
+                        {field: 'stock', title: '库存描述',width: 120,templet: '#data-table-stock-tpl'},
+                        {field: 'person_liable_name', title: '产品负责人',width: 125,align:'center',sort: false},
+                        {field: 'min_price', title: '最低建议价',width: 110,align:'center',sort: true},
+                        {field: 'price', title: '价格（含税）',width: 120,align:'center',templet: '#data-table-price-tpl'},
+                        {field: 'tax', title: '税率',width: 70,align:'center',templet: 'data-table-tax-tpl'},
+                        {field: 'fitemno', title: 'ERP型号',align:'center'},
+                        {field: 'fstcb', title: '标准陈本',width: 120,align:'center',/*sort: true,*/templet: 'data-table-tax-tpl'},
+                        {field: 'is_tax', title: '展示进项',align:'center',templet:function(d){
+                            return d.is_tax == 0 ?"无进项" :"有进项";
+                            }},
+                        {field: 'min_open', title: '是否可拆',align:'center',templet:function(d){
+                                return d.min_open == 0 ? "不可拆" :"可拆";
+                            }},
+                        {field: 'show_site', title: '展示状态',align:'center',templet:function(b){
+                            var show='';
+                            switch(b.show_site){
+                                case '1':
+                                    show='最新';break;
+                                case '2':
+                                    show='推荐';break;
+                                case '3':
+                                    show='特卖';break;
+                                default:show='无';
+                            }
+                            return '<div>'+show+'</div>';
+                        }},
+                        {field: 'search_top', title: '主推型号'},
+                        {field: 'is_search_top', title: '是否头条',width:100,align:"center",templet:function(d){
+                            return d.is_search_top==0?"否":"是";
+                            }},
+                        {field: 'create_time', title: '上传时间', width: 100,align:'center',sort: true},
+                        {field: 'handle', title: '操作', width: 150,align:'center', fixed: 'right', toolbar: '#data-table-handle-tpl'},
+                    ]]
+                });
+                //上下架
+                var upDown = function (arr,isUp) {
+                    var target = [];
+                    $.each(arr,function (index, value) {
+                        target.push({
+                            id:value.id,
+                            is_online:isUp
+                        })
+                    });
+                    var post_url='/Admin/Product/productListActionPart';
+                    if(target[0]['is_online']==100){
+                        post_url='/Admin/Product/deleteProduct';
+                    }
+                    if(target[0]['is_online']==1000){
+                        post_url='/Admin/Product/deleteProductPdf';
+                    }
+                    $.post(post_url,{data:target},function (res) {
+                        res = $.parseJSON(res);
+                        if(res.error===0){
+                            window.location.reload();
+                            layer.msg((isUp===100 || isUp==1000)?'删除成功':'修改成功');
+                        }
+                        else {
+                            layer.tips(res.msg, '.layui-layer-btn');
+                        }
+                    })
+                };
+                //展示状态
+                var changSite = function (arr,site) {
+                    var target = [];
+                    $.each(arr,function (index, value) {
+                        target.push({
+                            id:value.id,
+                            show_site:site
+                        })
+                    });
+                    $.post('/Admin/Product/productListActionPart',{data:target},function (res) {
+                        res = $.parseJSON(res);
+                        if(res.error===0){
+                            window.location.reload();
+                            layer.msg('修改成功');
+                        }
+                        else {
+                            layer.tips(res.msg, '.layui-layer-btn');
+                        }
+                    })
+                };
+                //分类
+                var changeCate = function (arr,cate_id) {
+                    var target = [];
+                    $.each(arr,function (index, value) {
+                        target.push({
+                            id:value.id,
+                            cate_id:cate_id
+                        })
+                    });
+                    $.post('/Admin/Product/productListActionPart',{data:target},function (res) {
+                        res = $.parseJSON(res);
+                        if(res.error===0){
+                            window.location.reload();
+                            layer.msg('修改成功');
+                        }
+                        else {
+                            layer.msg(res.msg);
+                        }
+                    })
+                };
+                //工具条事件
+                table.on('tool(data-table)', function (obj) {
+                    var data = obj.data;
+                    var layEvent = obj.event;
+                    switch (layEvent){
+                        case 'edit':
+                            var query = jlTool.urlEncode({
+                                action:'edit',
+                                productId_arr:[data.id]
+                            });
+                            jlTool.sendIframeMsg('go',{
+                                title:'商品编辑',
+                                url:'/Admin/Product/productListAction?'+query,
+                                icon:''
+                            });
+                            break;
+                        case 'addAttr':
+                            jlTool.sendIframeMsg('go',{
+                                title:'属性列表',
+                                url:'/Admin/Product/addAttribute',
+                                icon:''
+                            });
+                            break;
+                        case 'up':
+                            upDown([{id:data.id}],1);
+                            break;
+                        case 'down':
+                            upDown([{id:data.id}],0);
+                            break;
+                        case 'site1':
+                            changSite([{id:data.id}],1);
+                            break;
+                        case 'site2':
+                            changSite([{id:data.id}],2);
+                            break;
+                        case 'site3':
+                            changSite([{id:data.id}],3);
+                            break;
+                        case 'del':
+                            layer.confirm('确认删除吗？',function(index){
+                                upDown([{id:data.id}],100);
+                            });
+                            break;
+                        case 'delPdf':
+                            layer.confirm('确认删除产品规格书吗？',function(index){
+                                upDown([{id:data.id}],1000);
+                            });
+                            break;
+                        case 'move':
+                            layer.open({
+                                title:'选择移动分类',
+                                type: 0,
+                                content: (
+                                    '<div style="width: 440px;height: 400px;overflow: auto"> ' +
+                                    '<div class="jstree_select"></div> ' +
+                                    '</div>'
+                                ),
+                                success:function () {
+                                    var _this = this;
+                                    $('.jstree_select').jstree({
+                                        'core': {
+                                            'data': [{
+                                                "multiple":false,
+                                                "text": "商品分类",
+                                                "state": {"opened": true},
+                                                "children": tree_data.category
+                                            }]
+                                        }
+                                    }).on("changed.jstree", function (e, data) {
+                                        if ((data.action==='select_node')&&data.selected.length) {
+                                            var category = data.instance.get_node(data.selected[0]);
+                                            _this.selected = category.children.length===0 ? category : false
+                                        }
+                                    });
+                                },
+                                selected:false,
+                                yes:function (index) {
+                                    if(this.selected){
+                                        changeCate([{id:data.id}],this.selected.id);
+                                        layer.close(index);
+                                    }
+                                    else {
+                                        layer.tips('必须选择并且是最底层分类', '.layui-layer-btn0');
+                                    }
+                                }
+                            });
+                            break;
+                        case 'update':
+                            var results = [];
+                            var index = layer.load(2);
+                            var callback = function () {
+                                if(results.length===2){
+                                    var trHtml = '';
+                                    $.each(results,function (index,value) {
+                                        trHtml +=
+                                            '<tr> ' +
+                                            '<td>'+value.type+'</td> ' +
+                                            '<td>'+value.text+'</td> ' +
+                                            '<td>'+value.msg+'</td> ' +
+                                            '</tr> ' ;
+                                    });
+                                    layer.close(index);
+                                    layer.open({
+                                        title:'更新结果',
+                                        type: 0,
+                                        area: '440px',
+                                        content: (
+                                            '<div> ' +
+                                            '<table class="layui-table" lay-size="sm"> ' +
+                                            '<colgroup><col width="100"><col width="100"><col width="100"></colgroup> ' +
+                                            '<thead><tr><th>类别</th><th>结果</th><th>信息</th><tbody> ' +
+                                            trHtml+
+                                            '</tbody> ' +
+                                            '</table> ' +
+                                            '</div>'
+                                        ),
+                                        yes:function () {
+                                            window.location.reload()
+                                        }
+                                    })
+                                }
+                            };
+                            $.post('/EES/Product/getItemPrice',{itemNo:data.fitemno},function (res) {
+                                res['type'] = 'erp价格';
+                                res['text'] = res.data.price;
+                                results.push(res);
+                                callback();
+                            });
+                            $.post('/EES/Product/getItemStock',{itemNo:data.fitemno},function (res) {
+                                res['type'] = 'erp库存';
+                                res['text'] = res.data.qty;
+                                results.push(res);
+                                callback();
+                            });
+                            break
+                    }
+                });
+                table.on('sort(data-table)', function(obj){
+                    var param = {};
+                    $.extend(param,request,{
+                        page:obj.page,
+                        field:obj.field,
+                        type:obj.type
+                    });
+                    window.location.href = '/Admin/Product/productList?'+jlTool.urlEncode(param);
+                });
+                //分页初始化
+                laypage.render({
+                    elem: 'data-table-page',
+                    limit: list_data.pageSize,
+                    count: list_data.count?list_data.count.count:0,
+                    curr: list_data.page,
+                    layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                    jump: function (obj, first) {
+                        if (!first) {
+                            queryTable($.extend({},request,{
+                                pageSize:obj.limit,
+                                page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                            }));
+                        }
+                    }
+                });
+                //筛选按钮
+                form.on('submit(screen)', function(data){
+                    var res = {};
+                    $.each(data.field,function (index,value) {
+                        if(index.indexOf('show_site')>-1){
+                            if(!res['show_site']){ res['show_site'] = [] }
+                            var v = index.split('show_site')[1];
+                            res['show_site'].push(v);
+                        }
+                        else if(value){
+                            res[index] = value.trim()
+                        }
+                    });
+                    queryTable($.extend({},{
+                        cateId_arr:request.cateId_arr?request.cateId_arr:[],
+                        is_online:request.is_online?request.is_online:null,
+                        is_del:request.is_del?request.is_del:null,
+                        cate_id:request.cate_id,
+                        pageSize:request.pageSize,
+                        page:1
+                    },res));
+                    return false;
+                });
+                //清空
+                $('.clear-btn').on('click',function () {
+                    $('.list-clear-input').val('');
+                    $('.list-clear-checkbox').prop('checked',false);
+                    form.render('checkbox', 'screen-form');
+                });
+                //添加
+                $('.data-table-add').on('click',function () {
+                    jlTool.sendIframeMsg('go',{
+                        title:'商品录入',
+                        url:'/Admin/Product/productListAction',
+                        icon:''
+                    })
+                });
+                //商品下载
+                $('.data-table-download li').on('click',function () {
+                    var $this=$(this);
+                    var choose=$this.attr("data-id");
+                    function sendAjax(IDs,data){
+                        if(IDs.length!==0){
+                            var layer_index = layer.open({
+                                content: '生成中<i style="display: inline-block;" class="layui-anim layui-anim-rotate layui-anim-loop iconfont-jl icon-jl-loading"></i>',
+                                btn:[],
+                                closeBtn:0
+                            });
+                            $.post('/Admin/Product/productExcelDownload',data,function (res) {
+                                layer.close(layer_index);
+                                res = $.parseJSON(res);
+                                if(res.error===0){
+                                    var url = '/'+res.data.one;
+                                    var a = document.createElement("a");
+                                    a.href = url;
+                                    a.download ="商品信息.xlsx";
+                                    a.click();
+                                } else {
+                                    layer.msg(res.msg)
+                                }
+                            })
+                        } else {
+                            layer.msg('请勾选需要导出的商品')
+                        }
+                    }
+                    if(choose==0){
+                        var ids = table.checkStatus('product');
+                        //console.log("ids",ids);
+                        var arr = [];
+                       /*if(ids.data.length!==0){
+                           $.each(ids.data,function (index,value) {
+                               arr.push(value.id)
+                           });
+                       }*/
+                       if(cate_path){
+                           if(cate_path.length!==0){
+                               $.each(cate_path,function (index,value) {
+                                   arr.push(value.id)
+                               });
+                           };
+                           sendAjax(cate_path,{categoryId_arr:arr}/*,{productId_arr:arr}*/);
+                       }else{
+                           if(ids.data.length!==0){
+                               $.each(ids.data,function (index,value) {
+                                   arr.push(value.id)
+                               });
+                           }
+                           sendAjax(ids,{productId_arr:arr});
+                       }
+                   }else{
+
+                        selectPm.initInput(null,function(){
+                            var ids = (new Function("return " + $this.attr("data-val")))();
+                            var arr=[];
+                            if(ids.length!==0){
+                                $.each(ids,function (index,value) {
+                                    arr.push(value.uid)
+                                });
+                            }
+                            sendAjax(ids,{vmId_arr:arr});
+                        },null,$this);
+                    }
+                });
+                //批量编辑
+                $('.data-table-edits').on('click',function () {
+                    var ids = table.checkStatus('product');
+                    var arr = [];
+                    $.each(ids.data,function (index,value) {
+                        arr.push(value.id)
+                    });
+                    if(arr.length!==0){
+                        var query = jlTool.urlEncode({
+                            action:'edit',
+                            productId_arr:arr
+                        });
+                        jlTool.sendIframeMsg('go',{
+                            title:'商品编辑',
+                            url:'/Admin/Product/productListAction?'+query,
+                            icon:''
+                        });
+                    }
+                    else {
+                        layer.msg('请先勾选目标')
+                    }
+                });
+                //批量删除
+                $('.data-table-batchDelete').on('click',function () {
+                    var ids = table.checkStatus('product');
+                    var arr = [];
+                    $.each(ids.data,function (index,value) {
+                        arr.push({
+                            id:value.id,
+                            is_online:100
+                        })
+                    });
+                    if(arr.length!==0){
+                        upDown(arr,100)
+                    }
+                    else {
+                        layer.msg('请先勾选目标')
+                    }
+                });
+                //批量下架
+                $('.data-table-upDowns').on('click',function () {
+                    var ids = table.checkStatus('product');
+                    var arr = [];
+                    $.each(ids.data,function (index,value) {
+                        arr.push({ id:value.id })
+                    });
+                    if(arr.length!==0){
+                        upDown(arr,parseInt(request.is_online)!==1?1:0)
+                    }
+                    else {
+                        layer.msg('请先勾选目标')
+                    }
+                });
+                //批量移动
+                $('.data-table-moves').on('click',function () {
+                    var ids = table.checkStatus('product');
+                    var arr = [];
+                    $.each(ids.data,function (index,value) {
+                        arr.push({ id:value.id })
+                    });
+                    if(arr.length!==0){
+                        layer.open({
+                            title:'选择移动分类',
+                            type: 0,
+                            content: (
+                                '<div style="width: 440px;height: 400px;overflow: auto"> ' +
+                                '<div class="jstree_select"></div> ' +
+                                '</div>'
+                            ),
+                            success:function () {
+                                var _this = this;
+                                $('.jstree_select').jstree({
+                                    'core': {
+                                        'data': [{
+                                            "multiple":false,
+                                            "text": "商品分类",
+                                            "state": {"opened": true},
+                                            "children": tree_data.category
+                                        }]
+                                    }
+                                }).on("changed.jstree", function (e, data) {
+                                    if ((data.action==='select_node')&&data.selected.length) {
+                                        var category = data.instance.get_node(data.selected[0]);
+                                        _this.selected = category.children.length===0 ? category : false
+                                    }
+                                });
+                            },
+                            selected:false,
+                            yes:function (index) {
+                                if(this.selected){
+                                    changeCate(arr,this.selected.id);
+                                    layer.close(index);
+                                }
+                                else {
+                                    layer.tips('必须选择并且是最底层分类', '.layui-layer-btn0');
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        layer.msg('请先勾选目标')
+                    }
+                });
+                //一键移动
+                $('.one-key-move-all').click(function () {
+                    layer.open({
+                        title:'选择移动分类',
+                        type: 0,
+                        area:['400px'],
+                        content: (
+                            '<div style="width: 400px;height: 400px;overflow: auto"> ' +
+                            '<p style="margin-bottom: 8px"><span style="color:#dd514c">注意</span>：一键移动会将当前分类下<span style="color:#dd514c">所有商品</span><br>移动到所选择分类下</p>' +
+                            '<div class="jstree_select"></div> ' +
+                            '</div>'
+                        ),
+                        success:function () {
+                            var _this = this;
+                            $('.jstree_select').jstree({
+                                'core': {
+                                    'data': [{
+                                        "multiple":false,
+                                        "text": "商品分类",
+                                        "state": {"opened": true},
+                                        "children": tree_data.category
+                                    }]
+                                }
+                            }).on("changed.jstree", function (e, data) {
+                                if ((data.action==='select_node')&&data.selected.length) {
+                                    var category = data.instance.get_node(data.selected[0]);
+                                    _this.selected = category.children.length===0 ? category : false
+                                }
+                            });
+                        },
+                        selected:false,
+                        yes:function (index) {
+                            if(this.selected){
+                                var id = this.selected.id;
+                                $.post('/Admin/Product/productCategoryToCategory',{cateId:request.cate_id,cateId_to:id},function (res) {
+                                    res = $.parseJSON(res);
+                                    if(res.error===0){
+                                        queryTable({
+                                            cate_id:id,
+                                            pageSize:list_data.pageSize,
+                                            page:1
+                                        });
+                                        layer.msg(res.msg);
+                                    }
+                                    else {
+                                        layer.msg(res.msg)
+                                    }
+                                });
+                                layer.close(index);
+                            }
+                            else {
+                                layer.tips('必须选择并且是最底层分类', '.layui-layer-btn0');
+                            }
+                        }
+                    })
+                });
+                //分割线拖拽
+                var $drag_box = $('.jl-drag-container');
+                var $drag_handle = $('.jl-drag-handle');
+                var drag_box1 = $('.tree-container');
+                var drag_box2 = $('.table-container');
+                var box1_css, box2_css;
+                var drag_status = false;
+                var drag_offset;
+                $drag_handle.mousedown(function (e) {
+                    drag_status = true;
+                    drag_offset = e.screenX;
+                    box1_css = parseInt(drag_box1.css('width'));
+                    box2_css = parseInt(drag_box2.css('margin-left'))
+                });
+                $drag_box.mouseup(function () {
+                    drag_status = false
+                });
+                $drag_box.mouseleave(function () {
+                    drag_status = false
+                });
+                $drag_box.mousemove(function (e) {
+                    if (drag_status) {
+                        var distance = e.screenX - drag_offset;
+                        drag_box1.css('width', box1_css + distance);
+                        drag_box2.css('margin-left', box2_css + distance)
+                    }
+                });
+            });
+        })
+    </script>
+</block>

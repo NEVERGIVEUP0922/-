@@ -1,0 +1,78 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">{$request['role_id']?'编辑':'新增'}角色</a>
+            </span>
+        </blockquote>
+        <form class="layui-form" action="">
+            <if condition="$request['role_id']"><assign name="data" value="$list.list.0" /></if>
+            <div class="layui-form-item layui-required">
+                <label class="layui-form-label">角色名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="role_name" placeholder="请输入角色名称" autocomplete="off"
+                    class="layui-input" value="{$data.role_name}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">角色描述</label>
+                <div class="layui-input-block">
+                    <input type="text" name="role_desc" placeholder="请输入角色描述" autocomplete="off"
+                    class="layui-input" value="{$data.role_desc}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">排序</label>
+                <div class="layui-input-block">
+                    <input type="text" name="role_seq" placeholder="请输入排序" autocomplete="off"
+                           class="layui-input" value="{$data.role_seq}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="form">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['layer', 'jlTool','element','form'], function () {
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var single_data = {$list.list.0|json_encode};
+            var request = {$request|json_encode};
+            console.log('single_data',single_data);
+            form.on('submit(form)', function(data){
+                if(request&&request.role_id){
+                    data.field['role_id'] = request.role_id;
+                    data.field['action'] = 'edit';
+                }
+                else {
+                    data.field['action'] = 'add';
+                }
+                $.post('/Admin/Sys/sysRoleAction',data.field,function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        layer.msg('操作成功');
+                        jlTool.sendIframeMsg('refresh','roleList');
+                        setTimeout(function () {
+                            window.location.reload()
+                        },500)
+                    }
+                    else {
+                        layer.msg(res.msg)
+                    }
+                });
+                return false;
+            });
+        })
+    </script>
+</block>

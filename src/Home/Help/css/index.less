@@ -1,0 +1,271 @@
+@import "../../Public/css/init";
+
+#jl-help{
+  width: 1200px;
+  margin: 0 auto;
+}
+.jl-help-left{
+  float: left;
+  width: 193px;
+  box-sizing: border-box;
+  border:@border02;
+  border-bottom:none;
+  margin-bottom: 10px;
+  >li{
+    >h4{
+      background: @bg-color;
+      .font16(@dark-grey);
+      line-height: 38px;
+      border-bottom:@border02;
+      padding-left: 20px;
+      position: relative;
+      cursor: pointer;
+    }
+    >ol{
+      a{
+        display: block;
+        line-height: 38px;
+        border-bottom:@border02;
+        padding-left: 20px;
+      }
+    }
+  }
+  .jl-arr-t{
+    width: 13px;
+    height: 7px;
+    display: block;
+    position: absolute;
+    top: 17px;
+    right: 20px;
+    background: url("../../Public/img/sprite.png") no-repeat -50px -321px;
+  }
+  .jl-active{
+    .jl-arr-t{
+      background-position-x: -69px;
+    }
+    >ol{
+      display: none;
+    }
+  }
+  .js-active{
+    a{
+      color:@color;
+    }
+  }
+}
+
+.jl-help-right{
+  width: 972px;
+  float: left;
+  margin-left: 35px;
+  img{
+    max-width: 972px;
+  }
+}
+.jl-titles{
+  border-bottom:@border02;
+  overflow: hidden;
+  li{
+    float: left;
+    padding: 0 20px;
+    text-align: center;
+    a{
+      display: block;
+      .font16(@dark-grey);
+      line-height: 39px;
+    }
+  }
+  .jl-active{
+    a{
+      color:@color;
+    }
+  }
+}
+
+//登录注册,找回密码
+.jl-register,.jl-logins,.jl-retrieve-password{
+  display: block;
+  >p{
+    margin-top: 30px;
+    color:@dark-grey;
+    margin-bottom: 15px;
+  }
+  >img{
+    margin-bottom: 10px;
+  }
+}
+.jl-logins{
+  display: none;
+}
+
+//购物流程
+.jl-process{
+  color:@dark-grey;
+  li{
+    float: left;
+    line-height: 40px;
+    text-align: center;
+    background: @bg-color;
+  }
+}
+.jl-tit{
+  margin: 20px 0;
+  li{
+    background: @light-gray;
+  }
+}
+.jl-li-left{
+  width: 192px;
+  margin-right: 10px;
+}
+.jl-li-right{
+  width: 770px;
+}
+.jl-process-main .jl-li-right{
+  text-align: left;
+  padding-left: 44px;
+  box-sizing: border-box;
+}
+.jl-process-main .jl-li-arr{
+  text-align: left;
+  background: #fff;
+  margin-top: 10px;
+  margin-left: 76px;
+  width: 972px;
+}
+
+
+//常见问题
+.jl-question{
+  margin-top: 30px;
+  li{
+    margin-bottom: 28px;
+    h4{
+      color:@dark-grey;
+      margin-bottom: 5px;
+      >a{
+        color:@green;
+        text-decoration: underline;
+      }
+    }
+    p{
+      color:@medium-grey;
+      line-height: 26px;
+    }
+  }
+  .jl-online>p{
+    color:@dark-grey;
+  }
+}
+
+//在线支付
+.jl-online{
+  h4{
+    margin: 20px 0;
+    .font16(@dark-grey);
+    padding-left: 20px;
+    line-height: 40px;
+    background: @bg-color;
+  }
+  p{
+    line-height: 24px;
+    color:@dark-grey;
+  }
+  img{
+    margin: 20px 0;
+  }
+}
+
+//账期支付
+.jl-payments{
+  margin-top: 30px;
+  color:@dark-grey;
+  li{
+    margin-bottom: 10px;
+  }
+  .jl-first-img{
+    margin-bottom: 28px;
+  }
+}
+
+.jl-indent>p{
+  margin-left: 26px;
+}
+
+.jl-laster{
+  margin-top: 35px;
+}
+
+.jl-invoices{
+  h4{
+    margin: 20px 0;
+    .font16(@dark-grey);
+    padding-left: 20px;
+    line-height: 40px;
+    background: @bg-color;
+  }
+  li{
+    margin-bottom: 30px;
+    h5{
+      color:@dark-grey;
+      line-height: 26px;
+    }
+  }
+  >h5{
+    color:@dark-grey;
+    margin-top: 30px;
+    line-height: 24px;
+  }
+  p{
+    line-height: 26px;
+  }
+}
+
+
+.jl-line{
+  margin-top: 70px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

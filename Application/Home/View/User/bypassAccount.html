@@ -1,0 +1,288 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">企业子账号</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+</block>
+<block name="nav-title">
+     企业中心
+</block>
+<block name="main">
+
+    <div id="jl-account">
+        <dl class="jl-add-main">
+            <dt>
+                <span class="jl-account-titles">企业用户</span>
+                <span class="jl-account-content">
+                   <if condition="$_SESSION['userInfo']['user_type'] eq 1">
+                        <notempty name="_SESSION['userInfo']['nick_name']">
+                            {$_SESSION['userInfo']['nick_name']}
+                            <else/>
+                            {$_SESSION['userInfo']['company_name']}
+                        </notempty>
+                    <else/>
+                        <notempty name="_SESSION['userInfo']['company_name']">
+                            {$_SESSION['userInfo']['company_name']}
+                            <else/>
+                            {$_SESSION['userInfo']['nick_name']}
+                        </notempty>
+                    </if></span>
+            </dt>
+            <foreach  name="sons_info" item="vo">
+                <!--{:dd($vo)}-->
+                <dd data-id="{$vo.id}">
+                    <span class="jl-account-titles">企业账号</span>
+                    <span class="jl-account-content">{$vo.nick_name}</span>
+                    <a href="javascript:;" class="jl-edite" data-index="{$key}" style="float: right;margin-right: 20px;color: #05baae;" data-status="10000">编辑</a>
+                    <if condition="$vo.is_delete eq 0">
+                        <a href="javascript:;" class="jl-deletes" data-status="{$vo.is_delete}">停用</a>
+                        <else/>
+                        <a href="javascript:;" class="jl-deletes" data-status="{$vo.is_delete}">启用</a>
+                    </if>
+
+                </dd>
+            </foreach >
+        </dl>
+        <p><i class="jl-falses"></i>一个企业用户可以添加十个企业子用户</p>
+        <button class="jl-add-btn">新增企业子用户</button>
+    </div>
+
+    <div class="jl-account-pop">
+        <div class="jl-pop-out"></div>
+        <div class="jl-pop-in">
+            <div class="jl-title">新增企业子用户<i class="jl-close"></i></div>
+            <style>
+                .jl-user li>div{ margin-top:1%}
+                .jl-user li>div input{ min-width:180px;height:30px;padding-left:10px}
+            </style>
+            <form class="jl-user">
+                <ul class="jl-pop-main">
+                   <!--<li>-->
+                       <!--<span class="jl-names">企业子用户</span>-->
+                       <!--<span class="jl-text">hangyunqing01</span>-->
+                   <!--</li>-->
+                    <li>
+                        <div>
+                            <span class="jl-names">昵称</span>
+                            <input class="jl-inputs-nickname" name="nick_name" type="text" placeholder="请输入你的昵称">
+                        </div>
+                        <div class="user_pass">
+                            <span class="jl-names">密码</span>
+                            <input class="jl-inputs-password"  name="user_pass" type="password" placeholder="请输入密码">
+                            <p style="color:#e84343;margin-left:142px">密码需要6位数以上的字母、数字等组合</p>
+                        </div>
+                        <div>
+                        <span class="jl-names">手机号码</span>
+                        <input class="jl-inputs" name="user_mobile" type="text" placeholder="请输入手机号码">
+                        <i class="jl-false-note"></i>
+                    </div>
+
+                    </li>
+                    <li><span class="jl-ensure" style="text-align:center;line-height:40px;">确定</span></li>
+                </ul>
+            </form>
+        </div>
+    </div>
+
+</block>
+
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery','jl-modal'], function ($,modal) {
+                modal.option({
+                    left:-77
+                });
+                var sons_info = {$sons_info|json_encode};
+                //console.log({$sons_info|json_encode});
+                var lis=$(".jl-add-main dd").length;
+                if(lis>=10){
+                    $(".jl-add-btn").css("background","#a8a8a8");
+                }
+                //增加子账号
+                $('.jl-add-btn').on('click',function(){
+                    var formDate=$(".jl-user").find("input");
+                    $.each(formDate,function(index,value){
+                        var $this = $(this);
+                        $this.val("");
+                    });
+                    if(lis<10){
+                        $(".jl-account-pop").css("display","block").find(".user_pass").show(100);
+                    }
+                });
+
+                var reg = /^1(3|4|5|7|8)\d{9}$/;
+                $(".jl-inputs").on("blur",function(){
+                    var mobile=$(this).val();
+                    if(!reg.test(mobile)){
+                        $(this).parent().addClass('js-false');
+                    }else{
+                        $(this).parent().removeClass('js-false');
+                    }
+                });
+                $(".jl-inputs-password").on("change",function(){
+                    var reg=/^\w{6,20}$/;
+                        if(!reg.test($(this).val())){
+                            modal.alert({
+                                title:'添加失败',
+                                brief:"密码必须为6位以上的数字、密码等组合",
+                                top:100
+                            });
+                        }
+                });
+                //添加或编辑子账号
+                var $phone = 0 ;
+                $('.jl-ensure').on("click",function(){
+                    var id=$(this).data("id");
+                    var $false=$(".jl-pop-main .js-false").length;
+                    var formDate=$(".jl-user").serializeArray();
+                    var reg=/^\w{6,20}$/;
+                    var ispass=true;
+                    var data={};
+                    $.each(formDate,function(index,value){
+                        if(id && value.name == "user_pass" ){
+                            if(value.value){
+                                data.user_pass = value.value;
+                            }else{
+                                return ;
+                            }
+                        };
+                        if(!value.value){
+                            ispass = false;
+                            modal.alert({
+                                title:'添加失败',
+                                brief:"添加子账户的所有信息皆为必填",
+                                top:100
+                            });return false;
+                        };
+                        if(!id && value.name == "user_pass"){
+                            if(!reg.test(value.value)){
+                                ispass = false;
+                                modal.alert({
+                                    title:'密码格式错误',
+                                    brief:"密码必须为6位以上的数字、密码等组合",
+                                    top:100
+                                });return false;
+                            };
+                        };
+                        if(id && value.name == "user_pass" && !value.value){
+                            data.user_pass = value.value;
+                        };
+                        if(value.name == "user_mobile"){ $phone = value.value};
+                        data[value.name] = value.value;
+                    });
+                    if(!ispass)return;
+                    if(id){
+                        data.childId = id;
+                        data.id = id;
+                    };
+                    if($false<=0){
+                        //var data={"phone":$phone};
+                        $(".jl-account-pop").css("display","none");
+                        $.ajax({
+                            type:'GET',
+                            url:"{:U('Home/Account/companySonRegister')}",
+                            data:data,
+                            success:function (res) {
+                                var data=res;
+                                if(data.error=="0"){
+                                    modal.alert({
+                                        title:'结果提示',
+                                        brief:(id ? '修改':'添加')+'成功',
+                                        top:100,
+                                        confirm:function () {
+                                            location.reload(true);
+                                            if(lis>=10){
+                                                $(".jl-add-btn").css("background","#a8a8a8");
+                                            }
+                                        }
+                                    });
+                                }else{
+                                    modal.alert({
+                                        title:id ? '修改':'添加'+'失败',
+                                        brief:data.msg,
+                                        top:100
+                                    });
+                                }
+                            }
+                        })
+                    }else{
+                        $(".jl-inputs").parent().addClass('js-false');
+                        $(".jl-inputs").focus();
+                    }
+                });
+                //赋值子账户
+                function pushValue(index,user_id){
+                    var getValue = sons_info[index];
+                    getValue.user_pass = '';
+                    var formDate=$(".jl-user").find("input");
+                    $(".jl-user").find(".jl-ensure").data("id",getValue.id);
+                    $(".jl-user").find(".jl-inputs").parent().removeClass('js-false');
+                    $.each(formDate,function(index,value){
+                        var $this = $(this);
+                        $this.val(getValue[$this.attr("name")]);
+                    });
+                    $(".jl-account-pop").css("display","block").find(".jl-ensure").data("id",user_id);
+                    //$(".jl-account-pop").find("input").val("");
+                }
+                $(".jl-edite").on("click",function(){
+                    var user_id=$(this).parent().attr("data-id");
+                    pushValue($(this).data("index"),user_id);
+                });
+                //关闭弹框
+                $('.jl-close').on("click",function(){
+                    $(".jl-account-pop").css("display","none");
+                    $(".jl-inputs").val("");
+                });
+
+                //停用/启用子账号
+                $(".jl-deletes").on("click",function(){
+                    var user_id=$(this).parent().attr("data-id");
+                    var name=$(this).siblings(".jl-account-content").html();
+                    var delete_value=$(this).attr("data-status");
+                    var is_delete = delete_value == 0 ? 1 : 0;
+                    modal.confirm({
+                        title:(delete_value == 0 ? '停用': '启用')+'子账号',
+                        brief:'确认要'+(delete_value == 0 ? '停用': '启用')+'子账号'+name+'吗？',
+                        top:100,
+                        confirm:function () {
+                            $.ajax({
+                                type:'GET',
+                                url:"{:U('Home/Account/userDeleteSon')}",
+                                data:{"user_id":user_id,"is_delete":is_delete },
+                                success:function(res){
+                                    var data=$.parseJSON(res);
+                                    //console.log(data);
+                                    if(data.error===0){
+                                        modal.alert({
+                                            title:(delete_value == 0 ? '停用': '启用')+'成功',
+                                            brief:'您已成功'+(delete_value == 0 ? '停用': '启用')+'子账号！',
+                                            top:100,
+                                            confirm:function () {
+                                                location.reload();
+
+                                            }
+                                        });
+                                    }else{
+                                        modal.alert({
+                                            title:'删除失败',
+                                            brief:data.msg,
+                                            top:100
+                                        });
+                                    }
+                                }
+                            })
+                        }
+                    });
+                })
+
+            });
+        });
+    </script>
+</block>

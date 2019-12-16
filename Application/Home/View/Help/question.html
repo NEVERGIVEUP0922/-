@@ -1,0 +1,64 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">顾客须知</a></li>
+    </ul>
+    <ul class="jl-question">
+        <li>
+            <h4>1、你们的货源是否有保证，是不是正品？</h4>
+            <p>
+                您好!玖隆芯城只提供原厂或者代理商正规渠道进货，保证原装正品。
+            </p>
+        </li>
+        <!--<li>-->
+            <!--<h4>2、货物和发票是一起寄出吗？</h4>-->
+            <!--<p>-->
+                <!--您好!玖隆芯城只提供经过严格筛选后的优秀国外供应商（如Rochester、Mouser、Arrow、Future、Digikey、Element14、Avnet等三十多家）的现货库存信息，完全根据需求自由选择指定的供应商货源在线采购，货源采购渠道公开透明，客户如有需要，玖隆芯城可提供向指定供应商下单采购的原始凭证和相关票据以供查验。-->
+            <!--</p>-->
+        <!--</li>-->
+        <li>
+            <h4>2、加入购物车后显示有最小起订量，没有满足起订量可以下单吗？</h4>
+            <p>
+                因个别物料不允许拆盘拆包，请下单时仔细看清楚库存是否有散数，如无散数并已标注不拆盘拆包的物料请按整盘整包下单，否则无法下单。如散数与整盘整包数量接近相差不大，可以与客服进行沟通后下单。
+            </p>
+        </li>
+        <li>
+            <h4>3、你们代理的品牌有哪些？</h4>
+            <p>
+                您好!玖隆芯城代理国内外芯片原厂，品牌众多，产品种类覆盖广，例如：（稍后完善，此需要讨论））。
+            </p>
+        </li>
+        <li>
+            <h4>4、能提供技术服务吗？</h4>
+            <p>
+                玖隆芯城针对不同的产品有专业的技术团队和销售团队，能及时提供售前售后技术服务，请参考售后服务详情！
+            </p>
+        </li>
+        <li>
+            <h4>5、可以月结吗？</h4>
+            <p>
+                玖隆芯城乐意授信账期给有信用有市场能力的客户，请参考特色服务：申请账期。
+            </p>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

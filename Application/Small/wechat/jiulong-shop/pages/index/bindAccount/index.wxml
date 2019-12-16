@@ -1,0 +1,33 @@
+<!--pages/shop/notice/index/index.wxml-->
+<loading hidden="{{show}}">正在加载</loading>
+<view class="fui-page page-shop-notice-detail" wx:if="{{show}}">
+  <form bindsubmit="formSubmit"  >
+    <view class="weui-cells" style="font-size:32rpx;">
+      <view class="weui-cell">
+            <view class="weui-cell__hd">
+              <view class="weui-label" style="min-width:80px;width:auto;margin-right:5%">商城账号</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input name="user_name" placeholder="请输入商城账号" />
+            </view>
+      </view>
+      <view class="weui-cell">
+            <view class="weui-cell__hd">
+              <view class="weui-label" style="min-width:80px;width:auto;margin-right:5%">账号密码</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input name="password" type="text" password='true' placeholder="请输入账号密码" />
+            </view>
+      </view>
+      <view class="weui-cell">
+            <view class="weui-cell__hd">
+              <view class="weui-label" style="min-width:80px;width:auto;margin-right:5%">手机号码</view>
+            </view>
+            <view class="weui-cell__bd">
+              <input name="mobile" type="number" placeholder="请输入商城绑定的或需要绑定手机号码" />
+            </view>
+      </view>
+    </view>
+    <button formType="submit" class="weui-btn weui-btn_sure">确认提交</button>
+ </form>
+</view>

@@ -1,0 +1,307 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.css">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        table {
+            font-size: 1em;
+        }
+
+        .ui-draggable, .ui-droppable {
+            background-position: top;
+        }
+        #ui-id-1{
+            max-height:90vh;
+            overflow-y:scroll;
+            overflow-x:hidden;
+        }
+    </style>
+
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">客户列表</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote list-query-container">
+            <form class="layui-form layui-clear list-query-form" lay-filter="list-query-form" action="">
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">客户</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" placeholder="请输入客户名或公司名或ERP客户编码" autocomplete="off"
+                               class="layui-input layui-form-label-pinyin" value="{$request.name}">
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label">客户电话</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="user_mobile" placeholder="请输入客户电话" autocomplete="off"
+                               class="layui-input jl-select-customer" value="{$request.user_mobile}">
+                    </div>
+                </div>
+                <!--<div class="layui-col-xs4 layui-col-sm4">-->
+                    <!--<label class="layui-form-label">企业名</label>-->
+                    <!--<div class="layui-input-block">-->
+                        <!--<input type="text" name="companyName" placeholder="请输入企业名" autocomplete="off"-->
+                               <!--class="layui-input jl-select-customer layui-form-label-pinyin" value="{$request.companyName}">-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="layui-col-xs4 layui-col-sm4">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-sm" lay-submit lay-filter="list-query-submit">筛选</button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm clear-btn"
+                                    lay-submit lay-filter="list-query-submit">清空</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="data-table-company_name">
+                <div class="data-table-handle-box" data-id="{{ d.id }}" style="width: 100%">
+                    {{#  if(d.company){         }}
+                    <!--<button class="layui-btn layui-btn-xs" lay-event="change"
+                            style="margin-right: 6px">修改</button>-->
+                    {{ d.company.company_name }}
+                    {{#  } else {               }}
+                    {{ d.nick_name }}
+                    {{#  }                      }}
+                </div>
+            </script>
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" data-id="{{ d.id }}" style="width: 100%">
+                    <span lay-event="connect">关联ERP客户</span>
+                    <span lay-event="sameList">查询相似ERP客户</span>
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','handleDistrict','selectErpCustomer','selectUser'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var handleDistrict = layui.handleDistrict;
+            var selectErpCustomer = layui.selectErpCustomer;
+            var selectUser = layui.selectUser;
+            selectUser.initInput(false,false,'uid');
+            var list_data = {$customerList|json_encode};
+            var request = {$request|json_encode};
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Customer/customerList?customer_isLock=customer_isLock&'+query
+            };
+            $.each(list_data.list,function (index,value) {
+                var company_area = value.company?value.company.company_area:'';
+                var a = handleDistrict.getData(company_area);
+                value.company_address = a.join(' ')+' '+(value.company?value.company.company_address:'');
+                value.company_people_num = value.company?value.company.company_people_num:''
+            });
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-192',
+                cols: [[
+                    {field: 'id', title: '序号', fixed: 'left',width:100}
+//                    ,{field: 'user_name', title: '客户账号'}
+//                    ,{field: 'user_type', title: '客户类型',width:100,templet:function (d) {
+//                        return parseInt(d.user_type)===1 ? '个人':'企业'
+//                    }}
+                    ,{field: 'customer_account', title: '欠款金额'}
+                    ,{field: 'fcustjc', title: 'ERP客户简称'}
+                    ,{field: 'fcustno', title: 'ERP客户编码'}
+                    ,{field: 'sale_name', title: '业务员'}
+                    ,{field: 'company_name', title: '客户名',width:200,toolbar: '#data-table-company_name'}
+                    ,{field: 'nick_name', title: '联系人',templet:function (d) {
+                        return d.company?'<span>'+d.company.company_user_name+'</span>':'<span>'+(d.normal ? d.normal.real_name:'')+'</span>'
+                    }}
+                    ,{field: 'user_mobile', title: '联系电话',templet:function (d) {
+                        return d.company?'<span>'+(d.company.company_user_phone||'')+'</span>':'<span>'+d.user_mobile+'</span>'
+                    }}
+//                    ,{field: 'user_mobile', title: '职务',templet:function (d) {
+//                        return d.company?'<span>'+(d.company.company_user_position||'')+'</span>':'<span>'+(d.normal ? d.normal.job:'')+'</span>'
+//                    }}
+//                    ,{field: 'user_email', title: '联系人邮箱'}
+//                    ,{field: 'company_address', title: '公司地址',templet:function (d) {
+//                        return d.company_address||(d.normal&&d.normal.address)
+//                    }}
+//                    ,{field: 'company_people_num', title: '公司人数'}
+//                    ,{field: 'create_time', title: '注册时间'}
+//                    ,{field: 'department_name', title: '部门'}
+//                    ,{field: 'handle', title: '操作',align:'center',width:240, fixed: 'right',
+//                        toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'connect'){
+                    selectErpCustomer.start(function (customer) {
+                        var d = {
+                            id:source.id,
+                            fcustno:customer.fcustno,
+                        };
+                        $.post('/Admin/Customer/customerAction',d,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg(res.msg);
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                    })
+                } else if (layEvent === 'sameList') {
+                    var loadIndex = layer.load();
+                    var rep = {
+                        fcustname:'客户名称',
+                        fcustjc:'客户简称',
+                        faddress:'公司地址',
+                        fshaddress:'收货地址',
+                        fcontactor1:'负责人',
+                        fcontactor2:'主要联络人',
+                        fshcontactor:'收货联系人',
+                        ftel:'公司电话',
+                        fmobile1:'负责人联系手机',
+                        fmobile2:'主要联络人联系手机',
+                        ftel1:'负责人联系电话',
+                        ftel2:'主要联络人联系电话',
+                        fshtel:'收货联系电话',
+                        fshmobile:'收货联系手机',
+                        fqq1:'负责人QQ',
+                        fqq2:'主要联络人QQ',
+                        fmsn1:'负责人微信',
+                        fmsn2:'主要联络人微信',
+                    };
+                    $.post('/Admin/Customer/getSameErpCust',{userId:source.id},function(res){
+                        layer.close(loadIndex);
+                        res = $.parseJSON(res);
+                        if (res.error === 0) {
+                            if (res.data && res.data.length) {
+                                var str = '<table class="layui-table"><tr><th rowspan="4">客户编码</th><th rowspan="4">客户名称</th><th rowspan="4">相似度</th><th colspan="3">匹配详情</th></tr><tr><th rowspan="2" colspan="2">匹配数据</th><th rowspan="3">匹配度</th><tr><tr><th>字段</th><th>数据</th></tr>';
+                                for (var i = 0; i < res.data.length; i++) {
+                                    var l = res.data[i];
+                                    var n = l.list;
+                                    var len = (Object.keys(n).length) + 1;
+                                    str += '<tr><td  rowspan="' + len + '">' + l.fcustno + '</td><td  rowspan="' + len + '">' + l.fcustname + '</td><td  rowspan="' + len + '">';
+                                    str += (parseInt(l.sum * 100)) + '%';
+                                    str += '</td></tr>';
+                                    for (var j = 0; j < len - 1; j++) {
+                                        if (!n[j].value) {
+                                            n[j].value = '';
+                                        }
+                                        var kk = n[j].key;
+                                        str += '<tr><td>' + rep[kk] + '</td><td>' + n[j].value + '<br></td>';
+                                        str += '<td>' + (n[j].num * 10) + '%</td></tr>';
+                                    }
+                                }
+                                str += '</table>';
+                                layer.open({
+                                    title: '相似客户列表',
+                                    closeBtn: 1,
+                                    shadeClose: true,
+                                    area: ['1000px', '600px'],
+                                    maxmin: true,
+                                    content: str,
+                                });
+                            } else {
+                                layer.msg('无相似客户')
+                            }
+                        } else {
+                            layer.msg(res.msg)
+                        }
+                    });
+                } else if (layEvent === 'change'){
+                    var init = obj.data.company.company_name;
+                    var id = obj.data.id;
+                    layer.prompt({
+                        value: init,
+                        title: '请输入修改的公司名称'
+                    }, function(value, index, elem){
+                        var data = {
+                            user_id:id,
+                            company_name:value
+                        };
+                        $.post('/Admin/Customer/companyInfoAction',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.close(index);
+                                layer.msg('操作成功');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                    });
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            //筛选按钮
+            form.on('submit(list-query-submit)', function(data){
+                if($(data.elem).hasClass('clear-btn')){
+                    queryTable()
+                } else {
+                    queryTable(
+                        $.extend(data.field,{
+                            pageSize:request.pageSize,
+                            page:1
+                        })
+                    );
+                }
+                return false;
+            });
+
+            $( ".layui-form-label-pinyin" ).autocomplete({
+                source: "/Admin/Customer/companyPinyinSearch",
+                minLength: 2,
+                close:function(event,ui){
+//                    $('.layui-btn-sm').trigger('click');
+                }
+            });
+
+
+        })
+    </script>
+</block>

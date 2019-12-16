@@ -1,0 +1,325 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+<extend name="Layout:layout-sol-center" />
+
+<block name="title">
+	项目管理中心
+</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project_vip.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<style>
+		.td-file{
+			width:74px;
+			text-align: center;
+		}
+		.converseList:hover,.mysol:hover {
+			/*background:#eee;*/
+			/*box-sizing: border-box;*/
+			box-shadow: 0 0 0 #ddd;
+		}
+		.jl-user-news{
+			width:740px;
+		}
+		.gray-color{
+			color:#ddd;
+		}
+	</style>
+</block>
+
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main">
+	<!--页面布局主区域-->
+		<div class="vip_main clear">
+			<a href="{:U('Home/SolutionVip/vipIndex')}" class="jl-user-title jl-cle">
+				<div class="jl-title-head">
+					<?php $avator = $res['nick_picture'];?>
+					<?php if(empty($avator) ){
+						echo '<img src="__UPLOAD__/User/avator/default.png" alt="">';
+					}else{
+						echo "<img src=".$res['nick_picture'].">";
+					}?>
+				</div>
+				<ul class="jl-user-news">
+						<li>账户：{$_SESSION['userInfo']['user_name']}</li>
+						<li>联系号码：
+							<empty name="res.mobile">{$userInfo.user_mobile}
+								<else/>{$res.mobile}
+							</empty>
+						</li>
+						<li>昵称：
+							<if condition="empty($res['nick_name']) neq true">{$res.nick_name}
+								<else/>{$_SESSION['userInfo']['nick_name']}
+							</if>
+						</li>
+						<li>QQ：
+							<notempty name="res.qq">
+								{$res.qq}
+							</notempty>
+						</li>
+						<li>微信：
+							<notempty name="res.qq">
+								{$res.qq}
+							</notempty>
+						</li>
+					</if>
+				</ul>
+			</a>
+		</div>
+		<div class="jl-title"><i class="jl-logistics"></i>我的供应方案</div>
+		<!--方案-->
+		<div class="vip_main clear">
+			<foreach name="proInfo" item="vo">
+				<div class="small_mypro">
+					<li>
+						<div class="vip_pro_image" >
+							<notempty name="vo.conver_image">
+								<img src="/Uploads/{$vo.conver_image}" alt="" />
+							<else />
+								<img src="__PUBLIC__/Home/Solution/img/jl.png" alt="{$vo.pro_name}"/>
+							</notempty>
+						</div>
+						<div class="vip_pro_info">
+							<ul>
+								<li class="redword">
+									{$vo.pro_name}
+								</li>
+								<li>
+									<div class="tiny_info_k">方案编号:</div>
+									<div class="tiny_info_v project_sol_info">{$vo.pro_sn}</div>
+								</li>
+								<li>
+									<div class="tiny_info_k">方案类型:</div>
+									<div class="tiny_info_v project_sol_info">
+										{$vo.types}
+									</div>
+								</li>
+								<li>
+									<div class="tiny_info_k">浏览量:</div>
+									<div class="tiny_info_v project_sol_info">{$vo.browse}</div>
+								</li>
+								<li>
+									<div class="tiny_info_k">状&nbsp;&nbsp;&nbsp;态:</div>
+									<div class="tiny_info_v">
+										<if condition="$vo.publish_status eq 1">发布中
+											<else/>未发布
+										</if>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="clear"></div>
+					</li>
+					<li>
+						<a href="javascript:;">
+							<div class="td-file" data-method="confirmTrans" data-file="{$vo.bom}" data-file_type="bom">
+								<img src="__PUBLIC__/Home/Solution/img/BOM_file.png" alt="" class="img-file">
+								<empty name="vo.bom">
+									<span class="gray-color">BOM表</span>
+									<!--<div class="w-tip">-->
+										<!--<div class="w-inner1"></div>-->
+										<!--<div class="w-inner2">没有文件</div>-->
+									<!--</div>-->
+									<else /><span>BOM表</span>
+								</empty>
+							</div>
+						</a>
+						<a href="javascript:;">
+							<div class="td-file" data-method="confirmTrans" data-file="{$vo.pcbas}" data-file_type="pcbas">
+								<img src="__PUBLIC__/Home/Solution/img/PCBA_file.png" alt="" class="img-file">
+								<empty name="vo.pcbas">
+									<span class="gray-color">PCBA</span>
+									<!--<div class="w-tip">-->
+										<!--<div class="w-inner1"></div>-->
+										<!--<div class="w-inner2">没有文件</div>-->
+									<!--</div>-->
+									<else /><span>PCBA</span>
+								</empty>
+							</div>
+						</a>
+						<a href="javascript:;">
+							<div class="td-file" data-method="confirmTrans" data-file="{$vo.code}" data-file_type="code">
+								<img src="__PUBLIC__/Home/Solution/img/CODE_file.png" alt="" class="img-file">
+								<empty name="vo.code">
+									<span class="gray-color">代码包</span>
+									<!--<div class="w-tip">-->
+										<!--<div class="w-inner1"></div>-->
+										<!--<div class="w-inner2">没有文件</div>-->
+									<!--</div>-->
+									<else /><span>代码包</span>
+								</empty>
+							</div>
+						</a>
+						<a href="javascript:;">
+							<div class="td-file" data-method="confirmTrans" data-file="{$vo.files}" data-file_type="files">
+								<img src="__PUBLIC__/Home/Solution/img/ANOTHER_file.png" alt="" class="img-file">
+								<empty name="vo.files">
+									<span class="gray-color">其他文档</span>
+									<!--<div class="w-tip">-->
+										<!--<div class="w-inner1"></div>-->
+										<!--<div class="w-inner2">没有文件</div>-->
+									<!--</div>-->
+									<else /><span>其他文档</span>
+								</empty>
+							</div>
+						</a>
+					</li>
+					<li>
+						<div class="tiny-desc-k">方案简述:</div>
+						<div class="tiny-desc-v" data-method="describe" style="color:#000;">
+							{$vo.synopsis}
+						</div>
+					</li>
+					<li>
+						<div class="tiny-desc-k">方案详述:</div>
+						<div class="tiny-desc-v" style="min-height:80px;">
+							点击 <span  class="aqua_word ">查看更多</span>获取更多内容
+						</div>
+					</li>
+					<li>
+						<div class="aqua_word check-more-1" style="width:80px;float:right;margin:5px 5px 10px 0px;cursor: pointer;">
+							查看更多>>>
+						</div>
+					</li>
+				</div>
+				<!--------------------------------------------------------------->
+			</foreach>
+		</div>
+		<div class="jl-title"><i class="jl-history"></i>浏览历史</div>
+		<!--浏览历史-->
+		<div class="vip_main clear">
+			<foreach name="browseHistory" item="vo">
+			<if condition="$vo.pro_sn && !$vo.desir_sn">
+					<div class="small_mypro">
+						<li>
+							<div class="float_L">
+							<div class="vip_pro_image" style="float:none;">
+								<notempty name="vo.conver_image">
+									<img src="/Uploads/{$vo.conver_image}" alt="" />
+									<else />
+									<img src="__PUBLIC__/Home/Solution/img/jl.png" alt="{$vo.pro_name}"/>
+								</notempty>
+							</div>
+								<div style="float:none;" class="word-gy">供应方案</div>
+							</div>
+							<div class="vip_pro_info">
+								<ul>
+									<li>
+										<div class="redword tiny_info_v">{$vo.pro_name}</div>
+									</li>
+									<li>
+										<div class="tiny_info_k">方案编号:</div>
+										<div class="tiny_info_v project_sol_info">{$vo.pro_sn}</div>
+									</li>
+									<li>
+										<div class="tiny_info_k">方案类型:</div>
+										<div class="tiny_info_v project_sol_info">
+											{$vo.types}
+										</div>
+									</li>
+									<li>
+										<div class="tiny_info_k">发&nbsp;布&nbsp;者&nbsp;:</div>
+										<div class="tiny_info_v project_sol_info">{$vo.nick_name}</div>
+									</li>
+									<li>
+										<div class="tiny_info_k">发布时间:</div>
+										<div class="tiny_info_v project_sol_info">{$vo.create_time}</div>
+									</li>
+								</ul>
+							</div>
+							<div class="clear"></div>
+						</li>
+						<li>
+							<div class="tiny-desc-k">方案简述:</div>
+							<div class="tiny-desc-v">{$vo.synopsis}</div>
+						</li>
+						<li>
+							<div class="tiny-desc-k">方案详述:</div>
+							<div class="tiny-desc-v" style="height:80px;">
+								点击 <span  class="aqua_word ">查看更多</span>获取更多内容
+							</div>
+						</li>
+						<li>
+							<div class="aqua_word check-more-2" style="width:80px;float:right;margin:5px 5px 10px 0px;cursor: pointer;"
+							data-id="{$vo.id}">
+								查看更多>>>
+							</div>
+						</li>
+					</div>
+			<elseif condition="$vo.desir_sn && !$vo.provider"/>
+				<div class="small_mypro" style="height:311px;">
+					<li style="height:30px;line-height: 30px;">
+						<div class="redword tiny_info_v">{$vo.desir_name}</div>
+					</li>
+					<li style="height:30px;line-height: 30px;">
+						<div class="tiny_info_k float_L" style="margin-right: 15px;">方案编号:</div>
+						<div class="tiny_info_v">{$vo.desir_sn}</div>
+					</li>
+					<li style="height:30px;line-height: 30px;">
+						<div class="tiny_info_k float_L" style="margin-right: 15px;">方案类型:</div>
+						<div class="tiny_info_v">{$vo.types}</div>
+						<div class="tiny_info_k float_L">发布者:</div>
+						<div class="tiny_info_v"><span class="redword">{$vo.nick_name}</span></div>
+					</li>
+					<li style="height:30px;line-height: 30px;">
+						<div class="float_L">
+							<div style="float:none;margin:0px 50px 0 0px;" class="word-gy">需求方案</div>
+						</div>
+						<div class="tiny_info_k float_L">查看时间:</div>
+						<div class="tiny_info_v float_L">{$vo.create_time}</div>
+					</li>
+					<li style="margin-bottom:10px;border-top:1px solid #ddd;"></li>
+					<li>
+						<div class="tiny-desc-k float_L">方案描述:</div>
+						<div class="tiny-desc-v float_L" style="height:148px;">{$vo.desir_desc}</div>
+					</li>
+					<li>
+						<div class="aqua_word check-more-3" style="width:80px;float:right;margin:5px 5px 10px 0px;cursor: pointer;">
+							查看更多>>>
+						</div>
+					</li>
+			</div>
+			</if>
+			</foreach>
+		</div>
+	</div>
+</block>
+
+<block name="js">
+	<script>
+		require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+			require(['jquery'], function ($) {
+			    //确定
+			    $('.sure').on('click',function(){
+					window.location.href="{:U('Home/solution/myProvider')}";
+				});
+                /*文件为空的提示框*/
+                $('.td-file').mouseover(function(){
+                    $(this).find('.w-tip').css('display','block');
+                });
+                $('.td-file').mouseout(function(){
+                    $(this).find('.w-tip').css('display','none');
+                });
+                //查看跳转
+				$('.check-more-1').on('click',function(){
+				    window.location.href="{:U('Home/Solution/myProvider')}";
+				});
+                $('.check-more-2').on('click',function(){
+                    window.location.href="{:U('Home/Solution/proDetail')}?id="+$(this).data('id');
+                });
+//                $('.check-more-3').on('click',function(){
+//                    window.location.href="#";
+//                });
+            })
+		})
+	</script>
+</block>

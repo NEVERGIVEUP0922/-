@@ -1,0 +1,92 @@
+<extend name="Layout:layout-center" />
+<block name="title">收藏夹</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerAttention.css">
+</block>
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+<block name="main">
+    <ul class="jl-fa-box jl-cle">
+        <notempty name="collect">
+            <volist name="collect" id="c">
+                <li class="{$i%3==0 ? 'jl-hot-li-last':''}" data-id="{$c.p_sign}">
+                    <div class="jl-img">
+                        <notempty name="c.cover_image">
+                            <img src="{$c.cover_image}" alt="{$c.name}">
+                            <else />
+                            <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                        </notempty>
+                        <b class="jl-fa-dele" data-id="{$c.id}"></b>
+                    </div>
+                    <div class="jl-describe">
+                        <h2 class="jl-fa-prod">{$c.p_sign}</h2>
+                        <!--<p class="jl-p-describe">{$c.replace_desc}</p>-->
+                        <p class="jl-fa-text">{$c.replace_desc}{$c.parameter}</p>
+                    </div>
+                    <p class="jl-fa-price">
+                        <span>价格：￥{$c.price}</span>
+                        <a href="javascript:;" class="jl-fa-check">查看详情</a>
+                    </p>
+                </li>
+            </volist>
+            <else />
+            <div class="jl-empty">
+                <img src="__PUBLIC__/Home/Public/img/empty.png" alt="">
+                <h4>亲爱的客官，空空如也啊！</h4>
+            </div>
+        </notempty>
+    </ul>
+    <div class="jl-fa-btn jl-cle">
+        {$page}
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery', 'jl-modal'], function($,modal) {
+                modal.option({
+                    left:-77
+                });
+                $('.jl-fa-box li').on('click',function () {
+                    var id = $(this).data('id');
+                    location.href="{:U('Home/Product/detail')}"+"?sign="+id;
+                });
+                //删除收藏夹商品
+                var de = $('.jl-fa-dele');
+                de.each(function(i){
+                    var t = $(this);
+                    t.on( 'click', function(event){
+                       var id = t.attr('data-id');
+                        modal.confirm({
+                            title:'移除商品',
+                            brief:'您确定要从收藏夹移除该商品吗？',
+                            top:100,
+                            confirm:function () {
+                                $.post("{:U('Home/User/delFavorite')}",{id:id}, function (res) {
+                                    if(res.status===0){
+                                        location.href="{:U('Home/User/favorite')}";
+                                    }else{
+                                        modal.confirm({
+                                            title:'系统繁忙',
+                                            brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                            top:100
+                                        })
+                                    }
+                                });
+                            }
+                        });
+                        event.stopPropagation();
+                    });
+                });
+            });
+        });
+    </script>
+</block>

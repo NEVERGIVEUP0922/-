@@ -1,0 +1,51 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">购物流程</a></li>
+    </ul>
+    <div class="jl-process">
+        <ul class="jl-tit jl-cle">
+            <li class="jl-li-left">步骤</li>
+            <li class="jl-li-right">具体操作</li>
+        </ul>
+        <ul class="jl-process-main">
+            <li class="jl-li-left">注册</li>
+            <li class="jl-li-right">填写详细个人（或企业）信息，勾选同意注册协议，提交完成注册</li>
+            <li class="jl-li-arr"><img src="__PUBLIC__/Home/Public/img/help/arr.png" alt=""></li>
+            <li class="jl-li-left">搜索型号</li>
+            <li class="jl-li-right">搜索关键词直接来匹配型号或者查看商品目录、品牌目录来搜索型号</li>
+            <li class="jl-li-arr"><img src="__PUBLIC__/Home/Public/img/help/arr.png" alt=""></li>
+            <li class="jl-li-left">加入购物车</li>
+            <li class="jl-li-right">型号加入购物车后可直接去结算或继续添加</li>
+            <li class="jl-li-arr"><img src="__PUBLIC__/Home/Public/img/help/arr.png" alt=""></li>
+            <li class="jl-li-left">提交订单</li>
+            <li class="jl-li-right">选择收货地址、配送方式、开票信息和支付方式后提交订单</li>
+            <li class="jl-li-arr"><img src="__PUBLIC__/Home/Public/img/help/arr.png" alt=""></li>
+            <li class="jl-li-left">查看订单状态</li>
+            <li class="jl-li-right">在个人中心-我的订单里面查看订单执行进度</li>
+            <li class="jl-li-arr"><img src="__PUBLIC__/Home/Public/img/help/arr.png" alt=""></li>
+            <li class="jl-li-left">确认收货</li>
+            <li class="jl-li-right">根据发货单核对型号数量等明细，确认无误即可完成收货</li>
+        </ul>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

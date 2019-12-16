@@ -1,0 +1,504 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout"/>
+<block name="title">发布需求</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <style>
+        .jl-report-apply-container{  width: 1200px;  margin: 0 auto;  }
+        .jl-report-apply-header{  margin-top: 36px  }
+        .jl-report-apply-title{
+            width: 212px;
+            height: 38px;
+            border: 1px solid #393939;
+            margin: 0 auto 28px;
+            color: #393939;
+            line-height: 38px;
+            text-align: center;
+            font-size: 20px;
+        }
+        .jl-report-apply-brief{  text-align: left;width: 630px;margin: 0 auto;  }
+        .jl-mandatory{  margin-right: 8px;  }
+        .jl-report-apply-table{
+            margin:0 auto;
+            margin-top: 26px;
+            font-size: 18px;
+            width: 100%;
+        }
+        .jl-report-apply-table th{
+            background-color: #f0f0f0;
+            padding:8px 0;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+        .jl-report-apply-table th:first-child{
+            border-top: 1px solid #ddd;
+        }
+        .jl-report-apply-table td{
+            border:1px solid #ddd;
+            min-height: 26px;
+            text-align: center;
+            padding:6px 8px;
+        }
+        .jl-handle-btn{
+            margin-bottom: 80px;
+            font: 18px "Microsoft YaHei";
+            width: 410px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+        }
+        .jl-report-apply-submit{
+            background: #e84343;
+            color: #fff;
+            margin-right: 32px;
+        }
+        .jl-report-cancel-submit{
+            background: white;
+            border: 1px solid #ddd;
+        }
+        .jl-report-apply-table .jl-report-apply-require{
+            color: #e84343;
+        }
+        .jl-report-apply-table .jl-report-apply-input{
+            display: block;
+            width: 120%;
+            height: 100%;
+            border:none;
+        }
+        .jl-report-apply-table .jl-report-apply-checkbox{
+
+        }
+        .jl-report-apply-table .jl-report-apply-select{
+            display: block;
+            width: 100%;
+            height: 100%;
+            border:none;
+        }
+        .jl-add-product-btn{
+            width: 100%;
+            line-height: 36px;
+            font-size: 16px;
+            background-color: white;
+            border:1px solid #ddd;
+            border-top: none;
+        }
+        .jl-add-product-btn:hover{
+            color: #e84343;
+        }
+    </style>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-report-apply-container">
+        <div class="jl-report-apply-header">
+            <p>商品：{$product.p_sign}需要报备</p>
+            <p class="jl-report-apply-title">报备申请表</p>
+            <div class="jl-report-apply-brief">
+                <p style="color: #e84343; ;"><i class="jl-mandatory"></i>注：</p>
+                <p>1、下列红色标示项目为必填项目，如未填写,报备将被拒绝,确实无内容的填“无”。</p>
+                <p>2、报备表提交后，由玖隆芯城产品经理负责信息审核和注册审批，下列信息不实者，报备将被拒绝。</p>
+                <p>3、报备成功后，保护期为两~三个月，保护期内无实质进展，项目及用户将向其他代理商开放。</p>
+                <p>4、如是中间商，务必填写代理商信息，终端工厂不需要填写代理商信息</p>
+                <p>5、申请样品数不超过10pcs</p>
+                <p>6、如本项目用到多个型号可以点添加一起申请价格或样品</p>
+            </div>
+        </div>
+        <div class="jl-report-apply-body">
+            <table class="jl-report-apply-table">
+                <colgroup>
+                    <col width="126">
+                    <col width="170">
+                    <col>
+                    <col>
+                    <col width="140">
+                    <col>
+                    <col>
+                    <col>
+                    <col>
+                </colgroup>
+                <tr>
+                    <th colspan="9">代理商信息</th>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">代理商：</td>
+                    <td><input type="text" class="jl-report-apply-input" name="agent"></td>
+                    <td class="jl-report-apply-require">地点：</td>
+                    <td colspan="6"><input type="text" class="jl-report-apply-input" name="agent"></td>
+                </tr>
+                <tr>
+                    <td>应用工程师：</td>
+                    <td><input type="text" class="jl-report-apply-input" name="agent_engineer"></td>
+                    <td>手机：</td>
+                    <td><input type="number" class="jl-report-apply-input" name="agent_engineer"></td>
+                    <td>座机：</td>
+                    <td colspan="4"><input type="number" class="jl-report-apply-input" name="agent_engineer"></td>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">销售业务员：</td>
+                    <td><input type="text" class="jl-report-apply-input" name="agent_sale"></td>
+                    <td class="jl-report-apply-require">手机：</td>
+                    <td><input type="number" class="jl-report-apply-input" name="agent_sale"></td>
+                    <td class="jl-report-apply-require">座机：</td>
+                    <td colspan="4"><input type="number" class="jl-report-apply-input" name="agent_sale"></td>
+                </tr>
+                <tr>
+                    <th colspan="9">项目信息（终端工厂、项目信息）</th>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">公司全称：</td>
+                    <td colspan="3"><input type="text" class="jl-report-apply-input" data-require="require" name="company"></td>
+                    <td>公司简称：</td>
+                    <td colspan="4"><input type="text" class="jl-report-apply-input" name="company"></td>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">公司地址：</td>
+                    <td colspan="3"><input type="text" class="jl-report-apply-input" data-require="require" name="address"></td>
+                    <td>省/自治区：</td>
+                    <td colspan="4"><input type="text" class="jl-report-apply-input" name="address"></td>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">项目名称：</td>
+                    <td colspan="3"><input type="text" class="jl-report-apply-input" data-require="require" name="project_name"></td>
+                    <td class="jl-report-apply-require">月产量(K/M)：</td>
+                    <td colspan="4"><input type="number" class="jl-report-apply-input" data-require="require" name="month_num"></td>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">应用领域:</td>
+                    <td colspan="3"><input type="text" class="jl-report-apply-input" data-require="require" name="application_area"></td>
+                    <td class="jl-report-apply-require">原型日期:</td>
+                    <td colspan="4"><input type="text" class="jl-report-apply-input"  data-require="require" id="prototype_date" name="prototype_date"/></td>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">项目状态:</td>
+                    <td colspan="3">
+                        <select class="jl-report-apply-select" name="project_status">
+                            <option value="1">概念</option>
+                            <option value="2">原型</option>
+                            <option value="3">完成设计</option>
+                            <option value="4">量产</option>
+                        </select>
+                    </td>
+                    <td class="jl-report-apply-require">量产日期:</td>
+                    <td colspan="4"><input type="text" class="jl-report-apply-input" data-require="require" id="batch_date" name="batch_date"></td>
+                </tr>
+                <tr>
+                    <td>应用描述:</td>
+                    <td colspan="8"><input type="text" class="jl-report-apply-input" name="describe"></td>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">设计工程师:</td>
+                    <td><input type="text" class="jl-report-apply-input" data-require="require" name="designer"></td>
+                    <td class="jl-report-apply-require">手机:</td>
+                    <td><input type="number" class="jl-report-apply-input" data-require="require" name="designer"></td>
+                    <td class="jl-report-apply-require">座机:</td>
+                    <td colspan="4"><input type="number" class="jl-report-apply-input" data-require="require" name="designer"></td>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">采购联系人:</td>
+                    <td><input type="text" class="jl-report-apply-input" data-require="require" name="buyer"></td>
+                    <td class="jl-report-apply-require">手机:</td>
+                    <td><input type="number" class="jl-report-apply-input" data-require="require" name="buyer"></td>
+                    <td class="jl-report-apply-require">座机:</td>
+                    <td colspan="4"><input type="number" class="jl-report-apply-input" data-require="require" name="buyer"></td>
+                </tr>
+                <tr>
+                    <th colspan="9">需求产品</th>
+                </tr>
+                <tr>
+                    <td class="jl-report-apply-require">器件型号</td>
+                    <td>简要描述应用条件</td>
+                    <td class="jl-report-apply-require">封装形式</td>
+                    <td class="jl-report-apply-require">是否询价</td>
+                    <td>需求样品数量</td>
+                    <td>竞争品牌</td>
+                    <td>竞争型号</td>
+                    <td>竞品价格</td>
+                    <td>月用量</td>
+                </tr>
+                <tr class="jl-report-item">
+                    <td><input type="text" class="jl-report-apply-input" name="p_sign" data-require="require" style="width:100%" value="{$product.p_sign}" disabled></td>
+                    <td><input type="text" class="jl-report-apply-input" name="application_condition"></td>
+                    <td><input type="number" class="jl-report-apply-input" data-require="require" name="package"></td>
+                    <td><input type="checkbox" class="jl-report-apply-checkbox" name="is_request"></td>
+                    <td><input type="text" class="jl-report-apply-input" name="sample"></td>
+                    <td><input type="text" class="jl-report-apply-input" name="compete_brand"></td>
+                    <td><input type="text" class="jl-report-apply-input" name="compete_sign"></td>
+                    <td><input type="number" class="jl-report-apply-input" name="compate_price"></td>
+                    <td><input type="number" class="jl-report-apply-input" name="month_num_used"></td>
+                </tr>
+            </table>
+            <button class="jl-add-product-btn">添加</button>
+        </div>
+        <div style="text-align: center;margin-top: 24px">
+            <button class="jl-handle-btn jl-report-apply-submit">确认提交</button>
+            <button class="jl-handle-btn jl-report-cancel-submit">取消</button>
+        </div>
+    </div>
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery','jl-modal','pikaday'], function ($,modal,Pikaday) {
+                var product = {$product|json_encode};
+                //console.log(product);
+                var picker1 = new Pikaday({
+                    field: document.getElementById('batch_date'),
+                    theme: 'js-data',
+                    i18n: {
+                        previousMonth: '上个月',
+                        nextMonth: '下个月',
+                        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                        weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                        weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                    },
+                    format: 'YYYY-M-D',
+                    toString: function (date, format) {
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function (dateString, format) {
+                        var parts = dateString.split('/');
+                        var day = parseInt(parts[0], 10);
+                        var month = parseInt(parts[1] - 1, 10);
+                        var year = parseInt(parts[1], 10);
+                        return new Date(year, month, day);
+                    }
+                });
+                var picker2 = new Pikaday({
+                    field: document.getElementById('prototype_date'),
+                    theme: 'js-data',
+                    i18n: {
+                        previousMonth: '上个月',
+                        nextMonth: '下个月',
+                        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                        weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                        weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                    },
+                    format: 'YYYY-M-D',
+                    toString: function (date, format) {
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function (dateString, format) {
+                        var parts = dateString.split('/');
+                        var day = parseInt(parts[0], 10);
+                        var month = parseInt(parts[1] - 1, 10);
+                        var year = parseInt(parts[1], 10);
+                        return new Date(year, month, day);
+                    }
+                });
+                //
+                var $table = $('.jl-report-apply-table');
+                //添加按钮
+                $('.jl-add-product-btn').click(function () {
+                    $table.append(
+                        '<tr class="jl-report-item"> ' +
+                        '<td><input type="text" class="jl-report-apply-input" style="width:100%" name="p_sign"></td> ' +
+                        '<td><input type="text" class="jl-report-apply-input" name="application_condition"></td> ' +
+                        '<td><input type="text" class="jl-report-apply-input" name="package"></td> ' +
+                        '<td><input type="checkbox" class="jl-report-apply-checkbox" name="is_request"></td> ' +
+                        '<td><input type="text" class="jl-report-apply-input" name="sample"></td> ' +
+                        '<td><input type="text" class="jl-report-apply-input" name="compete_brand"></td> ' +
+                        '<td><input type="text" class="jl-report-apply-input" name="compete_sign"></td> ' +
+                        '<td><input type="text" class="jl-report-apply-input" name="compate_price"></td> ' +
+                        '<td><input type="text" class="jl-report-apply-input" name="month_num_used"></td> ' +
+                        '</tr>'
+                    )
+                });
+                //提交按钮
+                var isAgain=true;
+                $('.jl-report-apply-submit').on('click',function () {
+                    if(!isAgain)return;
+                    isAgain =false;
+                    var form_key = [
+                        'agent',
+                        'agent_engineer',
+                        'agent_sale',
+                        'company',
+                        'address',
+                        'project_name',
+                        'month_num',
+                        'application_area',
+                        'prototype_date',
+                        'project_status',
+                        'batch_date',
+                        'describe',
+                        'designer',
+                        'buyer'
+                    ];
+                    var data = {};
+                    var checkAgent = 0;
+                    var isOk = true;
+                    var checkValue  = function($input){
+                        if($input.data("require") && !$input.val()){
+                            isOk = false;
+                            modal.alert({
+                                title:'提示信息',
+                                brief:'项目信息的红色部分必须填写...'
+                            });
+                            return false;
+                        }else{
+                            return true;
+                        }
+                    };
+                    $.each(form_key,function (index, value) {
+                        var $input = $table.find('[name="'+value+'"]');
+
+                        if($input.length===1){
+                            data[value] = $input.val();
+                            if(!checkValue($input)){ return false};
+                        }
+                        else {
+                            var array = [];
+                            $input.each(function (selfNum,item) {
+                                array.push($(item).val());
+                                if(!checkValue($(item))){ return false};
+                                console.log("istrue",!($(item).val()));
+                                if(index <3 && !($(item).val())){ checkAgent++;}
+                            });
+                            if(index >=3){
+                                if(checkAgent < 8 && checkAgent>0){
+                                    isOk =false;
+                                    modal.alert({
+                                        title:'提示信息',
+                                        brief:'代理商信息必须全部填写或全部不填...'
+                                    });
+                                    return false;
+                                }else{
+                                    checkAgent = 0;
+                                };
+                            }
+                            data[value] = array.join('{}');
+                        }
+                    });
+                    data['item'] = [];
+                    var isPass = true;
+                    $('.jl-report-item').each(function (index) {
+                        var $tr = $(this);
+                        var p_sign = $tr.find('[name="p_sign"]').val();
+                        var package = $tr.find('[name="package"]').val();
+                        if(!p_sign || !package){
+                            isPass = false;
+                            modal.alert({
+                                title:'提示信息',
+                                brief:'需求产品的红色部分第'+(1 + index)+'行未填写...'
+                            });
+                            return false;
+                        };
+                        if(p_sign.trim()){
+                            var item = {};
+                            item['p_sign'] = p_sign;
+                            item['is_request'] = $tr.find('.jl-report-apply-checkbox').prop("checked") ? 1:0;
+                            var item_key = [
+                                'application_condition',
+                                'package',
+                                'sample',
+                                'compete_brand',
+                                'compete_sign',
+                                'compate_price',
+                                'month_num_used'
+                            ];
+                            $.each(item_key,function (index,value) {
+                                item[value] = $tr.find('[name="'+value+'"]').val();
+                            });
+                            data['item'].push(item)
+                        }
+                    });
+                    console.log(data);
+                    if(!isOk || !isPass){ isAgain = true; return;};
+                    $.post('/Home/Product/productReport',data,function (res) {
+                        isAgain = true;
+                        res = $.parseJSON(res);
+                        console.log(res);
+                        if(res.error===0){
+                            contact('提交成功，立即联系业务员')
+                        }
+                        else {
+                            modal.alert({
+                                title:'提交失败',
+                                brief:'请确认提交信息后再试'
+                            });
+                        }
+                    })
+                });
+                $('.jl-report-cancel-submit').click(function () {
+                    contact('您也可以直接联系业务员')
+                });
+                //
+                var qqList = {$qqList|json_encode};
+                var contact = function (title) {
+                    var $html = '<ul class="jl-cs-sales-list"> ';
+                    if(qqList&&qqList.list&&qqList.list.length===1){
+                        modal.alert({
+                            title:title,
+                            brief:'点击确定立即与'+qqList['list'][0]['nickname']+'联系',
+                            confirm:function () {
+                               // window.open('http://wpa.qq.com/msgrd?v=3&uin='+qqList['list'][0]['qq']+'&site=在线客服&menu=yes')
+                                window.history.back();
+                            }
+                        });
+                    }
+                    else if(product.customer_service){
+                        if($.isArray(product.customer_service)){
+                            $.each(product.customer_service,function (index,sale) {
+                                $html += (
+                                    '<li> ' +
+                                    '<span>'+sale.nickname+'</span> ' +
+                                    '<a href="http://wpa.qq.com/msgrd?v=3&uin='+sale.qq+'&site=在线客服&menu=yes" target="_blank"> ' +
+                                    '<img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" alt=""> ' +
+                                    '</a> ' +
+                                    '<span>'+sale.mobile+'</span> ' +
+                                    (sale.wechat?(
+                                        '<div class="jl-cs-wx-container"> ' +
+                                        '<img class="jl-cs-wx" src="__PUBLIC__/Home/Index/img/qrcode.png" alt=""> ' +
+                                        '<img class="jl-cs-qr" src="'+sale.wechat+'" alt=""> ' +
+                                        '</div> '
+                                    ):'')+
+                                    '</li> '
+                                )
+                            })
+                        }
+                        $html += '</ul> ';
+                        modal.alert({
+                            title:title,
+                            brief:$html,
+                        });
+                    }
+                    else {
+                        if(qqList&&qqList.list&&$.isArray(qqList.list)){
+                            $.each(qqList.list,function (index,sale) {
+                                $html += (
+                                    '<li> ' +
+                                    '<span>'+sale.nickname+'</span> ' +
+                                    '<a href="http://wpa.qq.com/msgrd?v=3&uin='+sale.qq+'&site=在线客服&menu=yes" target="_blank"> ' +
+                                    '<img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" alt=""> ' +
+                                    '</a> ' +
+                                    '<span>'+sale.mobile+'</span> ' +
+                                    (sale.wechat?(
+                                        '<div class="jl-cs-wx-container"> ' +
+                                        '<img class="jl-cs-wx" src="__PUBLIC__/Home/Index/img/qrcode.png" alt=""> ' +
+                                        '<img class="jl-cs-qr" src="'+sale.wechat+'" alt=""> ' +
+                                        '</div> '
+                                    ):'')+
+                                    '</li> '
+                                )
+                            })
+                        }
+                        $html += '</ul> ';
+                        modal.alert({
+                            title:title,
+                            brief:$html,
+                        });
+                    }
+                };
+            });
+        })
+    </script>
+</block>

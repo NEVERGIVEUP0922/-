@@ -1,0 +1,787 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+	<!--<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>-->
+	<!--<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>-->
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Solution/sol_public.css">
+	<link href="__PUBLIC__/Common/module/viewerjs/1.0.0/viewer.min.css" rel="stylesheet">
+
+	<style>
+		.sol_header{
+			margin:8px 0px 10px 10px;
+		}
+		.clear{
+			clear:both;
+		}
+		.layui-table-tips-main{/*修改layui动态生成的弹框元素,别删除*/
+			max-height: 250px;
+		}
+		.sol_desc{
+			width:400px;height:300px;
+			text-space:4px;
+			text-indent:25px;
+			line-height:25px;
+		}
+		/*.sol_imgs{*/
+			/*width:300px;*/
+		/*}*/
+		/*.sol_imgs>img{*/
+			/*width:100%;*/
+		/*}*/
+		/*文件展示css*/
+		.alone-file-n{
+			display: inline-block;
+			width:100px;height:30px;line-height: 30px;
+			margin:10px;
+			text-align: center;
+			cursor:pointer;
+			border-radius: 2px;
+			color:#fff;
+			background-color: #ddd;
+		}
+		.alone-file-y{
+			display: inline-block;
+			width:100px;height:30px;line-height: 30px;
+			margin:10px;
+			text-align: center;
+			cursor:pointer;
+			border-radius: 2px;
+			color:#fff;
+			background-color: #e84343;
+		}
+		.file_public_css{
+			text-align:center;width:900px;height:80vh;margin:0 auto;font-size:30px;
+		}
+	</style>
+</block>
+<block name="content">
+	<!--<div>-->
+		<blockquote class="layui-elem-quote">
+			<button class="layui-btn pro-solList">供应方案</button>
+			<button class="layui-btn desir-solList">需求方案</button>
+			<button class="layui-btn my-solList">自营方案</button>
+			<!--<button class="layui-btn">需求方案上表</button>-->
+			<button class="layui-btn vip-info-list">会员列表</button>
+			<button class="layui-btn updata-types">方案类型</button>
+			<span >》》》供应方案列表</span>
+		</blockquote>
+		<blockquote class="layui-elem-quote" style="height:90px;clear:both">
+			<form class="layui-form" lay-filter="" action="">
+				<div class="layui-form-item" style="width:300px;float:left;clear:none">
+					<label class="layui-form-label">方案名称:</label>
+					<div class="layui-input-block">
+						<input type="text" name="sol_name" placeholder="请输入方案名称" autocomplete="off"
+							   class="layui-input layui-form-label-pinyin" value="{$request.where.sol_name.value}">
+					</div>
+				</div>
+				<div class="layui-form-item" style="width:300px;padding-left:25px;float:left;clear: none;">
+					<label class="layui-form-label">用户:</label>
+					<div class="layui-input-block">
+						<input type="text" name="nick_name" placeholder="请输入用户名" autocomplete="off"
+							   class="layui-input layui-form-label-pinyin" value="{$request.where.nick_name.value}">
+					</div>
+				</div>
+
+				<div class="layui-col-xs4">
+					<label class="layui-form-label">时间区间</label>
+					<div class="layui-input-block" style="overflow:hidden">
+						<input type="text" style="width:40%;float:left;" name="create_at_start" value="{$request.where.create_at_start.value}" id="pickStart" placeholder="起始时间" autocomplete="off" class="layui-input" >
+						<span style="float:left;margin:2% 1%">—</span>
+						<div class="layui-inline" style="float:left ;">
+
+							<div class="layui-input-inline">
+								<input type="text" name="create_at_end" value="{$request.where.create_at_end.value}" class="layui-input" id="pickEnd"  placeholder="结束时间">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="layui-form-item" style="float:left;clear:none;">
+					<label class="layui-form-label"></label>
+					<div class="layui-input-block">
+						<div class="layui-btn-group">
+							<span class="layui-btn layui-btn-sm" lay-submit lay-filter="list-query-submit">筛选</span>
+							<span class="layui-btn layui-btn-primary layui-btn-sm clear-btn"
+									lay-submit lay-filter="">清空</span>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+				<div class="layui-form-item" style="width:325px;float:left;clear:none;">
+					<label class="layui-form-label">项目类型:</label>
+					<div class="layui-inline layui-input-inline" lay-filter="sol_types">
+						<select name="types" lay-filter="sol_types" lay-search="">
+							<option value="">请选择方案类型</option>
+							<foreach name="types" item="vo" key="k">
+								<if condition="$request['where']['types']['value'] eq $vo['id']">
+									<option value="{$vo.id}" selected>{$vo.types}</option>
+								<else />
+									<option value="{$vo.id}">{$vo.types}</option>
+								</if>
+							</foreach>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item" style="float:left;clear:none;">
+					<label class="layui-form-label black_word" style="width:80px;">状态:</label>
+					<div class="layui-inline layui-input-inline" lay-filter="sol_status" style="width:190px;">
+						<select name="sol_status" lay-filter="sol_pub_status">
+								<option value="1">发布中</option>
+								<option value="2">已结束</option>
+								<option value="3">审核中</option>
+								<option value="4">已通过</option>
+								<option value="5">未通过</option>
+								<option value="9">全部方案</option>
+
+						</select>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		<table lay-filter="data-table" class="data-table"></table>
+		<div id="data-table-page"></div>
+	</div>
+</block>
+<block name="js">
+	<script src="__PUBLIC__/Common/module/viewerjs/1.0.0/viewer.min.js"></script>
+	<script src="__PUBLIC__/Common/module/pdf_self/pdfObj/pdfobj.js"></script>
+	<script>
+        layui.use(['table', 'layer', 'laypage', 'jlTool', 'element', 'form','commonTpl','selectCustomer','selectUser','pikadayOption','laydate'], function (){
+            var laydate = layui.laydate;
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var request = {$request|json_encode};
+            var form = layui.form;
+            var solList = {$solList|json_encode};
+            var types= {$types|json_encode};
+            var sysUserInfo = {$sysUserInfo|json_encode};
+            var oss_prefix = "{$prefix}";
+            var oss_suffix = "{$suffix}";
+            var objpdf = layui.objpdf;
+            console.log(objpdf);
+
+//            console.log(request});
+            //检索:
+			form.on('submit(list-query-submit)',function(data){
+			    var where = {};
+			    $.each(data.field,function(index ,value){
+			        if(value){
+			            var single = {key:index,value:value};
+			            if(!value) single.value=0;
+						switch(index){
+						    case 'sol_name':
+						        single['type']='like';break;
+							case 'nick_name':
+						        single['type']='like';break;
+                            case 'create_at':
+                                var now = new Date();
+                                var date = now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
+                                single['value2'] = date;
+                                single['type'] = 'between';
+                                break;
+							default:single['type']='eq';break;
+						}
+			            where[index] = single;
+					}
+				});
+//			    console.log(where);return;
+                queryTable({
+                    pageSize:request.pageSize,
+                    page:request.page,
+                    where:where
+                });
+			});
+            //清空
+            $('.clear-btn').on('click',function () {
+                queryTable();
+                return false
+            })
+            //日期 //时间选择初始化
+            laydate.render({
+                elem: '#pickStart',
+                done:function(value, date, endDate){
+                    var endTime = new Date($("#pickEnd").val());
+                    if(new Date(value) - endTime >0){
+                        setTimeout(function(){
+                            $("#pickStart").val($("#pickEnd").val());
+                        },500)
+                    }
+                }
+            });
+            laydate.render({
+                elem: '#pickEnd',
+                done:function(value, date, endDate){
+                    var startTime = new Date($("#pickStart").val());
+                    if(new Date(value) - startTime <0){
+                        setTimeout(function(){
+                            $("#pickEnd").val($("#pickStart").val());
+                        },500)
+                    }
+                }
+            });
+            table.render({
+                elem: '.data-table',
+                data: solList.list?solList.list:[],
+                page: false,
+                limit: solList.pageSize,
+                cellMinWidth: 120,
+                height:'full-220',
+                cols: [[ //表头
+                     {field: 'pro_sn', width:140,title: '订单编号',fixed: 'left'}
+                    ,{field: 'pro_name', title: '方案名称'}
+                    ,{field: 'check_status', title: '审核状态',templet:function (d) {
+                        var h = { '0':'待审核', '1':'通过', '2':'不通过' };
+                        return h[d.check_status];
+                    }}
+                    ,{field: 'nick_name', title: '用户'}
+                    ,{field: 'types', title: '方案类型',templet:function(d){
+                        for(var i in types){
+							if(types[i]['id']==d.types){return types[i]['types'] };
+						}
+					}}
+                    ,{field: 'main_model', title: '主控型号'}
+                    ,{field: 'main_brand', title: '主控品牌'}
+                    ,{field: 'pcba',align:'center',width:100, title: '提供PCBA',templet:function(d){
+                        var h = {'0':'否','1':'<span style="color:#009688">是</span>'}
+                        return h[d.pcba]
+					}}
+					//第三方不显示pcba型号,此项可暂时隐藏
+//                    ,{title: 'pcba型号',align:'center',templet: function(d){
+//                        var pcba_list='';
+//                        var css_disable='';
+//                        if(d.pcba == 0){
+//                            css_disable = '<button class="layui-btn layui-btn-sm" style="padding:0 8px ; background:#c2c2c2;" disabled>查看pcba型号</button>';
+//						}else{
+//                            css_disable = '<button class="layui-btn layui-btn-sm" style="padding:0 8px">查看pcba型号</button>';
+//						}
+//                        $.each(d.pcba_list,function (index,value) {
+//                            pcba_list += (
+//                                '<tr><td><a href="javascript:;">'+value+'</a></td></tr>'
+//                            )
+//                        });
+//                        return (
+//                            '<div style="max-height: 250px;">' +
+//                            '<p>'+css_disable+'<span style="margin: 0 50px;"></span></p>' +
+//                            '<table class="layui-table"> ' +
+//                            '<colgroup> ' +
+//                            '<col width="200"> ' +
+//                            '</colgroup> ' +
+//                            '<thead> ' +
+//                            '<tr> ' +
+//                            '<th>pcba型号</th> ' +
+//                            '</tr> ' +
+//                            '</thead> ' +
+//                            '<tbody> ' +pcba_list + '</tbody> ' +
+//                            '</table>' +
+//                            '</div>'
+//                        )
+//                    }}
+                    ,{title: '方案简介',align:'center',templet: function(d){
+                        var synopsis = d.synopsis
+//							synopsis =String(synopsis).replace(/\n/g, "<p>");
+                        return (
+                            '<div>' +
+                            '<p><button class="layui-btn layui-btn-sm" style="padding:0 8px">查看方案简介</button><span style="margin: 0 50px;"></span></p>' +
+                            '<div class="sol_desc">'+synopsis+'</div>' +
+                            '</div>'
+                        )
+                    }}
+                    ,{title: '方案详情',align:'center',templet: function(d){
+                        var pro_desc = d.pro_desc;
+                        return (
+							'<button class="layui-btn layui-btn-sm pro_desc" style="padding:0 8px" data-method="describe" data-pro_desc='+pro_desc+'>查看方案详情</button>'
+						)
+                    }}
+                    ,{title: '上传的文件',align:'center',templet: function(d){
+                        return ('<button class="layui-btn layui-btn-sm layui-bg-orange file_show" style="padding:0 8px" data-method="fileShow" data-pro_name=" '+d.pro_name+' " data-bom="'+d.bom+'" data-files="'+d.files+'" data-pcbas="'+d.pcbas+'" data-code="'+d.code+'">查看文件</button>');
+                     /*   var allFile= (
+                                '<tr><td class="show_file">代码包</td>' +
+								'<td >'+d.code+'</td></tr>'+
+                                '<tr><td class="show_file">bom表</td>' +
+								'<td >'+d.bom+'</td></tr>'+
+                                '<tr><td class="show_file">pcba文件</td>' +
+								'<td >'+d.pcbas+'</td></tr>'+
+                                '<tr><td class="show_file">其他文件</td>' +
+								'<td>'+d.files+'</td></tr>'
+                            );
+                        return (
+                            '<div>' +
+                            '<p>' +
+							'<button class="layui-btn layui-btn-sm layui-bg-orange" style="padding:0 8px"  lay-submit lay-filter="file-down" data-pro_name="'+d.pro_name+'" data-bom="'+d.bom+'" data-files="'+d.files+'" data-pcbas="'+d.pcbas+'" data-code="'+d.code+'">查看文件</button>' +
+							'<button class="layui-btn layui-btn-sm" style="padding:0 8px">查看路径</button>' +
+							'<span style="margin: 0 50px;"></span></p>' +
+                            '<table class="layui-table"> ' +
+                            '<colgroup> ' +
+                            '<col width="100px"> ' +
+                            '</colgroup> ' +
+                            '<thead> ' +
+                            '<tr> ' +
+                            '<th>文件名称</th> ' +
+                            '<th>文件路径</th> ' +
+                            '</tr> ' +
+                            '</thead> ' +
+                            '<tbody >' +allFile + '</tbody> ' +
+                            '</table>' +
+                            '</div>'
+                        );*/
+                    }}
+                    ,{title: '方案图片',templet: function(d){
+                        return (
+                        '<button class="js-check-img layui-btn layui-btn-sm" data-img="'+d.imgs+'">查看图片</button>'
+                    )}}
+                    ,{field: 'sys_uid', title: '审核人',templet:function(d){
+                        if(d.sys_uid){
+							for(var i in sysUserInfo){
+								if(sysUserInfo[i]['uid']==d.sys_uid){
+									return sysUserInfo[i]['nickname'];
+								}
+							}
+                        }else{
+                            return '';
+						}
+                    }}
+                    ,{field: 'check_time', title: '审核时间'}
+                    ,{field: 'create_time', title: '创建时间'}
+                    ,{field: 'update_time', title:'更新时间'}
+                    ,{field: 'handle', title: '操作', align: 'center', fixed: 'right', templet:function (d) {
+                        if(d.check_status==0){
+                            return (
+                                '<div class="data-table-handle-box" >' +
+                                '<span class="js-check" data-sn="'+d.pro_sn+'" data-id="'+d.id+'" data-uid="'+d.uid+'">审核中</span>'+
+                                '</div>'
+                            )
+						}else if(d.check_status==1){
+                            return (
+                                '<div class="data-table-handle-box" >' +
+//                                '<span class="js-check" data-sn="'+d.pro_sn+'" data-id="'+d.id+'" data-uid="'+d.uid+'">通过</span>'+
+                                '<span class="" data-sn="'+d.pro_sn+'" data-id="'+d.id+'" data-uid="'+d.uid+'">通过</span>'+
+                                '</div>'
+                            )
+                        }else if(d.check_status==2){
+                            return (
+                                '<div class="data-table-handle-box">' +
+//                                '<span class="js-check" data-sn="'+d.pro_sn+'" data-id="'+d.id+'" data-uid="'+d.uid+'">不通过</span>'+
+                                '<span class="" data-sn="'+d.pro_sn+'" data-id="'+d.id+'" data-uid="'+d.uid+'">不通过</span>'+
+                                '</div>'
+                            )
+						}
+                    }}
+                ]],
+                done:function () {
+                    //查看方案详情
+					$('.pro_desc').on('click',function(){
+					    var _this = $(this);
+					    var _descri =  _this.data('pro_desc');
+                        var method  =  _this.data('method');
+                        active[method] ? active[method](_descri): '';
+					});
+                    //审核
+                    $('.js-check').on('click',function () {
+                        var $this = $(this);
+                        layer.open({
+                            title:['审核','font-size:15px'],
+                            type: 0,
+                            content: (
+                                '<div class="layui-form jl-check-modal" style="width: 250px"> ' +
+                                '<input type="radio" name="pass" value="1" title="通过" checked> ' +
+                                '<input type="radio" name="pass" value="2" title="不通过"> ' +
+                                '</div>'
+                            ),
+                            success: function(){
+                                form.render('radio');
+                                $('.layui-form-radio').css('font-size','14px');
+                            },
+                            yes:function (index, layero) {
+                                var	check_data	= {
+                                    'sol_id':$this.data('id'),
+									'sol_uid':$this.data('uid'),
+                                    'sol_type':1,
+									'pro_sn':$this.data('sn'),
+                                    'check_status':$('input[name="pass"]:checked').val()
+								};
+                                $.post('proAudit',check_data,function (res) {
+                                    if(res.status==1000){
+                                        layer.close(index);
+                                        layer.msg('操作成功', {area:['200px', '50px']});
+                                        setTimeout(function () {
+                                            window.location.reload()
+                                        },500)
+                                    }else{
+                                        layer.msg('操作失败', {area:['200px', '50px']});
+//                                        res = $.parseJSON(res);//权限错误时
+//                                        if(res.error==1){
+//                                            setTimeout(function(){
+//                                        		layer.msg(res.msg, {area:['200px', '50px']});
+//											},800);
+//                                        }
+									}
+                                })
+                            }
+                        });
+                    })
+					//文件展示/下载
+					/*form.on('lay-submit(file-down)',function(data){
+						console.log(data);
+						console.log(1);
+					});*/
+                    $('.file_show').on('click',function(){
+                        var _this = $(this);
+                        var data_arr= _this.data();
+                        var files_content ='<div>' ;
+                        if(data_arr['pcbas']){
+                            files_content += '<div class="alone-file-y" data-files="'+data_arr['pcbas']+'">pcbas文件</div>';
+                        }else{
+                            files_content += '<div class="alone-file-n" data-files="'+data_arr['pcbas']+'">pcbas文件</div>';
+                        }
+                        if(data_arr['code']){
+                            files_content += '<div class="alone-file-y" data-files="'+data_arr['code']+'">代码包</div>';
+                        }else{
+                            files_content += '<div class="alone-file-n" data-files="'+data_arr['code']+'">代码包</div>';
+                        }
+                        if(data_arr['bom']){
+                            files_content += '<div class="alone-file-y" data-files="'+data_arr['bom']+'">BOM表</div>';
+                        }else{
+                            files_content += '<div class="alone-file-n" data-files="'+data_arr['bom']+'">BOM表</div>';
+                        }
+                        if(data_arr['files']){
+                            files_content += '<div class="alone-file-y" data-files="'+data_arr['files']+'">其他文件</div>';
+                        }else{
+                            files_content += '<div class="alone-file-n" data-files="'+data_arr['files']+'">其他文件</div>';
+                        }
+                        files_content += '<div style="height:10px;line-height: 10px;"><hr/></div><div id="file_show"></div>';
+                       /* var files_content =
+                            '<div>' +
+                            '<div class="'+data_arr['pcbas']?'alone-file-y':'alone-file-n'+'" data-files="'+data_arr['pcbas']+'">pcbas文件</div>' +
+                            '<div class="alone-file-y" data-files="'+data_arr['code']+'" >代码包</div>' +
+                            '<div class="alone-file-y" data-files="'+data_arr['bom' ]+'" >bom表</div>' +
+                            '<div class="alone-file-y" data-files="'+data_arr['files']+'">其他文件</div>' +
+							'<div style="height:10px;line-height: 10px;"><hr/></div><div id="file_show"></div>' +
+                            '</div>';*/
+                        var method  = data_arr['method'];
+                        active[method] ? active[method](files_content,data_arr['pro_name']): '';
+                    });
+                    var active = {
+                        describe: function (texts) {
+                            var url = texts;
+                            console.log(url);
+                            layer.open({
+                                type: 2
+                                , title: false
+                                , closeBtn: 2
+                                , area: ["60%", '80%']
+                                , shade: 0.5
+                                , id: 'LAY_layuipro'
+                                , btn: ['关闭页面']
+                                , content: url
+                            });
+                        },
+                        fileShow:function(html,title){
+                            layer.open({
+                                title: title,
+								center:true,
+                                area: ['100%', '100%'],
+                                type:1,
+                                btn:'确定',
+                                shade: false, //不显示遮罩
+                                content:html,
+                                success:function (index) {
+                                    var only_onece = 0,only_onece_1 = 0,only_onece_2 = 0,only_onece_3 = 0
+                                    $('.alone-file-y').on('click',function(){
+                                        var _this = $(this), file_data = _this.data('files');
+                                        if(file_data){
+                                            var rez =  matchType(file_data);
+                                            console.log(rez);
+                                            /*图片*/
+                                            if(rez == 'image'&& only_onece === 0){
+                                                only_onece++;
+                                                var add_element = "<img src='"+oss_prefix+file_data+oss_suffix+"' class='img_file' style='max-width:900px;margin:auto;display:block;'>";
+                                                $('#file_show').html('');
+                                                $('#file_show').append(add_element);
+											/*office相关文件*/
+                                            }else if(rez == 'office' && only_onece_1 === 0){
+                                                only_onece_1++;
+                                                var add_element = "<iframe class='file_public_css' src='https://view.officeapps.live.com/op/view.aspx?src="+oss_prefix+file_data+"' style='display:block;'  frameborder='1'></iframe>"
+                                                $('#file_show').html('');
+                                                $('#file_show').append(add_element);
+											/*pdf文件*/
+                                            }else if(rez == 'pdf'&& only_onece_2 === 0){
+                                                only_onece_2++;
+                                                var add_element = "<div id='pdf' class='file_public_css' style='text-indent:0px;'></div>"
+
+                                                $('#file_show').html('');
+                                                $('#file_show').append(add_element);
+                                                setTimeout(function(){
+                                                    var pdfSrc = "{$prefix}"+file_data;
+                                                    if(pdfSrc){
+                                                        PDFObject.embed(pdfSrc, "#pdf",{pdfOpenParams:
+                                                            {
+                                                                pagemode: "thumbs",
+                                                                navpanes: 0,
+                                                                toolbar: 0,
+                                                                statusbar: 0,
+                                                                view: "FitV"
+                                                            }
+                                                        });
+                                                    };
+                                                },200)
+                                            }else if(rez == 'rar'&& only_onece_3 === 0){
+                                                only_onece_3++;
+                                                var a = document.createElement("a");
+                                                var file_path = oss_prefix+file_data;
+                                                a.href = file_path;
+                                                a.click();
+                                            }else{
+                                            }
+                                        }
+									});
+                                },
+                                end:function () {
+                                },
+                                yes:function (index, layero) {
+                                    layer.close(index);
+                                },
+                            });
+                        }
+                    }
+                }
+
+            });
+            //文件下载
+            /*form.on('submit(file-down)', function(data){
+
+                console.log(111);
+                var files_data = data.elem.dataset;
+                	files_data = JSON.stringify(files_data);
+                	console.log(files_data);
+                $.ajax({
+					type:'post',
+					dataType:'json',
+					url:'/Home/SolutionUpload/file_download',
+					data:files_data,
+					success:function(re){
+						console.log(11);
+					}
+				});
+//                delete files_data.pro_name;
+//                $.each(files_data,function(index,value){
+//					if(value){
+//						var houzhui = String(value).substring(String(value).lastIndexOf('.')+1);
+//						var file_path = value;
+//						var file_name = index+'.'+houzhui;
+//						var a = document.createElement("a");
+//						a.href = oss_prefix+file_path;
+//						/!*a.download =file_name;*!/
+//						a.click();
+//						console.log(houzhui);
+//					}
+//				});
+            });*/
+            function matchType(fileName) {
+                // 后缀获取
+                var suffix = '';
+                // 获取类型结果
+                var result = '';
+                try {
+                    var flieArr = fileName.split('.');
+                    suffix = flieArr[flieArr.length - 1];
+                } catch (err) {
+                    suffix = '';
+                }
+                // fileName无后缀返回 false
+                if (!suffix) {
+                    result = false;
+                    return result;
+                }
+                // 图片格式
+                var imglist = ['png', 'jpg', 'jpeg', 'bmp', 'gif'];
+                // 进行图片匹配
+                result = imglist.some(function (item) {
+                    return item == suffix;
+                });
+                if (result) {
+                    result = 'image';
+                    return result;
+                };
+                // 匹配office
+                var officeList = ['txt','xls','xlsx','doc', 'docx','word'];
+                result  = officeList.some(function(item){
+                    return item == suffix;
+                });
+                if(result){
+                    return 'office'
+                }
+                // 匹配 pdf
+                var pdfList = ['pdf'];
+                result = pdfList.some(function (item) {
+                    return item == suffix;
+                });
+                if (result) {
+                    result = 'pdf';
+                    return result;
+                };
+                // 匹配压缩包
+                var rarList = ['rar','7.zip','zip','jar'];
+                result 	= rarList.some(function(item){
+                    return item == suffix;
+                });
+                if(result){
+                    return 'rar';
+                }
+                //其他
+                return false;
+//                    // 匹配txt
+//                    var txtlist = ['txt'];
+//                    result = txtlist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'txt';
+//                        return result;
+//                    };
+//                    // 匹配 excel
+//                    var excelist = ['xls', 'xlsx'];
+//                    result = excelist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'excel';
+//                        return result;
+//                    };
+//                    // 匹配 word
+//                    var wordlist = ['doc', 'docx'];
+//                    result = wordlist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'word';
+//                        return result;
+//                    };
+//                    // 匹配 pdf
+//                    var pdflist = ['pdf'];
+//                    result = pdflist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'pdf';
+//                        return result;
+//                    };
+//                    // 匹配 ppt
+//                    var pptlist = ['ppt'];
+//                    result = pptlist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'ppt';
+//                        return result;
+//                    };
+//                    // 匹配 视频
+//                    var videolist = ['mp4', 'm2v', 'mkv'];
+//                    result = videolist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'video';
+//                        return result;
+//                    };
+//                    // 匹配 音频
+//                    var radiolist = ['mp3', 'wav', 'wmv'];
+//                    result = radiolist.some(function (item) {
+//                        return item == suffix;
+//                    });
+//                    if (result) {
+//                        result = 'radio';
+//                        return result;
+//                    }
+//                    // 其他 文件类型
+//                    result = 'other';
+//                    return result;
+            }
+
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: solList.pageSize,
+                count: solList.count,
+                curr: solList.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request,{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(solList.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+			//图片展示
+            $('.js-check-img').click(function () {
+                var _this= $(this);
+				var img  = _this.data('img');
+					img  = img.split(',');
+                var img_div= document.createElement("div");
+                $.each(img,function(ind,val){
+                    var myImage = new Image();
+                    myImage.src = oss_prefix+val+oss_suffix;
+                    img_div.appendChild(myImage);
+				});
+                var viewer = new Viewer(img_div,{toolbar:true});
+                viewer.show();
+            });
+            //跳转函数
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = 'solutions?'+query
+            };
+            //状态
+			var status_value=request.where.sol_status.value;
+			$("select[name='sol_status'] option").each(function(d){
+//			    console.log(d);
+			    var option_obj = $(this);
+			    if(option_obj.val() == status_value){
+			       option_obj.attr('selected',true);
+				}
+                form.render('select');
+			});
+
+            //新窗口
+//            $('.pro-solList').click(function () {
+//                jlTool.sendIframeMsg('go',{
+//                    title:'供应方案审核',
+//                    url:'/Admin/Solution/solutions',
+//                    icon:''
+//                });
+//            });
+            $('.desir-solList').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'需求方案',
+                    url:'/Admin/Solution/desirSolutions',
+                    icon:''
+                });
+            });
+            $('.vip-info-list').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'客户信息(会员)',
+                    url:'/Admin/Customer/customerList',
+                    icon:''
+                });
+            });
+            $('.my-solList').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'自营方案',
+                    url:'/Admin/Solution/mysolList',
+                    icon:''
+                });
+            });
+            $('.updata-types').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'方案类型',
+                    url:"/Admin/Solution/typesList",
+                    icon:''
+                });
+            });
+        });
+	</script>
+</block>

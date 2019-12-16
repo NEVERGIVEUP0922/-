@@ -1,0 +1,55 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-cart" />
+
+<block name="title">搜索</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/orderSuccee.css">
+</block>
+
+<block name="nav-title">购物车</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <ul id="jl-cart-progress" class="jl-cle">
+        <li class="jl-old">
+            <p>
+                <span class="jl-serial">1</span>
+                我的购物车
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-old">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">2</span>
+                确认订单信息
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-progress-last jl-cur">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">3</span>
+                成功提交订单
+            </p>
+        </li>
+    </ul>
+
+    <div id="jl-cart-empty">
+        <img src="__PUBLIC__/Home/Public/img/success.png" alt="">
+        <p>成功提交订单啦，点击返回首页！</p>
+        <button class="jl-continue">继续逛逛</button>
+    </div>
+
+    <div class="jl-line"></div>
+
+
+</block>
+
+<block name="js">
+</block>

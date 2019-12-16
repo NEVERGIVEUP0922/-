@@ -1,0 +1,284 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+    <style>
+        .jl-fp-form{  line-height: 36px;  }
+        .layui-table-view .jl-order-list-container td,
+        .layui-table-view .jl-order-list-container th{
+            padding: 9px 15px;
+        }
+    </style>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">资金管理</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="overflow: hidden">
+            <!--<span>
+                   <span style="padding: 9px 15px">业务员</span>
+                   <input value="{$request.sys_uid}" type="hidden" name="sys_uid" placeholder="请选择业务员" class="layui-input jl-select-user" style="display: inline-block;width: auto">
+                   <input value="{$request.sys_uid_name}" type="text" name="sys_uid_name" placeholder="请选择业务员" class="layui-input jl-select-user layui-form-label-pinyin-admin" style="display: inline-block;width: auto">
+            </span>-->
+            <!--<span>-->
+            <span>
+                <span style="padding: 9px 15px">客户</span>
+                <input value="{$request.user_id}" type="hidden" name="user_id" placeholder="请选择客户" class="layui-input jl-select-customer" style="display: inline-block;width: auto">
+                <input value="{$request.user_id_name}" type="text" name="user_id_name" placeholder="请选择客户" class="layui-input jl-select-customer layui-form-label-pinyin-customer" style="display: inline-block;width: auto">
+            </span>
+            <span style="padding: 9px 15px">订单号</span>
+            <input value="{$request.order_sn}" type="text" name="order_sn" placeholder="请输入订单号" class="layui-input jl-select-customer" style="display: inline-block;width: auto">
+            <span style="padding: 9px 15px">商户编号</span>
+            <input value="{$request.out_trade_no}" type="text" name="out_trade_no" placeholder="请输入商户编号" class="layui-input jl-select-customer" style="display: inline-block;width: auto">
+            <!--</span>-->
+            <div class="layui-col-xs4 layui-col-sm4">
+                <label class="layui-form-label">支付区间</label>
+                <div class="layui-input-block" style="overflow:hidden">
+                    <input type="text" style="width:45%;float:left;" name="create_at_start" value="{$request.create_at_start}" id="pickStart" placeholder="起始时间" autocomplete="off" class="layui-input">
+                    <span style="float:left;margin:1% 1%">—</span>
+                    <div class="layui-inline" style="float:left ;width:45%">
+
+                        <div class="layui-input-inline">
+                            <input type="text" name="create_at_end" class="layui-input" id="pickEnd" value="{$request.create_at_end}" placeholder="结束时间">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-btn-group">
+                <button class="layui-btn search-btn">检索</button>
+                <button class="layui-btn layui-btn-primary clear-btn">清空</button>
+            </div>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" data-id="{{ d.id }}"  data-id="{{ d.status }}" style="width: 100%">
+                    <a class="layui-btn layui-btn-sm" lay-event="detail"  href="/Admin/Order/orderList?where[order_sn][key]=order_sn&where[order_sn][value]={{d.order_sn}}&show=orderDetail">订单详情</a>
+                    <button class="layui-btn layui-btn-sm" lay-event="detail">校对</button>
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool', 'element', 'form', 'laydate','selectUser','selectCustomer','handleDistrict'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var laydate = layui.laydate;
+            var form = layui.form;
+            var selectUser = layui.selectUser;
+            // selectUser.initInput(false,false,'fullname');
+            var selectCustomer = layui.selectCustomer;
+            //selectCustomer.initInput(false,false,false);
+            initInput({"admin":"","customer":""});
+            var list_data = {$notify|json_encode};
+            var request = {$request|json_encode};
+            console.log(list_data)
+            console.log(request)
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Customer/payOrder?' + query
+            };
+            //时间选择
+            laydate.render({
+                elem: '#pickStart',
+                done:function(value, date, endDate){
+                    var endTime = new Date($("#pickEnd").val());
+                    if(new Date(value) - endTime >0){
+                        setTimeout(function(){
+                            $("#pickStart").val($("#pickEnd").val());
+                        },500)
+                    }
+                }
+            });
+            laydate.render({
+                elem: '#pickEnd',
+                done:function(value, date, endDate){
+                    var startTime = new Date($("#pickStart").val());
+                    if(new Date(value) - startTime <0){
+                        setTimeout(function(){
+                            $("#pickEnd").val($("#pickStart").val());
+                        },500)
+                    }
+                }
+            });
+            table.render({
+                elem: '.data-table',
+                data: list_data,
+                page: false,
+                limit: request.pageSize ?request.pageSize:10,
+                cellMinWidth: 160,
+                height: 'full-226',
+                cols: [[
+                    {field: 'order_sn', title: '订单号'}
+
+                    , {field: 'fcustjc', title: '客户名称'}
+                    , {field: 'user_name', title: '用户名'}
+                    , {field: 'origin', title: '来源',templet:function (d) {
+
+                            return d.origin==2?'微信':'支付宝';
+                        }}
+                    , {field:'order_total',title: '商城订单总额'}
+                    , {field: 'total_amount', title: '平台订单总额'}
+                    , {field: 'time', title: '支付时间'}
+                    , {field: 'pay_status', title: '支付状态',templet:function (d) {
+                            console.log(d)
+                            if(d.pay_status==0){
+                                return '未付款';
+                            }else if(d.pay_status==1){
+                                return '支付超时';
+                            }else if(d.pay_status==2){
+                                return '支付成功';
+                            }else if(d.pay_status==3){
+                                return '支付成功';
+                            }else if(d.pay_status==4){
+                                return '转入退款';
+                            }else if(d.pay_status==5){
+                                return '已撤销';
+                            }else if(d.pay_status==6){
+                                return '支付中';
+                            }else if(d.pay_status==7){
+                                return '支付失败';
+                            }
+                        }}
+                    , {field:'notify_type',title: '交易类型',templet:function (d) {
+                            return d.notify_type=='or'?'订单支付':'账期支付';
+                        }}
+
+                    , {field: 'buyer_logon_id', title: '支付账号'}
+                    , {field:'out_trade_no',title: '商户编号'}
+                    , {field: 'trade_no', title: '平台交易号'}
+                    , {
+                        field: 'handle', title: '操作', align: 'center', fixed: 'right',
+                        toolbar: '#data-table-handle-tpl'
+                    }
+
+                ]],
+                done:function () {
+                    $('.jl-show-order-list').on('click',function () {
+                        var $content = $(this).siblings('.jl-order-list-container');
+                        layer.open({
+                            type: 1,
+                            title:'订单详情',
+                            area:['750px'],
+                            content: $content,
+                            success:function () {
+
+                            },
+                            yes: function(index, layero){
+
+                            }
+                        })
+                    })
+                }
+            });
+            //工具按钮
+            table.on('tool(data-table)', function (obj) {
+                var source = obj.data;
+                var layEvent = obj.event;
+                if (layEvent === 'detail') {
+                    var data = {
+                        origin:source.origin,
+                        out_trade_no:source.out_trade_no
+                    };
+                    var load = layer.load(3, {time: 10*1000});
+                    $.post('/admin/Customer/payDetail',data,function (res) {
+                        layer.close(load);
+                        layer.open({
+                            title:'查看详细资金',
+                            area:['50%','50%'],
+                            closeBtn:1,
+                            content:res.html,
+                            success:function(){
+                                $(".layui-inline").css({"display":"block","overflow":"hidden"});
+                            }
+                        });
+                        form.render();
+                    })
+
+                } else if (layEvent === 'checkTrue') {
+                    var str='';
+                    str +='<div style="width:100%;margin:4% auto"><input type="radio" name="status" value="1" title="通过" checked> ' +
+                        '<input type="radio" name="status" value="2" title="不通过"></div> ' ;
+                    str +=' <div style="width:100%;margin:4% auto"><span style="margin-right:5%">奖品</span> <input style="padding:2% 4%;border:none" name="goods" type="text" placeholder="请填写兑换奖品"/></div>';
+                    str +=' <div style="width:100%;margin:4% auto"><span style="margin-right:5%">备注</span> <input style="padding:2% 4%;border:none" name="remark" type="text" placeholder="请填写备注信息"/></div>';
+                    layer.open({
+                        type: 1,
+                        title:'奖品审核',
+                        type:0,
+                        btn:['确认','取消'],
+                        content: '<div class="layui-form jl-check-modal codeForm" style="width: 320px">'+str+'</div>',
+                        success:function(){
+                            form.render('radio');
+                            $('.layui-layer-btn.layui-layer-btn-').css("text-align","center");
+                            $('.layui-form-radio').css('font-size','inherit');
+                        },
+                        yes:function () {
+                            var data={};
+                            data.id=source.id;
+                            data.status=$('.codeForm').find('input[name=status]:checked').val();
+                            data.goods=$('.codeForm').find('input[name=goods]').val();
+                            data.remark=$('.codeForm').find('input[name=remark]').val();
+                            if(data.status == 1 && !$('.codeForm').find('input[name=goods]').val()){ layer.msg("奖品必须填写哟");return}
+
+                            $.ajax({
+                                type: 'GET',
+                                url: "{:U('Admin/Customer/codeOne')}",
+                                data: data,
+                                success: function (res) {
+                                    var data = JSON.parse(res);
+                                    if (data.error == "0") {
+                                        layer.msg("提交成功");
+                                        setTimeout(function () {
+                                            window.location.reload()
+                                        },500)
+                                    } else {
+                                        layer.msg("提交失败");
+                                    }
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: request.pageSize ? request.pageSize : 10,
+                count: request.count ? request.count : 10,
+                curr: request.page ? request.page : 1,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request, {
+                            pageSize: obj.limit,
+                            page: String(obj.limit) === String(request.pageSize) ? obj.curr : 1
+                        }));
+                    }
+                }
+            });
+            //检索按钮
+            $('.search-btn').on('click',function () {
+                queryTable($.extend(request,{
+                    create_at_end:$('input[name="create_at_end"]').val(),
+                    create_at_start:$('input[name="create_at_start"]').val(),
+                    user_id:$('input[name="user_id"]').val(),
+                    user_id_name:$('input[name="user_id_name"]').val(),
+                    order_sn:$('input[name="order_sn"]').val(),
+                    out_trade_no:$('input[name="out_trade_no"]').val()
+                }));
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,223 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">
+    <if condition="$_SESSION['userType'] eq 1">
+    个人中心<else /> 企业中心
+</if></block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+</block>
+
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+    个人中心<else /> 企业中心
+</if>
+</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <div class="jl-center-user">
+        <a href="{:U('Home/User/info')}" class="jl-user-title jl-cle">
+            <div class="jl-title-head">
+                <?php $avator = session('userInfo.avator');  ?>
+                <?php if( !file_exists(SITE_PATH.$avator) || empty($avator) ){echo '<img src="__UPLOAD__/User/avator/default.png" alt="">';}else{echo "<img src=".$avator.">";}?>
+            </div>
+            <ul class="jl-user-news">
+                <if condition="$info['user_type'] eq 1">
+                    <li>昵称：{$info['nick_name']}</li>
+                    <li>用户名：{$info['user_name']}</li>
+                    <li>账期额度：￥{$quota}</li>
+                    <li>联系号码：{$info['user_mobile']}</li>
+                    <li>上次登录时间：{$info['last_time']}</li>
+                    <li>会员积分：0</li>
+                <elseif condition="($_SESSION['userType'] eq 2) OR ($_SESSION['userType'] eq 20)" />
+                    <!--{:dd($company_info)}-->
+                    <li>公司名称：{$company_info['company_name']}</li>
+                    <li>企业人数：{:C("COMPANY_SETING.people_num")[$company_info['company_people_num']]}</li>
+                    <li>账期额度：￥{$quota}</li>
+                    <li>公司电话：{$company_info['company_phone_num']}</li>
+                    <li>上次登录时间：{:session('userInfo.last_time')}</li>
+                    <li>会员积分：0</li>
+                </if>
+            </ul>
+        </a>
+        <div class="jl-title"><i class="jl-logistics"></i>我的物流</div>
+        <!--{:dd($delivery)}-->
+        <ul class="jl-user-logistics">
+            <volist name="delivery" id="de">
+                <li  data-sn="{$de.order_sn}">
+                    <a href="{:U('Home/Product/detail',['sign'=>$de['goods'][0]['p_sign']])}">
+                    <notempty name="de.goods.0.cover_image">
+                        <img src="{$de.goods.0.cover_image}" alt="{$de.goods.0.p_name}">
+                        <else />
+                        <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="{$de.goods.0.p_sign}">
+                    </notempty>
+                    </a>
+                    <div class="jl-logistics-detail">
+                        <p>{$de.traces.0.traces.0.AcceptStation} </p>
+                        <div>
+                            <span>{$de.traces.0.traces.0.AcceptTime}</span>
+                            <div class="jl-logistics-way" data-sn="{$de.goods.0.order_sn}">
+                                <a href="#">查看物流</a>
+                                <div class="jl-logistics-popup">
+                                    <i class="jl-arr-top"></i>
+                                    <div class="jl-logistics-title">
+                                        <span data-code="{$de.traces.0.kd_code}" class="jl-delivery-name">{$de.traces.0.kd_name}({$de.traces.0.kd_code})</span>
+                                        <span data-num="{$de.traces.0.kd_num}" class="jl-delivery-num">运单号：{$de.traces.0.kd_num}</span>
+                                    </div>
+                                    <ul class="jl-delivery-text"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<if condition="$de.ship_status eq 2"><button class="jl-confirm-receipt">确认收货</button><else /></if>-->
+                </li>
+            </volist>
+        </ul>
+        <?php $num = count($delivery);  ?>
+        <if condition="$num gt 3"><div class="jl-logistics-more">查看更多物流信息<i></i></div></if>
+        <empty name="history">
+            <div class="jl-title"><i class="jl-recommend"></i>产品推荐</div>
+            <else />
+            <div class="jl-title"><i class="jl-history"></i>浏览历史</div>
+        </empty>
+        <ul class="jl-history-product jl-cle">
+            <empty name="history">
+                <volist name="hot" id="c">
+                    <li class="{$i%3==0 ? 'jl-hot-li-last':''}" data-id="{$c.p_sign}">
+                        <div class="jl-img">
+                            <notempty name="c.cover_image">
+                                <img src="{$c.cover_image}" alt="{$c.name}">
+                                <else />
+                                <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                            </notempty>
+                        </div>
+                        <div class="jl-describe">
+                            <h2 class="jl-fa-prod">{$c.p_sign}</h2>
+                            <p class="jl-p-describe">{$c.replace_desc}</p>
+                            <p>{$c.parameter}</p>
+                        </div>
+                        <p>
+                            <span>价格：￥{$c.price}</span>
+                            <a href="javascript:;">查看详情</a>
+                        </p>
+                    </li>
+                </volist>
+                <else />
+                    <volist name="history" id="c">
+                        <li class="{$i%3==0 ? 'jl-hot-li-last':''}" data-id="{$c.p_sign}">
+                            <div class="jl-img">
+                                <notempty name="c.cover_image">
+                                    <img src="{$c.cover_image}" alt="{$c.name}">
+                                    <else />
+                                    <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                </notempty>
+                            </div>
+                            <div class="jl-describe">
+                                <h2 class="jl-fa-prod">{$c.p_sign}</h2>
+                               <!-- <p class="jl-p-describe">{$c.replace_desc}</p>-->
+                                <p style="overflow: hidden;text-overflow: ellipsis;-webkit-line-clamp: 4;display: -webkit-box;-webkit-box-orient: vertical;">{$c.replace_desc}{$c.parameter}</p>
+                            </div>
+                            <p>
+                                <span>价格：￥{$c.price}</span>
+                                <a href="{:U('Home/Product/detail', ['sign'=>$c['p_sign']])}">查看详情</a>
+                            </p>
+                        </li>
+                    </volist>
+            </empty>
+        </ul>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+                var history = {$history|json_encode};
+                var hot = {$hot|json_encode};
+                //console.log(history,hot);
+                require(['jl-modal'],function (modal) {
+                    modal.option({
+                        left:-77
+                    });
+                    //确认收货
+                    $('.jl-confirm-receipt').on('click',function(){
+                        var $that=$(this);
+                        var order_sn=$that.parents('li').attr('data-sn');
+                        modal.confirm({
+                            title:'确认收货',
+                            brief:'您确定要收货吗？',
+                            top:100,
+                            confirm:function () {
+                                $.post("{:U('Home/Order/doDelivery')}",{order_sn:order_sn}, function (res) {
+                                    if(res.status===0){
+                                        window.location.href="{:U('Home/Order/appraise')}";
+                                    }else{
+                                        modal.confirm({
+                                            title:'系统繁忙',
+                                            brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                            top:100
+                                        })
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    //详情页跳转
+                    $('.jl-history-product li').on('click',function(){
+                        var id=$(this).data("id");
+                        window.open("{:U('Home/Product/detail')}?sign="+id);
+                    });
+                });
+                //查看物流
+                $('.jl-logistics-way').each(function(){
+                    var t = $(this);
+                    t.hover(function(){
+                        var code = t.find('.jl-delivery-name').attr('data-code'), num = t.find('.jl-delivery-num').attr('data-num'), sn= t.data('sn');
+                        console.log(sn)
+                        if( !t.hasClass('ajax-done') ){
+                            $.ajax({
+                                type:'post',
+                                url:'{:U("Home/kd/info")}',
+                                data:{shipperCode:code,logisticCode:num,orderCode:sn},
+                                success:function(res){
+                                    if( res.traces ){
+                                        var str = '';
+                                        $.each(res.traces, function(i, d){
+                                            if( i > 3 ){
+                                                str += '<li class="jl-check-more"><a href="{:U(\'Home/Order/detail\')}?order_sn='+sn+'">查看全部</a></li>';
+                                                return false;
+                                            }else{
+                                                if( i == 0){
+                                                    str += '<li class="jl-cur">';
+                                                }else{
+                                                    str += '<li>'
+                                                }
+                                                str += '<i></i><div><p>'+d['AcceptStation']+'</p><p>'+d['AcceptTime']+'</p></div></li>';
+                                            }
+                                        });
+                                    }else{
+                                        str = '<li class="jl-cur"><i></i><div><p>暂无物流信息</p></div></li>';
+                                    }
+                                    t.find('ul.jl-delivery-text').html(str);
+                                    t.addClass('ajax-done');
+                                }
+
+                            })
+                        }
+
+                    },function(){
+
+                    });
+                });
+
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,242 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout-sol-center" />
+
+<block name="title">我的消息</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project_upload.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.4/css/layui.css" rel="stylesheet"  media="all">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		/*选项卡*/
+		.tab-control{
+			overflow: hidden;
+			background-color: #eee;
+			height:45px;
+			line-height: 45px;
+			border-bottom:1px #ddd solid;
+		}
+		/*子元素*/
+		.tc1{
+			margin: 0px 10px 0px 28px;
+		}
+		.tc2{
+			margin: 0px 10px 0px 120px;
+		}
+		/*公用*/
+		.tc0{
+			border-right:1px solid #ddd;
+			border-left:1px solid #ddd;
+			border-bottom:1px solid transparent;
+			background: #fff;
+			position:absolute;
+			height:45px;
+		}
+		.msg_btn{
+			width: 85px;
+			font-size:15px;
+			float: left;
+			text-align: center;
+			cursor: pointer;
+			position:absolute;
+			height: 43px;
+			margin-top: 2px;
+		}
+
+		.notify-list{
+			margin-left:30px;
+		}
+		.notify-list li{
+			height:30px;
+			line-height: 30px;
+			margin:10px 0px;
+		}
+		.notify-list li>div{
+			display:inline-block;
+			margin:0 10px;
+		}
+		.notify-list li div:first-child{
+			width:480px;
+		}
+		.notify-list li div:nth-child(2){
+			width:200px;
+		}
+		.notify-list li div:nth-child(3){
+			width:140px;
+		}
+		.isRead,.isDelete{
+			padding:0px 5px;
+			border:1px solid;
+			display: inline-block;
+			border-radius:4px;
+			color:#fff;
+			cursor: pointer;
+		}
+		.isRead{
+			background: #e84343;
+		}
+		.isDelete{
+			background: #00bff0;
+		}
+		/*----------*/
+		.jl-red{
+			cursor: pointer;
+		}
+		.jl-modal-footer>button{
+			height:30px!important;
+			width:60px!important;
+			border-radius: 2px;
+		}
+		.jl-modal-body{
+			min-height: 40px!important;
+		}
+		.jl-modal-footer{
+			height:70px!important;
+		}
+	</style>
+</block>
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main"><!-- 主要内容 -->
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--项目管理中心具体内容-->
+		<div class="projectContent" data-is_read="{$had_read}">
+			<div class="tab-control">
+				<div class=" msg_btn notread tc1 {$had_read?'':'tc0'}">未读消息</div>
+				<div class=" msg_btn hadread tc2 {$had_read?'tc0':''}">已读消息</div>
+				<!--<div class="{$had_read?'':'baiZiHongDi'} msg_btn notread">未读消息</div>-->
+				<!--<div class="{$had_read?'baiZiHongDi':''} msg_btn hadread">已读消息</div>-->
+			</div>
+				<!--<hr style="border:1px solid;text-align: center"></hr>-->
+			<ul class="notify-list">
+			<foreach name="res" item="vo">
+				<if condition="$vo.type eq 1">
+					<li data-id="{$vo.id}" data-sol_id="{$vo.target}" data-sol_type="{$vo.target}" data-notify_id="{$vo.notify_id}">
+						<div>您的一条<span class="jl-red">{$vo.target_type}</span><span class="jl-red">{$vo.action}</span>审核</div>
+						<div>{$vo.create_time}</div>
+						<div><span class="isRead jl-red">
+							<if condition="$vo.is_read eq 0">标记已读
+								<else />标记为未读
+							</if>
+							</span><span class="isDelete">删除</span></div>
+					</li>
+					<elseif condition="$vo.type eq 2" />
+					<li data-id="{$vo.id}" data-sol_id="{$vo.target}" data-sol_type="{$vo.target}" data-notify_id="{$vo.notify_id}">
+						<div>您有一条新的洽谈消息,<a href="{:U('Home/Solution/converse')}?all_con=1" class="jl-red">点击查看详情</a></div>
+						<div>{$vo.create_time}</div>
+						<div><span class="isRead jl-red">
+							<if condition="$vo.is_read eq 0">标记已读
+								<else />标记为未读
+							</if>
+						</span><span class="isDelete">删除</span></div>
+					</li>
+					<elseif condition="$vo.type eq 3" />
+					<li data-id="{$vo.id}" data-sol_id="{$vo.target}" data-sol_type="{$vo.target}" data-notify_id="{$vo.notify_id}">
+						<div>您接洽的方案有新动态了,<a href="{:U('Home/solution/converse')}?conversing=1" class="jl-red">点击查看详情</a></div>
+						<div>{$vo.create_time}</div>
+						<div><span class="isRead jl-red">
+							<if condition="$vo.is_read eq 0">标记已读
+								<else />标记为未读
+							</if>
+						</span><span class="isDelete">删除</span></div>
+					</li>
+					<else />
+					<li>
+						<div>没有新的消息</div>
+					</li>
+				</if>
+			</foreach>
+			</ul>
+		</div>
+		<div class="clear" ></div>
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','layer'], function ($, modal, pikaday, jlTool) {
+                //已读
+				var had_read = $('.projectContent').data('is_read');
+				if(had_read ==1){   had_read =2;}
+				if(had_read ==0){   had_read =1;}
+
+				$('.isRead').on('click',function(){
+				    var _thisLi	= $(this).parents('li');
+				    var sol_info= _thisLi .data();
+				    var data 	= {};
+						data.id = sol_info.id;
+				    	data.is_read = had_read;
+				    $.ajax({
+						url:'/Home/SolutionNotify/setMsgReaded',
+						type:'get',
+						data:data,
+						success:function(rez){
+//						    console.log(rez);
+                            modal.alert({
+								title:rez.msg,
+                                width:224,
+								top:100,
+                                isCenter:true,
+                                confirm:function(){
+                                    if(rez.error ==0){
+                                    _thisLi.remove();
+                                    }
+                                }
+                            });
+						}
+					});
+                    return;
+				});
+				//删除
+				$('.isDelete').on('click',function(){
+                    var _thisLi	= $(this).parents('li');
+                    var sol_info= _thisLi .data();
+                    var data 	= {};
+                    data.id 	= sol_info.id;
+                    data.deleted= 1;
+                    data.notify_id = sol_info.notify_id;
+                    $.ajax({
+                        url:'/Home/SolutionNotify/deleteMsg',
+                        type:'get',
+                        data:data,
+                        success:function(rez){
+                            modal.alert({
+                                title:rez.msg,
+                                width:224,
+                                top:100,
+                                isCenter:true,
+                                confirm:function(){
+                                    if(rez.error ==0){
+                                        _thisLi.remove();
+                                    }
+                                }
+                            });
+                        }
+                    });
+					return;
+				});
+				//已读消息
+				$('.hadread').on('click',function(){
+					window.location.href = "{:U('Home/SolutionNotify/all_notify','is_read=1')}"
+				});
+                //已读消息
+                $('.notread').on('click',function(){
+                    window.location.href = "{:U('Home/SolutionNotify/all_notify')}"
+                });
+            });
+        });
+	</script>
+</block>

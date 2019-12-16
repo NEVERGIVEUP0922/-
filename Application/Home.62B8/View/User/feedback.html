@@ -1,0 +1,79 @@
+<extend name="Layout:layout-center" />
+
+<block name="title">意见反馈</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/settingUser.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerAttention.css">
+</block>
+
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+<block name="main">
+    <div class="jl-feedback js-false-fe">
+        <textarea autofocus class="jl-b-text" name="content" placeholder="亲，写点建议吧，你的建议对我们是很有帮助的...."></textarea>
+        <i class="jl-false-note"></i>
+        <div class="jl-b-bottom">
+            <p>注：您诚挚的建议玖隆芯城会认真阅读，努力改进，更好的为您服务！</p>
+            <button type="button"  class="jl-per-submit jl-save-submit">确认提交</button>
+        </div>
+    </div>
+    <div class="jl-feedback-success">
+        <img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+        <h4>提交成功！感谢你诚挚的看法或建议，我们一定会认真阅读努力改进！</h4>
+        <button type="button"  class="jl-continue">继续反馈</button>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+                $('.jl-per-submit').on('click',function(){
+                    var content=$('.jl-b-text').val();
+                    var data = {
+                        content:content
+                    };
+                    if( content !== '' ){
+                        $.ajax({
+                            url: '{:U("Home/User/feedback")}',
+                            type: 'POST',
+                            data: data,
+                            dataType: 'json',
+                            success: function(res){
+                                if( res.status == 0 ){
+//                                    location.href='{:U("Home/User/index")}';
+                                    $('.jl-feedback').css('display','none');
+                                    $('.jl-feedback-success').css('display','block');
+                                }
+                                else{
+                                    modal.confirm({
+                                        title: '系统繁忙',
+                                        brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                        top: 100
+                                    })
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        $('.jl-b-text').parent().addClass('js-false');
+                    }
+                });
+
+                $('.jl-b-text').keydown(function () {
+                    $('.jl-b-text').parent().removeClass('js-false');
+                });
+
+                $('.jl-continue').on('click',function(){
+                    location.href="{:U('Home/User/feedback')}";
+                })
+            });
+        })
+    </script>
+</block>

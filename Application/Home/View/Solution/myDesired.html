@@ -1,0 +1,287 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout-sol-center" />
+
+<block name="title">方案中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<!--<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">-->
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		.myDesir_color{
+			color:#e84343;
+		}
+	</style>
+</block>
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main"><!-- 主要内容 -->
+	<!--面包屑导航系统-->
+	<!--{$breadcrum}-->
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--项目管理中心具体内容-->
+		<div class="projectContent">
+			<if condition="$res eq null">
+				<!--<if condition="$res eq null">-->
+				<div id="jl-purchase-fault">
+					<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+					<p class="jl-fault">还没有任何内容哦!</p>
+					<a href="{:U('Home/Solution/myDesiredUpload')}" class="jl-browse">点击发布方案</a>
+				</div>
+				<else/>
+				<foreach name="res" item="vo">
+					<div class="mysol mysol2 mysol3">
+						<i class="save-data" data-desir_id="{$vo.id}" data-desir_sn="{$vo.desir_sn}" data-check_status="{$vo.check_status}" data-publish_status="{$vo.publish_status}" data-draft="{$vo.draft}"></i>
+						<table style="width:100%;">
+							<tr>
+								<td colspan="4" style="color:#e84343;"><div class="project_sol_info" style="width:300px;margin:0 0 0 5px;">
+								<span class="jl-red">
+									{$vo.desir_name}
+								</span>
+								</div></td>
+							</tr>
+							<tr>
+								<td class='' style="width:60px;">方案编号:</td>
+								<td style="width:150px;"><div class="project_sol_info" style="width:140px;margin:0 0 0 5px;">{$vo.desir_sn}</div></td>
+								<td class='' style="width:50px;">浏览量:</td>
+								<td style="width:80px;"><div class="project_sol_info" style="width:50px;margin:0 0 0 5px;">{$vo.browse}</div></td>
+							</tr>
+							<tr>
+								<td class=''style="width:60px;">方案类型:</td>
+								<td><div class="project_sol_info" style="width:130px;margin:0 0 0 5px;">{$vo.types}</div></td>
+								<td class='' style="width:65px;">状&#12288;态:</td>
+								<td>
+									<span class="jl-red">
+									<if condition="$vo.publish_status eq 1">发布中
+										<else/>未发布
+									</if>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td class=''>预&#12288;&#12288;算:</td>
+								<td solspan="3"><div class="project_sol_info" style="width:130px;margin:0 0 0 5px;">{$vo.budget}</div></td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<div class="myDesir-div" style="width:71px;">交付时间:</div>
+									<div class="project_sol_info" style="width:80px;margin:0 0 0 5px;">{$vo.delivery}</div>
+								</td>
+								<td colspan="2">
+									<div class="myDesir-div" style="width:80px;">发布时间:</div>
+									<div class="project_sol_info" style="width:80px;margin:0 0 0 5px;">{$vo.pubtime}</div>
+								</td>
+							</tr>
+							<tr style="border-bottom:1px solid #ddd;">
+								<td colspan="4"></td>
+							</tr>
+							<tr>
+								<td class="textAlign-top" ><div class="desc-hidden3">方案描述:</div></td>
+								<td colspan="3" class="text-font-size"><div class="project_sol_info desc-hidden2 desc-hidden3">{$vo.desir_desc}</div></td>
+							</tr>
+							<tr>
+								<td colspan="4" style="text-align:right;"><a href="javascript:;" class="checkmore" data-method="describe">>>>点击查看更多</a></td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<div class="ziying" style="background: #fff;"></div>
+									<div class="check_status" data-method="updataInfo">
+										<if condition ="$vo['draft'] eq 1 "><span>点击修改</span>
+											<elseif condition="$vo['draft'] eq 0 && $vo['check_status'] eq 0 "/><span>审核中</span>
+											<elseif condition="$vo['draft'] eq 0 && $vo['check_status'] eq 1 && $vo['publish_status'] eq 0 "/><span>未发布</span>
+											<elseif condition="$vo['draft'] eq 0 && $vo['check_status'] eq 1 && $vo['publish_status'] eq 1 "/><span>点击下架</span>
+											<elseif condition="$vo['draft'] eq 0 && $vo['check_status'] eq 1 && $vo['publish_status'] eq 2 "/><span>已结束</span>
+											<elseif condition="$vo['draft'] eq 0 && $vo['check_status'] eq 2 "/>
+											不通过
+											<else />
+										</if>
+									</div>
+									<a href="javascript:;"><div class="converse-content baiZiHongDi" data-need_id="{$vo.uid}" data-desir_id="{$vo.id}" data-desir_sn="{$vo.desir_sn}">洽谈内容</div></a>
+									<div class="clear"></div>
+
+								</td>
+							</tr>
+						</table>
+					</div>
+				</foreach>
+			</if>
+		</div>
+		<div class="clear" ></div>
+		{$page}
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js', 'layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','layer','webuploader'], function ($, modal, pikaday, jlTool,WebUploader) {
+                var jlTool=layui.jlTool;
+                /*查看更多*/
+                $(".checkmore").on('click',function(event){
+                    event.stopPropagation();
+                    var te = $(this).parents('.mysol').find('.desc-hidden2'),_descri = te.html();
+//                    	_descri =_descri.replace(/\n/g,"<br/>");/*linux*/
+                    	_descri =_descri.replace(/n/g,"<p>");/*windows*/
+                    var othis = $(this), method = othis.data('method');
+                    active[method] ? active[method](_descri) : '';
+                });
+                /*查看洽谈内容*/
+                $(".converse-content").on('click',function(event){
+                    event.stopPropagation();
+                    var data = $(this).data();
+                    var desir_id = data.desir_id;
+                    var desir_sn = data.desir_sn;
+                    var need_id  = data.need_id;
+                    {};
+					$.ajax({
+						type:'POST',
+						url:"{:U('Home/Solution/converse')}",
+						data:data,
+						success:function($res){
+                            if($res.status==999) {
+                                window.location.href = '/Home/Account/login';
+                                return;
+                            }
+                            if($res){
+                                modal.confirm({
+                                    type: 'normal',
+                                    confirmText: "点击前往查看",
+                                    title: "你有"+$res+"条洽谈消息!",
+                                    top: 100,
+									isCenter:true,
+                                    confirm: function(){
+                                        var url = "{:U('Home/Solution/converse')}" + "?" + 'desir_id=' + desir_id + '&need_id=' + need_id + '&desir_sn=' + desir_sn;
+                                        location.href = url;
+                                    }
+                                });
+                            }else if($res == 0){
+                                modal.confirm({
+                                    type: 'fade',
+                                    title: '还没有洽谈内容',
+                                    top: 100
+                                });
+                            }else{
+                                modal.confirm({
+                                    type: 'fade',
+                                    title: '拉取信息失败!',
+                                    top: 100
+                                });
+                            }
+                        }
+					});
+				});
+                /*下架/修改*/
+				$(".check_status").on('click',function(event){
+                    event.stopPropagation();
+                    var _this = $(this);
+                    var _data  = _this.parents(".mysol").find('.save-data').data();
+                    if(_data.draft==0&&_data.check_status==1&&_data.publish_status==1){/*下架*/
+                        modal.confirm({
+                            title:'方案下架后,将不能重新发布此方案,您要确定吗?',
+                            confirmText:'确定',
+                            isCenter:true,
+                            confirm:function(){
+                                var the_end ={};
+                                the_end.publish_status = 1;
+                                the_end.desir_id =_data['desir_id'];
+                                $.ajax({
+                                    type:'GET',
+                                    url:"/Home/Solution/updataDesired",
+                                    data:the_end,
+                                    success:function(res){
+                                        if(res.status==999) {
+                                            window.location.href = '/Home/Account/login';
+                                            return;
+                                        }
+                                        if(res.status===1000){
+                                            _this.find('span').html('已结束');
+                                            $('#pub_status1').html('未发布');
+                                            waring_alert('下架成功');
+                                        }else{
+                                            waring_alert(res.content);
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                    }else if(_data.draft==1&&_data.check_status==0&&_data.publish_status==0){/*草稿修改*/
+                        var othis = _this, method = othis.data('method');
+                        active[method] ? active[method](_data.desir_id): '';
+					}
+				});
+                /*提示*/
+                function waring_alert(brief,title){
+                    modal.alert({
+                        title:title?title:'提示',
+                        brief:brief?brief:false,
+                    });
+                };
+
+                /*查看方案详情*/
+//                $(".mysol").on('click',function(){
+//					var _this = $(this);
+//					var data  = _this.find('.save-data').data();
+//					if(data.draft==0&&data.check_status==1&&data.publish_status==1){
+//					    window.open('/Home/Solution/desirDetail?desir_id='+data.desir_id);
+//					};
+//				});
+
+                /*弹层相关*/
+                var active  = {
+                    describe: function( text){
+						var descri = text;
+						layer.open({
+							type: 1
+							,title:false// "方案描述"
+							,closeBtn: false
+							,area:['400px','500px']
+							,shade:0.3
+							,shadeClose:true
+							,id: 'LAY_layuipro'
+		//                     	,btn:'关闭'
+							,btnAlign: 'r'
+							,moveType: 1
+							,content: "<div style='box-sizing: border-box;width:100%;height:100%;line-height:25px;padding:10px;text-indent:25px;letter-spacing: 2px;word-break: break-all;word-wrap: break-word;color:#222'>"+descri+"</div>"
+							,success: function(layero){
+								var btn = layero.find('.layui-layer-btn');
+								btn.find('.layui-layer-btn0').attr({
+									href: 'http://www.layui.com/'
+									,target: '_blank'
+								});
+							}
+						});
+					}
+					,updataInfo: function (id) {
+                        var url = "/Home/Solution/updataDesired?" + "desir_id="+id;
+                        layer.open({
+                            type: 2
+                            , title: false
+                            , closeBtn: 2
+                            , area: ['100%', '100%']
+                            , scrollbar: false
+                            , shade: 0.5
+                            , id: 'LAY_layuipro'
+                            , btn: ['关闭页面']
+                            , content: url
+							, end:function(){
+                                window.location.reload();
+							}
+                        });
+                    }
+                };
+            });
+        });
+	</script>
+</block>

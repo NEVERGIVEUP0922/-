@@ -1,0 +1,1717 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-center"/>
+<block name="title">账期订单</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.5/css/modules/layer/default/layer.css?v=3.1.1">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/myOrder.css">
+    <style>
+        .jl-hover-box{
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .jl-hover-box:hover .jl-hover-show-box{
+            display: block;
+        }
+        .jl-refund-container .jl-arr-top{
+            left: 154px;
+        }
+        .common-handle { overflow:hidden;margin:1% 0;text-align: center}
+        .common-handle span{ display:inline-block; padding:5px 10px;border-radius:1px;border:1px solid #ddd;cursor:pointer}
+        .common-handle span:last-child{ color:#e84343;border-color:#e84343}
+    </style>
+</block>
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <if condition="$user_info['userInfo']['user_type'] gt 20 ">
+        <else />
+        <div class="jl-payment-total">
+            <p>账期总额度：<span>¥ <?php echo sprintf("%.2f",$userAccount["quota"]);?></span></p>
+            <p>账期剩余额度：<span>¥ <?php if($userAccount["used_quota"]<0){echo sprintf("%.2f",$userAccount["quota"]);}else{echo sprintf("%.2f",$userAccount["quota"]-$userAccount["used_quota"]);}?></span></p>
+            <p>账期类型：<span>
+                  <?php
+						if(!$userAccount['since_name']){
+								echo '现金';
+							}else{
+							    echo $userAccount['since_name'];
+							}
+                   ?>
+
+            </span></p>
+            <div style="float: left;width: 310px">
+                <button class="js-repay-btn jl-account-primary-btn">为勾选的订单还款</button>
+            </div>
+            <p>是否超期付款：<span>
+                <gt name="userAccount.used_debt" value="0">是<else/>否</gt>
+            </span></p>
+        </div>
+    </if>
+    <!-- 标题 -->
+    <ul class="jl-order-title">
+        <li class="jl-goods">商品</li>
+        <li class="jl-name">名称</li>
+        <li class="jl-price">单价</li>
+        <li class="jl-count">数量</li>
+        <li class="jl-goods-operation">商品操作</li>
+        <li class="jl-subtotal">小计/元</li>
+        <li class="jl-state">交易状态</li>
+        <li class="jl-operation">交易操作</li>
+    </ul>
+    <!-- <?php print_r($orderList);?>-->
+    <notempty name="orderList">
+        <div>
+            <div class="jl-product-invoice">
+                <div class="jl-check" style="margin-top: 3px">
+                    <span class="jl-box js-product-all-checkbox  jl-cur" data-class="jl-product-detail-invoice" style="margin-right: 0"></span>
+                </div>
+                <i style="margin-right: 6px;color:#393939">全选</i>
+                <span style="color:#e84343">*开票账期还款</span>
+                <foreach name="orderList.invoice" item="order_first" key="j">
+                    <if condition="($j eq 0)">
+                        <foreach name="order_first" item="order" key="k" >
+                            <table class="jl-product-detail jl-product-detail-invoice">
+                                <?php
+                                    $retreats_knot_total=0;
+                                    $total_retreat_num_money = 0;
+                                    $knot_money = 0;
+                                    foreach($order['goodsList'] as $selfGood){
+                                        $totalRetreatNum=0;
+                                        $knot_nums=0;
+                                        $retreat_sn = 0;
+                                        if($order['knot'] == 2  || $selfGood['retreat']){
+                                             if($selfGood['retreat']){
+                                                foreach ($selfGood['retreat'] as $value) { if($value['handle_status'] == 3){ $retreat_sn= $value['re_sn'];};if(($value['handle_status'] == 6 ) && $value['retreat_money'] > 0 ){ $totalRetreatNum += $value['p_num'];} ;}
+                                                }else{ $totalRetreatNum = 0;};
+                                                if($order['knot'] == 2){ $knot_nums = $selfGood["knot_num"];};
+                                                $retreats_knot_total +=($selfGood["p_num"] - $totalRetreatNum - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                                                $knot_money += round(($selfGood["p_num"]  - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"],2);
+                                                }else{
+                                                $retreats_knot_total += $selfGood['pay_subtotal'];
+                                                };
+                                                $total_retreat_num_money += $totalRetreatNum*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                                                };
+                                                $orderTotal = round($retreats_knot_total,2);
+                                ?>
+                                <tr class="jl-table-head">
+                                    <th colspan="3">
+                                        <div class="jl-check">
+                                            <span class="jl-box js-product-checkbox jl-cur" data-class="jl-product-detail-invoice" data-sn="{$order.order_sn}"></span>
+                                        </div>
+                                        {$order.create_at}<span>订单编号：<b class="jl-order-sn">{$order.order_sn}</b><notempty name="order.order_user">——{$order.order_user}</notempty></span>
+                                        <span class="js-pay">
+                                            <notempty name="order.account_pay_time">
+                                                账期还款日期： <b>{$order.account_pay_time}</b>
+                                            </notempty>
+                                              账期支付： <b>¥
+                                            <if condition = "$order.knot eq 2">
+                                                {$retreats_knot_total}
+                                            <else/>
+                                            <notempty name="$order['goodsList'][0]['retreat']">
+                                                {$retreats_knot_total}
+                                                <else/>
+                                                {$order['total']-$order['total_deposits']|sprintf="%.2f",###}
+                                            </notempty>
+                                            </if></b>
+                                        </span>
+                                    </th>
+                                </tr>
+                                <volist name="order.goodsList" id="good">
+                                    <tr data-id="{$good.p_id}">
+                                        <td>
+                                            <ul class="jl-detail-content jl-cle">
+                                                <li class="jl-goods">
+                                                    <notempty name="good.cover_image"><img src="{$good.cover_image}" alt="{$good.name}">
+                                                        <else /><img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                                    </notempty>
+                                                </li>
+                                                <li class="jl-name">{$good.p_name}</li>
+                                                <li class="jl-price">￥{$good.p_price_true}</li>
+                                                <li class="jl-count">
+                                                    <?php $totalRetreatNum=0;$isRetreat=0;foreach ($good['retreat'] as $value) { if($value){ $isRetreat = 2;if($value['handle_status'] == 6 || $value['handle_status'] == 5)$totalRetreatNum += $value['p_num']; };};?>
+
+                                                    <if condition="($order.knot eq 2 && $good['knot_num'] gt 0) || $totalRetreatNum gt 0">
+                                                        <span class="getValue" style="text-decoration: line-through">{$good.p_num}</span><br/>
+                                                        <else/>
+                                                        <span class="getValue">{$good.p_num}</span><br/>
+                                                    </if>
+                                                    <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                                        <span  style="color: #e84343">已取消{$good["knot_num"]}</span><br/>
+                                                        <else/>
+                                                    </if>
+                                                    <if condition="$good['retreat_num'] gt 0">
+                                                        <notempty name="good['retreat']">
+                                                            <if condition="$totalRetreatNum gt 0">
+                                                                <div style="color: #e84343;">已退 {$totalRetreatNum}</div>
+                                                            </if>
+                                                        </notempty>
+                                                        <else/>
+                                                    </if>
+                                                    <if condition="$order.knot eq 2 && $good['knot_num'] gt 0 ">
+                                                        <span  style="color: #e84343">实计<?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></span>
+                                                        <else/>
+                                                        <notempty name="good['retreat']">
+                                                            <if condition="$totalRetreatNum gt 0">
+                                                                <div style="color: #e84343;">实计 <?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></div>
+                                                            </if>
+                                                            <else/>
+                                                        </notempty>
+                                                    </if>
+                                                </li>
+                                                <li class="jl-goods-operation">
+                                                    <if condition="($order['pay_status'] neq '0' and $order['ship_status'] neq '0' and $order['ship_status'] neq '4')  or ($order['pay_status'] eq '0'  and $order['ship_status'] neq '4')">
+                                                        无
+                                                        <elseif condition="$good['subtotal'] eq 0"/>
+                                                        无
+                                                        <else/>无
+                                                       <!-- <div class="jl-refund-container jl-hover-box">
+                                                            <a href="{:U('Home/Retreat/index',['order_sn'=>$order['order_sn']])}">退货/退款</a>
+                                                            <div class="jl-hover-show-box jl-logistics-popup" style="width: 400px">
+                                                                <i class="jl-arr-top"></i>
+                                                                <div class="jl-logistics-title">
+                                                                    <span>退货/退款历史</span>
+                                                                </div>
+                                                                <div style="padding: 10px;">
+                                                                    <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                                        <li style="width: 160px">退款号</li>
+                                                                        <li style="width: 100px">退货数量</li>
+                                                                        <li style="width: 116px">退货状态</li>
+                                                                    </ul>
+                                                                    <table class="jl-product-detail">
+                                                                        <tbody>
+                                                                        <notempty name="good.retreat">
+                                                                            <?php foreach( $good['retreat'] as $re ){ ?>
+                                                                            <tr>
+                                                                                <td style="width: 160px">{$re.re_sn}</td>
+                                                                                <td style="width: 100px">{$re.p_num}</td>
+                                                                                <td style="width: 116px">
+                                                                                    <a href="{:U('Home/Retreat/index',['re_sn'=>$re['re_sn']])}">
+                                                                                        <switch name="re.handle_status">
+                                                                                            <case value="1">审核中</case>
+                                                                                            <case value="2">审核通过，待退货</case>
+                                                                                            <case value="3">驳回,协商</case>
+                                                                                            <case value="4">退货运输中</case>
+                                                                                            <case value="5">已收货,待退款</case>
+                                                                                            <case value="6">已完成</case>
+                                                                                            <case value="7">退款撤销</case>
+                                                                                            <case value="8">部分审核通过</case>
+                                                                                        </switch>
+                                                                                    </a>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <?php } ?>
+                                                                            <else />
+                                                                            <tr>
+                                                                                <td rowspan="3">无</td>
+                                                                            </tr>
+                                                                        </notempty>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>-->
+                                                    </if>
+                                                </li>
+                                                <li class="jl-subtotal">
+                                                    <?php $knotMoney=round((($good['p_num'] - $good['knot_num']) * $good['pay_subtotal']/$good['p_num']),4);
+                                        ?>
+                                                    <?php $totalRetreatNum = 0;foreach ($good['retreat'] as $value) { if($value){ if($value['handle_status'] == 6)$totalRetreatNum +=$value['p_num'];}; };?>
+
+                                                    <if condition="$good['pay_subtotal'] neq $good['subtotal']">
+                                                        <div style="text-decoration: line-through">￥{$good.subtotal}</div>
+                                                        <if condition="($order.knot eq 2 && $good['knot_num'] gt 0 )or $totalRetreatNum gt 0 ">
+                                                            <else/>
+                                                            <div  style="color: #e84343">￥{$good.pay_subtotal}</div>
+                                                        </if>
+                                                        <else />
+
+                                                    </if>
+                                                    <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                                        <span style="text-decoration: line-through">￥{$good.pay_subtotal}</span>
+                                                        <div style="color: #e84343;">实付<?php echo ($good['pay_subtotal'] * ($good['p_num'] - $totalRetreatNum - $good['knot_num'])/$good['p_num']);?></div>
+                                                        <else/>
+                                                        <notempty name="good['retreat']">
+                                                            <if condition="$totalRetreatNum gt 0">
+                                                                <div style="text-decoration: line-through">￥{$good.pay_subtotal}</div>
+                                                                <div style="color: #e84343;">实付<?php echo ($good['pay_subtotal'] * ($good['p_num'] - $totalRetreatNum - $good['knot_num'])/$good['p_num']);?></div>
+                                                            </if>
+                                                            <else/>
+                                                            <if condition="$good['pay_subtotal'] eq $good['subtotal']">
+                                                                <div  >￥{$good.pay_subtotal}</div>
+                                                                <else />
+                                                            </if>
+
+                                                        </notempty>
+                                                    </if>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <if condition="$i eq 1 ">
+                                            <td rowspan="{$order.goodsList|count}">
+                                                <div class="jl-state">
+                                                    <p style="font-weight: bold">{$order|getOrderStatus}</p>
+                                                    <p>支付方式：<span style="color: #e84343">{$order.pay_type|getPayType}</span></p>
+                                                        <if condition="$order.order_type eq 0">
+                                                            <?php $round_total_knot=round($retreats_knot_total,2);?>
+                                                                <if condition="$round_total_knot gt 0">
+                                                                    <p>
+                                                                        <if condition="$order.knot eq 2">
+                                                                            全款:￥{$round_total_knot}（<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                                            <else/>
+                                                                            <notempty name="good['retreat']">
+                                                                                （全款:￥{$round_total_knot}<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                                            </notempty>
+                                                                            全款:￥{$order.total}
+                                                                        </if>
+                                                                    </p>
+                                                                 <else/>
+                                                                    全款:￥{$order.total}
+                                                                </if>
+                                                        <else/>
+                                                        <p>尾款：￥{$order['total']-$order['total_deposits']}</p>
+                                                        <if condition="$order.deposits_pay_status eq 0">
+                                                            <p style="border-top: 1px solid #ddd;margin-top: 6px;padding-top: 6px;">预付定金</p>
+                                                            <p>定金：￥{$order.total_deposits}</p>
+                                                            <if condition="$order.total_deposits neq 0">
+                                                                <p>定金支付方式：<span style="color: #e84343">{$order.deposits_pay_type|getPayType}</span></p>
+                                                            </if>
+                                                        </if>
+                                                    </if>
+                                                    <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money or $total_retreat_num_money gt 0">
+                                                        <p>已付金额：￥{$order['order_has_pay']}</p>
+                                                        <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money">
+                                                            <p><if condition=" $order.knot_status eq 20">已<else/>待</if>返差额：￥<span style="color: #e84343"><?php echo ( $order['order_has_pay'] > $knot_money ? round($order['order_has_pay'] - $knot_money,2) : 0);?></span></p>
+                                                        </if>
+                                                    </if>
+                                                    <if condition=" $total_retreat_num_money gt 0">
+                                                        <p>已退款：￥<span style="color: #e84343">{$total_retreat_num_money}</span></p>
+                                                    </if>
+                                                    <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                                    <notempty name="order['orderKdList']">
+                                                        <div class="jl-logistics-way" data-sn="{$order.order_sn}">
+                                                            <a href="#">查看物流</a>
+                                                            <div class="jl-logistics-popup" style="width:450px;left:-29px;">
+                                                                <i class="jl-arr-top" style="margin-left: -5px;"></i>
+                                                                <div class="jl-logistics-title">
+                                                                    <span>快递/物流列表</span>
+                                                                </div>
+                                                                <div style="padding: 10px;">
+                                                                    <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                                        <li style="width: 150px">快递公司</li>
+                                                                        <li style="width: 150px">货运单号</li>
+                                                                        <li style="width: 100px">操作</li>
+                                                                    </ul>
+                                                                    <table class="jl-product-detail">
+                                                                        <tbody>
+                                                                        <volist name="order['orderKdList']" id="kd">
+                                                                            <tr>
+                                                                                <td style="width: 150px">{$kd.hy_name}({$kd.kd_code})</td>
+                                                                                <td style="width: 150px">{$kd.hy_num}</td>
+                                                                                <td style="width: 100px"><a href="javascript:;" class="jl-kd-show" data-code="{$kd.kd_code}" data-num="{$kd.hy_num}" data-sn="{$kd.order_no}">查询物流</a></td>
+                                                                            <tr>
+                                                                        </volist>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </notempty>
+                                                </div>
+                                            </td>
+                                            <td rowspan="{$order.goodsList|count}">
+                                                <p class="jl-operation" data-sn="{$order.order_sn}">
+                                                    <!--<a href="javascript:;" class="jl-pay-money js-online-pay" style="display: none">立即支付</a>
+                                                    <if condition="($order['deposits_pay_type'] eq 5) AND ($order['deposits_pay_status'] eq 0)">
+                                                        <a href="javascript:;" class="jl-pay-money js-bank-pay">提交水单</a>
+                                                    </if>
+                                                    <if condition="($order['order_status'] neq 1 and $order['pay_type'] eq 1 and $order['pay_status'] eq 0) or ( $order['order_status'] neq 1 and $order['pay_type'] neq 1 and $order['ship_status'] eq 0 )">
+                                                        <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                                    </if>
+                                                    <if condition="$order['ship_status'] eq 2 OR $order['ship_status'] eq 1">
+                                                        <a href="javascript:;" class="jl-confirm-receipt" data-is_part="{$order['isPart']}" data-part_id="{$order[hyInfo][0]['partid']}">确认收货</a>
+                                                    </if>
+                                                    <if condition="$order['is_comment'] eq 1">
+                                                        <a href="javascript:;" class="jl-immediate-appraise">立即评价</a>
+                                                    </if>
+                                                    <if condition="$order['is_comment'] eq 2">
+                                                        <a href="{:U('Home/Order/myAppraise')}" class="jl-appraise">查看评价</a>
+                                                    </if>
+                                                    <a href="javascript:;" class="jl-again">再次购买</a>-->
+                                                </p>
+                                            </td>
+                                        </if>
+                                    </tr>
+                                </volist>
+                            </table>
+                        </foreach>
+                        <else/>
+                        <div style="border:2px solid  #e84343;margin-top:5px" data-pay="{$order.account_pay_type_select}" class="jl-product-detail-invoice-paying-container{$j}">
+                            <foreach name="order_first" item="order" key="k" >
+                                <table class="jl-product-detail jl-product-detail-invoice-paying" data-pay="{$order.account_pay_type_select}" style="margin-bottom:0">
+                                    <?php
+                                    $retreats_knot_total=0;
+                                    $total_retreat_num_money = 0;
+                                    $knot_money = 0;
+                                    foreach($order['goodsList'] as $selfGood){
+                                        $totalRetreatNum=0;
+                                        $knot_nums=0;
+                                        $retreat_sn = 0;
+                                        if($order['knot'] == 2  || $selfGood['retreat']){
+                                             if($selfGood['retreat']){
+                                                foreach ($selfGood['retreat'] as $value) { if($value['handle_status'] == 3){ $retreat_sn= $value['re_sn'];};if(($value['handle_status'] == 6 ) && $value['retreat_money'] > 0 ){ $totalRetreatNum += $value['p_num'];} ;}
+                                    }else{ $totalRetreatNum = 0;};
+                                    if($order['knot'] == 2){ $knot_nums = $selfGood["knot_num"];};
+                                    $retreats_knot_total +=($selfGood["p_num"] - $totalRetreatNum - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                                    $knot_money += round(($selfGood["p_num"]  - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"],2);
+                                    }else{
+                                    $retreats_knot_total += $selfGood['pay_subtotal'];
+                                    };
+                                    $total_retreat_num_money += $totalRetreatNum*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                                    };
+                                    $orderTotal = round($retreats_knot_total,2);
+                                    ?>
+                                    <tr class="jl-table-head">
+                                        <th colspan="3">
+                                            <div class="jl-check" style="display:none">
+                                                <span class="jl-box js-product-checkbox jl-cur" data-class="jl-product-detail-invoice" data-sn="{$order.order_sn}"></span>
+                                            </div>
+                                            {$order.create_at}<span>订单编号：<b class="jl-order-sn">{$order.order_sn}</b><notempty name="order.order_user">——{$order.order_user}</notempty></span>
+                                            <span class="js-pay">
+                                                <notempty name="order.account_pay_time">
+                                                    账期还款日期： <b>{$order.account_pay_time}</b>
+                                                </notempty>
+                                                    账期支付： <b>¥
+                                                        <if condition = "$order.knot eq 2">
+                                                            {$retreats_knot_total}
+                                                         <else/>
+                                                         <notempty name="$order['goodsList'][0]['retreat']">
+                                                            {$retreats_knot_total}
+                                                          <else/>
+                                                             {$order['total']-$order['total_deposits']|sprintf="%.2f",###}
+                                                         </notempty>
+                                                         </if></b>
+                                            </span>
+                                        </th>
+                                    </tr>
+                                    <volist name="order.goodsList" id="good">
+                                        <tr data-id="{$good.p_id}">
+                                            <td>
+                                                <ul class="jl-detail-content jl-cle">
+                                                    <li class="jl-goods">
+                                                        <notempty name="good.cover_image"><img src="{$good.cover_image}" alt="{$good.name}">
+                                                            <else /><img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                                        </notempty>
+                                                    </li>
+                                                    <li class="jl-name">{$good.p_name}</li>
+                                                    <li class="jl-price">￥{$good.p_price_true}</li>
+                                                    <li class="jl-count">
+                                                        <?php $totalRetreatNum=0;$isRetreat=0;foreach ($good['retreat'] as $value) { if($value){ $isRetreat = 2;if($value['handle_status'] == 6 || $value['handle_status'] == 5)$totalRetreatNum += $value['p_num']; };};?>
+
+                                                        <if condition="($order.knot eq 2 && $good['knot_num'] gt 0) || $totalRetreatNum gt 0">
+                                                            <span class="getValue" style="text-decoration: line-through">{$good.p_num}</span><br/>
+                                                            <else/>
+                                                            <span class="getValue">{$good.p_num}</span><br/>
+                                                        </if>
+                                                        <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                                            <span  style="color: #e84343">已取消{$good["knot_num"]}</span><br/>
+                                                            <else/>
+                                                        </if>
+                                                        <if condition="$good['retreat_num'] gt 0">
+                                                            <notempty name="good['retreat']">
+                                                                <if condition="$totalRetreatNum gt 0">
+                                                                    <div style="color: #e84343;">已退 {$totalRetreatNum}</div>
+                                                                </if>
+                                                            </notempty>
+                                                            <else/>
+                                                        </if>
+                                                        <if condition="$order.knot eq 2 && $good['knot_num'] gt 0 ">
+                                                            <span  style="color: #e84343">实计<?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></span>
+                                                            <else/>
+                                                            <notempty name="good['retreat']">
+                                                                <if condition="$totalRetreatNum gt 0">
+                                                                    <div style="color: #e84343;">实计 <?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></div>
+                                                                </if>
+                                                                <else/>
+                                                            </notempty>
+                                                        </if>
+                                                    </li>
+                                                    <li class="jl-goods-operation">
+                                                        <if condition="($order['pay_status'] neq '0' and $order['ship_status'] neq '0' and $order['ship_status'] neq '4')  or ($order['pay_status'] eq '0'  and $order['ship_status'] neq '4')">
+                                                            无
+                                                            <elseif condition="$good['subtotal'] eq 0"/>
+                                                            无
+                                                            <else/>无
+                                                            <!--<div class="jl-refund-container jl-hover-box">
+                                                                <a href="{:U('Home/Retreat/index',['order_sn'=>$order['order_sn']])}">退货/退款</a>
+                                                                <div class="jl-hover-show-box jl-logistics-popup" style="width: 400px">
+                                                                    <i class="jl-arr-top"></i>
+                                                                    <div class="jl-logistics-title">
+                                                                        <span>退货/退款历史</span>
+                                                                    </div>
+                                                                    <div style="padding: 10px;">
+                                                                        <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                                            <li style="width: 160px">退款号</li>
+                                                                            <li style="width: 100px">退货数量</li>
+                                                                            <li style="width: 116px">退货状态</li>
+                                                                        </ul>
+                                                                        <table class="jl-product-detail">
+                                                                            <tbody>
+                                                                            <notempty name="good.retreat">
+                                                                                <?php foreach( $good['retreat'] as $re ){ ?>
+                                                                                <tr>
+                                                                                    <td style="width: 160px">{$re.re_sn}</td>
+                                                                                    <td style="width: 100px">{$re.p_num}</td>
+                                                                                    <td style="width: 116px">
+                                                                                        <a href="{:U('Home/Retreat/index',['re_sn'=>$re['re_sn']])}">
+                                                                                            <switch name="re.handle_status">
+                                                                                                <case value="1">审核中</case>
+                                                                                                <case value="2">审核通过，待退货</case>
+                                                                                                <case value="3">驳回,协商</case>
+                                                                                                <case value="4">退货运输中</case>
+                                                                                                <case value="5">已收货,待退款</case>
+                                                                                                <case value="6">已完成</case>
+                                                                                                <case value="7">退款撤销</case>
+                                                                                                <case value="8">部分审核通过</case>
+                                                                                            </switch>
+                                                                                        </a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <?php } ?>
+                                                                                <else />
+                                                                                <tr>
+                                                                                    <td rowspan="3">无</td>
+                                                                                </tr>
+                                                                            </notempty>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>-->
+                                                        </if>
+                                                    </li>
+                                                    <li class="jl-subtotal">
+                                                        <?php $knotMoney=round((($good['p_num'] - $good['knot_num']) * $good['pay_subtotal']/$good['p_num']),4);
+                                        ?>
+                                                        <?php $totalRetreatNum = 0;foreach ($good['retreat'] as $value) { if($value){ if($value['handle_status'] == 6)$totalRetreatNum +=$value['p_num'];}; };?>
+
+                                                        <if condition="$good['pay_subtotal'] neq $good['subtotal']">
+                                                            <div style="text-decoration: line-through">￥{$good.subtotal}</div>
+                                                            <if condition="($order.knot eq 2 && $good['knot_num'] gt 0 )or $totalRetreatNum gt 0 ">
+                                                                <else/>
+                                                                <div  style="color: #e84343">￥{$good.pay_subtotal}</div>
+                                                            </if>
+                                                            <else />
+
+                                                        </if>
+                                                        <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                                            <span style="text-decoration: line-through">￥{$good.pay_subtotal}</span>
+                                                            <div style="color: #e84343;">实付<?php echo ($good['pay_subtotal'] * ($good['p_num'] - $totalRetreatNum - $good['knot_num'])/$good['p_num']);?></div>
+                                                            <else/>
+                                                            <notempty name="good['retreat']">
+                                                                <if condition="$totalRetreatNum gt 0">
+                                                                    <div style="text-decoration: line-through">￥{$good.pay_subtotal}</div>
+                                                                    <div style="color: #e84343;">实付<?php echo ($good['pay_subtotal'] * ($good['p_num'] - $totalRetreatNum - $good['knot_num'])/$good['p_num']);?></div>
+                                                                </if>
+                                                                <else/>
+                                                                <if condition="$good['pay_subtotal'] eq $good['subtotal']">
+                                                                    <div  >￥{$good.pay_subtotal}</div>
+                                                                    <else />
+                                                                </if>
+
+                                                            </notempty>
+                                                        </if>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <if condition="$i eq 1 ">
+                                                <td rowspan="{$order.goodsList|count}">
+                                                    <div class="jl-state">
+                                                        <p style="font-weight: bold">{$order|getOrderStatus}</p>
+                                                        <p>支付方式：<span style="color: #e84343">{$order.pay_type|getPayType}</span></p>
+                                                        <if condition="$order.order_type eq 0">
+                                                            <?php $round_total_knot=round($retreats_knot_total,2);?>
+                                                            <if condition="$round_total_knot gt 0">
+                                                                <p>
+                                                                    <if condition="$order.knot eq 2">
+                                                                        全款:￥{$round_total_knot}（<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                                        <else/>
+                                                                        <notempty name="good['retreat']">
+                                                                            （全款:￥{$round_total_knot}<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                                        </notempty>
+                                                                        全款:￥{$order.total}
+                                                                    </if>
+                                                                </p>
+                                                                <else/>
+                                                                全款:￥{$order.total}
+                                                            </if>
+                                                            <else/>
+                                                            <p>尾款：￥{$order['total']-$order['total_deposits']}</p>
+                                                            <if condition="$order.deposits_pay_status eq 0">
+                                                                <p style="border-top: 1px solid #ddd;margin-top: 6px;padding-top: 6px;">预付定金</p>
+                                                                <p>定金：￥{$order.total_deposits}</p>
+                                                                <if condition="$order.total_deposits neq 0">
+                                                                    <p>定金支付方式：<span style="color: #e84343">{$order.deposits_pay_type|getPayType}</span></p>
+                                                                </if>
+                                                            </if>
+                                                        </if>
+                                                        <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money or $total_retreat_num_money gt 0">
+                                                            <p>已付金额：￥{$order['order_has_pay']}</p>
+                                                            <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money">
+                                                                <p><if condition=" $order.knot_status eq 20">已<else/>待</if>返差额：￥<span style="color: #e84343"><?php echo ( $order['order_has_pay'] > $knot_money ? round($order['order_has_pay'] - $knot_money,2) : 0);?></span></p>
+                                                            </if>
+                                                        </if>
+                                                        <if condition=" $total_retreat_num_money gt 0">
+                                                            <p>已退款：￥<span style="color: #e84343">{$total_retreat_num_money}</span></p>
+                                                        </if>
+                                                        <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                                        <notempty name="order['orderKdList']">
+                                                            <div class="jl-logistics-way" data-sn="{$order.order_sn}">
+                                                                <a href="#">查看物流</a>
+                                                                <div class="jl-logistics-popup" style="width:450px;left:-29px;">
+                                                                    <i class="jl-arr-top" style="margin-left: -5px;"></i>
+                                                                    <div class="jl-logistics-title">
+                                                                        <span>快递/物流列表</span>
+                                                                    </div>
+                                                                    <div style="padding: 10px;">
+                                                                        <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                                            <li style="width: 150px">快递公司</li>
+                                                                            <li style="width: 150px">货运单号</li>
+                                                                            <li style="width: 100px">操作</li>
+                                                                        </ul>
+                                                                        <table class="jl-product-detail">
+                                                                            <tbody>
+                                                                            <volist name="order['orderKdList']" id="kd">
+                                                                                <tr>
+                                                                                    <td style="width: 150px">{$kd.hy_name}({$kd.kd_code})</td>
+                                                                                    <td style="width: 150px">{$kd.hy_num}</td>
+                                                                                    <td style="width: 100px"><a href="javascript:;" class="jl-kd-show" data-code="{$kd.kd_code}" data-num="{$kd.hy_num}" data-sn="{$kd.order_no}">查询物流</a></td>
+                                                                                <tr>
+                                                                            </volist>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </notempty>
+                                                    </div>
+                                                </td>
+                                                <td rowspan="{$order.goodsList|count}">
+                                                    <p class="jl-operation" data-sn="{$order.order_sn}">
+                                                       <!-- <a href="javascript:;" class="jl-pay-money js-online-pay" style="display: none">立即支付</a>
+                                                        <if condition="($order['deposits_pay_type'] eq 5) AND ($order['deposits_pay_status'] eq 0)">
+                                                            <a href="javascript:;" class="jl-pay-money js-bank-pay">提交水单</a>
+                                                        </if>
+                                                        <if condition="($order['order_status'] neq 1 and $order['pay_type'] eq 1 and $order['pay_status'] eq 0) or ( $order['order_status'] neq 1 and $order['pay_type'] neq 1 and $order['ship_status'] eq 0 )">
+                                                            <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                                        </if>
+                                                        <if condition="$order['ship_status'] eq 2 OR $order['ship_status'] eq 1">
+                                                            <a href="javascript:;" class="jl-confirm-receipt" data-is_part="{$order['isPart']}" data-part_id="{$order[hyInfo][0]['partid']}">确认收货</a>
+                                                        </if>
+                                                        <if condition="$order['is_comment'] eq 1">
+                                                            <a href="javascript:;" class="jl-immediate-appraise">立即评价</a>
+                                                        </if>
+                                                        <if condition="$order['is_comment'] eq 2">
+                                                            <a href="{:U('Home/Order/myAppraise')}" class="jl-appraise">查看评价</a>
+                                                        </if>
+                                                        <a href="javascript:;" class="jl-again">再次购买</a>-->
+                                                    </p>
+                                                </td>
+                                            </if>
+                                        </tr>
+                                    </volist>
+                                </table>
+                            </foreach>
+                            <div class="invoice-handle common-handle" >
+                                <span class="cancel-paying" data-class="jl-product-detail-invoice-paying-container{$j}"> 取消还款</span>
+                                <span class="continues-paying" data-class="jl-product-detail-invoice-paying-container{$j}"> 继续还款</span>
+                            </div>
+                        </div>
+                    </if>
+                </foreach>
+                </foreach>
+            </div>
+            <div class="jl-product-invoice_no">
+                <div style="margin-top:30px;">
+                    <div class="jl-check" style="margin-top: 3px">
+                        <span class="jl-box js-product-all-checkbox" data-class="jl-product-detail-invoice_no" style="margin-right: 0"></span>
+                    </div>
+                    <i style="margin-right: 6px;color:#393939">全选</i>
+                    <span style="color:#e84343">*不开票账期还款</span>
+                </div>
+                <foreach name="orderList.invoice_no" item="order_first" key="j">
+
+                    <if condition="($j eq 0)">
+                        <foreach name="order_first" item="order" key="k" >
+                            <table class="jl-product-detail jl-product-detail-invoice_no">
+                                <?php
+                                    $retreats_knot_total=0;
+                                    $total_retreat_num_money = 0;
+                                    $knot_money = 0;
+                                    foreach($order['goodsList'] as $selfGood){
+                                        $totalRetreatNum=0;
+                                        $knot_nums=0;
+                                        $retreat_sn = 0;
+                                        if($order['knot'] == 2  || $selfGood['retreat']){
+                                             if($selfGood['retreat']){
+                                                foreach ($selfGood['retreat'] as $value) { if($value['handle_status'] == 3){ $retreat_sn= $value['re_sn'];};if(($value['handle_status'] == 6 ) && $value['retreat_money'] > 0 ){ $totalRetreatNum += $value['p_num'];} ;}
+                                }else{ $totalRetreatNum = 0;};
+                                if($order['knot'] == 2){ $knot_nums = $selfGood["knot_num"];};
+                                $retreats_knot_total +=($selfGood["p_num"] - $totalRetreatNum - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                                $knot_money += round(($selfGood["p_num"]  - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"],2);
+                                }else{
+                                $retreats_knot_total += $selfGood['pay_subtotal'];
+                                };
+                                $total_retreat_num_money += $totalRetreatNum*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                                };
+                                $orderTotal = round($retreats_knot_total,2);
+                                ?>
+                                <tr class="jl-table-head">
+                                    <th colspan="3">
+                                        <div class="jl-check">
+                                            <span class="jl-box js-product-checkbox " data-class="jl-product-detail-invoice_no" data-sn="{$order.order_sn}"></span>
+                                        </div>
+                                        {$order.create_at}<span>订单编号：<b class="jl-order-sn">{$order.order_sn}</b><notempty name="order.order_user">——{$order.order_user}</notempty></span>
+                                                    <span class="js-pay">
+                                                                <notempty name="order.account_pay_time">
+                                                                    账期还款日期： <b>{$order.account_pay_time}</b>
+                                                                </notempty>
+                                                                账期支付： <b>¥
+                                                            <if condition = "$order.knot eq 2">
+                                                                {$retreats_knot_total}
+                                                            <else/>
+                                                            <notempty name="$order['goodsList'][0]['retreat']">
+                                                                {$retreats_knot_total}
+                                                                <else/>
+                                                                {$order['total']-$order['total_deposits']|sprintf="%.2f",###}
+                                                            </notempty>
+                                                        </if>
+                                                        </b>
+                                                     </span>
+                                    </th>
+                                </tr>
+                                <volist name="order.goodsList" id="good">
+                                    <tr data-id="{$good.p_id}">
+                                        <td>
+                                            <ul class="jl-detail-content jl-cle">
+                                                <li class="jl-goods">
+                                                    <notempty name="good.cover_image"><img src="{$good.cover_image}" alt="{$good.name}">
+                                                        <else /><img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                                    </notempty>
+                                                </li>
+                                                <li class="jl-name">{$good.p_name}</li>
+                                                <li class="jl-price">￥{$good.p_price_true}</li>
+                                                <li class="jl-count">
+                                                    <?php $totalRetreatNum=0;$isRetreat=0;foreach ($good['retreat'] as $value) { if($value){ $isRetreat = 2;if($value['handle_status'] == 6 || $value['handle_status'] == 5)$totalRetreatNum += $value['p_num']; };};?>
+
+                                                    <if condition="($order.knot eq 2 && $good['knot_num'] gt 0) || $totalRetreatNum gt 0">
+                                                        <span class="getValue" style="text-decoration: line-through">{$good.p_num}</span><br/>
+                                                        <else/>
+                                                        <span class="getValue">{$good.p_num}</span><br/>
+                                                    </if>
+                                                    <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                                        <span  style="color: #e84343">已取消{$good["knot_num"]}</span><br/>
+                                                        <else/>
+                                                    </if>
+                                                    <if condition="$good['retreat_num'] gt 0">
+                                                        <notempty name="good['retreat']">
+                                                            <if condition="$totalRetreatNum gt 0">
+                                                                <div style="color: #e84343;">已退 {$totalRetreatNum}</div>
+                                                            </if>
+                                                        </notempty>
+                                                        <else/>
+                                                    </if>
+                                                    <if condition="$order.knot eq 2 && $good['knot_num'] gt 0 ">
+                                                        <span  style="color: #e84343">实计<?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></span>
+                                                        <else/>
+                                                        <notempty name="good['retreat']">
+                                                            <if condition="$totalRetreatNum gt 0">
+                                                                <div style="color: #e84343;">实计 <?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></div>
+                                                            </if>
+                                                            <else/>
+                                                        </notempty>
+                                                    </if>
+                                                </li>
+                                                <li class="jl-goods-operation">
+                                                    <if condition="($order['pay_status'] neq '0' and $order['ship_status'] neq '0' and $order['ship_status'] neq '4')  or ($order['pay_status'] eq '0'  and $order['ship_status'] neq '4')">
+                                                        无
+                                                        <elseif condition="$good['subtotal'] eq 0"/>
+                                                        无
+                                                        <else/>无
+                                                       <!-- <div class="jl-refund-container jl-hover-box">
+                                                            <a href="{:U('Home/Retreat/index',['order_sn'=>$order['order_sn']])}">退货/退款</a>
+                                                            <div class="jl-hover-show-box jl-logistics-popup" style="width: 400px">
+                                                                <i class="jl-arr-top"></i>
+                                                                <div class="jl-logistics-title">
+                                                                    <span>退货/退款历史</span>
+                                                                </div>
+                                                                <div style="padding: 10px;">
+                                                                    <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                                        <li style="width: 160px">退款号</li>
+                                                                        <li style="width: 100px">退货数量</li>
+                                                                        <li style="width: 116px">退货状态</li>
+                                                                    </ul>
+                                                                    <table class="jl-product-detail">
+                                                                        <tbody>
+                                                                        <notempty name="good.retreat">
+                                                                            <?php foreach( $good['retreat'] as $re ){ ?>
+                                                                            <tr>
+                                                                                <td style="width: 160px">{$re.re_sn}</td>
+                                                                                <td style="width: 100px">{$re.p_num}</td>
+                                                                                <td style="width: 116px">
+                                                                                    <a href="{:U('Home/Retreat/index',['re_sn'=>$re['re_sn']])}">
+                                                                                        <switch name="re.handle_status">
+                                                                                            <case value="1">审核中</case>
+                                                                                            <case value="2">审核通过，待退货</case>
+                                                                                            <case value="3">驳回,协商</case>
+                                                                                            <case value="4">退货运输中</case>
+                                                                                            <case value="5">已收货,待退款</case>
+                                                                                            <case value="6">已完成</case>
+                                                                                            <case value="7">退款撤销</case>
+                                                                                            <case value="8">部分审核通过</case>
+                                                                                        </switch>
+                                                                                    </a>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <?php } ?>
+                                                                            <else />
+                                                                            <tr>
+                                                                                <td rowspan="3">无</td>
+                                                                            </tr>
+                                                                        </notempty>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>-->
+                                                    </if>
+                                                </li>
+                                                <li class="jl-subtotal">
+                                                    <?php $knotMoney=round((($good['p_num'] - $good['knot_num']) * $good['pay_subtotal']/$good['p_num']),4);
+                                        ?>
+                                                    <?php $totalRetreatNum = 0;foreach ($good['retreat'] as $value) { if($value){ if($value['handle_status'] == 6)$totalRetreatNum +=$value['p_num'];}; };?>
+
+                                                    <if condition="$good['pay_subtotal'] neq $good['subtotal']">
+                                                        <div style="text-decoration: line-through">￥{$good.subtotal}</div>
+                                                        <if condition="($order.knot eq 2 && $good['knot_num'] gt 0 )or $totalRetreatNum gt 0 ">
+                                                            <else/>
+                                                            <div  style="color: #e84343">￥{$good.pay_subtotal}</div>
+                                                        </if>
+                                                        <else />
+
+                                                    </if>
+                                                    <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                                        <span style="text-decoration: line-through">￥{$good.pay_subtotal}</span>
+                                                        <div style="color: #e84343;">实付<?php echo ($good['pay_subtotal'] * ($good['p_num'] - $totalRetreatNum - $good['knot_num'])/$good['p_num']);?></div>
+                                                        <else/>
+                                                        <notempty name="good['retreat']">
+                                                            <if condition="$totalRetreatNum gt 0">
+                                                                <div style="text-decoration: line-through">￥{$good.pay_subtotal}</div>
+                                                                <div style="color: #e84343;">实付<?php echo ($good['pay_subtotal'] * ($good['p_num'] - $totalRetreatNum - $good['knot_num'])/$good['p_num']);?></div>
+                                                            </if>
+                                                            <else/>
+                                                            <if condition="$good['pay_subtotal'] eq $good['subtotal']">
+                                                                <div  >￥{$good.pay_subtotal}</div>
+                                                                <else />
+                                                            </if>
+
+                                                        </notempty>
+                                                    </if>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <if condition="$i eq 1 ">
+                                            <td rowspan="{$order.goodsList|count}">
+                                                <div class="jl-state">
+                                                    <p style="font-weight: bold">{$order|getOrderStatus}</p>
+                                                    <p>支付方式：<span style="color: #e84343">{$order.pay_type|getPayType}</span></p>
+                                                    <if condition="$order.order_type eq 0">
+                                                        <?php $round_total_knot=round($retreats_knot_total,2);?>
+                                                        <if condition="$round_total_knot gt 0">
+                                                            <p>
+                                                                <if condition="$order.knot eq 2">
+                                                                    全款:￥{$round_total_knot}（<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                                    <else/>
+                                                                    <notempty name="good['retreat']">
+                                                                        （全款:￥{$round_total_knot}<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                                    </notempty>
+                                                                    全款:￥{$order.total}
+                                                                </if>
+                                                            </p>
+                                                            <else/>
+                                                            全款:￥{$order.total}
+                                                        </if>
+                                                        <else/>
+                                                        <p>尾款：￥{$order['total']-$order['total_deposits']}</p>
+                                                        <if condition="$order.deposits_pay_status eq 0">
+                                                            <p style="border-top: 1px solid #ddd;margin-top: 6px;padding-top: 6px;">预付定金</p>
+                                                            <p>定金：￥{$order.total_deposits}</p>
+                                                            <if condition="$order.total_deposits neq 0">
+                                                                <p>定金支付方式：<span style="color: #e84343">{$order.deposits_pay_type|getPayType}</span></p>
+                                                            </if>
+                                                        </if>
+                                                    </if>
+                                                    <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money or $total_retreat_num_money gt 0">
+                                                        <p>已付金额：￥{$order['order_has_pay']}</p>
+                                                        <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money">
+                                                            <p><if condition=" $order.knot_status eq 20">已<else/>待</if>返差额：￥<span style="color: #e84343"><?php echo ( $order['order_has_pay'] > $knot_money ? round($order['order_has_pay'] - $knot_money,2) : 0);?></span></p>
+                                                        </if>
+                                                    </if>
+                                                    <if condition=" $total_retreat_num_money gt 0">
+                                                        <p>已退款：￥<span style="color: #e84343">{$total_retreat_num_money}</span></p>
+                                                    </if>
+                                                    <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                                    <notempty name="order['orderKdList']">
+                                                        <div class="jl-logistics-way" data-sn="{$order.order_sn}">
+                                                            <a href="#">查看物流</a>
+                                                            <div class="jl-logistics-popup" style="width:450px;left:-29px;">
+                                                                <i class="jl-arr-top" style="margin-left: -5px;"></i>
+                                                                <div class="jl-logistics-title">
+                                                                    <span>快递/物流列表</span>
+                                                                </div>
+                                                                <div style="padding: 10px;">
+                                                                    <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                                        <li style="width: 150px">快递公司</li>
+                                                                        <li style="width: 150px">货运单号</li>
+                                                                        <li style="width: 100px">操作</li>
+                                                                    </ul>
+                                                                    <table class="jl-product-detail">
+                                                                        <tbody>
+                                                                        <volist name="order['orderKdList']" id="kd">
+                                                                            <tr>
+                                                                                <td style="width: 150px">{$kd.hy_name}({$kd.kd_code})</td>
+                                                                                <td style="width: 150px">{$kd.hy_num}</td>
+                                                                                <td style="width: 100px"><a href="javascript:;" class="jl-kd-show" data-code="{$kd.kd_code}" data-num="{$kd.hy_num}" data-sn="{$kd.order_no}">查询物流</a></td>
+                                                                            <tr>
+                                                                        </volist>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </notempty>
+                                                </div>
+                                            </td>
+                                            <td rowspan="{$order.goodsList|count}">
+                                                <p class="jl-operation" data-sn="{$order.order_sn}">
+                                                    <!--<a href="javascript:;" class="jl-pay-money js-online-pay" style="display: none">立即支付</a>
+                                                    <if condition="($order['deposits_pay_type'] eq 5) AND ($order['deposits_pay_status'] eq 0)">
+                                                        <a href="javascript:;" class="jl-pay-money js-bank-pay">提交水单</a>
+                                                    </if>
+                                                    <if condition="($order['order_status'] neq 1 and $order['pay_type'] eq 1 and $order['pay_status'] eq 0) or ( $order['order_status'] neq 1 and $order['pay_type'] neq 1 and $order['ship_status'] eq 0 )">
+                                                        <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                                    </if>
+                                                    <if condition="$order['ship_status'] eq 2 OR $order['ship_status'] eq 1">
+                                                        <a href="javascript:;" class="jl-confirm-receipt" data-is_part="{$order['isPart']}" data-part_id="{$order[hyInfo][0]['partid']}">确认收货</a>
+                                                    </if>
+                                                    <if condition="$order['is_comment'] eq 1">
+                                                        <a href="javascript:;" class="jl-immediate-appraise">立即评价</a>
+                                                    </if>
+                                                    <if condition="$order['is_comment'] eq 2">
+                                                        <a href="{:U('Home/Order/myAppraise')}" class="jl-appraise">查看评价</a>
+                                                    </if>
+                                                    <a href="javascript:;" class="jl-again">再次购买</a>-->
+                                                </p>
+                                            </td>
+                                        </if>
+                                    </tr>
+                                </volist>
+                            </table>
+                        </foreach>
+                        <else/>
+                        <div style="border:2px solid  #e84343;margin-top:5px"  class="jl-product-detail-invoice_no-paying-container{$j}">
+                            <foreach name="order_first" item="order" key="k" >
+                                <table class="jl-product-detail jl-product-detail-invoice_no-paying" data-pay="{$order.account_pay_type_select}" style="margin-bottom:0">
+                                    <?php
+                                    $retreats_knot_total=0;
+                                    $total_retreat_num_money = 0;
+                                    $knot_money = 0;
+                                    foreach($order['goodsList'] as $selfGood){
+                                        $totalRetreatNum=0;
+                                        $knot_nums=0;
+                                        $retreat_sn = 0;
+                                        if($order['knot'] == 2  || $selfGood['retreat']){
+                                             if($selfGood['retreat']){
+                                                foreach ($selfGood['retreat'] as $value) { if($value['handle_status'] == 3){ $retreat_sn= $value['re_sn'];};if(($value['handle_status'] == 6 ) && $value['retreat_money'] > 0 ){ $totalRetreatNum += $value['p_num'];} ;}
+                                    }else{ $totalRetreatNum = 0;};
+                                    if($order['knot'] == 2){ $knot_nums = $selfGood["knot_num"];};
+                                    $retreats_knot_total +=($selfGood["p_num"] - $totalRetreatNum - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                                    $knot_money += round(($selfGood["p_num"]  - $knot_nums)*$selfGood['pay_subtotal']/$selfGood["p_num"],2);
+                                    }else{
+                                    $retreats_knot_total += $selfGood['pay_subtotal'];
+                                    };
+                                    $total_retreat_num_money += $totalRetreatNum*$selfGood['pay_subtotal']/$selfGood["p_num"];
+                                    };
+                                    $orderTotal = round($retreats_knot_total,2);
+                                    ?>
+                                    <tr class="jl-table-head">
+                                        <th colspan="3">
+                                            <div class="jl-check" style="display:none">
+                                                <span class="jl-box js-product-checkbox " data-class="jl-product-detail-invoice_no" data-sn="{$order.order_sn}"></span>
+                                            </div>
+                                            {$order.create_at}<span>订单编号：<b class="jl-order-sn">{$order.order_sn}</b><notempty name="order.order_user">——{$order.order_user}</notempty></span>
+                                            <span class="js-pay">
+                            <notempty name="order.account_pay_time">
+                                账期还款日期： <b>{$order.account_pay_time}</b>
+                            </notempty>
+                            账期支付： <b>¥<if condition = "$order.knot eq 2">
+                                        {$retreats_knot_total}
+                                    <else/>
+                                    <notempty name="$order['goodsList'][0]['retreat']">
+                                        {$retreats_knot_total}
+                                        <else/>
+                                        {$order['total']-$order['total_deposits']|sprintf="%.2f",###}
+                                    </notempty>
+                                </if></b>
+                        </span>
+                                        </th>
+                                    </tr>
+                                    <volist name="order.goodsList" id="good">
+                                        <tr data-id="{$good.p_id}">
+                                            <td>
+                                                <ul class="jl-detail-content jl-cle">
+                                                    <li class="jl-goods">
+                                                        <notempty name="good.cover_image"><img src="{$good.cover_image}" alt="{$good.name}">
+                                                            <else /><img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                                        </notempty>
+                                                    </li>
+                                                    <li class="jl-name">{$good.p_name}</li>
+                                                    <li class="jl-price">￥{$good.p_price_true}</li>
+                                                    <li class="jl-count">
+                                                        <?php $totalRetreatNum=0;$isRetreat=0;foreach ($good['retreat'] as $value) { if($value){ $isRetreat = 2;if($value['handle_status'] == 6 || $value['handle_status'] == 5)$totalRetreatNum += $value['p_num']; };};?>
+
+                                                        <if condition="($order.knot eq 2 && $good['knot_num'] gt 0) || $totalRetreatNum gt 0">
+                                                            <span class="getValue" style="text-decoration: line-through">{$good.p_num}</span><br/>
+                                                            <else/>
+                                                            <span class="getValue">{$good.p_num}</span><br/>
+                                                        </if>
+                                                        <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                                            <span  style="color: #e84343">已取消{$good["knot_num"]}</span><br/>
+                                                            <else/>
+                                                        </if>
+                                                        <if condition="$good['retreat_num'] gt 0">
+                                                            <notempty name="good['retreat']">
+                                                                <if condition="$totalRetreatNum gt 0">
+                                                                    <div style="color: #e84343;">已退 {$totalRetreatNum}</div>
+                                                                </if>
+                                                            </notempty>
+                                                            <else/>
+                                                        </if>
+                                                        <if condition="$order.knot eq 2 && $good['knot_num'] gt 0 ">
+                                                            <span  style="color: #e84343">实计<?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></span>
+                                                            <else/>
+                                                            <notempty name="good['retreat']">
+                                                                <if condition="$totalRetreatNum gt 0">
+                                                                    <div style="color: #e84343;">实计 <?php echo ($good["p_num"] - $good["knot_num"] - $totalRetreatNum);?></div>
+                                                                </if>
+                                                                <else/>
+                                                            </notempty>
+                                                        </if>
+                                                    </li>
+                                                    <li class="jl-goods-operation">
+                                                        <if condition="($order['pay_status'] neq '0' and $order['ship_status'] neq '0' and $order['ship_status'] neq '4')  or ($order['pay_status'] eq '0'  and $order['ship_status'] neq '4')">
+                                                            无
+                                                            <elseif condition="$good['subtotal'] eq 0"/>
+                                                            无
+                                                            <else/>无
+                                                           <!-- <div class="jl-refund-container jl-hover-box">
+                                                                <a href="{:U('Home/Retreat/index',['order_sn'=>$order['order_sn']])}">退货/退款</a>
+                                                                <div class="jl-hover-show-box jl-logistics-popup" style="width: 400px">
+                                                                    <i class="jl-arr-top"></i>
+                                                                    <div class="jl-logistics-title">
+                                                                        <span>退货/退款历史</span>
+                                                                    </div>
+                                                                    <div style="padding: 10px;">
+                                                                        <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                                            <li style="width: 160px">退款号</li>
+                                                                            <li style="width: 100px">退货数量</li>
+                                                                            <li style="width: 116px">退货状态</li>
+                                                                        </ul>
+                                                                        <table class="jl-product-detail">
+                                                                            <tbody>
+                                                                            <notempty name="good.retreat">
+                                                                                <?php foreach( $good['retreat'] as $re ){ ?>
+                                                                                <tr>
+                                                                                    <td style="width: 160px">{$re.re_sn}</td>
+                                                                                    <td style="width: 100px">{$re.p_num}</td>
+                                                                                    <td style="width: 116px">
+                                                                                        <a href="{:U('Home/Retreat/index',['re_sn'=>$re['re_sn']])}">
+                                                                                            <switch name="re.handle_status">
+                                                                                                <case value="1">审核中</case>
+                                                                                                <case value="2">审核通过，待退货</case>
+                                                                                                <case value="3">驳回,协商</case>
+                                                                                                <case value="4">退货运输中</case>
+                                                                                                <case value="5">已收货,待退款</case>
+                                                                                                <case value="6">已完成</case>
+                                                                                                <case value="7">退款撤销</case>
+                                                                                                <case value="8">部分审核通过</case>
+                                                                                            </switch>
+                                                                                        </a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <?php } ?>
+                                                                                <else />
+                                                                                <tr>
+                                                                                    <td rowspan="3">无</td>
+                                                                                </tr>
+                                                                            </notempty>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>-->
+                                                        </if>
+                                                    </li>
+                                                    <li class="jl-subtotal">
+                                                        <?php $knotMoney=round((($good['p_num'] - $good['knot_num']) * $good['pay_subtotal']/$good['p_num']),4);
+                                        ?>
+                                                        <?php $totalRetreatNum = 0;foreach ($good['retreat'] as $value) { if($value){ if($value['handle_status'] == 6)$totalRetreatNum +=$value['p_num'];}; };?>
+
+                                                        <if condition="$good['pay_subtotal'] neq $good['subtotal']">
+                                                            <div style="text-decoration: line-through">￥{$good.subtotal}</div>
+                                                            <if condition="($order.knot eq 2 && $good['knot_num'] gt 0 )or $totalRetreatNum gt 0 ">
+                                                                <else/>
+                                                                <div  style="color: #e84343">￥{$good.pay_subtotal}</div>
+                                                            </if>
+                                                            <else />
+
+                                                        </if>
+                                                        <if condition="$order.knot eq 2 && $good['knot_num'] gt 0">
+                                                            <span style="text-decoration: line-through">￥{$good.pay_subtotal}</span>
+                                                            <div style="color: #e84343;">实付<?php echo ($good['pay_subtotal'] * ($good['p_num'] - $totalRetreatNum - $good['knot_num'])/$good['p_num']);?></div>
+                                                            <else/>
+                                                            <notempty name="good['retreat']">
+                                                                <if condition="$totalRetreatNum gt 0">
+                                                                    <div style="text-decoration: line-through">￥{$good.pay_subtotal}</div>
+                                                                    <div style="color: #e84343;">实付<?php echo ($good['pay_subtotal'] * ($good['p_num'] - $totalRetreatNum - $good['knot_num'])/$good['p_num']);?></div>
+                                                                </if>
+                                                                <else/>
+                                                                <if condition="$good['pay_subtotal'] eq $good['subtotal']">
+                                                                    <div  >￥{$good.pay_subtotal}</div>
+                                                                    <else />
+                                                                </if>
+
+                                                            </notempty>
+                                                        </if>
+
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                            <if condition="$i eq 1 ">
+                                                <td rowspan="{$order.goodsList|count}">
+                                                    <div class="jl-state">
+                                                        <p style="font-weight: bold">{$order|getOrderStatus}</p>
+                                                        <p>支付方式：<span style="color: #e84343">{$order.pay_type|getPayType}</span></p>
+                                                        <if condition="$order.order_type eq 0">
+                                                            <?php $round_total_knot=round($retreats_knot_total,2);?>
+                                                            <if condition="$round_total_knot gt 0">
+                                                                <p>
+                                                                    <if condition="$order.knot eq 2">
+                                                                        全款:￥{$round_total_knot}（<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                                        <else/>
+                                                                        <notempty name="good['retreat']">
+                                                                            （全款:￥{$round_total_knot}<span style="text-decoration: line-through;color:#ccc">{$order['total']}</span>）
+                                                                        </notempty>
+                                                                        全款:￥{$order.total}
+                                                                    </if>
+                                                                </p>
+                                                                <else/>
+                                                                全款:￥{$order.total}
+                                                            </if>
+                                                            <else/>
+                                                            <p>尾款：￥ {$order['total']-$order['total_deposits']}
+                                                               </p>
+                                                            <if condition="$order.deposits_pay_status eq 0">
+                                                                <p style="border-top: 1px solid #ddd;margin-top: 6px;padding-top: 6px;">预付定金</p>
+                                                                <p>定金：￥{$order.total_deposits}</p>
+                                                                <if condition="$order.total_deposits neq 0">
+                                                                    <p>定金支付方式：<span style="color: #e84343">{$order.deposits_pay_type|getPayType}</span></p>
+                                                                </if>
+                                                            </if>
+                                                        </if>
+                                                        <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money or $total_retreat_num_money gt 0">
+                                                            <p>已付金额：￥{$order['order_has_pay']}</p>
+                                                            <if condition="$order.knot eq 2 && $order['order_has_pay'] gt $knot_money">
+                                                                <p><if condition=" $order.knot_status eq 20">已<else/>待</if>返差额：￥<span style="color: #e84343"><?php echo ( $order['order_has_pay'] > $knot_money ? round($order['order_has_pay'] - $knot_money,2) : 0);?></span></p>
+                                                            </if>
+                                                        </if>
+                                                        <if condition=" $total_retreat_num_money gt 0">
+                                                            <p>已退款：￥<span style="color: #e84343">{$total_retreat_num_money}</span></p>
+                                                        </if>
+                                                        <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                                        <notempty name="order['orderKdList']">
+                                                            <div class="jl-logistics-way" data-sn="{$order.order_sn}">
+                                                                <a href="#">查看物流</a>
+                                                                <div class="jl-logistics-popup" style="width:450px;left:-29px;">
+                                                                    <i class="jl-arr-top" style="margin-left: -5px;"></i>
+                                                                    <div class="jl-logistics-title">
+                                                                        <span>快递/物流列表</span>
+                                                                    </div>
+                                                                    <div style="padding: 10px;">
+                                                                        <ul class="jl-order-title" style="margin-bottom: 0;border-bottom: none">
+                                                                            <li style="width: 150px">快递公司</li>
+                                                                            <li style="width: 150px">货运单号</li>
+                                                                            <li style="width: 100px">操作</li>
+                                                                        </ul>
+                                                                        <table class="jl-product-detail">
+                                                                            <tbody>
+                                                                            <volist name="order['orderKdList']" id="kd">
+                                                                                <tr>
+                                                                                    <td style="width: 150px">{$kd.hy_name}({$kd.kd_code})</td>
+                                                                                    <td style="width: 150px">{$kd.hy_num}</td>
+                                                                                    <td style="width: 100px"><a href="javascript:;" class="jl-kd-show" data-code="{$kd.kd_code}" data-num="{$kd.hy_num}" data-sn="{$kd.order_no}">查询物流</a></td>
+                                                                                <tr>
+                                                                            </volist>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </notempty>
+                                                    </div>
+                                                </td>
+                                                <td rowspan="{$order.goodsList|count}">
+                                                    <p class="jl-operation" data-sn="{$order.order_sn}">
+                                                        <!--<a href="javascript:;" class="jl-pay-money js-online-pay" style="display: none">立即支付</a>
+                                                        <if condition="($order['deposits_pay_type'] eq 5) AND ($order['deposits_pay_status'] eq 0)">
+                                                            <a href="javascript:;" class="jl-pay-money js-bank-pay">提交水单</a>
+                                                        </if>
+                                                        <if condition="($order['order_status'] neq 1 and $order['pay_type'] eq 1 and $order['pay_status'] eq 0) or ( $order['order_status'] neq 1 and $order['pay_type'] neq 1 and $order['ship_status'] eq 0 )">
+                                                            <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                                        </if>
+                                                        <if condition="$order['ship_status'] eq 2 OR $order['ship_status'] eq 1">
+                                                            <a href="javascript:;" class="jl-confirm-receipt" data-is_part="{$order['isPart']}" data-part_id="{$order[hyInfo][0]['partid']}">确认收货</a>
+                                                        </if>
+                                                        <if condition="$order['is_comment'] eq 1">
+                                                            <a href="javascript:;" class="jl-immediate-appraise">立即评价</a>
+                                                        </if>
+                                                        <if condition="$order['is_comment'] eq 2">
+                                                            <a href="{:U('Home/Order/myAppraise')}" class="jl-appraise">查看评价</a>
+                                                        </if>
+                                                        <a href="javascript:;" class="jl-again">再次购买</a>-->
+                                                    </p>
+                                                </td>
+                                            </if>
+                                        </tr>
+                                    </volist>
+                                </table>
+                            </foreach>
+                            <div class="invoice_no-handle common-handle" >
+                                <span class="cancel-paying" data-class="jl-product-detail-invoice_no-paying-container{$j}"> 取消还款</span>
+                                <span class="continues-paying" data-class="jl-product-detail-invoice_no-paying-container{$j}"> 继续还款</span>
+                            </div>
+                        </div>
+                    </if>
+
+                </foreach>
+            </div>
+        </div>
+        <else/>
+        <div class="jl-empty">
+            <img src="__PUBLIC__/Home/Public/img/empty.png" alt="">
+            <h4>亲爱的客官，空空如也啊！</h4>
+        </div>
+    </notempty>
+    {$page}
+    <div style="display: none" class="js-water-modal jl-modal-container vertical-box">
+        <div class="jl-modal-mask"></div>
+        <div class="jl-modal-box vertical-middle">
+            <div class="jl-modal-header vertical-box">
+                <div class="jl-modal-close-btn vertical-middle"><i class="jl-modal-close-icon"></i></div>
+            </div>
+            <div class="jl-modal-body">
+                <div class="jl-modal-title">提交水单</div>
+                <div class="jl-modal-brief">
+                    <div class="">
+                        <div id="js-upload-container" style="text-align: center">
+                            <div id="js-upload">
+                                <img class="jl-upload-btn"
+                                     src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                            </div>
+                            <img class="jl-upload-img" src="" alt="">
+                            <div>点击上面按钮上传水单<button class="jl-change-btn">更换图片</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="jl-modal-footer">
+                <button class="jl-modal-primary-btn">确定</button>
+                <button class="jl-modal-secondary-btn">关闭</button>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','webuploader','/Public/Common/module/layui/2.2.5/lay/modules/layer.js'], function ($, modal, pikaday, jlTool,WebUploader) {
+                var orderList = {$orderList|json_encode};
+                var get = {$get|json_encode};
+                var jlTool = layui.jlTool;
+               // console.log(orderList);
+                modal.option({
+                    left: -77
+                });
+                //取消订单
+                $('.jl-cancel').on('click', function () {
+                    var $this = $(this);
+                    var $table = $this.parents('.jl-product-detail');
+                    var order_sn = $table.find('.jl-order-sn').html();
+                    modal.confirm({
+                        title: '取消订单',
+                        brief: '您确定要取消订单吗？',
+                        top: 100,
+                        confirm: function () {
+                            $.post("{:U('Home/Order/cancleOrder')}", {order_sn: order_sn}, function (res) {
+                                res = $.parseJSON(res);
+                                if (res.error === 0) {
+                                    modal.alert({
+                                        title: '取消成功',
+                                        top: 100,
+                                        confirm:function () {
+                                            window.location.reload();
+                                        }
+                                    });
+                                }
+                                else {
+                                    modal.confirm({
+                                        title: '系统繁忙',
+                                        brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                        top: 100
+                                    })
+                                }
+                            });
+                        }
+                    });
+                });
+                //再次购买
+                $('.jl-again').on('click', function () {
+                    var $td = $(this).parents('.jl-product-detail').find('tr').not('.jl-table-head');
+                    var goods = [];
+                    var obj = {};
+                    $.each($td, function (index, el) {
+                        obj = {
+                            "pid": $(el).attr('data-id'),
+                            "num": $(el).find('.jl-count .getValue').html()
+                        };
+                        goods.push(obj);
+                    });
+                    $.get("{:U('Home/Basket/againBuyBasket')}", {goods: goods}, function (res) {
+                        var data = $.parseJSON(res);
+                        if (data.error === 0) {
+                            location.href = "{:U('Home/Basket/basketDetail')}";
+                        } else {
+                            modal.confirm({
+                                type: 'fade',
+                                title: '系统繁忙',
+                                brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                top: 100
+                            });
+                        }
+                    });
+                });
+                //确认收货
+                $('.jl-confirm-receipt').on('click', function () {
+                    var $this = $(this);
+                    var order_sn = $this.parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                    var isPart = $this.data('is_part');
+                    if( parseInt(isPart) > 0 ){
+                        location.href="{:U('Home/Order/detail')}?order_sn="+order_sn;
+                    }else{
+                        var partId = $this.data('part_id');
+                        modal.confirm({
+                            title: '确认收货',
+                            brief: '您确定要收货吗？',
+                            top: 100,
+                            confirm: function () {
+                                $.post("{:U('Home/Order/doDelivery')}", {order_sn: order_sn,partid:partId}, function (res) {
+                                    if (res.error === 0 ) {
+                                        window.location.reload();
+                                        // $this.removeClass('jl-confirm-receipt').addClass('jl-immediate-appraise');
+                                        // $this.html('立即评价');
+                                        // $this.parents('td').siblings().children('.jl-state').find("p:first-child").html("待评价");
+                                    } else {
+                                        modal.confirm({
+                                            title: '系统繁忙',
+                                            brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                            top: 100
+                                        })
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                });
+                $('.jl-immediate-appraise').on('click',function(){
+                    var $this = $(this);
+                    var order_sn = $this.parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                    window.location.href = "{:U('Home/Order/comment')}?order_sn=" + order_sn;
+                });
+                //立即支付
+                /* $('.js-online-pay').each(function () {
+                     var index = $('#jl-center-right').children('.jl-product-detail').index($(this).parents('.jl-product-detail'));
+                     var order = orderList[index];
+                     var pay_type;
+                     if(parseInt(order.deposits_pay_type)&&parseFloat(order.total_deposits)&&(parseInt(order.deposits_pay_status)===0)){
+                         if(order.deposits_pay_type===5){
+                             $(this).show().on('click',function () {
+                                 window.location.href = "{:U('Home/Order/publicAccount')}?order_sn=" + order.order_sn;
+                             })
+                         }
+                         else {
+                             pay_type = order.deposits_pay_type;
+                         }
+                     }
+                     else if(parseInt(order.pay_status)===0){
+                         pay_type = order.pay_type;
+                     }
+                     //统一处理
+                     pay_type = parseInt(pay_type);
+                     if(pay_type){
+                         if(pay_type===1){
+                             $(this).show().on('click',function () {
+                                 window.location.href = "{:U('Home/Order/userPayPlatform')}?order_sn=" + order.order_sn;
+                             })
+                         }
+                         else if(pay_type===6){
+                             $(this).show().on('click',function () {
+                                 modal.alert({
+                                     title:'支付提示',
+                                     brief:'请找客服索要付款信息支付订单'
+                                 });
+                             })
+                         }
+                     }
+                     /*
+                     var noStore = 0;
+                     $.each(order.goodsList, function (index,value) {
+                         var store = parseInt(value.store);
+                         var num = parseInt(value.p_num);
+                         if(num>store){
+                             noStore++;
+                         }
+                     });
+                     if((noStore!==0)&&(noStore!==order.goodsList.length)){
+                         modal.alert({
+                             title:'支付失败',
+                             brief:'库存充足商品不能与库存不足商品一起结算<br/>请分开下单'
+                         });
+                         return
+                     }**
+                 });*/
+                //提交水单
+                var uploader1;
+                $('.js-bank-pay').on('click',function () {
+                    if(!uploader1){
+                        uploader1 = WebUploader.create({
+                            pick:'#js-upload',
+                            auto: true,
+                            swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                            server: "{:U('Home/Order/upload')}",
+                            formData:{
+                                path: 'bank_receipt'
+                            },
+                            accept: {
+                                title: 'Images',
+                                extensions: 'jpg,jpeg,png',
+                                mimeTypes: 'image/jpg,image/jpeg,image/png'
+                            }
+                        });
+                        uploader1.on('uploadSuccess',function (file,res) {
+                            if(res&&res[0]){
+                                $('.jl-upload-img').attr('src',res[0]);
+                                $('#js-upload-container').addClass('js-uploaded')
+                            }
+                        });
+                        uploader1.on( 'uploadError', function () {
+                            modal.alert({
+                                title:'上传失败'
+                            })
+                        });
+                    }
+                    $('.js-water-modal').show();
+                    $('.js-water-modal .jl-modal-primary-btn').data('sn',$(this).parent().data('sn'))
+                });
+                //更换图片
+                $('.jl-change-btn').on('click',function () {
+                    $('#js-upload-container').removeClass('js-uploaded');
+                    $('.jl-upload-img').attr('src','');
+                });
+                //提交按钮
+                $('.js-water-modal .jl-modal-primary-btn').on('click',function () {
+                    var img = $('.jl-upload-img').attr('src');
+                    if(img){
+                        var order_sn = $(this).data('sn');
+                        var data = {
+                            order_sn:order_sn,
+                            pay_img:img
+                        };
+                        $.post('/Home/Order/publicAccount',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                modal.alert({
+                                    title:'提交成功',
+                                    confirm:function () {
+                                        window.location.reload();
+                                    }
+                                })
+                            }
+                            else {
+                                modal.alert({
+                                    title:'提交失败',
+                                    brief:res.msg
+                                })
+                            }
+                        })
+                    }
+                    else {
+                        modal.alert({
+                            title:'请选择上传图片'
+                        })
+                    }
+                });
+                //关闭按钮
+                $('.js-water-modal .jl-modal-secondary-btn').on('click',function () {
+                    $('#js-upload-container').removeClass('js-uploaded');
+                    $('.jl-upload-img').attr('src','');
+                    $('.js-water-modal').hide();
+                });
+                $('.js-water-modal .jl-modal-close-icon').on('click',function () {
+                    $('#js-upload-container').removeClass('js-uploaded');
+                    $('.jl-upload-img').attr('src','');
+                    $('.js-water-modal').hide();
+                });
+                //退货退款
+                $('.jl-return').on('click', function () {
+                    var title = $(this).attr('data-id');
+                    if (title === '0') {
+                        modal.confirm({
+                            title: '确认退货退款',
+                            brief: '你的订单已存在待开发票中，如果申请退货退款，需重新申请开发票！',
+                            top: 100,
+                            confirmText: '确认退款',
+                            cancelText: '取消退款',
+                            confirm: function () {
+                                location.href = "{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}";
+                            }
+                        });
+                    }
+                    else {
+                        modal.confirm({
+                            title: '确认退货退款',
+                            brief: '你的订单已开发票，如果申请退货退款，退款金额将扣除17%的税点后进行退款！',
+                            top: 100,
+                            confirmText: '确认退款',
+                            cancelText: '取消退款',
+                            confirm: function () {
+                                location.href = "{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}";
+                            }
+                        });
+                    }
+                });
+                //查看物流
+                $( '.jl-logistics-way' ).on('click','.jl-kd-show',function(){
+                    var $this = $(this);
+                    var code = $this.data('code');
+                    var num = $this.data('num');
+                    var sn = $this.data('sn');
+                    var second = 1;
+                    var timer = setInterval(function () {
+                        var time = second%4;
+                        var text = '';
+                        for(var i = 0;i<time;i++){
+                            text+='。'
+                        }
+                        $this.text('加载中'+text);
+                        second++;
+                    },500);
+                    $.ajax({
+                        type: 'post',
+                        url: '{:U("Home/kd/info")}',
+                        data: {shipperCode: code, logisticCode: num, orderCode: sn},
+                        success: function (res) {
+                            clearInterval(timer);
+                            $this.text('查询物流');
+                            var str = '<ul class="jl-delivery-text" style="text-align: left">';
+                            $.each(res.traces, function (i, d) {
+                                str += '<i></i><li  class="jl-cur"><div><p>' + d.AcceptTime + '</p><p>' + d.AcceptStation + '</p></div></li>';
+                            });
+                            str += '</ul>';
+                            modal.alert({
+                                title: '物流轨迹',
+                                brief: str,
+                                width:'470px'
+                            })
+                        }
+                    });
+                });
+                //账期
+                $('.js-repay-btn').on('click',function () {
+                    beforePay();
+                });
+                function beforePay(range){
+                    if(range){
+                        if($(range.find("table")[0]).hasClass("jl-product-detail-invoice-paying")){
+                            var invoice_num=range.find('.js-product-checkbox').length;
+                            var invoice_no_num = 0;
+                        }else{
+                            var invoice_num = 0;
+                            var invoice_no_num=range.find('.js-product-checkbox').length;
+                        }
+                    }else{
+                        var invoice_num=$(".jl-product-invoice").find('.js-product-checkbox.jl-cur').length;
+                        var invoice_no_num=$(".jl-product-invoice_no").find('.js-product-checkbox.jl-cur').length;
+                    }
+
+                    if(invoice_num >0 && invoice_no_num > 0){
+                        modal.alert({
+                            title:'开票订单和不开票订单不能同时还款'
+                        });
+                        return;
+                    };
+                    if(invoice_num >0 ){
+                        layer.open({
+                            title:"请选还款方式",
+                            type:0,
+                            content:"<div class='shadow-radio'><input style='display:none' name='paying' id='online ' value='1' type='radio' checked><label for='online'><span class=\"jl-box  jl-cur\"></span>在线还款</label><br/>" +
+                            "<input style='display:none' name='paying' id='bank' value='5' type='radio' ><label for='bank'><span class=\"jl-box\" ></span>银行转账</label></div>",
+                            btn:["确认","取消"],
+                            success:function(){
+                                var styles={
+                                    "margin":"4px 6px 0 0 ",
+                                    float:"left",
+                                    cursor: "pointer",
+                                    display: "inline-block",
+                                    width: "16px",
+                                    height: "16px",
+                                    "border-width":"1px",
+                                    "border-style":" solid "};
+                                $(".shadow-radio").find("span").css(styles);
+                                $(".shadow-radio").find("label").on("click",function(){
+                                    var elements=$(this).find("span");
+                                    //console.log(elements.hasClass("jl-cur"));
+                                    if(elements.hasClass("jl-cur")){
+                                        // elements.removeClass("jl-cur").parent().find("span").addClass("jl-cur");
+                                    }else{
+                                        elements.addClass("jl-cur").parent().siblings().find("span").removeClass("jl-cur");
+                                    }
+
+                                });
+
+                            },
+                            yes:function(){
+                                var pay_type= $(".shadow-radio").find("input:checked").val();
+                                goPay(range ,pay_type);
+                                layer.closeAll();
+                            },
+                            no:function(){
+                                layer.closeAll();
+                                return;
+                            }})
+                    }
+                    if(invoice_no_num >0){ goPay(range);}
+                }
+                function goPay(range,pay_type){
+                    var data = {
+                        active:'account',
+                        orderSn_arr:[],
+                        pay_type:pay_type || 6
+                    };
+                    if(range){
+                        var $active = $(range).find('.js-product-checkbox');
+                    }else{
+                        var $active = $('.js-product-checkbox.jl-cur');
+                    }
+                    if($active.length!==0){
+                        $active.each(function () {
+                            var sn = $(this).data('sn');
+                            data.orderSn_arr.push(sn)
+                        });
+                        var query = jlTool.urlEncode(data);
+                       // console.log(query);
+                        var url = '/Home/Order/userPayPlatform?'+query;
+                        window.location.href=url;
+                    }
+                    else {
+                        modal.alert({
+                            title:'请勾选需要还款的订单'
+                        });
+                    }
+                }
+                $('.js-product-checkbox').on('click',function () {
+                    $(this).toggleClass('jl-cur');
+                    var control_class=$(this).attr("data-class");
+                    var active_num = $("."+control_class).find('.js-product-checkbox.jl-cur').length +$("."+control_class+"-paying").find('.js-product-checkbox.jl-cur').length;
+                    var num = $("."+control_class).find('.js-product-checkbox').length + $("."+control_class+"-paying").find('.js-product-checkbox').length;
+                    if(active_num!==num){
+                        $('.js-product-all-checkbox[data-class='+control_class+']').removeClass('jl-cur');
+                    }
+                    else {
+                        $('.js-product-all-checkbox[data-class='+control_class+']').addClass('jl-cur');
+                    }
+                });
+                $('.js-product-all-checkbox').on('click',function () {
+                    var control_class=$(this).attr("data-class");
+                    if($(this).hasClass('jl-cur')){
+                        $("."+control_class).find('.js-product-checkbox').removeClass('jl-cur');
+                        $("."+control_class+"-paying").find('.js-product-checkbox').removeClass('jl-cur');
+                        $(this).removeClass('jl-cur');
+                    }
+                    else {
+                        $("."+control_class).find('.js-product-checkbox').addClass('jl-cur');
+                        $("."+control_class+"-paying").find('.js-product-checkbox').addClass('jl-cur');
+                        $(this).addClass('jl-cur');
+                    }
+                })
+                //取消还款
+                $(".cancel-paying").on("click",function(){
+                    var controlElemt=$("."+$(this).data("class"));
+                    var data={
+                        active:'account',
+                        is_delete:1,
+                        orderSn_arr:[],
+                        pay_type:controlElemt.find("table").data("pay")
+                    };
+                    var $active = controlElemt.find('.js-product-checkbox');
+                    if($active.length!==0) {
+                        $active.each(function () {
+                            var sn = $(this).data('sn');
+                            data.orderSn_arr.push(sn)
+                        });
+                        $.get('/Home/Order/userPayPlatform', data, function (res) {
+                            res = $.parseJSON(res);
+                           // console.log(res);
+                            if (res.error === 0) {
+                                modal.alert({
+                                    title: '取消成功',
+                                    confirm: function () {
+                                        window.location.reload();
+                                    }
+                                })
+                            }
+                            else {
+                                modal.alert({
+                                    title: '取消失败',
+                                    brief: res.msg
+                                })
+                            }
+                        })
+                    }
+                });
+                //继续还款
+                $(".continues-paying").on("click",function(){
+                    var controlElemt=$("."+$(this).data("class"));
+                    beforePay(controlElemt);
+                });
+
+            });
+        });
+    </script>
+</block>

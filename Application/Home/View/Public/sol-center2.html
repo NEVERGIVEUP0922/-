@@ -1,0 +1,33 @@
+<div id="jl-center-title">
+    <div class="jl-title-main">
+        <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+            <?php if(empty(session('userInfo.nick_name'))){
+                echo 'Hi，您好,'.session('userInfo.user_name');}else{
+                echo 'Hi，您好,'.session('userInfo.nick_name');
+            } ?>
+        </p>
+        <ul class="jl-title-right">
+            <li class="{$isSolIndex == 1?'js-personal':''}">
+                <a href="{:U('Home/SolutionVip/vipProvider')}">
+                    项目管理中心
+                </a><i></i>
+            </li>
+            <li class="{$sol_position == 2?'js-personal':''}">
+                <a href="{:U('Home/Solution/myProvider')}">我的供应方案({$mysol_a?$mysol_a:0})</a><i></i>
+            </li>
+            <li class="{$sol_position == 3?'js-personal':''}">
+                <a href="{:U('Home/Solution/myDesired')}">我的需求方案({$mysol_b?$mysol_b:0})</a><i></i>
+            </li>
+            <li class="{$sol_position == 4?'js-personal':''}">
+                <a href="{:U('Home/SolutionNotify/all_notify')}"> 消息(<span id="new-message">{$msg_data['count_all']?$msg_data['count_all']:0}</span>)</a><i></i>
+            </li>
+            <li class="jl-title-last {$sol_position == 5?'js-personal':''}">
+                <a href="{:U('Home/Solution/converse')}?all_con=1">未处理洽谈({$converNum?$converNum:0})</a><i></i>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="jl-center-main" class="jl-cle">
+        <block name="main"></block>
+</div>
+<div class="jl-line"></div>

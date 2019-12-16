@@ -1,0 +1,677 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+<extend name="Layout:layout-sol-center2" />
+
+<block name="title">方案中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project_upload.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.4/css/layui.css" rel="stylesheet"  media="all">
+	<!--<link rel="stylesheet" href="__VENDOR__/lib/bootstrap/css/bootstrap.css">-->
+	<style>
+		.content-list label{
+			height:35px;
+			line-height: 35px;
+		}
+		/*layi_add不可放入css文件*/
+		.layui-form-label{
+			padding:0px;
+			margin:0px 76px 0px 45px;
+		}
+		.layui-input{
+			width:345px!important;
+		}
+		.layui-form-item{
+			height:35px;
+		}
+		.layui-form-select dl dd.layui-this{
+			background-color:#e84343;
+		}
+		.layui-form-select dl{
+			top:35px;
+		}
+		#jl-center-main{
+			margin-top:0px;
+		}
+		#jl-project{
+			margin-top:0px;
+		}
+		.pika-button:hover, .pika-row.pick-whole-week:hover .pika-button{
+			background: #e84343!important;
+		}
+		textarea{
+			max-height: 130px;
+		}
+	</style>
+	<!--sol的前缀是solution(方案)的缩写-->
+</block>
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main">
+	<!-- 主要内容 -->
+	<!--面包屑导航系统-->
+	{$breadcrum}
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--进度条-->
+		<div>
+			<ul id="jl-cart-progress" class="jl-cle">
+				<li class="jl-cur">
+					<p>
+						<span class="jl-serial">1</span>
+						填写方案基本信息
+					</p>
+					<i class="jl-arr"></i>
+				</li>
+				<li>
+					<i class="jl-arr-white"></i>
+					<p>
+						<span class="jl-serial">2</span>
+						提交成功
+					</p>
+					<i class="jl-arr"></i>
+				</li>
+				<li class="jl-progress-last">
+					<i class="jl-arr-white"></i>
+					<p>
+						<span class="jl-serial">3</span>
+						后台审核中
+					</p>
+				</li>
+			</ul>
+		</div>
+		<div class="tj_success">
+			<div class="tj1"><img src="__PUBLIC__/Home/Solution/img/tj_success.png" alt=""></div>
+			<div class="tj2">您已成功提交方案!</div>
+			<div class="tj3">方案已提交进入审核， 审核通过后才能发布</div>
+			<div class="tj4">
+				<div class="browse-desir">查看方案</div>
+				<div class="return-index">返回上传</div>
+			</div>
+		</div>
+		<div class="content-main">
+			<div class="content-list">
+				<ul>
+					<li style="height:35px;overflow: visible;" >
+						<form class="layui-form" lay-filter="sol_types" >
+							<div class="layui-form-item" >
+								<span class="empty_check yincang types-span"></span>
+								<label class="layui-form-label black_word" ><i class="xinxin"></i>项目类型:</label>
+								<div class="layui-inline layui-input-inline"  >
+									<select name="sol_types" id="sol-types-id" class="sol-types" lay-filter="sol_types" style="border:1px solid #777;width:380px;" lay-search="">
+										<option value="">请选择方案类型</option>
+										<foreach name="sol_types" item="vo">
+											<option value="{$vo.id}">{$vo.types}</option>
+										</foreach>
+									</select>
+								</div>
+							</div>
+						</form>
+					</li>
+					<div></div>
+					<li>
+						<div class="List-name">
+							<i class="xinxin"></i><label for="desir_name">方案名:</label>
+						</div>
+						<div class="List-content">
+							<input type="text" name="desir_name" value="" id="desir_name" class="form-control" placeholder="请填写方案名" maxlength="30" autocomplete="off">
+							<span class="empty_check yincang"></span>
+						</div>
+					</li>
+					<li style="margin: 20px 0px 10px 0px;">
+						<div class="List-name">
+							<i class="xinxin"></i><label for="desir_desc">方案简要描述:</label>
+						</div>
+						<div class="List-content">
+							<textarea name="desir_desc" id="desir_desc" class="form-control" value="" rows="3"  placeholder="请填写方案简要描述" style="display: block;padding: 10px;width:718px;"></textarea>
+						</div>
+						<div class="enter_content float_R">
+							<span class="empty_check yincang" id="desc_empty_check"></span>
+							还可以输入<span id="enter_content">150<!--还可以输入字--></span>个字!</div>
+						<div class="clear"></div>
+					</li>
+					<li style="margin-top:0px;">
+						<div class="List-name">
+							<i class="xinxin"></i><label for="budget">方案预算:</label>
+						</div>
+						<div class="List-content">
+							<input type="text" name="budget" value="" id="budget" class="form-control" placeholder="请填写预算" maxlength="20">
+							<span class="empty_check yincang"></span>
+						</div>
+					</li>
+					<li>
+						<div class="List-name">
+							<i class="xinxin"></i><label>最晚交付时间:</label>
+						</div>
+						<div class="List-content">
+							<input type="text" id="datepicker" unselectable="on" readonly
+								   placeholder="请选择交付时间" name="delivery">
+							<span class="empty_check yincang"></span>
+						</div>
+					</li>
+					<li>
+						<div class="List-name">
+							<i class="xinxin"></i><label for="linkman">联系人姓名:</label>
+						</div>
+						<div class="List-content" >
+							<input type="text" name="linkman" value="" id="linkman" placeholder="请填写联系人姓名" class="form-control" maxlength="30" autocomplete="off">
+							<span class="empty_check yincang"></span>
+						</div>
+					</li>
+					<li>
+						<div class="List-name">
+							<i class="xinxin"></i><label for="mobile">联系人电话:</label>
+						</div>
+						<div class="List-content">
+							<input type="text" name="mobile" value="" id="mobile" class="form-control" placeholder="请填写联系电话" maxlength="11" autocomplete="off">
+							<span class="empty_check yincang"></span>
+						</div>
+					</li>
+					<li>
+						<div class="List-name">
+							<i class="xinxin"></i><label for="company">联系公司名:</label>
+						</div>
+						<div class="List-content">
+							<input type="text" name="company" value="" id="company" class="form-control" placeholder="请填写联系公司" maxlength="30" autocomplete="off">
+							<span class="empty_check yincang"></span>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="content-state">
+				<div>说明:(<i class="xinxin"></i>为必填)</div>
+				<div>1.方案类型,为您的方案类型,如果您不确定方案类型,可输入其他;建议填写行业名词.</div>
+				<div>2.方案名称,标题需填写能够说明方案的内容,字数16字符为佳,限制30个字符</div>
+				<div>3.方案描述,这个是能吸引购买方的直观要素,建议能简要介绍您的方案价值所在;简要精简限制字符100字.详情描述可详细描述限制字符1000字.</div>
+			</div>
+		</div>
+		<div class="read-accept">
+			<!--<span id="accept"><input type="radio" name="read_accept"/>阅读并接受</span>-->
+			<!--<span id="business-rule" data-method="business_rule">《商业资源交易规则》</span></a>-->
+			<div class="jl-form-agree">
+				<span href="#" class="jl-check" id="jl-checkbox"></span>
+				<span>阅读并同意</span><a href="javascript:;" data-method="business_rule">《商业资源交易规则》</a>
+			</div>
+		</div>
+		<div class="read-accept save-commit">
+			<div class="save_desir">保存</div>
+			<div class="commit_desir">提交</div>
+		</div>
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal','pikaday','layer'], function ($, modal,Pikaday,layer) {
+                var layer = layui.layer;
+                var data ={};/*保存表单数据*/
+                var had_checked="";/*检查完毕*/
+                var $mobile_num=$('#mobile');
+                var $company   =$('#company');
+//                var $types     =$('#types option:selected');
+                var $desir_name=$('#desir_name');
+                var $desir_desc=$('#desir_desc');
+                var $budget    =$('#budget');
+                var $linkman   =$('#linkman');
+                var $delivery  =$('#datepicker').next();
+				var get = '123';
+				var types_span = $('.types-span');
+				var form= layui.form;
+					form.on("select(sol_types)",function(obj){
+						data.types=obj.value;//小分类
+						if(!data.types||data.types==0){
+                            commit_stop();
+                            types_span.html('<i class="waring_picture"></i>'+'方案类型不能为空');
+                            types_span.css('display','inline-block');
+						}else{
+                            types_span.css('display','none');
+						}
+					});
+				//会员(不能删,后期有用)
+//				$.get('/Home/SolutionVip/check_vip2',{},function(res){
+//                    if(res.status==999) {
+//                        window.location.href = '/Home/Account/login';
+//                        return;
+//                    }
+//				    if(res.status == 1000){
+//				        if(!res.data){
+//				            res.data = '';
+//						}
+//						$("input[name='linkman']").val(res.data.nick_name);
+//						$("input[name='mobile']").val(res.data.mobile);
+//				        data.linkman = $linkman.val();
+//				        data.mobile  = $mobile_num.val();
+//					}else{
+//                        modal.confirm({
+//                            title: '您目前还不是会员,不能发布方案',
+//                            isCenter:true,
+//                            confirmText: "点击前往升级",
+//                            cancelBtn:true,
+//                            cancelText:'取消',
+//                            confirm:function(){
+//                                window.location.href = "/Home/SolutionVip/vipIndex";
+//                                return;
+//                            }
+//                        });
+//					}
+//				})
+
+                /*接受阅读条款*/
+                var _checkbox = $('#jl-checkbox');
+                $('.jl-form-agree').on('click',function(){
+                    var temp = data_check(data);
+                    if(temp===false||had_checked===false){
+                        _checkbox.removeClass('jl-check-active');
+                        waring_alert('请填写完整数据');
+                    }else{
+						var is_accept = _checkbox.hasClass('jl-check-active');
+							_checkbox.addClass('jl-check-active');
+                    }
+
+                    if( is_accept){
+                        _checkbox.removeClass('jl-check-active');
+                        $('.commit_desir').removeClass('green-white').addClass('gray-black');
+                    }else{
+                        _checkbox.addClass('jl-check-active');
+                        $('.commit_desir').removeClass('gray-black').addClass('green-white');
+                    }
+				});
+
+                /*阅读条款*/
+                $('#business-rule').on('click',function(){
+//                    $('.read_desir').show();
+                    var _this = $(this)
+                    var othis = _this, method = othis.data('method');
+                    active[method] ? active[method]() : '';
+                });
+                /*弹层*/
+                var active = {
+                    business_rule:function(){
+                        var url = "/Public/Home/Solution/business_rule.html";
+                        layer.open({
+                            type: 2
+                            , title: false
+                            , closeBtn: 0
+                            , area: ["45%", '90%']
+                            , scrollbar: false
+                            , shade: 0.5
+                            , id: 'LAY_layuipro'
+                            , btn: ['关闭页面']
+                            , content: [url]
+                            , end:function(){
+                            }
+                        });
+                    }
+                };
+                //禁止
+                function commit_stop(){
+                    var _theInput2 = $('.commit_desir');
+						_checkbox.removeClass('jl-check-active');
+						_theInput2.removeClass('green-white').addClass('gray-black');
+                }
+                /*保存(草稿)*/
+                $('.save_desir').on('click',function(){
+                    var temp = data_check(data);
+                    if(!temp){
+                        waring_alert('请填写完整数据');
+                        return;
+					}
+					data.draft = 1;/*草稿标识符*/
+//					console.log(data.desir_id);
+                    $.ajax({
+                        type:'POST',
+                        url:"{:U('Home/Solution/myDesiredUpload')}",
+                        data:data,
+                        success:function(res){
+                            if(res.status==999) {
+                                window.location.href = '/Home/Account/login';
+                                return;
+                            }
+                            if(res.status==1000){
+                            	data.desir_id = res.data;
+							}
+                            waring_alert(res.content);
+						},
+						error:function(res){
+                            waring_alert(res.content);
+						}
+					});
+				});
+
+                /*提交*/
+                $('.commit_desir').on('click',function(){
+                    var if_checked =  _checkbox.hasClass('jl-check-active');;
+                    var temp = data_check(data);
+                    if(if_checked && temp===true){
+                        console.log('准备完毕');
+                        data.draft = 0;
+						modal.alert({
+							title:'提示',
+							brief:'提交以后将无法修改,确认提交吗?',
+                            confirm:function(){
+							    $.ajax({
+									type:'POST',
+									url:"{:U('Home/Solution/myDesiredUpload')}",
+									data:data,
+									success:function(res){
+                                        if(res.status==999) {
+                                            window.location.href = '/Home/Account/login';
+                                            return;
+                                        }
+                                        //会员功能不启用时的替代
+                                        if(res.status==888){
+                                            modal.confirm({
+                                                title:'提示',
+                                                brief:res.content,
+                                                confirmText: "点击前往",
+                                                cancelText:'取消',
+                                                isCenter:true,
+                                                confirm:function(){
+                                                    window.open("/Home/SolutionVip/vipIndex");
+                                                }
+                                            });
+                                            return;
+                                        }
+										if(res.status===1000){
+										    var content1 = $('.content-main');
+										    var content2 = $('.read-accept');
+										    var content3 = $('#jl-cart-progress').children('li');
+										    content3.eq(1).addClass('jl-cur');
+										    content3.eq(2).addClass('jl-cur');
+										    var tj  =$('.tj_success');/*tj---添加*/
+										    content1.remove();
+										    content2.remove();
+										    tj.show();
+										}else if(res.status===1023){
+                                            modal.confirm({
+                                                confirmText: "点击前往升级",
+                                                title: '提示',
+                                                brief: res.content,
+                                                isCenter:true,
+                                                top: 100,
+                                                confirm: function(){
+                                                    window.location.href = "/Home/SolutionVip/vipIndex";
+                                                }
+                                            });
+										}else{
+                                            waring_alert(res.content);
+										}
+									},
+									error:function(res){
+									    console.log(7);
+                                        waring_alert('提交失败');
+									}
+								});
+							}
+						});
+					}else{
+                        waring_alert('请补充完整数据');
+					}
+				});
+
+                /*返回上传*/
+                $('.return-index').on('click',function(){
+                    window.location.reload();
+				});
+                /*查看方案*/
+                $('.browse-desir').on('click',function(){
+                    window.location.href="/Home/Solution/myDesired";
+				});
+
+                /* 数据检测函数*/
+                function data_check(data){
+                    var len1 = Object.keys(data).length;
+//                    if(len1<8){
+//                        modal.alert({
+//                            title:'数据不完整,请检查填写内容!'
+//                        });
+//                        had_checked=false;
+//                        return ;
+//                    }
+					if(!data.types){
+					    had_checked=false;
+					    types_span.css('display','inline-block');
+						types_span.html('<i class="waring_picture"></i>'+'方案类型不能为空');
+					    return false
+					};
+                    if(!data.desir_name){
+                        had_checked=false;
+                        return false
+                    };
+                    if(!data.desir_desc){
+                        had_checked=false;
+                        return false
+                    };
+					if(!data.budget){
+                        had_checked=false;
+                        return false
+					};
+					if(!data.delivery){
+					    had_checked=false;
+                        $delivery.removeClass('yincang');
+                        $delivery.html('<i class="waring_picture"></i>'+'交付时间不能为空');
+                        return false;
+					};
+                    if(!data.linkman){
+                        had_checked=false;
+                        return false
+                    };
+                    if(!data.mobile){
+                        had_checked=false;
+                        return false
+                    };
+                    if(!data.company){
+                        had_checked=false;
+                        return false
+                    };
+                    had_checked=true
+					return true;
+				}
+                /*函数封装:检测空值/获取value值;
+                * $object:控件对象
+                * $txt.:展示的内容
+                * key:获取控件值是需要的键名.
+                **/
+                function content_check($object,$txt,key){
+					$object.on('blur',function(){
+						var object_val = $object.val();
+						var object_tips= $object.next();
+						if(!object_val){
+							object_tips.removeClass('yincang');
+							if(!$txt){
+								object_tips.html('<i class="waring_picture"></i>'+'内容不能为空');
+							}else{
+								object_tips.html('<i class="waring_picture"></i>'+$txt+"不能为空");
+							}
+                            commit_stop();
+						}else{
+						    var key1 =key;
+							object_tips.addClass('yincang');
+						}
+						return data[key]=object_val;
+					});
+				}
+
+				/*联系公司名*/
+				content_check($company,'公司名','company');
+				/*预算*/
+				content_check($budget,'预算','budget');
+				/*联系人*/
+				content_check($linkman,'联系人','linkman');
+                /*截止时间*///时间选择初始化
+                var pickerr = new Pikaday({
+                    field: document.getElementById('datepicker'),
+                    theme: 'js-data',
+                    i18n: {
+                        previousMonth: '上个月',
+                        nextMonth: '下个月',
+                        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                        weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                        weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                    },
+                    format: 'YYYY-M-D',
+//                    defaultDate: new Date(get.time_start),
+//                    setDefaultDate: new Date(get.time_start),
+                    toString: function (date, format) {
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+                        var year = date.getFullYear();
+                        return year + '-' + month + '-' + day;
+                    },
+                    parse: function (dateString, format) {
+                        var parts = dateString.split('/');
+                        var day = parseInt(parts[0], 10);
+                        var month = parseInt(parts[1] - 1, 10);
+                        var year = parseInt(parts[1], 10);
+                        return new Date(year, month, day);
+                    },
+                    onSelect: function (value) {
+                        var date = value.toLocaleDateString();
+                        date = date.replace(/\//ig, "-");
+                        data.delivery = date;
+                        if(data.delivery){
+                            $delivery.addClass('yincang');
+						}
+                    }
+                });
+
+                /*方案名称验证*/
+                $desir_name.attr('maxlength',30);
+                $desir_name.on('blur',function(){
+                    var name_val  = $(this).val();
+					var name_tips = $(this).next('span');
+                    if(!name_val){
+                        name_tips.removeClass('yincang');
+                        name_tips.html('<i class="waring_picture"></i>'+'方案名称不能为空');
+                        commit_stop();
+					}else{
+                        name_tips.addClass('yincang');
+                        $desir_name.keyup(function(){
+                            if(name_val.length > 30){
+                                $(this).val(name_val.substring(0,30));
+                            }
+                        });
+					}
+					return data.desir_name = name_val;
+				});
+
+                /*字数限制函数*/
+				var valDom 	= document.getElementById('desir_desc');
+                var numDom	= document.getElementById("enter_content");
+                var zLen;
+                $(valDom).on('input',function(){
+                    var desc_val = $(this).val();
+                    var desc_tips= $desir_desc.parent().next().children("#desc_empty_check");
+                    if(desc_val==''){
+                        desc_tips.removeClass('yincang');
+                        desc_tips.html('<i class="waring_picture"></i>'+'方案简述不能为空');
+                    }else{
+                        desc_tips.addClass('yincang');
+                    }
+                    words_deal();
+                    return data.desir_desc= desc_val;
+                });
+                function words_deal(){
+                    //最多允许输入n个字，每个英文单词算一个，标点不计算个数
+                    zLen = 150;
+                    var str = valDom.value//获取文本域的值
+                    //判断是否包含中文：if(/^[\u4e00-\u9fa5]/.test("名字"))
+                    var regH = /^[\u4e00-\u9fa5]/;
+                    var regY = /^[a-zA-Z]/;
+                    var regN=/\d/g;//数字
+                    var regK=/\s/g;//空格
+                    var regZ=/./g;//总长
+                    var strlen = str.length;
+                    //如果字符串长度大于0
+                    if(strlen > 0){
+                        //遍历字符串
+                        for(var i=0;i<strlen;i++){
+                            //获取for循环当前字符
+                            var strIndex = str.charAt(i);
+                            //判断是否为英文，英文以单词为单位，不是以英文字母
+                            if(regY.test(strIndex)){
+                                if(i+1<=strlen){
+                                    var strNext = str.charAt(i+1);
+                                    //如果下一个不是英文
+                                    if(!regY.test(strNext)){
+                                        zLen--;
+                                        //达到字数限制
+                                        if(zLen<=0){
+                                            limitNum(i,str);
+                                            return false;
+                                        }
+                                    }
+                                }else{
+                                    //最后一个字符
+                                    zLen--;
+                                    if(zLen<=0){
+                                        limitNum(i,str);
+                                        return false;
+                                    }
+                                }
+                            }else{
+                                //var kflag = regK.test(strIndex);
+                                //汉子
+                                var hflag = regH.test(strIndex);
+                                //数字
+                                var nflag = regN.test(strIndex);
+                                if(hflag || nflag){
+                                    zLen--;
+                                    if(zLen<=0){
+                                        limitNum(i,str);
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                        numDom.innerText=zLen;
+                    } else{
+                        numDom.innerText='150';
+                    }
+                }
+                function limitNum(i,str){
+                    //此处不能截取 0，19.因为存在英文单词或者标点
+                    var newStr = str.substr(0, i+1);
+                    valDom.value = newStr;
+                    numDom.innerText=0;
+                }
+                /*提示*/
+                function waring_alert(brief,title){
+                    modal.alert({
+                        title:title?title:'提示',
+                        brief:brief?brief:false,
+                    });
+                };
+                /*手机号码验证*/
+                var reg_mobile =/^1(3|4|5|7|8)+\d{9}$/;
+                var $mobile_tips = $mobile_num.next('span');
+//                var isChecked = false
+                $mobile_num.on('blur',function () {
+                    var mobile = $mobile_num.val();
+                    if(mobile==''){
+                        $mobile_tips.removeClass('yincang');
+                        $mobile_tips.html('<i class="waring_picture"></i>'+'手机号不能为空');
+                    }
+                    else {
+                        if(reg_mobile.test(mobile)){
+                            $mobile_tips.addClass('yincang');
+                        }
+                        else {
+                            $mobile_tips.removeClass('yincang');
+                            $mobile_tips.html('<i class="waring_picture"></i>'+'请输入正确的手机号');
+                        }
+                    }
+					return data.mobile = mobile;
+                });
+            });
+        });
+	</script>
+</block>

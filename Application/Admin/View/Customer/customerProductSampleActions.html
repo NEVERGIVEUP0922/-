@@ -1,0 +1,498 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/select2/4.0.5/css/select2.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/pikaday/1.6.1/css/pikaday.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Product/css/productListAction.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <style>
+        .jl-fail-list{margin-top: -10px}
+        .jl-fail-list>button{  margin-top: 10px;  }
+        .jl-fail-list>button:first-child{  margin-left: 10px;  }
+        .layui-tab-content .layui-table-box .layui-table-main .layui-table-cell, .addTable-table-container .layui-table-fixed .layui-table-body .layui-table-cell {
+            height: 40px;
+            white-space: normal;
+        }
+    </style>
+</block>
+<block name="content">
+    <blockquote class="jl-title layui-elem-quote">
+        <span class="layui-breadcrumb"><a class="jl-main-title" href="javascript:">添加样品</a></span>
+    </blockquote>
+    <div class="layui-tab">
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show addTable-table-container">
+                <button class="layui-btn action-submit">提交</button>
+                <button class="layui-btn action-add">添加行</button>
+                <table id="addTable-table" lay-filter="addTable">
+                    <script type="text/html" id="handle-tpl">
+                        <div>
+                            <button lay-event="del" class="layui-btn layui-btn-danger layui-btn-sm" style="float:left">删除</button>
+                            <button lay-event="add" class="layui-btn  layui-btn-sm">添加</button>
+                        </div>
+                    </script>
+                </table>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script src="__PUBLIC__/Common/module/pikaday/1.6.1/pikaday.min.js"></script>
+    <script src="__PUBLIC__/Common/module/select2/4.0.5/js/select2.min.js"></script>
+    <script src="__PUBLIC__/Common/module/ueditor/1.4.3.3/ueditor.config.js"></script>
+    <script src="__PUBLIC__/Common/module/ueditor/1.4.3.3/ueditor.all.min.js"></script>
+    <script src="__PUBLIC__/Admin/public/js/select-customer.js"></script>
+    <script>
+        layui.use(['table', 'layer','laypage', 'jlTool','element','form','pikadayOption','actionTable','actionTpl','selectCustomer'], function () {
+            var table = layui.table;
+            var laypage=layui.laypage;
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var selectCustomer = layui.selectCustomer;
+            var element = layui.element;
+            var form = layui.form;
+            var actionTable = layui.actionTable;
+            var actionTpl=layui.actionTpl;
+            var productList = {$productList|json_encode};
+            var priceInitList = {$priceInitList|json_encode};
+            var categoryTree = {$categoryTree|json_encode};
+            var request = {$request|json_encode};
+            var searchs=location.search.split("?")[0].split("&");
+            var testList=[{"user_name":"","uid":"","pid":"","p_sign":"","create_time":"","fitemno":""}];
+            var cols=[
+                {field: 'user_name', title: '客户名称',tplType:'input',templet:actionTpl.selectErpProduct('user_name')},
+                {field: 'p_sign', title: '商品型号',tplType:'input',templet:actionTpl.selectErpProduct('p_sign')},
+                {field: 'fitemno', title: 'erp型号',tplType:'input',templet:function(d){
+                    return '<div><input type="text" value=" '+d.fitemno+' " name="fitemno" autocomplete="off" class="layui-input jl-control-fitemno">\</div>';
+                    }},
+                {field: 'uid', title: '客户ID',tplType:'input',templet:actionTpl.inputReadOnly('uid',false,true)}
+                ,{field: 'pid', title: '商品ID',tplType:'input',templet:actionTpl.inputReadOnly('pid',false,true)},
+               /* {field: 'create_time', title: '创建时间',width: 220},*/
+                {field: 'handle', title: '操作',toolbar:'#handle-tpl',fixed: 'right',width:134}
+            ];
+            var demo={"user_name":"","uid":"","pid":"","p_sign":"","fitemno":"","create_time":""};
+            //获取客户列表
+            var  active_data;
+            var getCustorList = function (query,callback) {
+                    $.get('/Admin/Customer/customerList',query,function (res) {
+                        res = $.parseJSON(res);
+                        if(res.error===0){
+                            active_data = res.data;
+                            if(callback)callback(res.data)
+                        }
+                        else {
+                            layer.tips(res.msg,'.modal-search-btn')
+                        }
+                    });
+                };
+                var getProductList = function (query,callback) {
+                    query.is_open = 1;
+                    $.get('/Admin/Product/productList',query,function (res) {
+                        res = $.parseJSON(res);
+                        if(res.error===0){
+                            active_data = res.data;
+                            if(callback)callback(res.data)
+                        }
+                        else {
+                            layer.tips(res.msg,'.modal-search-btn')
+                        }
+                    });
+                };
+            var tableIns = table.render({
+                    elem: '#addTable-table',
+                    data: testList,//data.list,
+                    page: false,
+                    limit: 10,//data.pageSize,
+                    cellMinWidth: 120,
+                    height:'full-150',
+                    cols: [cols]
+                });
+            table.on('tool(addTable)', function(obj){
+                //添加同一客户
+                if(obj.event === 'add'){
+                    var tr = obj.tr;
+                    var value = {};
+                    value.index_num = $(tr[0]).data("index");
+                    value.user_name = $(tr[0]).find("td[data-field = user_name]").find("input").val();
+                    value.uid = $(tr[0]).find("td[data-field = uid]").find("input").val();
+                    addRow(undefined,false,false,false,value);
+                }
+                if(obj.event === 'del'){ //删除
+                    layer.confirm('删除只是放弃编辑这一行，不会影响数据', function(index){
+                        obj.tr.remove();
+                        layer.close(index);
+                    });
+                }
+            });
+            $('.action-add').click(function () {
+                    addRow();
+                });
+            //添加一行
+            var addRow = function (value,elems,keys,otherId,addSame) {
+
+                var data = value ? getData(value,elems,keys,otherId):getData();
+                if(data && keys==0){
+                    if(value){
+                        if(value["p_sign"]){
+                            elems.val(value['p_sign']);
+                            elems.parent().parent().siblings("[data-field=pid]").find("input").val(value['id']);
+                            elems.parent().parent().siblings("[data-field=fitemno]").find("input").val(value['fitemno']);
+                            return;
+                        }
+                        if(value["user_name"]){
+                            elems.val(value['user_name']);
+                            elems.parent().parent().siblings("[data-field=uid]").find("input").val(value['id']);
+                        }
+                        return;
+                    }
+                }
+                data = handleData(data);
+                var cloneDemo=JSON.parse(JSON.stringify(demo));
+                if(value){
+                    if(value["p_sign"]){
+                    cloneDemo['p_sign'] = value["p_sign"];
+                    cloneDemo['pid'] = value.id;
+                    cloneDemo['fitemno'] = value.fitemno;
+                    }else{
+                        cloneDemo['user_name'] = value.user_name;
+                        cloneDemo['uid'] = value.id;
+                    }};
+                if(addSame){
+                    cloneDemo['user_name'] = addSame.user_name;
+                    cloneDemo['uid'] = addSame.uid;
+                    data.splice(Number(addSame.index_num) + 1,0,cloneDemo);
+                }else{
+                    data.push(cloneDemo);
+                };
+                tableIns.reload({
+                    data:data
+                });
+                initSpecial();
+            };
+            //获取数据
+            var getData = function (exestPsign,elems,keys,otherID) {
+                var array = [];
+                $('.layui-tab-content .layui-table-box .layui-table-main').find('tr').each(function (index) {
+                    var single = {};
+                    var _this = this;
+                    $.each(cols,function (index,value) {
+                        // console.log(4);
+                        if(value.field==='uid'){
+                            if(exestPsign){
+                                var  conditions=exestPsign["p_sign"]?(exestPsign.id==$(_this).find('input.jl-control-pid').val()&& otherID==$(_this).find('input.jl-control-uid').val()):
+                                    (exestPsign.id==$(_this).find('input.jl-control-uid').val()&& otherID==$(_this).find('input.jl-control-pid').val());
+                                if(keys==0&&exestPsign && conditions){
+                                    array=null;
+                                    return  false;
+                                }
+                            }
+
+                            single['user_name'] = $(_this).find('input.jl-control-user_name').val();
+                            single['uid'] = $(_this).find('input.jl-control-uid').val();
+                            single['fitemno'] = $(_this).find('input.jl-control-fitemno').val();
+                        }
+                        else if(value.field==='pid'){
+                           /* if(keys==0&&exestPsign && exestPsign.product.pid==$(_this).find('input.jl-control-uid').val()&& exestPsign.user.uid==$(_this).find('input.jl-control-pid').val()){
+                                array=null;
+                                return  false;
+                            }*/
+                            single['p_sign'] = $(_this).find('input.jl-control-p_sign').val();
+                            single['pid'] = $(_this).find('input.jl-control-pid').val();
+                        }
+                        else if(value.field==='create_time'){
+                            single[value['field']] = $(_this).find('.laytable-cell-1-'+value.field).text();
+                        }else if(value.field==='handle'){
+                            single[value['field']] = "删去";
+                        }
+                    });
+                    if(array)array.push(single);
+                    //console.log(2);
+                });//console.log(3);
+                return array
+            };
+            //预处理数据
+            var handleData = function (data) {
+                if(!data){ return [] }
+                $.each(data,function (index,value) {
+                    if(parseInt(value['is_tax'])===0){
+                        value['_tax_disabled'] = 1
+                    }
+                    var earnest_scale = parseFloat(value['earnest_scale']);
+                    value['earnest_scale'] = earnest_scale ? earnest_scale*100 :0
+                });
+                return data
+            };
+            //弹出框
+            function initSpecial(){
+                $(".jl-control-p_sign").each(function(){
+                    $(this).on('click',function(){
+                        var $this=$(this);
+                        var indexId=$(this).parent().parent().siblings("[data-field=pid]").find("input").val();
+                        /*initInput({"product":""},[function(data,p_id){
+
+                                addRow({"p_sign":data,"id":p_id},$this,0,indexId);
+
+                        }]);*/
+                        mobs(false,function(data){
+                            console.log("data",data);
+                            $.each(data,function(key,value){
+                                addRow(value,$this,key,indexId);
+                            });
+                        });
+                    });
+                })
+                $(".jl-control-user_name").each(function(){
+                    $(this).on('click',function(){
+                        //var user_list = [{"id":1001,"user_name":"Ab_customer001","nick_name":"product001","user_mobile":"125656565565","step":"1","max_num":18,"user_type":"nejj","create_time":"2018-04-10 09:35:12"}];
+                        var $this=$(this);
+                        var indexId=$(this).parent().parent().siblings("[data-field=uid]").find("input").val();
+                        initInput({"customer":this},{"customer":function(data,custormerId){
+                            addRow({"user_name":data,"id":custormerId},$this,0,indexId);
+                        }});
+                        /*mobs(true,function(data){
+                            $.each(data,function(key,value){
+                                addRow(value,$this,key,productId);
+                            });
+                        });*/
+                    });
+                });
+            };
+            initSpecial();
+            function mobs(isCustomer,callback){
+                var contents='',titles='',Mcols=[];
+                var getListData;
+               if(isCustomer){
+                   getListData=getCustorList;
+                   Mcols=model_cols1;
+                   titles='选择客户';
+                   contents= '<div class="select-modal-container"> ' +
+                       '<div class="select-modal-box"> ' +
+                       '<div class="select-search-container">' +
+                       '<input class="layui-input modal-search-input" type="text" placeholder="输入客户账号">' +
+                       '<div class="layui-btn-group" style="margin-top:-2px"> ' +
+                       '<button class="layui-btn modal-search-btn">搜索</button> ' +
+                       '<button class="layui-btn layui-btn-primary modal-clear-btn">清空</button> ' +
+                       '</div>' +
+                       '</div>' +
+                       '<table lay-filter="select-modal-table" class="select-modal-table"></table> ' +
+                       '<div class="select-modal-page"></div> ' +
+                       '</div> ' +
+                       '</div>'
+
+               }else{
+                   Mcols=model_cols2;
+                   getListData=getProductList;
+                   titles='选择商品';
+                   contents= '<div class="select-modal-container"> ' +
+                   '<div class="select-modal-box"> ' +
+                   '<div class="select-search-container">' +
+                   '<input class="layui-input modal-search-input" type="text" placeholder="输入商品型号检索">' +
+                   '<div class="layui-btn-group"> ' +
+                   '<button class="layui-btn modal-search-btn">搜索</button> ' +
+                   '<button class="layui-btn layui-btn-primary modal-clear-btn">清空</button> ' +
+                   '</div>' +
+                   '</div>' +
+                   '<table lay-filter="select-modal-table" class="select-modal-table"></table> ' +
+                   '<div class="select-modal-page"></div> ' +
+                   '</div> ' +
+                   '</div>';
+               }
+               ;
+               var headerSearch={};
+                   layer.open({
+                    title:titles,
+                    type: 0,
+                    area:['640px','540px'],
+                    content:contents ,
+                    success:function () {
+                       // renderTable(data,Mcols);
+                        $('.modal-search-btn').click(function () {
+                            var query = {};
+                            var search = $('.modal-search-input').val().trim();
+                            if(search){
+                                query['name'] = search;
+                                query['p_sign'] = search;
+                                headerSearch = $.extend({},query);
+                            }
+                            getListData(query,function (data) {
+                                renderTable(data,Mcols);
+                                renderPage(data,getListData,Mcols,headerSearch);
+                            })
+                        });
+                        $('.modal-clear-btn').on('click',function () {
+                            $('.modal-search-input').val('');
+                            headerSearch={};
+                            getListData({},function (data) {
+                                renderTable(data,Mcols);
+                                renderPage(data,getListData,Mcols,headerSearch)
+                            })
+                        });
+                        getListData({},function (data) {
+                            renderTable(data,Mcols);
+                            renderPage(data,getListData,Mcols,headerSearch)
+                        });
+                    },
+                    yes:function (index, layero) {
+                        var $checked = $('.layui-layer-content .select-modal-checkbox:checked');
+                        if($checked.length){
+                            var data=[];
+                            $checked.each(function(){
+                                var indexNum=0;
+                                indexNum=$(this).parent().parent().parent().index();
+                                data.push(active_data.list[indexNum]);
+                            });
+                            callback(data);
+                            layer.close(index);
+                        }
+                        else {
+                            layer.tips('请勾选需要操作的数据', '.layui-layer-btn0');
+                        }
+                    }
+                });
+            }
+            var model_cols1=[
+                {field: 'checkbox', width: 50, fixed: 'left',templet:
+                        '<div><input class="select-modal-checkbox" lay-filter="c_check" type="checkbox" name="" lay-skin="primary"></div>'}
+                ,{field: 'id', title: 'id',width: 160}
+                ,{field: 'user_name', title: '客户账号',width: 160}
+                ,{field: 'nick_name', title: '客户名称',width: 160,templet:function (d) {
+                        return d.company ? d.company.company_name:''
+                    }}
+                ,{field: 'nick_name', title: '公司名称',width: 160}
+                ,{field: 'user_mobile', title: '联系电话',width: 160}
+                ,{field: 'user_type', title: '客户类型',width: 160}
+            ];
+
+            var model_cols2=[
+                {field: 'checkbox', width: 50, fixed: 'left',templet:
+                    '<div><input class="select-modal-checkbox" lay-filter="p_check" type="checkbox" name="" lay-skin="primary"></div>'}
+                ,{field: 'id', title: 'id',width: 160}
+                ,{field: 'p_sign', title: '商品型号',width: 160}
+                ,{field: 'fitemno', title: 'ERP型号',width: 160}
+            ]
+            var renderTable = function (data,cols) {
+                table.render({
+                    elem: '.select-modal-table',
+                    data: data.list,
+                    page: false,
+                    limit: data.pageSize,
+                    cellMinWidth: 160,
+                    height:'320',
+                    cols: [cols]
+                });
+                var edites='';
+                form.on('checkbox(p_check)', function(data){
+                    var $checkboxs = $('.select-modal-checkbox');
+                    if(edites == "edit"){
+                        $checkboxs.prop('checked',false);
+                        $(data.elem).prop('checked',true);
+                    }else{
+                        if(!$(data.elem).prop('checked')){
+                            $(data.elem).prop('checked',false);
+                        }else{
+                            $(data.elem).prop('checked',true);
+                        }
+                    }
+                    form.render('checkbox');
+                });
+            };
+            var renderPage = function (data,callbacks,Mcols,headerSearch) {
+                laypage.render({
+                    elem: $('.layui-layer-content').find('.select-modal-page')[0],
+                    limit: data.pageSize || 10,
+                    count: !data.count.count ?data.count:data.count.count  ,
+                    curr: data.page || 1,
+                    layout: ['prev', 'page', 'next'],
+                    jump: function (obj, first) {
+                        /*console.log({
+                            page:obj.curr,
+                            pageSize:data.pageSize||10,
+                        });*/
+                        if (!first) {
+                            callbacks($.extend({},{
+                                page:obj.curr,
+                                pageSize:data.pageSize||10,
+                            },headerSearch),function (data) {
+                                renderTable(data,Mcols);
+                            })
+                        }
+                    }
+                });
+            };
+            $('.action-submit').click(function () {
+                    function isOnline(isOnline) {
+                        var data = getData();
+                        var isPsign=false;
+                        var isSubmit=false;
+                        //统一处理：
+                        if(data&&$.isArray(data)){
+                            $.each(data,function (index,value) {
+                                var num=0;
+                                if(!value.pid||!value.uid){ isSubmit=true; }
+                                $.each(data,function (nums,compval) {
+                                    if(compval["pid"] == value["pid"] && compval["uid"] == value["uid"]){
+                                        num++;
+                                        if(num == 2)isPsign=true;
+
+                                    }
+                                });
+                            })
+                        }
+                        if(isSubmit){
+                            layer.open({
+                                content:'样品的客户ID或者型号不能为空，请填写...',
+                                btn:['确定'],
+                                yes:function(){
+                                    layer.closeAll();
+                                }
+                            });
+                            return
+                        }
+                        if(isPsign){
+                            layer.open({
+                                content:'两种样品的客户和商品的型号不能同时相同，请更换...',
+                                btn:['确定'],
+                                yes:function(){
+                                    layer.closeAll();
+                                }
+                            });
+                            return};
+                        $.post('/Admin/customer/customerProductSampleActions',{
+                            action_arr:data
+                        },function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error==0){
+                                    layer.msg('全部提交成功');
+                                    setTimeout(function(){ location.reload(true);},1000)
+                            }
+                            else {
+                                var  centents='样品提交失败';
+                                layer.open({
+                                    title:'提示',
+                                    type: 0,
+                                    area: '440px',
+                                    content: centents,
+                                    yes:function (index) {
+                                        layer.close(index);
+                                    }
+                                })
+                            }
+                        })
+                    }
+                    if(! request){
+                        isOnline(false);
+                    }
+                    else {
+                        isOnline(true);
+                        /*layer.confirm('是否直接上架？', function(index){
+                            isOnline(1);
+                            layer.close(index);
+                        },function () {
+                            isOnline(2);
+                        });*/
+                    }
+                })
+        });
+    </script>
+</block>

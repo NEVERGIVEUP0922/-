@@ -1,0 +1,102 @@
+<extend name="Layout:layout-checkstand" />
+<block name="title">收银台</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/checkstand.css">
+</block>
+<block name="nav-title">收银台</block>
+<block name="transaction">{$orderinfo['data']['order']['order_sn']}</block>
+<block name="payable">
+    <empty name="account">
+        <assign name="total" value="$orderinfo['order_balances']" />
+        <assign name="payment" value="$orderinfo['payment']" />
+        <else />
+        <assign name="total" value="$account" />
+    </empty>
+    ￥<?php if(!isset($user_order_account))echo sprintf("%.2f",$total); else echo sprintf("%.2f",$user_order_account); ?>
+</block>
+<block name="main">
+    <!--{:dd()}-->
+    <div id="jl-checkstand">
+        <div class="jl-checkstand-main jl-pay-item">
+            <div class="jl-pay-box">
+                <h2 class="jl-pay-title">微信支付</h2>
+                <div class="jl-pay-wechat">
+                    <div class="jl-wechat-images">
+                        <div class="jl-wechat-scan">
+                            <div class="jl-wechat-img">
+                                <img src="{:U('Home/Pay/weixinpay_qrcode',$order)}" alt="">
+                            </div>
+                            <div class="jl-pay-btn">
+                                <i class="jl-scan-img"></i>
+                                <p>请用微信扫一扫</p>
+                                <p>扫描二维码支付</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="jl-pay-mobile">
+                        <img src="__PUBLIC__/Home/Public/img/cart/weixin-phone.png" alt="微信支付">
+                    </div>
+                </div>
+                <h3 class="jl-pay-share">
+                    <b></b>
+                    <span><a style="color:#05baae" href="javascript:history.go(-1)">选择其他支付方式</a> </span>
+                </h3>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery','jl-modal'], function ($,modal) {
+                var orderinfo = {$orderinfo|json_encode};
+                var goods_list={$orderinfo.data.orderGoods|json_encode};
+                var account={$user_order_account|json_encode};
+                var request = {$get|json_encode};
+                var goods_num=null;
+
+                if(goods_list){
+                    goods_num=goods_list.length;
+                }
+                var text = (function () {
+                    var t = goods_list ? goods_list[0].p_name:(
+                        '订单'+request.orderSn_arr[0]+(request.orderSn_arr.length===1?'':'等')+'账期'
+                    );
+                    return (goods_num>1)?t+'等多件':t
+                })();
+                $('.js-details-text').text(text);
+
+                var order_sn='{$get.order_sn}';
+                var order_account_id='{$get.order_account_id}';
+                var wechat_notify=setInterval(function(){
+                    $.ajax({
+                        type: 'get',
+                        url: "{:U('Home/pay/frontCheckWechatQRcodePay')}",
+                        data:{order_sn:order_sn,order_account_id:order_account_id},
+                        success:function(e){
+                            var result=JSON.parse(e);
+                            if(result.error==0){
+                                modal.alert({
+                                    title:'支付成功',
+                                    brief:'查看订单详情！',
+                                    top:100,
+                                    confirm:function () {
+                                        clearInterval(wechat_notify);
+                                        location.href="{:U('Home/Order/myOrder')}";
+                                    }
+                                });
+                            }
+                        }
+                    });
+                },2000);
+
+            });
+        });
+    </script>
+</block>
+
+
+

@@ -1,0 +1,348 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">增值税普票设置</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/register.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/setSpecial.css">
+</block>
+
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <div class="jl-special-ticket">
+        <form action="" id="jl-add-ticket">
+            <div class="jl-title">新增收票人地址</div>
+            <input type="text" class="jl-hint" value="2" name="invoice_type">
+            <div class="jl-form-group">
+                <label>发票抬头：</label>
+                <input type="text" value="{$one_invoice.invoice_header}" class="user_name js-next-input" placeholder="请输入发票抬头" name="invoice_header">
+                <i class="jl-mandatory"></i>
+                <i class="jl-false-note"></i>
+            </div>
+            <div class="jl-form-group">
+                <label>收票人：</label>
+                <input value="{$one_invoice.invoice_owner}" type="text" class="phone js-next-input" placeholder="请输入收票人" name="invoice_owner">
+                <i class="jl-mandatory"></i>
+                <i class="jl-false-note"></i>
+            </div>
+            <div class="jl-form-group">
+                <label>手机号码：</label>
+                <input type="text" value="{$one_invoice.mobile}" class="phone js-next-input js-mobile" placeholder="请输入手机号码" name="mobile">
+                <i class="jl-mandatory"></i>
+                <i class="jl-false-note"></i>
+            </div>
+            <div class="jl-form-group js-address">
+                <label>所在地址：</label>
+                <div class="jl-c-de js-selector-container1">
+                    <input type="text" class="js-selector-input jl-c-hidden js-next-input jl-y-select-input"
+                           name="area_code"  placeholder="" data-title="注册地址">
+                    <div class="jl-c-address jl-y-select js-select-first">
+                        <div class="jl-y-select-title">
+                            <span class="jl-c-c text-ellipsis">请选择</span>
+                            <b class="jl-top-tri"></b>
+                            <b class="jl-bottom-tri"></b>
+                        </div>
+                        <ul class="lj-option-box"></ul>
+                    </div>
+                    <div class="jl-c-address jl-y-select js-select-second">
+                        <div class="jl-y-select-title">
+                            <span class="jl-c-c text-ellipsis">请选择</span>
+                            <b class="jl-top-tri"></b>
+                            <b class="jl-bottom-tri"></b>
+                        </div>
+                        <ul class="lj-option-box"></ul>
+                    </div>
+                    <div class="jl-c-address jl-y-select js-select-third">
+                        <div class="jl-y-select-title">
+                            <span class="jl-c-c text-ellipsis">请选择</span>
+                            <b class="jl-top-tri"></b>
+                            <b class="jl-bottom-tri"></b>
+                        </div>
+                        <ul class="lj-option-box"></ul>
+                    </div>
+                </div>
+                <i class="jl-false-note"></i>
+                <i class="jl-mandatory"></i>
+            </div>
+            <div class="jl-form-group">
+                <label>详细地址：</label>
+                <input type="text" value="{$one_invoice.address}" class="user_name js-next-input" placeholder="请输入详细地址" name="address">
+                <i class="jl-mandatory"></i>
+                <i class="jl-false-note"></i>
+            </div>
+            <input type="text" value="{$one_invoice.id}" class="jl-invoice-id" name="id">
+            <div class="jl-form-group js-chose">
+                <label></label>
+                <i></i>设置为默认增值税普票
+                <input type="text" value="{$one_invoice.invoice_status}" class="jl-defalt-addr js-next-input" name="invoice_status">
+            </div>
+        </form>
+        <button class="jl-btn jl-save">保存</button>
+        <p class="jl-notes">已保存了{$nowNum}条地址，还能保存{$count}条</p>
+        <volist name="data" id="vo">
+            <table data-id="{$vo.id}" class="jl-save-ticket">
+                <tr>
+                    <td class="jl-save-name">发票抬头</td>
+                    <td class="jl-save-detail">{$vo.invoice_header}</td>
+                    <td class="jl-save-name">收票人</td>
+                    <td class="jl-save-detail">{$vo.invoice_owner}</td>
+                    <td rowspan="6" class="jl-save-set">
+                        <if condition="$vo.invoice_status eq 1">
+                            <a href="#" class="jl-amend">默认地址</a>
+                            <else />
+                                <a href="#" class="jl-defalt jl-default-true">
+                                设为默认
+                            </a>
+                        </if>
+                        <p>
+                            <a href="#" class="jl-amend">修改</a>
+                            |
+                            <a href="#" class="jl-deleted">删除</a>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="jl-save-name">手机号码</td>
+                    <td class="jl-save-detail">{$vo.mobile}</td>
+                    <td class="jl-save-name">所在地区</td>
+                    <td class="jl-save-detail">{$vo.area_code}</td>
+                </tr>
+                <tr>
+                    <td class="jl-save-name">详细地址</td>
+                    <td class="jl-save-detail">{$vo.address}</td>
+                    <td class="jl-save-name"></td>
+                    <td class="jl-save-detail"></td>
+                </tr>
+            </table>
+        </volist>
+
+    </div>
+
+</block>
+
+
+<block name="js">
+
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+                require(['Account/js/common_register']);
+
+                require(['Home/Order/js/address_select'],function (selector) {
+                    var area_code = "{$one_invoice.area_code}";
+                    selector.init($('.js-selector-container1'),area_code);
+                });
+
+                //设为默认
+                $('.jl-default-true').each(function(i){
+                    var t = $('.jl-default-true').eq(i);
+                    t.on('click', function(){
+                        var id = t.parents('table').attr('data-id');
+                        var url = '{:U("Home/Order/trueGeneral")}?invoice_id='+id;
+                        $.ajax({
+                            url:url,
+                            dataType: 'json',
+                            type:'get',
+                            success: function(res){
+                                if( res.status == 0 ){
+                                    location.href='{:U("Home/Order/setGeneral")}';
+                                }
+                                else if ( res.status == 1000 ) {
+                                    modal.confirm({
+                                        title: '系统繁忙',
+                                        brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                        top: 100
+                                    })
+                                }
+                            }
+                        });
+                    });
+                });
+
+                //发票抬头
+                $('.user_name,.phone').on('blur',function () {
+                    if($(this).val()===""){
+                        $(this).parent().addClass('js-false');
+                    }else{
+                        $(this).parent().removeClass('js-false');
+                    }
+                });
+
+                //手机号码
+                var reg2 = /^1(3|4|5|7|8)\d{9}$/;
+                $('input[name="mobile"]').on('blur',function(){
+                    var mobile=$(this).val();
+                    if(!reg2.test(mobile)){
+                        $(this).parent().addClass('js-false');
+                    }else{
+                        $(this).parent().removeClass('js-false');
+                    }
+                });
+
+                //地址
+                $('input[name=area_code]').on('change',function(){
+                    if($(this).val()!==""){
+                        $(this).parent().parent().removeClass('js-false');
+                    }else{
+                        $(this).parent().parent().addClass('js-false');
+                    }
+                });
+
+                //默认勾选
+                if($('.jl-defalt-addr').val()==="1"){
+                    $('.js-chose').addClass('jl-chose-active');
+                }else{
+                    $('.js-chose').removeClass('jl-chose-active');
+                }
+                if($('.jl-defalt-addr').val()===""){
+                    $('.jl-defalt-addr').val(0);
+                }
+                //设置默认地址
+                $('.jl-defalt-addr').on('click',function(){
+                    $('.js-chose').toggleClass('jl-chose-active');
+                    if($('.js-chose').hasClass('jl-chose-active')){
+                        $(this).val(1);
+                    }else{
+                        $(this).val(0);
+                    }
+                });
+
+
+                //控制添加
+                require(['jl-modal'],function (modal) {
+                    modal.option({
+                        left:-77
+                    });
+                    //删除
+                    $('.jl-deleted').on('click',function(){
+                        var $that=$(this);
+                        var id=$(this).parents('.jl-save-ticket').attr('data-id');
+                        var edit="delete";
+                        var data={
+                            "id":id,
+                            "edit":edit
+                        };
+                        modal.confirm({
+                            title: '删除发票',
+                            brief: '您确定要删除发票吗！',
+                            top: 100,
+                            confirm:function () {
+                                $.ajax({
+                                    type:'POST',
+                                    url:"{:U('Home/Order/editUserOrderInvoice')}",
+                                    data:data,
+                                    success:function(res){
+                                        var data=$.parseJSON(res);
+                                        if(data.error===0){
+//                                            $that.parents('.jl-save-ticket').remove();
+                                            window.location.reload();
+                                        }else{
+                                            modal.confirm({
+                                                title: '系统繁忙',
+                                                brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                                top: 100
+                                            })
+                                        }
+                                    }
+                                })
+                            }
+                        });
+                    });
+
+                    var number='{$nowNum}';
+                    var href=window.location.search;
+                    if(number>=5&&href==""){
+                        $('.jl-btn').removeClass('jl-save');
+                    }else if(href!=""){
+                        $('.jl-btn').addClass('jl-modification').removeClass('jl-save');
+                    }else{
+                        $('.jl-btn').removeClass('jl-modification').addClass('jl-save');
+                    }
+
+                    //保存
+                    $('.jl-save,.jl-modification').on('click',function(){
+                        var input=$('.jl-special-ticket input').not(".jl-hint,.js-selector-input,.jl-invoice-id,.js-mobile");
+                        $.each(input,function(index,el){
+                            if($(el).val()===""){
+                                $(el).parent().addClass('js-false');
+                                $(el).focus();
+                            }else{
+                                $(el).parent().removeClass('js-false');
+                            }
+                        });
+
+                        //手机号码
+                        var mobile=$('input[name="mobile"]');
+                        if(!reg2.test(mobile.val())){
+                            mobile.parent().addClass('js-false');
+                        }else{
+                            mobile.parent().removeClass('js-false');
+                        }
+
+                        //地址
+                        if($('input[name=area_code]').val()===""){
+                            $('input[name=area_code]').parent().parent().addClass('js-false');
+                            $('input[name=area_code]').focus();
+                        }else{
+                            $('.jl-area-code').parent().parent().removeClass('js-false');
+                        }
+
+                        var num=$('.jl-special-ticket .js-false').not('input[name=id]').length;
+                        if(num<=0){
+                            var data=$('#jl-add-ticket').serialize();
+                            $.ajax({
+                                url:"{:U('Home/Order/editUserOrderInvoice')}",
+                                type:'post',
+                                data:data,
+                                success:function(res){
+                                    var data=$.parseJSON(res);
+                                    if(data.error===0){
+                                        modal.alert({
+                                            title: '保存成功',
+                                            brief: '增值税普票保存成功！',
+                                            top: 100,
+                                            confirm:function(){
+                                                window.location.href="{:U('Home/Order/setGeneral')}";
+                                            },
+                                            close:function(){
+                                                window.location.href="{:U('Home/Order/setSpecial')}";
+                                            }
+                                        });
+                                    }else{
+                                        modal.confirm({
+                                            title: '系统繁忙',
+                                            brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                            top: 100
+                                        })
+                                    }
+                                }
+                            });
+                        }
+                    });
+
+                    //修改
+                    $('.jl-amend').on('click',function(){
+                        var id=$(this).parents('.jl-save-ticket').attr('data-id');
+                        window.location.href="{:U('Home/Order/setGeneral')}?id="+id;
+                    })
+
+                })
+
+            })
+        })
+    </script>
+
+</block>

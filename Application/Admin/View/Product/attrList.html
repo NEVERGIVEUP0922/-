@@ -1,0 +1,211 @@
+<extend name="Layout:layout-tab" />
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+	<link href="/Public/Common/module/layui/2.2.4/css/layui.css?v=118" rel="stylesheet">
+	<style>
+		body{margin:0 !important;}
+	</style>
+</block>
+<block name="content">
+	<div class="table-container">
+		<blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb" style="visibility: visible;">
+                <a class="jl-main-title" href="javascript:">产品属性列表</a>
+            </span>
+		</blockquote>
+		<blockquote class="layui-elem-quote list_search">
+			<div class="layui-inline">
+				<a class="layui-btn layui-btn-normal add_btn" style="background:#1AA094">添加</a>
+			</div>
+			<!--<div class="layui-inline">
+                <a class="layui-btn layui-btn-danger batchDel">批量删除</a>
+            </div>-->
+		</blockquote>
+		<table class="data-table" lay-filter="data-table">
+			<script type="text/html" id="data-table-handle-tpl">
+				<div class="data-table-handle-box" data-id="{{ d.id }}">
+					<span class="action-upload-img" lay-event="edit">修改</span>
+					<span lay-event="del">删除</span>
+				</div>
+			</script>
+		</table>
+		<div id="page"></div>
+	</div>
+</block>
+<block name="js">
+	<script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+	<script>
+        layui.use(['table','layer','jlTool', 'form','laypage','actionTpl'], function(){
+            var table = layui.table, layer = layui.layer, form=layui.form;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var actionTpl = layui.actionTpl;
+            //列表展示
+            var data = {$photoAdvert|json_encode};
+            var request = {$request|json_encode};
+            var categoryTree = {$categoryTree|json_encode};
+            console.log(data,request,categoryTree);
+            newTable(data,laypage,request,table);
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+               /* console.log('/Admin/Product/addAttribute?'+query);
+                debugger;*/
+                window.location.href = '/Admin/Product/addAttribute?'+query;
+            };
+            window.queryTable=queryTable;
+			//发送数据
+			var send_data=function(sendData){
+                $.ajax({
+                    url:"/Admin/Product/addAttribute",
+                    type:"post",
+                    data:sendData,
+                    dataType:"json",
+                    success:function(res){
+                        if(res.error == 0){
+                            layer.closeAll();
+                            layer.msg(res.msg,{icon:6,time:800},function(){
+                                jlTool.sendIframeMsg("refresh",["/Admin/Product/addAttribute"]);
+							});
+                        }else{
+                            layer.msg(res.msg,{icon:5});
+                        }
+                    }
+                });
+			}
+            //添加
+            $(".add_btn").click(function(){
+                openPopout(false);
+            });
+            var openPopout =function(obj){
+                layer.open({
+					title:["添加属性","text-align:center;font-size:16px;color:black"],
+					content:"/Admin/Product/attrAddEdit?id="+obj.id,
+					type:2,
+                    area:["30%","80vh"]
+				});
+            }
+            //改变状态
+            form.on("switch(status)", function(){
+                var check = this.checked ? 'true' : 'false',
+                    id = $(this).attr('data-id'),
+                    value = check == 'true'?0:1;
+                var index = layer.load();
+            });
+            function newTable(data,laypage,request,table)
+            {
+                var dataCols=[
+                    {field: 'id', title: 'ID',fixed:"left",align:'center',width:80}
+                    ,{field: 'attr_name', title: '属性总称',align:'center'}
+                    ,{field: 'current',align:'center',title: '属性1'}
+                    ,{field: 'current_type',align:'center', title: '属性1类型',templet: function(d){
+                        	return '<span>'+(d.current_type==1?"固定值":"范围值")+'</span>'
+                        }
+					}
+					,{field: 'voltage_input',align:'center',title: '属性2'}
+					,{field: 'voltage_input_type',align:'center', title: '属性2类型',templet: function(d){
+                            return '<span>'+(d.voltage_input_type==1?"固定值":"范围值")+'</span>'
+                        }
+                    }
+                    ,{field: 'voltage_output',align:'center',title: '属性3'},
+                    {field: 'voltage_output_type',align:'center', title: '属性3类型',templet: function(d){
+                            return '<span>'+(d.voltage_output_type==1?"固定值":"范围值")+'</span>'
+                        }
+                    }
+                    ,{field: 'volume',align:'center',title: '属性4'}
+                    ,{field: 'volume_type',align:'center', title: '属性4类型',templet: function(d){
+                            return '<span>'+(d.volume_type==1?"固定值":"范围值")+'</span>'
+                        }
+                    }
+                    ,{field: 'custom',align:'center',title: '属性5'}
+                    ,{field: 'custom_type',align:'center', title: '属性5类型',templet: function(d){
+                            return '<span>'+(d.custom_type==1?"固定值":"范围值")+'</span>'
+                        }
+                    }
+                    ,{field: 'custom1',align:'center',title: '属性6'}
+                    ,{field: 'custom1_type',align:'center', title: '属性6类型',templet: function(d){
+                            return '<span>'+(d.custom_type==1?"固定值":"范围值")+'</span>'
+                        }
+                    }
+                    ,{field: 'custom2',align:'center',title: '属性7'}
+                    ,{field: 'custom2_type',align:'center', title: '属性7类型',templet: function(d){
+                            return '<span>'+(d.custom_type==1?"固定值":"范围值")+'</span>'
+                        }
+                    }
+                    ,{field:'cate_all',align:'left',width:116,title:'绑定分类',templet:function(d){
+                            var str='';
+                            var lengths=0;
+                            if(d.cate_all){
+                                var new_cate_all =d.cate_all? JSON.parse(decodeURIComponent(d.cate_all)):{};
+                                //console.log(new_cate_all);
+                                $.each(new_cate_all,function(ind,val){
+                                    str+='<span class="layui-btn layui-btn-bind" style="cursor: inherit;height: auto;line-height: 28px;margin:1% 0 0 1%">'+val+'</span>'
+                                    lengths++;
+                                });
+                            }else{
+                                str+='无'
+                            };
+                            return str;
+						}}
+                    ,{field: 'update_time',align:'center', title: '更新时间'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right',width:150, toolbar: '#data-table-handle-tpl'}
+                ];
+                table.render({
+                    elem: '.data-table',
+                    data: data,
+                    page: false,
+                    limit: request.pageSize || 10,
+                    cellMinWidth: 100,
+                    height:'full-200',
+                    cols: [dataCols],
+                    done:function(){
+                        $(".data-table-img").on("click",function(){
+                            var src=$(this).attr("src");
+                            layer.open({
+                                title:"图片预览",
+                                content:"<div style='margin:0 auto;width:80%;'><img  style='width:100%' src='"+src+"'/></div>",
+                                area:["50%"],
+                                btn:["确定"],
+                                success:function(){
+                                    $(".layui-layer-btn").css("text-align","center");
+                                },
+                                yes:function(){
+                                    layer.closeAll();
+                                }
+                            });
+                        })
+                    }
+                });
+                //form.render();
+                //分页初始化
+                laypage.render({
+                    elem: 'page',
+                    limit: request.pageSize || 10,
+                    count: request.count || 10,
+                    curr: request.page || 1,
+                    layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                    jump: function (obj, first) {
+                        if (!first) {
+                            queryTable($.extend(request,{
+                                pageSize:obj.limit,
+                                page:String(obj.limit)===String(request.pageSize) ? obj.curr:1
+                            }));
+                        }
+                    }
+                });
+                table.on('tool(data-table)', function(obj){
+                    var data = obj.data;
+                    var event =obj.event;
+                    if(event =="edit"){
+                        //编辑
+                        openPopout(data);
+                    }else if(event =="del"){
+                        layer.confirm("确定删去?",{icon:3,title:"提示"},function(index){
+                            send_data({id:data.id,"delete":"delete"});
+                            layer.close(index);
+						});
+                    }
+                })
+            };
+        });
+	</script>
+</block>

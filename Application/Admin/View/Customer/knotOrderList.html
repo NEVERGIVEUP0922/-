@@ -1,0 +1,273 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .data-table-screen .layui-input,
+        .data-table-screen .layui-select,
+        .data-table-screen .layui-textarea{
+            height: 30px;
+        }
+        .data-table-screen>div{
+            margin-bottom: 10px;
+        }
+        .data-table-screen-title{
+            display: inline-block;
+        }
+    </style>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">反差额列表</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="padding-bottom: 5px">
+            <form class="data-table-screen layui-row layui-form layui-input-inline" action="" lay-filter="screen-form">
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6 ">
+                    <span class="data-table-screen-title">客户：</span>
+                    <div class="layui-input-inline">
+                        <input name="customerId_name" value="{$request['customerId_name']}" placeholder="请选择客户" class="layui-input jl-select-customers layui-form-label-pinyin-customer" type="text">
+                        <input name="customerId" value="{$request['customerId']}" placeholder="请选择客户" class="layui-input jl-select-customers " type="hidden">
+                    </div>
+                </div>
+                <!--<div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">商品型号：</span>
+                    <div class="layui-input-inline">
+                        <input name="p_id" value="{$request['p_id']}" placeholder="请选择商品型号" class="layui-input jl-select-products " type="hidden">
+                        <input name="p_sign" value="{$request['p_sign']}" placeholder="请选择商品型号" class="layui-input jl-select-products layui-form-label-pinyin-product" type="text">
+                    </div>
+                </div>-->
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">业务员：</span>
+                    <div class="layui-input-inline">
+                        <input name="saleId" value="{$request['saleId']}" placeholder="请选择业务员" class="layui-input jl-select-users" type="hidden">
+                        <input name="saleId_name" value="{$request['saleId_name']}" placeholder="请选择业务员" class="layui-input jl-select-users layui-form-label-pinyin-admin" type="text">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="layui-btn-sm layui-btn" lay-submit lay-filter="screen" style="width: 100px">
+                        筛选
+                    </span>
+                    <span class="clear-btn layui-btn-sm layui-btn layui-btn-primary" style="width: 100px">清空</span>
+                </div>
+            </form>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','laypage','commonTpl','selectCustomer','selectUser',
+            'selectProduct'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var jlTool = layui.jlTool;
+            var laypage = layui.laypage;
+            var form = layui.form;
+            var commonTpl = layui.commonTpl;
+            var selectCustomer = layui.selectCustomer;
+            var selectUser = layui.selectUser;
+            var selectProduct = layui.selectProduct;
+            selectCustomer.initInput(false,false,false);
+            selectUser.initInput(false,false,'fullname');
+            /* selectProduct.initInput(false,false,'id');*/
+            selectProduct.initInput(false,false,'p_sign',true);
+            var list_data = {$list|json_encode};
+            var request_={$request|json_encode};
+            table.render({
+                elem: '.data-table',
+                data: list_data?list_data.list:[],
+                //page: true,
+                //url:url__,
+                limit: list_data?list_data.pageSize:10,
+                cellMinWidth: 160,
+                height:'full-240',
+                cols: [[
+                    {field: 'order_sn', title: '订单编号', fixed: 'left',width:160},
+                    {field: 'knot_no', title: '申请编号', width:100},
+                    {field: 'saleName', title:'业务员'},
+                    {field: 'customerName', title: '客户',width:200,templet:function(b){
+                            return '<div>'+b.customerName+'</div>';
+                        }},
+                    {field: 'money', width:100,title:'反差额'},
+                    {field: 'pay_name', title: '订单付款方式记录', style:'color:#FF5722',minWidth:250},
+                    {field: 'customer_account_type',width:100, title: '退款类型',templet:function(d){
+                        return d.customer_account_type ==2 ? "原路返回":(d.customer_account_type ==1?"银行转账":"玖隆钱包");
+                        }},
+                    {field: 'customer_account', title:'银行卡号'},
+                    {field: 'account_name', title:'开卡账户'},
+                    {field: 'check_status', width:100,title:'结单状态',templet:function(d){
+                             var array=d.check_status == 0 ? ["待审核","font-weight:600"]:d.check_status == 1 ?["通过","color:#009688"]:d.check_status == 5 ? ["不通过","color:#e84343"]: ["付款已完成","color:#009688"];
+                            return '<div style="text-align:center;'+array[1]+'">'+array[0]+'</div>';
+                    }},
+                    {field: 'saleCheckName', title: '审核人'},
+                    {field: 'accountantCheckName', title: '打款人'},
+                    {field: 'create_at', title: '申请时间',width:170},
+                    {field: 'check_time', title: '审核时间',width:170},
+                    {field: 'handle', title: '操作',align:'center', fixed: 'right',templet:function(d){
+                            var retrun_str='';
+                            retrun_str +='<div class="data-table-handle-box" data-id="{{ d.order_sn }}">';
+                            if(d.check_status=='0' ) retrun_str +='<span lay-event="check">审核</span> ';
+                            if(d.check_status=='1') retrun_str +='<span lay-event="paying">付款完成</span> </div>';
+                            return retrun_str;
+                        }}
+                ]]
+            });
+
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+              if(layEvent === 'paying'){
+                    layer.confirm('确定付款完成吗？',function (index) {
+                        layer.close(index);
+                        $.post('/Admin/Customer/accountantCheckKnotOrder',{knot_no:source.knot_no},function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                    layer.close(index);
+                                    layer.msg('操作成功');
+                                    setTimeout(function () {
+                                        window.location.reload()
+                                    },500)
+                                } else {
+                                    layer.msg(res.msg)
+                                }
+                        })
+                    })
+                }
+                else if(layEvent === 'check'){
+                  layer.open({
+                      title:'审核',
+                      type: 0,
+                      content: (
+                          '<div class="layui-form jl-check-modal " style="width: 320px"> ' +
+                          '<input type="radio" name="pass" value="1" title="通过" checked> ' +
+                          '<input type="radio" name="pass" value="5" title="不通过"> ' +
+                          '</div>'
+                      ),
+                      success: function(){
+                         form.render('radio');
+                         $(".layui-form-radio div").css("font-size","14px")
+                      },
+                      yes:function (index) {
+                          var check_status = $('.jl-check-modal').find("input:checked");
+                          var data = {
+                              'knot_no':source.knot_no,
+                              'check_status':check_status.val()
+                          };
+                          $.post('/Admin/Customer/checkKnotOrder',data,function (res) {
+                              res = $.parseJSON(res);
+                              if(res.error===0){
+                                  layer.close(index);
+                                  layer.msg('操作成功');
+                                  setTimeout(function () {
+                                      window.location.reload()
+                                  },500)
+                              }
+                              else {
+                                  layer.msg(res.msg)
+                              }
+                          })
+                      }
+                  });
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: request_.pageSize || 10,
+                count: list_data.count || 10 ,
+                curr: request_.page || 1,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request_,{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            //筛选
+            form.on('submit(screen)', function(data){
+                queryTable(data.field);
+                return false;
+            });
+            var queryTable = function (query) {
+                //$.extend(query,request_);
+                if(request_){ query}
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Customer/knotOrderList?'+query
+            };
+            $('.clear-btn').on('click',function () {
+                queryTable()
+            })
+        })
+        //搜索输入拼音首字母自动补全
+        var response_data=[];
+        $( ".layui-form-label-pinyin-customer" ).autocomplete({
+            source: "/Admin/Customer/companyPinyinSearch",
+            minLength: 2,
+            close:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-customer" );
+                var value = $this.val();
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+        $( ".layui-form-label-pinyin-product" ).autocomplete({
+            source: "/Admin/Product/productList?autoComplete=autoComplete",
+            minLength: 2,
+            close:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-product" );
+                var value = $this.val();
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+        $( ".layui-form-label-pinyin-admin" ).autocomplete({
+            source: "/Admin/Customer/adminPinyinSearch",
+            minLength: 2,
+            close:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-admin" );
+                var value = $this.val();
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+
+
+    </script>
+</block>

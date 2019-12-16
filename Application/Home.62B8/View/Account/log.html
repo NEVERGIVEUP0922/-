@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="__PUBLIC__/Common/module/jquery/1.11.3/jquery.min.js"></script>
+    <script src="__PUBLIC__/Common/toolkit/global.js"></script>
+    <script src="__PUBLIC__/Common/module/layer/3.0.3/layer.js"></script>
+</head>
+<body>
+<form id="log">
+    <input type="text" name="userName" required  placeholder="请输入用户名" autocomplete="off" class="layui-input qing" value="">
+    <br>
+    <input type="password" id="pass" name="password" required placeholder="请输入密码"
+           autocomplete="off" class="layui-input qing" value="">
+    <br>
+    <input type="submit" value="立即登录" class="liji">
+</form>
+</body>
+<script>
+    $('form#log').on('submit', function(){
+            var data = $('form#log').serialize();
+            $.post("", data, function(res){
+                if( res.status == 0000 ){
+                    layer.msg(res.content, {icon:6, time:2000},function(){
+                        location.href="{:U('index')}";
+                    });
+                }else{
+                    layer.msg(res.content, {icon:2, time:2000});
+                }
+            });
+        return false;
+    });
+</script>
+</html>

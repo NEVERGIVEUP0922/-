@@ -1,0 +1,216 @@
+
+<div class="layui-tab-item layui-show" style="padding-top:20px">
+    <div class="form-body">
+        <form class="layui-form" method="post" id="retreatDetail">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">申请用户</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-select" value="{$detail['user_name']}" disabled >
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户ID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-select" value="{$detail['user_id']}" disabled >
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">业务员</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-select" value="{$detail['sysUser']['femplname']}({$detail['sysUser']['femplno']})" disabled >
+                    </div>
+                </div>
+            </div>
+            <!-- 申请订单数据 -->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">订单编号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" value="{$detail.order_sn}" disabled >
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">支付方式</label>
+                    <div class="layui-input-inline">
+                        <if condition="$detail['order']['pay_type'] eq 1">
+                            <input type="text" class="layui-input" value="在线支付" disabled >
+                            <elseif condition="$detail['order']['pay_type'] eq 2" />
+                            <input type="text" class="layui-input" value="账期支付" disabled >
+                            <elseif condition="$detail['order']['pay_type'] eq 3" />
+                            <input type="text" class="layui-input" value="快递代收" disabled >
+                            <elseif condition="$detail['order']['pay_type'] eq 4" />
+                            <input type="text" class="layui-input" value="面对面付款" disabled >
+                            <elseif condition="$detail['order']['pay_type'] eq 5" />
+                            <input type="text" class="layui-input" value="银行转账" disabled >
+                            <elseif condition="$detail['order']['pay_type'] eq 6" />
+                            <input type="text" class="layui-input" value="线下付款" disabled >
+                            <elseif condition="$detail['order']['pay_type'] eq 0" />
+                            <input type="text" class="layui-input" value="暂未付款" disabled >
+                            <else />
+                            <input type="text" class="layui-input" value="????" disabled >
+                        </if>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">运输方式</label>
+                    <div class="layui-input-inline">
+                        <if condition="$detail['order']['ship_type'] eq 1">
+                            <input type="text" class="layui-input" value="快递" disabled >
+                            <elseif condition="$detail['order']['ship_type'] eq 2" />
+                            <input type="text" class="layui-input" value="物流" disabled >
+                            <elseif condition="$detail['order']['ship_type'] eq 3" />
+                            <input type="text" class="layui-input" value="自取" disabled >
+                            <elseif condition="$detail['order']['ship_type'] eq 4" />
+                            <input type="text" class="layui-input" value="送货" disabled >
+                            <elseif condition="$detail['order']['ship_type'] eq 0" />
+                            <input type="text" class="layui-input" value="暂未发货" disabled >
+                            <else />
+                            <input type="text" class="layui-input" value="????" disabled >
+                        </if>
+                    </div>
+                </div>
+            </div>
+            <!-- 申请退款数据 -->
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">退款编号</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-select" value="{$detail.re_sn}" disabled >
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">退款金额</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" value="￥{$detail.retreat_money}" disabled >
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">退款备注</label>
+                <div class="layui-input-block">
+                    <input type="text" class="layui-input" value="{$detail.retreat_desc}" disabled >
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">退款图片</label>
+                <div class="layui-input-block">
+                    <volist name="re_img" id="im">
+                        <img style="width:400px;margin-right: 10px" src="{$im}" alt="退款证明图片">
+                    </volist>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">退货产品</label>
+                <div class="layui-input-block">
+                    <table class="layui-table" lay-skin="row">
+                        <colgroup>
+                            <col width="150">
+                            <col width="200">
+                            <col>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>产品编码</th>
+                            <th>退货数量</th>
+                            <th>VM</th>
+                            <th>VM审核意见</th>
+                        </tr>
+                        </thead>
+                        <volist name="detail.goods" id="g">
+                            <tr>
+                                <td>{$g.p_sign}</td>
+                                <td>{$g.p_num}</td>
+                                <td>{$g.vm.vm_name}</td>
+                                <td>{$vmProgress[$g['vm']['vm_check']]}</td>
+                            </tr>
+                        </volist>
+                    </table>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">业务员审核</label>
+                <div class="layui-input-block">
+                    <table class="layui-table" lay-skin="row">
+                        <colgroup>
+                            <col width="150">
+                            <col width="200">
+                            <col>
+                        </colgroup>
+                        <thead>
+                        <tr>
+
+                            <th>业务员名称</th>
+                            <th>审核意见</th>
+                        </tr>
+                        </thead>
+                        <volist name="detail.vmInfo" id="g">
+                            <if condition="$g.p_id eq 0">
+                                <tr>
+                                    <td>{$g.vm_name}</td>
+                                    <td><if condition="$g.vm_check eq 0">未审核<elseif condition="$g.vm_check eq 1"/>同意<else/>驳回</if></td>
+                                </tr>
+                            </if>
+
+                        </volist>
+                    </table>
+                </div>
+            </div>
+            <if condition="$detail['re_delivery_status'] neq 0">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">退货物流</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" value="{$detail['re_delivery_name']}" disabled >
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">物流单号</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" value="{$detail['re_delivery_num']}" disabled >
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <if condition="$detail['state'] eq 3">
+                                <input type="text" class="layui-input" value="已签收" disabled >
+                                <elseif condition="$detail['state'] eq 4" />
+                                <input type="text" class="layui-input" value="问题件" disabled >
+                                <else />
+                                <input type="text" class="layui-input" value="在途中" disabled >
+                            </if>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退货图片</label>
+                    <div class="layui-input-block">
+                        <volist name="de_img" id="deim">
+                            <img style="width:400px;margin-right: 10px" src="{$deim}" alt="退货证明图片">
+                        </volist>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">物流信息</label>
+                    <div class="layui-collapse layui-input-block">
+                        <div class="layui-colla-item">
+                            <div class="layui-colla-content layui-show">
+                                <volist name="detail.traces" id="t">
+                                    <div>
+                                        <span >{$key}</span>
+                                        <ol>
+                                            <volist name="t" id="s">
+                                                <li style="margin-left:70px">{$s}</li>
+                                            </volist>
+                                        </ol>
+                                    </div>
+                                </volist>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </if>
+        </form>
+    </div>
+</div>

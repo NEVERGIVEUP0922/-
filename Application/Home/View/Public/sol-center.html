@@ -1,0 +1,117 @@
+<div id="jl-center-title">
+    <div class="jl-title-main">
+        <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+            <?php if(empty(session('userInfo.nick_name'))){
+                echo 'Hi，您好,'.session('userInfo.user_name');}else{
+                echo 'Hi，您好,'.session('userInfo.nick_name');
+            } ?>
+        </p>
+        <ul class="jl-title-right">
+            <li class="{$isSolIndex == 1?'js-personal':''}">
+                <a href="{:U('Home/SolutionVip/vipProvider')}">
+                   项目管理中心
+                </a><i></i>
+            </li>
+            <li class="{$sol_position == 2?'js-personal':''}">
+                <a href="{:U('Home/Solution/myProvider')}">我的供应方案({$mysol_a?$mysol_a:0})</a><i></i>
+            </li>
+            <li class="{$sol_position == 3?'js-personal':''}">
+                <a href="{:U('Home/Solution/myDesired')}">我的需求方案({$mysol_b?$mysol_b:0})</a><i></i>
+            </li>
+            <li class="{$sol_position == 4?'js-personal':''}">
+                <a href="{:U('Home/SolutionNotify/all_notify')}">
+                    消息(<span id="new-message">{$msg_data['count_all']?$msg_data['count_all']:0}</span>)
+                </a><i></i>
+            </li>
+            <li class="jl-title-last {$sol_position == 5?'js-personal':''}">
+                <a href="{:U('Home/Solution/converse')}?all_con=1">未处理洽谈({$converNum?$converNum:0})</a><i></i>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="jl-center-main" class="jl-cle">
+    <div class="projectList">
+    <ul>
+        <!--<li><p><i class="jl-indent jl-indent-1" style="background-position: -75px -38px"></i>项目管理中心</p></li>-->
+        <li>
+            <p><i class="jl-indent jl-indent-2" style="background-position: -182px -35px"></i>发布方案</p>
+            <ol>
+                <li><a href="{:U('Home/Solution/myProviderUpload')}">发布供应方案</a></li>
+                <li><a href="{:U('Home/Solution/myDesiredUpload')}">发布需求方案</a></li>
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-indent jl-indent-3" style="background-position-x:-283px"></i>我的方案</p>
+            <ol>
+                <li><a href="{:U('Home/Solution/myProvider')}" class="myPro_desir">我的供应方案</a></li>
+                <li><a href="{:U('Home/Solution/myDesired')}" class="myDesir_color">我的需求方案</a></li>
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-indent jl-indent-2" style="background-position: -130px -32px"></i>看过的方案</p>
+            <ol>
+                <li><a href="{:U('Home/Solution/myBrowse3')}" class="<?php if($solType_b == 1)echo 'jl-red'; ?>">供应方案</a></li>
+                <li><a href="{:U('Home/Solution/myBrowse4')}" class="<?php if($solType_b == 2)echo 'jl-red'; ?>">需求方案</a></li>
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-indent jl-indent-2" style="background-position: -290px -36px"></i>收藏的方案</p>
+            <ol>
+                <li><a href="{:U('Home/Solution/solCollectList')}" class="<?php if($solType_c == 1)echo 'jl-red'; ?>">供应方案</a></li>
+                <li><a href="{:U('Home/Solution/solCollectList2')}"class="<?php if($solType_c == 2)echo 'jl-red'; ?>">需求方案</a></li>
+            </ol>
+        </li>
+        <!--<li>-->
+            <!--<p><i class="jl-indent jl-indent-4" style="background-position: -130px -32px"></i>参与的方案</p>-->
+            <!--<ol>-->
+                <!--<li  class="show-child">-->
+                    <!--<a href="javascript:;" class="myBrowse_color">看过的方案</a>-->
+                    <!--<ul class="min-size">-->
+                        <!--<li class="projectList-child"><a href="{:U('Home/Solution/myBrowse3')}">供应方案</a></li>-->
+                        <!--<li class="projectList-child"><a href="{:U('Home/Solution/myBrowse4')}">需求方案</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<li class="show-child">-->
+                    <!--<a href="javascript:;" class="myCollect_color">收藏的方案</a>-->
+                    <!--<ul class="min-size">-->
+                        <!--<li class="projectList-child"><a href="{:U('Home/Solution/solCollectList')}">供应方案</a></li>-->
+                        <!--<li class="projectList-child"><a href="{:U('Home/Solution/solCollectList2')}">需求方案</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<li><a href="{:U('Home/Solution/converse')}?conversing=1" class="myConversing_color">接洽的方案</a></li>-->
+            <!--</ol>-->
+        <!--</li>-->
+        <li>
+            <p><i class="jl-indent jl-indent-2" style="background-position: -350px -40px"></i>洽谈方案</p>
+            <ol>
+                <li><a href="{:U('Home/Solution/converse')}?conversing=1" class="myConversing_color">我接洽的方案</a></li>
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-indent jl-indent-5" style="background-position: -235px -40px"></i>会员中心</p>
+            <ol>
+                <li><a href="{:U('Home/SolutionVip/vipIndex')}" class="vip_color">我的联系方式</a></li>
+                <!--<li><a href="{:U('Home/SolutionVip/vipProvider')}">会员信息展示</a></li>-->
+            </ol>
+        </li>
+    </ul>
+    </div>
+    <div class="sol-center-right">
+        <block name="main"></block>
+    </div>
+</div>
+<div class="jl-line"></div>
+<script type="text/javascript">
+//    setTimeout(function(){
+//        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+//            require(['jquery'], function ($) {
+//                $('.show-child').mouseover(function(){
+//                    $(this).find('.projectList-child').show();
+//                });
+//                $('.show-child').mouseout(function(){
+//                    $(this).find('.projectList-child').hide();
+//                });
+//            })
+//        });
+//    },1000)
+</script>

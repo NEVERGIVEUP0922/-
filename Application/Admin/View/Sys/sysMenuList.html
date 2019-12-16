@@ -1,0 +1,136 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">菜单列表</a>
+            </span>
+        </blockquote>
+        <span class="layui-breadcrumb" style="margin-right: 12px">
+            <a href="/Admin/Sys/sysMenuList">顶级菜单</a>
+            <notempty name="menuF.menu_name">
+                <a href="/Admin/Sys/sysMenuList">{$menuF.menu_name}</a>
+            </notempty>
+        </span>
+        <button class="jl-add-btn layui-btn layui-btn-sm">添加子菜单</button>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" data-id="{{ d.id }}" style="width: 100%">
+                    <span lay-event="detail">编辑</span>
+                    <span lay-event="delete">删除</span>
+                    <empty name="menuF.menu_name">
+                        <span lay-event="children">查看子菜单</span>
+                    </empty>
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var list_data = {$list|json_encode};
+            var request = {$request|json_encode};
+            var queryTable = function (query) {
+                if(request.menu_fid){
+                    query['menu_fid'] = request.menu_fid
+                }
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Sys/sysMenuList?'+query
+            };
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-170',
+                cols: [[ //表头
+                    {field: 'menu_id', title: 'ID', fixed: 'left',width: 100}
+                    ,{field: 'menu_name', title: '菜单名称'}
+                    ,{field: 'menu_seq', title: '菜单排序'}
+                    ,{field: 'menu_level', title: '菜单等级'}
+                    ,{field: 'function_name', title: '对应功能'}
+                    ,{field: 'menu_fid', title: '父级菜单id'}
+                    ,{field: 'create_date', title: '创建时间'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right',width: 180, toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'detail'){
+                    jlTool.sendIframeMsg('go',{
+                        title:'菜单详情',
+                        url:'/Admin/Sys/sysMenuList/url/sysMenuListAction/menu_fid/'+source.menu_fid+'/menu_id/'+source.menu_id,
+                        icon:''
+                    });
+                }
+                else if(layEvent === 'children'){
+                    window.location.href = '/Admin/Sys/sysMenuList/menu_fid/'+source.menu_id
+                }
+                else if(layEvent === 'delete'){
+                    layer.confirm('确定删除吗？',function () {
+                        var data = {
+                            action:'delete',
+                            menu_id:source.menu_id
+                        };
+                        $.post('/Admin/Sys/sysMenuAction',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('操作成功');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        });
+                    })
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            $('.jl-add-btn').on('click',function () {
+                var query = {
+                    url:'sysMenuListAction',
+                };
+                if(request.menu_fid){
+                    query['menu_fid'] = request.menu_fid;
+                }
+                query = jlTool.urlEncode(query);
+                jlTool.sendIframeMsg('go',{
+                    title:'菜单详情',
+                    url:'/Admin/Sys/sysMenuList?'+query,
+                    icon:''
+                });
+            })
+        })
+    </script>
+</block>

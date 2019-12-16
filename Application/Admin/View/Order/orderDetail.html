@@ -1,0 +1,388 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <style>
+        .blockQuote-with-table .layui-elem-quote{ margin-bottom: 0; padding: 8px 15px}
+        .blockQuote-with-table .layui-table{ margin-top: 0;  border-left: 5px solid #e2e2e2; }
+        .remove-hover-color.layui-table tbody tr:hover{ background-color: inherit}
+       /* .layui-table td, .layui-table th{
+            text-align:center;
+        }*/
+    </style>
+</block>
+<block name="content">
+    <div>
+        <assign name="order" value="$orderList.list.0" />
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">订单详情——订单号：{$order.order_sn}</a>
+            </span>
+        </blockquote>
+        <div class="layui-row layui-col-space12">
+            <div class="layui-col-xs6 blockQuote-with-table">
+                <blockquote class="layui-elem-quote">订单基础信息</blockquote>
+                <table class="layui-table">
+                    <tbody>
+                    <tr><td>订单生成时间</td><td>{$order.create_at}</td></tr>
+                    <tr><td>客户名称</td><td>{$order.customerName}</td></tr>
+                    <tr><td>负责业务员</td><td>{$order.sale}</td></tr>
+                    <tr><td>客户订单备注</td><td>{$order.orderDetail.note}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-col-xs6 blockQuote-with-table">
+                <blockquote class="layui-elem-quote">收货信息</blockquote>
+                <table class="layui-table">
+                    <tbody>
+                    <tr><td>收货人</td><td>{$order.orderDetail.consignee}</td></tr>
+                    <tr><td>收货人电话</td><td>{$order.orderDetail.mobile}</td></tr>
+                    <tr><td>收货地址</td><td>
+                        <span class="jl-address-code">{$order.orderDetail.area_code}</span>
+                        <span>{$order.orderDetail.address}</span>
+                    </td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="layui-row layui-col-space12">
+            <div class="layui-col-xs6 blockQuote-with-table">
+                <blockquote class="layui-elem-quote">订单状态</blockquote>
+                <table class="layui-table">
+                    <tbody>
+                    <tr><td>客户显示订单状态</td><td>{$order|getOrderStatus}</td></tr>
+                    <tr><td>订单状态</td><td class="js-order_status"></td></tr>
+                    <tr><td>支付状态</td><td class="js-pay_status"></td></tr>
+                    <tr><td>定金支付状态</td><td class="js-deposits_pay_status"></td></tr>
+                    <tr><td>运输状态</td><td class="js-ship_status"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-col-xs6 blockQuote-with-table">
+                <blockquote class="layui-elem-quote">订单参数</blockquote>
+                <table class="layui-table">
+                    <tbody>
+                    <tr><td>是否开票</td><td class="js-is_invoice"></td></tr>
+                    <tr><td>支付方式</td><td class="js-pay_type"></td></tr>
+                    <tr><td>是否预付定金</td><td class="js-order_type"></td></tr>
+                    <tr><td>定金支付方式</td><td class="js-deposits_pay_type"></td></tr>
+                    <tr><td>运输方式</td><td class="js-ship_type"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs12 blockQuote-with-table">
+                <blockquote class="layui-elem-quote">订单价格</blockquote>
+                <table class="layui-table remove-hover-color">
+                    <thead>
+                    <tr>
+                        <th>显示总价</th><th>实付总价</th><th>已支付金额</th>
+                        <th>定金总价</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{$order.total_origin}</td><td>{$order.total}</td><td>{$order.already_paid}</td>
+                        <td>{$order.total_deposits}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-xs12 blockQuote-with-table">
+                <blockquote class="layui-elem-quote">物流信息</blockquote>
+                <table class="layui-table remove-hover-color">
+                    <thead>
+                    <tr>
+                        <th>提货单号</th><th>货运方式</th><th>品牌型号</th>
+                        <th>快递数量</th><th>快递公司</th><th>快递单号</th><th>快递联系人</th>
+                        <th>联系人电话</th><th>ERP收款状态</th><th>锁单时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <volist name="order.hyInfo" id="hyInfo">
+                        <?php $details=json_decode($hyInfo['detail'],true); ?>
+                        <notempty name="details">
+                            <?php $accouts=(int)count($details);?>
+                            <volist name="details" id="item" key="i">
+                                <tr>
+                                    <if condition="$i eq 1">
+                                        <td rowspan="{$accouts}">{$hyInfo.erp_th_no}</td>
+                                        <td rowspan="{$accouts}">{$hyInfo.hy_shipvia}</td>
+                                    </if>
+                                    <td>{$item.p_name}</td>
+                                    <td><?php echo(int)$item['fqty']?></td>
+                                    <if condition="$i eq 1">
+                                        <td rowspan="{$accouts}">{$hyInfo.hy_name}</td>
+                                        <td rowspan="{$accouts}">{$hyInfo.hy_num}</td>
+                                        <td rowspan="{$accouts}">{$hyInfo.hy_contactor}</td>
+                                        <td rowspan="{$accouts}">{$hyInfo.hy_tel}</td>
+                                        <td rowspan="{$accouts}"><?php if($hyInfo['fskstatus']=='F'){ echo $hyInfo['fcxacount']."(完全收款)";}elseif($hyInfo['fskstatus']=='G'){echo $hyInfo['fcxacount']."(部分收款)";}else{ echo $hyInfo['fcxacount']."(未收款)" ;} ?></td>
+                                        <td rowspan="{$accouts}"><?php echo date("Y-m-d H:i:s",strtotime("-5 day",$hyInfo['update_time'])); ?></td>
+                                    </if>
+                                </tr>
+                            </volist>
+                            <else/>
+                        </notempty>
+                    </volist>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!--<div class="layui-row">
+            <div class="layui-col-xs12 blockQuote-with-table">
+                <blockquote class="layui-elem-quote">快递预约</blockquote>
+                <table class="layui-table remove-hover-color">
+                    <thead>
+                    <tr>
+                        <th>商品型号</th><th>快递公司</th>
+                        <th>快递地址</th>&lt;!&ndash;<th>快递公司</th><th>快递单号</th><th>快递联系人</th>
+                            <th>联系人电话</th><th>ERP收款状态</th>&ndash;&gt;<th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody class="express">
+                    <tr>
+                        <td>NS4871-SOP8</td>
+                        <td>
+                            <div class="select-brand-container">
+                                <span class="jl-control-key-span" style="display:none"></span>
+                                <select style="width: 100px" class="jl-control">
+                                    <option>顺丰</option>
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            深圳市科技园赋安大厦
+                        </td>
+                        <td>
+                            test
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>-->
+        <div class="layui-row">
+            <div class="layui-col-xs12 blockQuote-with-table">
+                <blockquote class="layui-elem-quote">客户订单号<input type="text" id="ordersn_self" name="order_sn_sale"  placeholder="请填写自定义订单号" style=" margin-left:2%;height: 30px;border-radius: 2px;border: 1px solid #ddd;text-indent: 10px;" value="{$order.order_sn_sale}"/></blockquote>
+                <form class="price_mend">
+                    <table class="layui-table remove-hover-color layui-table-shop">
+                        <thead>
+                        <tr>
+                            <th>商品型号</th><th>对应ERP型号</th><th>客户产品编码</th><th>商品数量</th>
+                            <th>取消数量</th><th>退货数量</th><th>显示价格</th><th>实付价格</th>
+                            <th>显示小计</th><th>实付小计</th><th>定金小计</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php $goodsList_index=[]; ?>
+                        <!--<?php
+                                if(in_array($good['p_name'],$goodsList_index)) continue;
+                                else $goodsList_index[]=$good['p_name'];
+                              ?>-->
+
+                        <volist name="order.goodsList" id="good" key="i">
+
+                            <tr >
+                                <td><div class="laytable-cell-p_name">{$good.p_name}</div></td>
+                                <notempty name="goodsFitemno">
+                                    <td> <div class="layui-form">
+                                        <div class="layui-form-item" style="margin-bottom:0;">
+                                            <div class="layui-input-inline" style="width:100%">
+                                                <select name="fitemno" class="laytable-cell-fitemno" >
+                                                    <option value="{$good.fitemno}"  >{$good.fitemno}</option>
+                                                    <foreach name="goodsFitemno[0]" item="item">
+                                                        <switch name="item[0]['p_sign']">
+                                                            <case value="$good.p_name">
+                                                                <foreach name="item" item="self">
+                                                                    <switch name="self.fitemno">
+                                                                        <case value ="$good.fitemno">
+
+                                                                        </case>
+                                                                        <default />
+                                                                        <option value="{$self.fitemno}">{$self.fitemno}</option>
+                                                                    </switch>
+
+                                                                </foreach>
+                                                            </case>
+                                                            <default />
+                                                        </switch>
+                                                    </foreach>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </td>
+                                    <else/>
+                                    <td>{$good.fitemno}</td>
+                                </notempty>
+                                <td><div style="width:100%;height:100%"><input type="text" class="p_sign_self" name="p_sign_sale" placeholder="请填写客户产品编码" style=" height: 30px;border-radius: 2px;border: 1px solid #ddd;text-indent: 10px;" value="{$good.p_sign_sale}"/></div></td>
+                                <td><div style="width:100%;height:100%"><input type="hidden" name="p_id" value="{$good.p_id}"/><input readonly name="p_num" style=" height: 30px;border-radius: 2px;border: none;text-indent: 10px;" value="{$good.p_num}"/></div></td>
+                                <td>{$good.knot_num}</td>
+                                <td>{$good.retreat_num}</td>
+                                <td>{$good.p_price_show}</td><td><div style="width:100%"><input class="p_price_show" name="p_price_true" data-num="{$good.p_num}" style=" height: 30px;border-radius: 2px;border: 1px solid #ddd;text-indent: 10px;" value="{$good.p_price_true}"/></div></td><td>{$good.subtotal}</td>
+                                <td class="pay_subtotal">{$good.pay_subtotal}</td><td>{$good.deposits_subtotal}</td>
+                                <if condition="$i eq 1">
+                                    <td rowspan="20" style="text-align: center">
+                                        <notempty name="goodsFitemno">
+                                            <div class="layui-btn-group"> <span class="layui-btn layui-btn-sm jl-control-submit" >换型号</span></div> <else/>
+                                        </notempty>
+                                        <if condition="$order['order_status'] eq 0 and $order['pay_status'] eq 0 and $order['ship_status'] eq 0">
+                                            <div class="layui-btn-group"> <span class="layui-btn layui-btn-sm jl-price-mend-submit" data-sn="{$order.order_sn}">修改</span></div>
+                                        </if>
+                                        <!--<div class="layui-btn-group"> <span class="layui-btn layui-btn-sm jl-desposite-price-mend-submit" data-sn="{$order.order_sn}">优惠价格修改</span></div>-->
+                                    </td>
+                                    <else/>
+                                </if>
+
+                            </tr>
+                        </volist>
+
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['layer', 'jlTool','element','orderConfig','commonTpl','handleDistrict','form','table'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var form = layui.form;
+            var orderConfig = layui.orderConfig;
+            var commonTpl = layui.commonTpl;
+            var handleDistrict = layui.handleDistrict;
+            var single_data = {$orderList.list.0|json_encode};
+            var request = {$request|json_encode};
+            var order = {$order|json_encode};
+            var erpData = {$goodsFitemno|json_encode};
+            console.log(single_data);
+            var initRender = (function (order) {
+                console.log(order);
+                $.each(['order_status', 'pay_status', 'ship_status','pay_type','ship_type'],function (i,index) {
+                    if(order[index]){
+                        $('.js-'+index).text(orderConfig[index](order[index]))
+                    }
+                });
+                //function == oneZero
+                $.each(['order_type','is_invoice'],function (i,index) {
+                    if(order[index]){
+                        $('.js-'+index).text(commonTpl.oneZero(order[index]))
+                    }
+                });
+                //地址处理
+                var $address = $('.jl-address-code');
+                var address_code = $address.text();
+                if(address_code){
+                    var address = handleDistrict.getData(address_code);
+                    $address.text(address.join(' '))
+                }
+                //获取数据
+                function getListData() {
+                    var array = [];
+                    var dataCols=[{field:"p_name"},{field:"fitemno"}];
+                    $('.layui-table-shop>tbody').find('tr').each(function () {
+                        var single = {};
+                        var $_this = $(this);
+                        $.each( dataCols ,function (index,value) {
+
+                            if(value.field==='p_name'){
+                                single['p_sign'] = $_this.find('.laytable-cell-'+value['field']).text();
+                            }
+                            else if(value.field == 'fitemno'){
+                                single[value['field']] = $_this.find('.laytable-cell-'+value['field']).val();
+                            }
+                        });
+                        if(array)array.push(single);
+                    });
+                    return array
+                };
+                //换型号
+                $(".jl-control-submit").on("click",function(){
+                    var sendData={};
+                    var dataArray = getListData();
+                    sendData.order_sn = order.order_sn;
+                    sendData.goodsList = dataArray;
+                    $.ajax({
+                        url:"/Admin/Order/orderChangeFitemno",
+                        type:"POST",
+                        dataType:"json",
+                        data:sendData,
+                        success:function(res){
+                            if(res.error ==0){
+                                layer.alert('修改成功', {icon: 1},function(index){
+                                    window.location.reload(true);
+                                    layer.close(index);
+                                });
+                            }else{
+                                layer.msg(res.msg);
+                            }
+                        },
+                        error:function(error){
+                            layer.open({
+                                content:error.msg,
+                                type:0
+                            });
+                        }
+                    });
+
+                });
+                //价格修改更新总价
+                var timer;
+                $(".p_price_show").on("input",function(){
+                    clearTimeout(timer);
+                    var $this = $(this);
+                    timer = setTimeout(function(){
+                        $this.parents("td").siblings(".pay_subtotal").text(($this.data("num")*$this.val()).toFixed(2));
+                    },400);
+                });
+                //价格修改
+                $(".jl-price-mend-submit").on("click",function(){
+                    var formData = $(".price_mend").serializeArray();
+                    var date=[];
+                    var order_sn = $(this).data("sn");
+                    var ordersn_sale=$("#ordersn_self").val();
+                    //var p_sign_sale=$(this).parents("tr").find("input.p_sign_self").val();
+                    var obj={};
+                    $.each(formData,function(index,value){
+                        obj[value.name] = value.value;
+                        if((index + 1)%4 == 0){
+                            date.push(obj);
+                            obj={};
+                        }
+                    });
+                    $.ajax({
+                        url:"/Admin/Order/orderPriceReset",
+                        type:"POST",
+                        dataType:"json",
+                        data:{pId_change:date,orderSn:order_sn,'order_sn_sale':ordersn_sale},
+                        success:function(res){
+                            if(res.error ==0){
+                                layer.alert('修改成功', {icon: 1});
+                            }else{
+                                layer.msg(res.msg);
+                            }
+                        },
+                        error:function(error){
+                            layer.open({
+                                content:error.msg,
+                                type:0
+                            });
+                        }
+                    });
+                });
+                //优惠价修改
+                $(".jl-desposite-price-mend-submit").on("click",function(){
+                    var order_sn = $(this).data("sn");
+                    window.location.href = "/Admin/Customer/oneBargain?order_sn="+order_sn;
+                });
+                //其他
+                $('.js-deposits_pay_status').text(orderConfig['pay_status'](order['deposits_pay_status']));
+                $('.js-deposits_pay_type').text(orderConfig['pay_type'](order['deposits_pay_type']))
+            })(single_data);
+        })
+    </script>
+</block>

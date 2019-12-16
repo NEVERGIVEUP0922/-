@@ -1,0 +1,284 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Category/category.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <style>
+        .role-list{
+            overflow: hidden;
+        }
+        .role-list .icon-jl-delete_fill{
+            color: #666;
+            margin-left: 6px;
+            cursor: pointer;
+        }
+        .role-list>li{
+            display: inline-block;
+            float: left;
+            margin:4px 0;
+        }
+        .role-list>li>span{
+            float: left;
+            border-radius: 4px;
+            padding: 4px 10px;
+            border:1px solid #ddd;
+
+        }
+        .role-list>li:after{
+            content: '、';
+            margin-left: 8px;
+        }
+        .role-list>li:last-child:after{
+            display: none;
+        }
+    </style>
+</block>
+<block name="content">
+    <div class="category-top-div">
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">后台部门管理</a>
+            </span>
+        </blockquote>
+        <div class="category-container">
+            <div id="jstree-category"></div>
+            <div class="left-container clearFix">
+                <blockquote class="layui-elem-quote">
+                    <button class="add-cate layui-btn">增加部门</button>
+                    <button class="delete-cate layui-btn">删除所选部门</button>
+                </blockquote>
+                <div class="form-container layui-form">
+                    <blockquote class="jl-title layui-elem-quote">
+                        <span class="layui-breadcrumb">
+                            <a class="jl-main-title category-detail-title" href="javascript:">新增部门</a>
+                        </span>
+                    </blockquote>
+                    <div class="form-section clearFix">
+                        <div class="form-title">部门名称</div>
+                        <div class="form-item">
+                            <input type="text" placeholder="请输入部门名称" autocomplete="off"
+                                   class="category-name layui-input">
+                        </div>
+                    </div>
+                    <div class="form-section clearFix">
+                        <div class="form-title">部门排序</div>
+                        <div class="form-item">
+                            <input type="text" placeholder="请输入部门排序" autocomplete="off"
+                                   class="category-sort layui-input">
+                        </div>
+                    </div>
+                    <div class="form-section clearFix">
+                        <div class="form-title">部门等级</div>
+                        <div class="form-item">
+                            <select name="department_level">
+                                <option value="">请选择部门等级</option>
+                                <option value="1" {$data['department_level']=='1'?'selected':''}>1</option>
+                                <option value="2" {$data['department_level']=='2'?'selected':''}>2</option>
+                                <option value="3" {$data['department_level']=='3'?'selected':''}>3</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-section clearFix">
+                        <div class="form-title">角色</div>
+                        <div class="form-item">
+                            <ul class="role-list" style="padding: 4px 0;"></ul>
+                            <button class="add-role-btn layui-btn layui-btn-sm layui-btn-normal" >
+                                添加角色
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-section clearFix">
+                        <div class="form-title"> </div>
+                        <div class="form-item">
+                            <button class="save-cate save-role layui-btn">保存</button>
+                            <span class="form-tips">（新增部门将归属于所选部门下）</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['element','jlTool','form','layer','selectRole'], function () {
+            var element = layui.element;
+            var jlTool = layui.jlTool;
+            var form = layui.form;
+            var layer = layui.layer;
+            var selectRole = layui.selectRole;
+            var categoryList = {$list|json_encode};
+            var departmentRole = {$departmentRole|json_encode};
+            var oneDepartment = {$oneDepartment|json_encode};
+            var fatherPath = {$fatherPath|json_encode};
+            (function reduce(value,level) {
+                level = level ? level : 1;
+                if(value&&$.isArray(value)){
+                    $.each(value,function (i,v) {
+                        v['text'] = v.department_name;
+                        if(level===1){
+                            v["state"]={"opened": true};
+                        }
+                        if(fatherPath&&fatherPath.indexOf(v.id)>-1){
+                            v['state'] = {"opened": true};
+                        }
+                        if(oneDepartment.id===v.id){
+                            v['state'] = {"selected": true};
+                        }
+                        if(v.children){
+                            reduce(v.children,level+1)
+                        }
+                    });
+                }
+            })(categoryList);
+            var renderForm = function (data) {
+                if(data){
+                    $('.category-name').val(data.department_name);
+                    $('.category-sort').val(data.sort);
+                    $('.category-detail-title').text('编辑部门');
+                    $('select[name="department_level"]').val(data.department_level);
+                    $('.form-tips').hide();
+                    var roles = departmentRole[data.id];
+                    if(roles&&$.isArray(roles)){
+                        var liHtml = '';
+                        $.each(roles,function (index,value) {
+                            if(value.role_name){
+                                liHtml += '<li data-id="'+value.role_id+'"><span>'+value.role_name.role_name+'<i class="iconfont-jl icon-jl-delete_fill"></i></span></li>'
+                            }
+                        });
+                        $('.role-list').html(liHtml)
+                    }
+                    else {
+                        $('.role-list').html('')
+                    }
+                }
+                else {
+                    $('select[name="department_level"]').val('');
+                    $('.category-name').val('');
+                    $('.category-detail-title').text('新增部门');
+                    $('.form-tips').show()
+                }
+                form.render('select');
+            };
+            if(oneDepartment){
+                renderForm(oneDepartment)
+            }
+            $('#jstree-category').jstree({
+                'core': {
+                    'data': categoryList,
+                    'check_callback':true,
+                    'multiple':false
+                }
+            }).on("changed.jstree", function (e, data) {
+                if ((data.action==='select_node')&&data.selected.length) {
+                    var selected = data.instance.get_node(data.selected[0]);
+                    var original = selected.original;
+                    data.instance.open_node(original.id);
+                    renderForm(original);
+                    var parent = data.instance.get_node(selected.parent);
+                    $.each(parent.children,function (index, value) {
+                        if(value!==selected.id){
+                            data.instance.close_node(value)
+                        }
+                    })
+                }
+            });
+            $('.add-cate').click(function () {
+                renderForm();
+            });
+            $('.delete-cate').click(function () {
+                var instance = $('#jstree-category').jstree(true);
+                var selected = instance.get_selected();
+                if(selected.length){
+                    layer.confirm('确认删除吗？', function(index){
+                        $.post('/Admin/Sysuser/sysUserDepartmentDelete',{id:selected[0]},function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('删除成功');
+                                instance.delete_node(selected)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                    });
+                }
+                else {
+                    layer.msg('请点击选择需要操作的部门')
+                }
+            });
+            $('.save-cate').click(function () {
+                var title = $('.category-detail-title').text();
+                var text = $('.category-name').val();
+                var data = {
+                    department_level:$('select[name=department_level]').val(),
+                    sort:$('.category-sort').val(),
+                    department_name:text,
+                    type:'son',
+                    action:title==='新增部门'?'add':'edit'
+                };
+                var instance = $('#jstree-category').jstree(true);
+                var selected = instance.get_selected();
+                data['id'] = selected[0]?selected[0]:'2';
+                $.post('/Admin/Sysuser/sysUserDepartmentAdd',data,function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        layer.msg('部门操作成功');
+                        if(title==='新增部门'){
+                            submitRole(res.id,res.id);
+                        }
+                        else {
+                            submitRole(data['id'],res.id);
+                        }
+                    }
+                    else {
+                        layer.msg(res.msg)
+                    }
+                })
+            });
+            var submitRole = function (id,department) {
+                var roleId_arr = [];
+                var roleData = [];
+                $('.role-list').children('li').each(function () {
+                    var role_id = $(this).data('id');
+                    var role_name = $(this).text();
+                    roleId_arr.push($(this).data('id'));
+                    roleData.push({
+                        role_id:role_id,
+                        role_name:{
+                            role_name:role_name
+                        }
+                    })
+                });
+                if(roleId_arr&&roleId_arr.length!==0){
+                    var data = {
+                        action:'all',
+                        department_id:id,
+                        roleId_arr:roleId_arr
+                    };
+                    $.post('/Admin/Sysuser/departmentRoleAction',data,function (res) {
+                        res = $.parseJSON(res);
+                        if(res.error===0){
+                            layer.msg('角色设置成功');
+                            departmentRole[id] = roleData;
+                            window.location.href = '/Admin/Sysuser/sysUserDepartment?id=' + department;
+                        }
+                        else {
+                            layer.msg(res.msg)
+                        }
+                    })
+                }
+            };
+            $('.role-list').on('click','.icon-jl-delete_fill',function () {
+                $(this).parents('li').remove()
+            });
+            $('.add-role-btn').on('click',function () {
+                selectRole.start(function (data) {
+                    var  liHtml = '<li data-id="'+data.role_id+'"><span>'+data.role_name+'<i class="iconfont-jl icon-jl-delete_fill"></i></span></li>'
+                    $('.role-list').append(liHtml)
+                })
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,484 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout"/>
+<block name="title">发布需求</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <!-- banner -->
+    <div id="jl-release-banner">
+        <img src="__PUBLIC__/Home/Index/img/banner160.jpg" alt="">
+    </div>
+    <!-- 采购需求单 -->
+    <div id="jl-purchase-order">
+        <div class="jl-order">
+            <h3>采购需求单</h3>
+            <h4>我要采购的元件</h4>
+            <p>注：一次最多只能添加10个需求单<i class="jl-mandatory"></i>为必填项</p>
+        </div>
+        <div class="jl-order-content">
+            <form action="" id="js-release">
+                <ul class="jl-requisition">
+                    <li>
+                        <div class="jl-order-title">
+                            <span>交货地</span>
+                            <b>元件需求详情</b>
+                            <i class="js-close"></i>
+                        </div>
+                        <div class="jl-order-details jl-cle">
+                            <div class="jl-content-left">
+                                <div class="jl-inland">
+                                    <a href="javascript:;">
+                                        <input class="jl-area" checked type="radio" value="0" name="form[1][point]">
+                                        <i class="jl-choose-circle jl-choose-active"></i>
+                                        国内
+                                    </a>
+                                </div>
+                                <div class="jl-inland">
+                                    <a href="javascript:;">
+                                        <input class="jl-area" type="radio" value="1" name="form[1][point]">
+                                        <i class="jl-choose-circle"></i>
+                                        香港
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="jl-content-center">
+                                <div class="jl-input">
+                            <span>
+                                <i class="jl-mandatory"></i>
+                                型号名称
+                            </span>
+                                    <input type="text" class="jl-release-name js-next-input" placeholder="请填写型号名称"
+                                           name="form[1][release_name]">
+                                    <i class="jl-false-note"></i>
+                                </div>
+                                <div class="jl-input">
+                            <span>
+                                <i class="jl-mandatory"></i>
+                                品牌
+                            </span>
+                                    <input type="text" class="jl-brand-name js-next-input" placeholder="请填写品牌/厂牌"
+                                           name="form[1][brand_name]">
+                                    <i class="jl-false-note"></i>
+                                </div>
+                                <div class="jl-input">
+                            <span>
+                                <i class="jl-mandatory"></i>
+                                货期
+                            </span>
+                                    <input type="text" class="jl-delively-time js-next-input" placeholder="请填写期货"
+                                           name="form[1][delively_time]">
+                                    <i class="jl-false-note"></i>
+                                </div>
+                            </div>
+                            <div class="jl-content-center">
+                                <div class="jl-input">
+                            <span>
+                                <i class="jl-mandatory"></i>
+                                采购数量
+                            </span>
+                                    <input class="jl-accept-count js-next-input" type="text" placeholder="请填入采购数量"
+                                           name="form[1][number]">
+                                    <i class="jl-false-note"></i>
+                                </div>
+                                <div class="jl-input">
+                            <span>
+                                接受单价/元
+                            </span>
+                                    <input class="jl-accept-price js-next-input" type="text" placeholder="请填入单个价格"
+                                           name="form[1][price]">
+                                    <i class="jl-false-note"></i>
+                                </div>
+                                <div class="jl-input">
+                            <span>
+                                <i class="jl-mandatory"></i>
+                                是否含税
+                            </span>
+                                    <input class="jl-chose-select js-next-input" type="text" value="含税" readonly
+                                           unselectable="on" name="form[1][is_tax]">
+                                    <div class="jl-select-icon">
+                                        <i class="jl-bottom-arr"></i>
+                                        <i class="jl-top-arr"></i>
+                                    </div>
+                                    <ul class="js-select-popup">
+                                        <li>含税</li>
+                                        <li>不含税</li>
+                                    </ul>
+
+                                </div>
+                            </div>
+                            <div class="jl-content-right">
+                                <h5>接受总价/元</h5>
+                                <p>￥0.0000</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <button type="button" class="jl-add-order">点击新增</button>
+                <div class="jl-line"></div>
+                <div class="jl-contact">
+                    <h4>我的联系方式</h4>
+                    <p>注：请仔细核对联系方式，以便于你更方便的沟通</p>
+                    <div class="jl-contact-content  jl-cle">
+                        <div class="jl-input">
+                            <span>
+                                <i class="jl-mandatory"></i>
+                                联系人
+                            </span>
+                            <input class="jl-link-name js-next-input" type="text" placeholder="请填入联系人真真实姓名"
+                                   name="link_name">
+                            <i class="jl-false-note"></i>
+                        </div>
+                        <div class="jl-input">
+                            <span>
+                                <i class="jl-mandatory"></i>
+                                手机号
+                            </span>
+                            <input class="jl-link-mobile js-next-input" type="text" placeholder="请填入真实手机号码"
+                                   name="link_mobile">
+                            <i class="jl-false-note"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="jl-line"></div>
+                <div class="jl-tender">
+                    <h4>招标截至日</h4>
+                    <p class="jl-date">采购需求保留时间上限为<span>7</span>天，默认为<span>5</span>天</p>
+                    <div class="jl-tender-content  jl-cle">
+                        <div class="jl-input">
+                            <span>
+                                <!--<i class="jl-mandatory"></i>-->
+                                截至日期
+                            </span>
+                            <input type="text" id="datepicker" unselectable="on" readonly class="jl-end-time"
+                                   placeholder="2017-07-25" name="end_time">
+                         <!--   <i class="jl-false-note"></i>-->
+                            <s class="jl-calendar"></s>
+                        </div>
+                    </div>
+                </div>
+                <div class="jl-line"></div>
+                <div class="jl-replenish">
+                    <h4>补充说明</h4>
+                    <textarea name="append" class="jl-replenish-content"
+                              placeholder="你还可以补充其他采购需求信息。例如：封装、批次...."></textarea>
+                </div>
+            </form>
+            <input type="submit" class="jl-publish" value="确认发布">
+        </div>
+    </div>
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery'], function ($) {
+                //回车
+                $('#js-release').on('keydown', '.js-next-input', function (e) {
+                    var nextInputArray = $('.js-next-input');
+                    if (parseInt(e.keyCode) === 13) {
+                        var index = nextInputArray.index(this);
+                        if (nextInputArray[index + 1]) {
+                            nextInputArray[index + 1].focus()
+                        }
+                    }
+                });
+                $('.jl-requisition').on('click', '.jl-inland a', function () {
+                    $(this).parent().siblings('.jl-inland').find('i').removeClass('jl-choose-active');
+                    $(this).children('i').addClass('jl-choose-active');
+                });
+                var select = $('.jl-chose-select');
+                $('.jl-requisition').on('click', '.jl-chose-select', function () {
+                    $(this).siblings('.js-select-popup').slideToggle();
+                });
+                $('.jl-requisition').on('click', '.js-select-popup li', function () {
+                    var input_val = $(this).html();
+                    $(this).parent().siblings('.jl-chose-select').val(input_val);
+                    $(this).parent('.js-select-popup').slideUp();
+                });
+                //接受总价
+                $('.jl-requisition').on('change', '.jl-accept-price', function () {
+                    var price = parseFloat($(this).val());
+                    var count = parseFloat($(this).parents('.jl-input').siblings().find('.jl-accept-count').val());
+                    var total = price * count;
+                    if (!isNaN(total)) {
+                        $(this).parents('.jl-order-details').children('.jl-content-right').children('p').html("￥" + total);
+                    } else {
+                        $(this).parents('.jl-order-details').children('.jl-content-right').children('p').html("￥0.0000");
+                    }
+                });
+                $('.jl-requisition').on('change', '.jl-accept-count', function () {
+                    var count = parseFloat($(this).val());
+                    var price = parseFloat($(this).parents('.jl-input').siblings().find('.jl-accept-price').val());
+                    var total = price * count;
+                    if (!isNaN(total)) {
+                        $(this).parents('.jl-order-details').children('.jl-content-right').children('p').html("￥" + total);
+                    } else {
+                        $(this).parents('.jl-order-details').children('.jl-content-right').children('p').html("￥0.0000");
+                    }
+                });
+                //表单
+                //增加
+                var num = 1;
+                var html = null;
+                var $li_lenght = null;
+                $('.jl-add-order').on('click', function () {
+                    num++;
+                    html = '<li>\n' +
+                        '                    <div class="jl-order-title">\n' +
+                        '                        <span>交货地</span>\n' +
+                        '                        <b>元件需求详情</b>\n' +
+                        '                        <i class="js-close"></i>\n' +
+                        '                    </div>\n' +
+                        '                    <div class="jl-order-details jl-cle">\n' +
+                        '                        <div class="jl-content-left">\n' +
+                        '                            <div class="jl-inland">\n' +
+                        '                                <a href="javascript:;">\n' +
+                        '                                    <input class="jl-area" checked type="radio" value="0" name="form[' + num + '][point]">\n' +
+                        '                                    <i class="jl-choose-circle jl-choose-active"></i>\n' +
+                        '                                    国内\n' +
+                        '                                </a>\n' +
+                        '                            </div>\n' +
+                        '                            <div class="jl-inland">\n' +
+                        '                                <a href="javascript:;">\n' +
+                        '                                    <input class="jl-area" type="radio" value="1" name="form[' + num + '][point]">\n' +
+                        '                                    <i class="jl-choose-circle"></i>\n' +
+                        '                                    香港\n' +
+                        '                                </a>\n' +
+                        '                            </div>\n' +
+                        '                        </div>\n' +
+                        '                        <div class="jl-content-center">\n' +
+                        '                            <div class="jl-input">\n' +
+                        '                                <span>\n' +
+                        '                                    <i class="jl-mandatory"></i>\n' +
+                        '                                    型号名称\n' +
+                        '                                </span>\n' +
+                        '                                <input type="text" class="jl-release-name js-next-input"  placeholder="请填写型号名称" name="form[' + num + '][release_name]">\n' +
+                        '                                <i class="jl-false-note"></i>\n' +
+                        '                            </div>\n' +
+                        '                            <div class="jl-input">\n' +
+                        '                                <span>\n' +
+                        '                                    <i class="jl-mandatory"></i>\n' +
+                        '                                    品牌\n' +
+                        '                                </span>\n' +
+                        '                                <input type="text" class="jl-brand-name js-next-input" placeholder="请填写品牌/厂牌" name="form[' + num + '][brand_name]">\n' +
+                        '                                <i class="jl-false-note"></i>\n' +
+                        '                            </div>\n' +
+                        '                            <div class="jl-input">\n' +
+                        '                                <span>\n' +
+                        '                                    <i class="jl-mandatory"></i>\n' +
+                        '                                    货期\n' +
+                        '                                </span>\n' +
+                        '                                <input type="text" class="jl-delively-time js-next-input" placeholder="请填写期货" name="form[' + num + '][delively_time]">\n' +
+                        '                                <i class="jl-false-note"></i>\n' +
+                        '                            </div>\n' +
+                        '                        </div>\n' +
+                        '                        <div class="jl-content-center">\n' +
+                        '                            <div class="jl-input">\n' +
+                        '                                <span>\n' +
+                        '                                    <i class="jl-mandatory"></i>\n' +
+                        '                                    采购数量\n' +
+                        '                                </span>\n' +
+                        '                                <input class="jl-accept-count js-next-input" type="text" placeholder="请填入采购数量" name="form[' + num + '][number]">\n' +
+                        '                                <i class="jl-false-note"></i>\n' +
+                        '                            </div>\n' +
+                        '                            <div class="jl-input">\n' +
+                        '                                <span>\n' +
+                        '                                    接受单价/元\n' +
+                        '                                </span>\n' +
+                        '                                <input class="jl-accept-price js-next-input" type="text" placeholder="请填入单个价格" name="form[' + num + '][price]">\n' +
+                        '                                <i class="jl-false-note"></i>\n' +
+                        '                            </div>\n' +
+                        '                            <div class="jl-input">\n' +
+                        '                                <span>\n' +
+                        '                                    <i class="jl-mandatory"></i>\n' +
+                        '                                    是否含税\n' +
+                        '                                </span>\n' +
+                        '                                <input class="jl-chose-select js-next-input" type="text" value="含税" readonly unselectable="on" name="form[' + num + '][is_tax]">\n' +
+                        '                                <div class="jl-select-icon">\n' +
+                        '                                    <i class="jl-bottom-arr"></i>\n' +
+                        '                                    <i class="jl-top-arr"></i>\n' +
+                        '                                </div>\n' +
+                        '                                <ul class="js-select-popup">\n' +
+                        '                                    <li>含税</li>\n' +
+                        '                                    <li>不含税</li>\n' +
+                        '                                </ul>\n' +
+                        '\n' +
+                        '                            </div>\n' +
+                        '                        </div>\n' +
+                        '                        <div class="jl-content-right">\n' +
+                        '                            <h5>接受总价/元</h5>\n' +
+                        '                            <p>￥0.0000</p>\n' +
+                        '                        </div>\n' +
+                        '                    </div>\n' +
+                        '                </li>';
+                    $li_lenght = $('.jl-requisition>li').length + 1;
+                    if ($li_lenght <= 10) {
+                        $('.jl-requisition').append(html);
+                    } else {
+                        $li_lenght = 10;
+                    }
+                    if ($li_lenght >= 10) {
+                        $('.jl-add-order').css('background', '#a8a8a8');
+                    }
+                    //显示隐藏删除按钮
+                    var $lis = $('.jl-requisition li').length;
+                    if ($lis > 1) {
+                        $('.js-close').css('display', 'block');
+                    } else {
+                        $('.js-close').css('display', 'none');
+                    }
+                });
+                //验证表单
+                var reg1 = /^\d{1,}\s?$/;
+                var reg3 = /^1(3|4|5|7|8)\d{9}$/;
+                var reg4 = /^\d+([\.]{1}[\d]+)?\s?$/;
+                //名称
+                $('.jl-order-content').on('blur', '.jl-release-name,.jl-brand-name,.jl-delively-time,.jl-accept-count,.jl-link-name,.jl-end-time', function () {
+                    if ($(this).val() === "") {
+                        $(this).parent().addClass('js-false');
+                    } else {
+                        $(this).parent().removeClass('js-false');
+                    }
+                });
+                //数量
+                $('.jl-requisition').on('blur', '.jl-accept-count', function () {
+                    var $count = $(this).val();
+                    if (!reg1.test($count)) {
+                        $(this).parent().addClass('js-false');
+                    } else {
+                        $(this).parent().removeClass('js-false');
+                    }
+                });
+                //单价
+                $('.jl-requisition').on('blur', '.jl-accept-price', function () {
+                    var $price = $(this).val();
+                    if (!reg4.test($price) && $price !== '') {
+                        $(this).parent().addClass('js-false');
+                    } else {
+                        $(this).parent().removeClass('js-false');
+                    }
+                });
+                //手机号码
+                $('.jl-link-mobile').on('blur', function () {
+                    var mobile = $(this).val();
+                    if (!reg3.test(mobile)) {
+                        $(this).parent().addClass('js-false');
+                    } else {
+                        $(this).parent().removeClass('js-false');
+                    }
+                });
+                require(['jl-modal'], function (modal) {
+                    //删除
+                    $('.jl-order-content').on('click', '.js-close', function () {
+                        var $that = $(this);
+                        modal.confirm({
+                            title: '删除表单',
+                            brief: '您确定要删除表单吗？',
+                            top: 100,
+                            confirm: function () {
+                                $that.parents('li').remove();
+                                $li_lenght--;
+                                if ($li_lenght < 10) {
+                                    $('.jl-add-order').css('background', '#05baae');
+                                }
+                                //显示隐藏删除按钮
+                                var $lis = $('.jl-requisition>li').length;
+                                if ($lis > 1) {
+                                    $('.js-close').css('display', 'block');
+                                } else {
+                                    $('.js-close').css('display', 'none');
+                                }
+                            }
+                        });
+                    });
+                });
+                //提交表单
+                $('.jl-publish').on('click', function () {
+                    var $input = $(".jl-input input").not('.jl-accept-price').not(".jl-end-time");
+                    $.each($input, function (index, el) {
+                        if ($(el).val() === "") {
+                            $(el).parent().addClass('js-false');
+                        } else {
+                            $(el).parent().removeClass('js-false');
+                        }
+                    });
+                    var text = $('.jl-order-content .js-false');
+                    $(text[0]).children('input').focus();
+                    if (text.length === 0) {
+                        var data = $('#js-release').serializeArray();
+                        $.ajax({
+                            type: 'POST',
+                            url: "{:U('Home/Default/release')}",
+                            data: data,
+                            success: function (res) {
+                                if (res.status === 0) {
+                                    window.location.href = "{:U('Home/Default/releaseSuccess')}";
+//                                    window.location.href="{:U('Home/Default/fault')}";
+                                } else {
+                                    //window.location.href="{:U('Home/Default/fault')}";
+                                }
+                            }
+                        })
+                    }
+                });
+                require(['pikaday'], function (Pikaday) {
+                    var picker = new Pikaday({
+                        field: document.getElementById('datepicker'),
+                        theme: 'js-data',
+                        i18n: {
+                            previousMonth: '上个月',
+                            nextMonth: '下个月',
+                            months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                            weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                            weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                        },
+                        format: 'YYYY-M-D',
+                        toString: function (date, format) {
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+                            return year + '-' + month + '-' + day;
+                        },
+                        parse: function (dateString, format) {
+                            var parts = dateString.split('/');
+                            var day = parseInt(parts[0], 10);
+                            var month = parseInt(parts[1] - 1, 10);
+                            var year = parseInt(parts[1], 10);
+                            return new Date(year, month, day);
+                        }
+                    });
+                    var pickerr = new Pikaday({
+                        field: document.getElementById('datepickerr'),
+                        theme: 'js-data',
+                        i18n: {
+                            previousMonth: '上个月',
+                            nextMonth: '下个月',
+                            months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                            weekdays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+                            weekdaysShort: ['日', '一', '二', '三', '四', '五', '六']
+                        },
+                        format: 'YYYY-M-D',
+                        toString: function (date, format) {
+                            var day = date.getDate();
+                            var month = date.getMonth() + 1;
+                            var year = date.getFullYear();
+                            return year + '-' + month + '-' + day;
+                        },
+                        parse: function (dateString, format) {
+                            var parts = dateString.split('/');
+                            var day = parseInt(parts[0], 10);
+                            var month = parseInt(parts[1] - 1, 10);
+                            var year = parseInt(parts[1], 10);
+                            return new Date(year, month, day);
+                        }
+                    });
+                });
+            });
+        })
+    </script>
+</block>

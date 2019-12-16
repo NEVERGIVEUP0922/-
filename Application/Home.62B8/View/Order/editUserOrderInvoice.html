@@ -1,0 +1,69 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-cart" />
+
+<block name="title">搜索</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/cartOrder.css">
+</block>
+
+<block name="nav-title">购物车</block>
+
+<!-- 主要内容 -->
+<block name="main">
+    <form class="product" action="" method="get">
+        <div>商品id <input type="text" name="id" value="9"></div>
+        <div>收件人<input type="text" name="invoice_type" value="2"></div>
+        <div>省<input type="text" name="invoice_header" value="9"></div>
+        <div>市<input type="text" name="invoice_owner" value="9"></div>
+
+        <div>市<input type="text" name="province" value="9"></div>
+        <div>市<input type="text" name="city" value="9"></div>
+        <div>市<input type="text" name="area" value="9"></div>
+        <div>市<input type="text" name="address" value="9"></div>
+        <div>市<input type="text" name="mobile" value="9"></div>
+
+        <div>区<input type="text" name="company_province" value="9"></div>
+        <div>详细地址<input type="text" name="company_city" value="9"></div>
+        <div>邮编<input type="text" name="company_area" value="9"></div>
+        <div>手机<input type="text" name="company_address" value="9"></div>
+        <div>手机<input type="text" name="company_mobile" value="9"></div>
+        <div>手机<input type="text" name="company_tax_code" value="9"></div>
+        <div>手机<input type="text" name="company_bank_name" value="9"></div>
+        <div>手机<input type="text" name="company_bank_acount" value="9"></div>
+        <div>操作<input type="text" name="edit" value="delete"></div>
+    </form>
+    <div><input class="addProduct" type="submit" value="提交"></div>
+
+</block>
+
+
+
+
+
+
+<block name="js">
+
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function(){
+            require(['jquery'],function($){
+                $('.addProduct').on('click',function(){
+                    var product=$('.product').serialize();
+                    $.ajax({
+                        url:'',
+                        type:'post',
+                        data:product,
+                        success:function(e){
+
+                        }
+                    });
+                });
+
+            });
+        });
+    </script>
+
+</block>

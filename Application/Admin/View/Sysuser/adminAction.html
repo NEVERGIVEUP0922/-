@@ -1,0 +1,332 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <style>
+        .jl-wechat-img{
+            width: 200px;
+            height: 200px;
+        }
+        .jstree-div {
+            height: 400px;
+            width: 340px;
+            overflow: auto;
+        }
+        /**/
+        .role-list{
+            overflow: hidden;
+        }
+        .role-list .icon-jl-delete_fill{
+            color: #666;
+            margin-left: 6px;
+            cursor: pointer;
+        }
+        .role-list>li{
+            display: inline-block;
+            float: left;
+            margin:4px 0;
+        }
+        .role-list>li>span{
+            float: left;
+            border-radius: 4px;
+            padding: 4px 10px;
+            border:1px solid #ddd;
+
+        }
+        .role-list>li:after{
+            content: '、';
+            margin-left: 8px;
+        }
+        .role-list>li:last-child:after{
+            display: none;
+        }
+    </style>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">{$request['uid']?'编辑':'新增'}后台用户信息</a>
+            </span>
+        </blockquote>
+        <form class="layui-form" action="">
+            <div class="layui-form-item layui-required">
+                <label class="layui-form-label">登录账号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="user_name" placeholder="请输入登录账号" autocomplete="off" {$request['uid']?'disabled':''}
+                           class="layui-input" value="{$data.user_name}">
+                </div>
+            </div>
+            <div class="layui-form-item {$request['uid']?'':'layui-required'}">
+                <label class="layui-form-label">登录密码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="password" placeholder="请输入登录密码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">部门</label>
+                <div class="layui-input-block">
+                    <input type="text" name="department_id" placeholder="请选择部门" autocomplete="off"
+                           class="layui-input select-category" value="{$data.departmentInfo.department_name}" data-id="{$data.department_id}">
+                </div>
+            </div>
+            <div class="layui-form-item layui-required">
+                <label class="layui-form-label">全称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="fullname" placeholder="请输入系统显示名称" autocomplete="off"
+                           class="layui-input" value="{$data.fullname}">
+                </div>
+            </div>
+            <div class="layui-form-item layui-required">
+                <label class="layui-form-label">昵称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="nickname" placeholder="请输入系统显示名称" autocomplete="off"
+                           class="layui-input" value="{$data.nickname}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">erp用户</label>
+                <div class="layui-input-block">
+                    <input type="text" name="femplno" placeholder="请选择对应的erp用户" autocomplete="off"
+                           class="layui-input jl-select-erp-user" value="{$data.femplname}" data-id="{$data.femplno}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">负责分类</label>
+                <div class="layui-input-block">
+                    <ul class="role-list" style="padding: 4px 0;"></ul>
+                    <button class="add-role-btn layui-btn layui-btn-sm layui-btn-normal" >
+                        添加分类
+                    </button>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">手机</label>
+                <div class="layui-input-block">
+                    <input type="text" name="mobile" placeholder="请填写手机" autocomplete="off"
+                           class="layui-input" value="{$data.mobile}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">qq</label>
+                <div class="layui-input-block">
+                    <input type="text" name="qq" placeholder="请填写手机" autocomplete="off"
+                           class="layui-input" value="{$data.qq}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">微信二维码</label>
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn" id="jl-upload-wechat">
+                        <i class="layui-icon">&#xe67c;</i>上传图片
+                    </button>
+                    <span>在微信的二维码名片中，点击右上角保存到手机，再发送到电脑上传</span><br/>
+                    <img class="jl-wechat-img" src="{$data.wechat}">
+                    <input type="hidden" name="wechat" value="{$data.wechat}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户邮箱</label>
+                <div class="layui-input-block">
+                    <input type="text" name="email" placeholder="请填写用户邮箱" autocomplete="off"
+                           class="layui-input" value="{$data.email}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="form">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['layer', 'jlTool','element','form','selectErpUser','upload'], function () {
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var selectErpUser = layui.selectErpUser;
+            var upload = layui.upload;
+            upload.render({
+                elem: '#jl-upload-wechat'
+                ,url: '/Admin/Excel/fileUpload'
+                ,data:{
+                    path: 'sysuser_wechat'
+                }
+                ,done: function(res){
+                    if(res.error===0){
+                        $('.jl-wechat-img').attr('src',res.data.path);
+                        $('input[name="wechat"]').val(res.data.path)
+                    }
+                    else {
+                        layer.msg(res.msg);
+                    }
+                }
+                ,error: function(){
+                    layer.msg('上传失败')
+                }
+            });
+            var single_data = {$data|json_encode};
+            var request = {$request|json_encode};
+            var tree_data = {$tree|json_encode};
+            selectErpUser.initInput(false,function (data) {
+                $('.jl-select-erp-user').data('id',data.femplno)
+            });
+            //初始化分类
+            (function () {
+                var id_arr = (single_data && single_data.product_category) ? single_data.product_category.split(',,')[0].split(','):false;
+                if(id_arr&&$.isArray(id_arr)){
+                    var text_arr = single_data.service_category;
+                    id_arr.shift();
+                    $.each(id_arr,function (index,value) {
+                        var  liHtml = '<li data-id="'+value+'"><span>'+text_arr[index]+'<i class="iconfont-jl icon-jl-delete_fill"></i></span></li>';
+                        $('.role-list').append(liHtml);
+                    })
+                }
+            })();
+            //选择分类
+            (function reduce(value,level) {
+                level = level ? level : 1;
+                if(value&&$.isArray(value)){
+                    $.each(value,function (i,v) {
+                        if(level===1){
+                            v["state"]={"opened": true};
+                        }
+                        v['text'] = v.department_name;
+                        if(v.children){
+                            reduce(v.children,level+1)
+                        }
+                    });
+                }
+            })(tree_data);
+            $('.select-category').click(function () {
+                var $this = $(this);
+                var id = $this.data('id');
+                var selected;
+                layer.open({
+                    title:'选择部门',
+                    type: 0,
+                    content: (
+                        '<div class="jstree-div"></div>'
+                    ),
+                    success: function(){
+                        $('.jstree-div').jstree({
+                            'core': {
+                                'data': tree_data,
+                                'check_callback':true,
+                                'multiple':false
+                            }
+                        }).on("changed.jstree", function (e, data) {
+                            if ((data.action==='select_node')&&data.selected.length) {
+                                selected = data.instance.get_node(data.selected[0]);
+                            }
+                        });
+                    },
+                    yes:function (index, layero) {
+                        if(selected){
+                            $this.val(selected.text);
+                            $this.data('id',selected.id);
+                            layer.close(index);
+                        }
+                        else {
+                            layer.tips('请选择部门', '.layui-layer-btn0');
+                        }
+                    }
+                });
+            });
+            //选择分类
+            var categoryTree = {$categoryTree|json_encode};
+            (function reduce(value) {
+                if(value&&$.isArray(value)){
+                    $.each(value,function (i,v) {
+                        v['text'] = v.cate_name;
+                        if(v.children){
+                            reduce(v.children)
+                        }
+                    })
+                }
+            })(categoryTree.category);
+            $('.add-role-btn').on('click',function () {
+                var $this = $(this);
+                var id = $this.data('id');
+                var selected;
+                layer.open({
+                    title:'选择分类',
+                    type: 0,
+                    content: (
+                        '<div class="jstree-div"></div>'
+                    ),
+                    success: function(){
+                        $('.jstree-div').jstree({
+                            'core': {
+                                'data': [{
+                                    "text": "商品分类",
+                                    "state": {"opened": true},
+                                    "children": categoryTree.category
+                                }],
+                                'multiple':false
+                            }
+                        }).on("changed.jstree", function (e, data) {
+                            if ((data.action==='select_node')&&data.selected.length) {
+                                selected = data.instance.get_node(data.selected[0]);
+                            }
+                        });
+                    },
+                    yes:function (index, layero) {
+                        if(selected){
+                            var  liHtml = '<li data-id="'+selected.id+'"><span>'+selected.text+'<i class="iconfont-jl icon-jl-delete_fill"></i></span></li>';
+                            $('.role-list').append(liHtml);
+                            layer.close(index);
+                        }
+                        else {
+                            layer.tips('请选择分类', '.layui-layer-btn0');
+                        }
+                    }
+                });
+                return false
+            });
+            $('.role-list').on('click','.icon-jl-delete_fill',function () {
+                $(this).parents('li').remove()
+            });
+            //提交
+            form.on('submit(form)', function(data){
+                if(request&&request.uid){
+                    data.field['uid'] = request.uid;
+                    data.field['action'] = 'edit';
+                }
+                else {
+                    data.field['action'] = 'add';
+                }
+                data.field['department_id'] = $('.select-category').data('id');
+                data.field['femplno'] = $('.jl-select-erp-user').data('id');
+                data.field['product_category'] = (function () {
+                    var arr = [];
+                    $('.role-list').children().each(function () {
+                        arr.push($(this).data('id'))
+                    });
+                    return arr
+                })();
+                if(!data.field['password']){
+                    delete data.field['password']
+                }
+                $.post('/Admin/Sysuser/adminAction',data.field,function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        layer.msg('操作成功');
+                        jlTool.sendIframeMsg('refresh','sysUserList');
+                        setTimeout(function () {
+                            window.location.reload()
+                        },500)
+                    }
+                    else {
+                        layer.msg(res.msg)
+                    }
+                });
+                return false;
+            });
+        })
+    </script>
+</block>

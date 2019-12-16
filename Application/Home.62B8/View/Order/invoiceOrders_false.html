@@ -1,0 +1,365 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">不开发票订单</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/myOrder.css">
+</block>
+
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <!-- 标题 -->
+    <ul class="jl-order-title">
+        <li class="jl-goods">商品</li>
+        <li class="jl-name">名称</li>
+        <li class="jl-price">单价</li>
+        <li class="jl-count">数量</li>
+        <li class="jl-goods-operation">商品操作</li>
+        <li class="jl-subtotal">小计/元</li>
+        <li class="jl-state">交易状态</li>
+        <li class="jl-operation">交易操作</li>
+    </ul>
+
+    <!-- 订单详情 -->
+    <!--{:dd($order_list)}-->
+    <notempty name="order_list">
+        <volist name="order_list" id="order">
+            <table class="jl-product-detail jl-noInvoice" style="margin-bottom: 20px">
+                <tr class="jl-table-head">
+                    <th colspan="3" style="padding-left: 26px">{$order.create_at}<span>订单编号：<i class="jl-order-code">{$order.order_sn}</i></span></th>
+                    <?php $g_count = count($order['goods']); ?>
+                </tr>
+                <volist name="order.goods" id="good">
+                    <tr>
+                        <td>
+                            <ul class="jl-detail-content jl-cle">
+                                <li class="jl-goods">
+                                    <notempty name="good.cover_image">
+                                        <img src="{$good.cover_image}" alt="{$good.name}">
+                                        <else />
+                                        <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                    </notempty>
+                                </li>
+                                <li class="jl-name">{$good.p_name}</li>
+                                <li class="jl-price">￥{$good.p_price}</li>
+                                <li class="jl-count">{$good.p_num}</li>
+                                <li class="jl-goods-operation">
+                                    <if condition="$good.handle_status eq 6  ">
+                                        <a href="{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}">退款成功</a>
+                                        <elseif condition="$good.handle_status eq 7" />
+                                        <a href="{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}">退款关闭</a>
+                                        <elseif condition="$good.handle_status egt 1" />
+                                        <a href="{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}">退款中</a>
+                                        <elseif condition="$order.order_status gt 1" />
+                                        <a href="{:U('Home/Order/retreat',['order_sn'=>$order['order_sn'], 'p_id'=>$good['p_id']])}">退货/退款</a>
+                                        <else />
+                                        无
+                                    </if>
+                                </li>
+                                <li class="jl-subtotal">￥{$good.p_subtotal}</li>
+                            </ul>
+                        </td>
+                        <if condition="$i eq 1 ">
+                            <td rowspan="{$g_count}">
+                                <div class="jl-state">
+                                    <if condition="$order.order_status eq 1">
+                                        <p>待付款</p><p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                        <elseif condition="$order.order_status eq 2" />
+                                        <p>{:C('ORDER_STATUS.'.$order['order_status'])}</p>
+                                        <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                        <elseif condition="$order.order_status eq 6" />
+                                        <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                        <div class="jl-logistics-way" data-sn="{$order.order_sn}">
+                                            <a href="#">查看物流</a>
+                                            <div class="jl-logistics-popup">
+                                                <i class="jl-arr-top"></i>
+                                                <div class="jl-logistics-title">
+                                                    <span data-code="{$order.delivery_code}" class="jl-delivery-name">{$order['delivery_name']}</span>
+                                                    <span data-num="{$order.delivery_num}" class="jl-delivery-num">运单号：{$order['delivery_num']}</span>
+                                                </div>
+                                                <ul class="jl-delivery-text"></ul>
+                                            </div>
+                                        </div>
+                                        <else />
+                                        <p>{:C('ORDER_STATUS.'.$order['order_status'])}</p>
+                                        <p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                        <div class="jl-logistics-way" data-sn="{$order.order_sn}">
+                                            <a href="#">查看物流</a>
+                                            <div class="jl-logistics-popup">
+                                                <i class="jl-arr-top"></i>
+                                                <div class="jl-logistics-title">
+                                                    <span data-code="{$order.delivery_code}" class="jl-delivery-name">{$order['delivery_name']}</span>
+                                                    <span data-num="{$order.delivery_num}" class="jl-delivery-num">运单号：{$order['delivery_num']}</span>
+                                                </div>
+                                                <ul class="jl-delivery-text"></ul>
+                                            </div>
+                                        </div>
+                                    </if>
+                                </div>
+                            </td>
+                            <td rowspan="{$g_count}">
+                                <p class="jl-operation">
+                                    <if condition="$order.order_status eq 1 ">
+                                        <a href="javascript:;" class="jl-pay-money">立即支付</a>
+                                        <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                        <elseif condition="$order.order_status  eq 2"/>
+                                        <elseif condition="$order.order_status  eq 3"/>
+                                        <if condition="$order.pay_name eq 货到付款 AND $order.cod_status eq 0">
+                                            <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                            <elseif condition="$order.pay_name eq 货到付款 AND $order.cod_status eq 1" />
+                                            <a href="javascript:;" class="jl-confirm-receipt">确认收货</a>
+                                            <else />
+                                            <a href="javascript:;" class="jl-confirm-receipt">确认收货</a>
+                                        </if>
+                                        <elseif condition="$order.order_status  eq 4"/>
+
+                                        <a href="{:U('Home/Order/comment', ['order_sn'=>$order['order_sn']])}" class="jl-immediate-appraise">立即评价</a>
+                                        <elseif condition="$order.order_status  eq 5"/>
+
+                                        <a href="{:U('Home/Order/myAppraise')}" class="jl-appraise">查看评价</a>
+                                        <else />
+                                    </if>
+                                    <if condition="$invoiceOrders eq 1 ">
+                                            <else />
+                                        <a href="javascript:;" class="jl-invoicing">开发票</a>
+                                    </if>
+                                </p>
+                            </td>
+                        </if>
+                    </tr>
+                </volist>
+            </table>
+            <!--<if condition="$order.invoice_type eq 1">-->
+                <!--<ul class="jl-invoice-detail js-special jl-bottom">-->
+                    <!--<li>-->
+                        <!--<p>发票抬头：</p>-->
+                        <!--<span>{$order.invoice_header}</span>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<p>地址、电话：</p>-->
+                        <!--<span>{$order.company_address}  {$order.company_phone}</span>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<p>税务登记号：</p>-->
+                        <!--<span>{$order.company_tax_code}</span>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<p>开户行、账号：</p>-->
+                        <!--<span>{$order.company_bank_name}&nbsp;&nbsp;{$order.company_bank_acount}</span>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<p>收票人信息：</p>-->
+                        <!--<span>{$order.invoice_owner}&nbsp;&nbsp;&nbsp;&nbsp;{$order.address}&nbsp;&nbsp;&nbsp;{$order.mobile}</span>-->
+                    <!--</li>-->
+                <!--</ul>-->
+                <!--<else />-->
+                <!--<ul class="jl-invoice-detail js-general jl-bottom">-->
+                    <!--<li>-->
+                        <!--<p>发票抬头：</p>-->
+                        <!--<span>{$order.invoice_header}</span>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<p>收票人信息：</p>-->
+                        <!--<span>{$order.invoice_owner}&nbsp;&nbsp;&nbsp;&nbsp; {$order.address}&nbsp;&nbsp;&nbsp;{$order.mobile}</span>-->
+                    <!--</li>-->
+                <!--</ul>-->
+            <!--</if>-->
+        </volist>
+        <else />
+        <div class="jl-empty">
+            <img src="__PUBLIC__/Home/Public/img/empty.png" alt="">
+            <h4>亲爱的客官，空空如也啊！</h4>
+        </div>
+    </notempty>
+
+
+    <!-- 分页 -->
+    {$page}
+
+</block>
+
+
+<block name="js">
+
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+                var get = $.parseJSON('{$get|json_encode} ');
+                require(['jl-modal'],function (modal) {
+                    modal.option({
+                        left:-77
+                    });
+
+                    //取消订单
+                    $('.jl-cancel').on('click',function () {
+                        var $that=$(this);
+                        var $table=$that.parents('.jl-product-detail');
+                        var order_sn=$table.find('.jl-order-sn').html();
+                        modal.confirm({
+                            title:'取消订单',
+                            brief:'您确定要取消订单吗？',
+                            top:100,
+                            confirm:function () {
+                                $.post("{:U('Home/Order/cancleOrder')}",{order_sn:order_sn}, function (res) {
+                                    if(res.status===0){
+                                        window.location.reload();
+                                    }else{
+                                        modal.confirm({
+                                            title:'系统繁忙',
+                                            brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                            top:100
+                                        })
+                                    }
+                                });
+                            }
+                        });
+
+                    });
+
+                    //申请开发票
+                    $('.jl-invoicing').on('click',function(){
+                        var order_sn=$(this).parents('tr').siblings('.jl-table-head').find('.jl-order-code').html();
+                        console.log(order_sn);
+                        $.ajax({
+                            type:'GET',
+                            url:"{:U('Home/Order/orderToInvoice')}",
+                            data:{"order_sn":order_sn},
+                            success:function(res){
+                                var data=$.parseJSON(res);
+                                if(data.error===0){
+                                    location.reload();
+                                }else{
+                                    modal.alert({
+                                        title:'开票失败',
+                                        brief:data.msg,
+                                        top:100
+                                    })
+                                }
+                            }
+                        });
+                    });
+
+                    //确认收货
+                    $('.jl-confirm-receipt').on('click',function(){
+                        var $that=$(this);
+                        var order_sn=$that.parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                        modal.confirm({
+                            title:'确认收货',
+                            brief:'您确定要收货吗？',
+                            top:100,
+                            confirm:function () {
+                                $.post("{:U('Home/Order/doDelivery')}",{order_sn:order_sn}, function (res) {
+                                    if(res.status===0){
+                                        window.location.reload();
+//                                        $that.removeClass('jl-confirm-receipt').addClass('jl-immediate-appraise');
+//                                        $that.html('立即评价');
+//                                        $that.parents('td').siblings().children('.jl-state').find("p:first-child").html("待评价");
+                                    }else{
+                                        modal.confirm({
+                                            title:'系统繁忙',
+                                            brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                            top:100
+                                        })
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    //立即支付
+                    $('.jl-pay-money').on('click',function(){
+                        var $that=$(this);
+                        var order_sn=$that.parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                        $.ajax({
+                            type:'POST',
+                            url:"{:U('Home/Order/checkStore')}",
+                            data:{"order_sn":order_sn},
+                            success:function(res){
+                                var data=res.content;
+                                if(res.status===0){
+                                    var tr=$that.parents('.jl-product-detail').find('tr').not('.jl-table-head');
+                                    var $res=0;
+                                    $.each(tr,function(index,el){
+                                        var pid=$(el).attr("data-id");
+                                        var store=$(el).find('.jl-count').html();
+                                        var $store=data[pid];
+                                        if($store<store){
+                                            modal.confirm({
+                                                title:'支付失败',
+                                                brief:'不好意思哦！你购买的商品库存不足，请重新下单',
+                                                top:100
+                                            });
+                                            $res++;
+                                            return;
+                                        }
+                                    });
+                                    if($res<=0){
+                                        window.location.href="{:U('Home/Order/userPayPlatform')}?order_sn="+order_sn;
+                                    }
+                                }
+
+                            }
+                        });
+                    });
+
+                });
+
+                //查看物流
+                $('.jl-logistics-way').each(function(){
+                    var t = $(this);
+                    t.hover(function(){
+                        var code = t.find('.jl-delivery-name').attr('data-code'), num = t.find('.jl-delivery-num').attr('data-num'), sn= t.data('sn');
+                        if( !t.hasClass('ajax-done') ){
+                            $.ajax({
+                                type:'post',
+                                url:'{:U("Home/kd/info")}',
+                                data:{shipperCode:code,logisticCode:num,orderCode:sn},
+                                success:function(res){
+                                    if( res.status != 1001 ){
+                                        res = $.parseJSON(res);
+                                        var str = '';
+                                        for( i=0; i< 4; i++ ){
+                                            if( i < 3 ){
+                                                if( i == 0){
+                                                    str += '<li class="jl-cur">';
+                                                }else{
+                                                    str += '<li>'
+                                                }
+                                                str += '<i></i><div><p>'+res[i].AcceptStation+'</p><p>'+res[i].AcceptTime+'</p></div></li>';
+                                            }else {
+                                                str += '<li class="jl-check-more"><a href="{:U(\'Home/Order/detail\')}?order_sn='+sn+'">查看全部</a></li>';
+                                            }
+                                        }
+                                    }else{
+                                        str = '<li class="jl-cur"><i></i><div><p>暂无物流信息</p></div></li>';
+                                    }
+                                    t.find('ul.jl-delivery-text').html(str);
+                                    t.addClass('ajax-done');
+                                }
+
+                            })
+                        }
+
+                    },function(){
+
+                    });
+                });
+
+            })
+        })
+    </script>
+
+</block>

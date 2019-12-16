@@ -1,0 +1,175 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout-sol-center" />
+
+<block name="title">我的供应方案</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project_upload.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.4/css/layui.css" rel="stylesheet"  media="all">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		.con-name{
+			text-align: right;
+			line-height:30px;
+		}
+		.price-time{
+			height:30px;
+		}
+		.price-time>div{
+			margin-left:10px;
+			float:left;
+			line-height:30px;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+	</style>
+</block>
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main"><!-- 主要内容 -->
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--项目管理中心具体内容-->
+		<div class="projectContent">
+			<if condition="$res eq null">
+				<div id="jl-purchase-fault">
+					<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+					<p class="jl-fault">没有洽谈内容!</p>
+					<a href="{:U('Home/Solution/myProviderUpload')}" class="jl-browse">返回方案中心</a>
+				</div>
+				<else />
+				<foreach name="res" item="vo">
+					<div class="converseList">
+					<table class="converses">
+						<tr>
+							<td class="con-name">方案商昵称:</td>
+							<td><div class="div-padding project_sol_info" style="width:200px;"><span style="color:#e84343;">{$vo.nick_name}</span></div></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<div style="overflow: hidden" class="price-time">
+									<div class="con-name" style="width:64px;">方案编号:</div>
+									<div class="div-padding" style="width:200px;">{$vo.desir_sn}</div>
+									<div class="con-name" style="width:64px;">洽谈时间:</div>
+									<div class="div-padding" style="width:200px;">{$vo.create_time}</div>
+								</div>
+							</td>
+							<td>
+								<div class="con_auth">
+									<!--保存相关数据-->
+									<span class="con-save-span" data-need_id="{$vo.need_id}" data-desir_id="{$vo.desir_id}" data-desir_sn="{$vo.desir_sn}"data-pro_id="{$vo.pro_id}"></span>
+									<!--接受?-->
+									<if condition="$vo.con_auth eq 0">
+										<a href="javascript:;" class="for-click-jj" data-con_auth="1"><div class=" con_auth1">接&nbsp;&nbsp;&nbsp;受</div></a>
+										<elseif condition="$vo.con_auth eq 1"/>
+										<div class="con_auth2">已接受</div>
+										<elseif condition="$vo.con_auth eq 2"/>
+										<div class="con_auth2" style=" background:#ddd;">接受</div>
+									</if>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<div style="overflow: hidden" class="price-time">
+									<div class="con-name" style="width:64px;">方案报价:</div>
+									<div class="div-padding" style="width:200px;">{$vo.price}</div>
+									<div class="con-name" style="width:64px;">开发周期:</div>
+									<div class="div-padding" style="width:200px;">{$vo.con_time}</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="con-name" style="vertical-align: top">设计:</td>
+							<td><div class="con-idea-div div-padding text-font-size desc-hidden2">{$vo.con_idea}</div></td>
+							<td style="vertical-align:top;">
+								<div class="con_auth">
+									<!--拒绝?-->
+									<if condition="$vo.con_auth eq 0">
+										<a href="javascript:;" class="for-click-jj" data-con_auth="2"><div class="con_auth2">拒&nbsp;&nbsp;&nbsp;绝</div></a>
+										<elseif condition="$vo.con_auth eq 1"/>
+										<div class="con_auth2" style="background:#ddd;">拒&nbsp;&nbsp;&nbsp;绝</div>
+										<elseif condition="$vo.con_auth eq 2"/>
+										<div class="con_auth2">已拒绝</div>
+									</if>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td></td>
+							<td colspan="2" class="con-name" style="text-align:right;vertical-align: top;height:30px;line-height: 30px;"><a href="javarscript:;" class="checkmore"><div style="margin-right:50px;">查看更多>>></div></a></td>
+						</tr>
+					</table>
+					</div>
+				</foreach>
+			</if>
+		</div>
+		<div class="clear" ></div>
+		{$page}
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','webuploader','layer'], function ($, modal, pikaday, jlTool,WebUploader) {
+                //点击查看更多
+                $(".checkmore").on('click',function(){
+                    var te = $(this).parents('table').find('.desc-hidden2');
+                    var old_height = te.css('height');
+                    if(old_height  =='100px'){
+                        var auto_height = te.css('height','auto').height();
+                        if(auto_height>100){
+                            te.height(old_height).animate({height:auto_height},'fast');
+                        }else{
+                            te.css('height','100px');
+                        }
+                    }else{
+                        te.animate({height:'100px'},'fast');
+                    }
+                });
+                //点击拒绝或者接受
+                $('.for-click-jj').on('click',function(){
+                    var _this = $(this);
+                    var con_auth = _this.data();/*1代表接受,2代表拒绝*/
+                    var datap= _this.parents(".converseList").find(".con-save-span");
+                    var data = datap.data();
+                    data = $.extend(data,con_auth);//合并两个json对象
+//					console.log(datap);return;
+                    $.ajax({
+                        type:"POST",
+                        dataType:"json",
+                        url :"/Home/Solution/converse",
+                        data:data,
+                        success:function($res){
+//						  var res = JSON.stringify($res);
+//                        var res = jQuery.parseJSON($res);
+//                        var res = eval("("+$res+")");
+//						  console.log(res);
+                            if($res.status==1000){
+                                window.location.reload();//可以改为添加css而不是跳转
+                            }else{
+                                alert('请求失败,请稍少再试!');
+							}
+                        },
+                        error:function($res){
+                            alert('页面错误!');
+                        }
+                    });
+                });
+            });
+        });
+	</script>
+</block>

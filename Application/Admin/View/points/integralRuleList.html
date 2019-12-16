@@ -1,0 +1,377 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .data-table-screen .layui-input,
+        .data-table-screen .layui-select,
+        .data-table-screen .layui-textarea{
+            height: 30px;
+        }
+        .data-table-screen>div{
+            margin-bottom: 10px;
+        }
+        .data-table-screen-title{
+            display: inline-block;
+        }
+    </style>
+</block>
+<block name="content">
+    <div style="height: calc(100vh - 20px);">
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title navBar" href="javascript:">积分规则列表</a>
+            </span>
+            <button style="margin-left: 16px;margin-bottom: 4px" class="add-btn layui-btn layui-btn-sm">添加新规则</button>
+        </blockquote>
+         <blockquote class="layui-elem-quote" style="padding-bottom: 5px">
+             <form class="data-table-screen layui-row layui-form " action="" lay-filter="screen-form">
+                 <div class="layui-form-item layui-input-inline">
+                     <label class="layui-form-label" style="width:86px">积分规则类型</label>
+                     <div class="layui-inline">
+                         <div class="layui-input-inline" style="text-align:left">
+                             <select name="type" class="jl-control-type">
+                                 <option value="">请选择类型</option>
+                                 <optgroup label="基础规则(商品)"><option value="1" {$request['type']==='1'?'selected':''}>单笔</option><option value="21" {$request['type']==='21'?'selected':''}>月度</option><option value="41" {$request['type']==='41'?'selected':''}>年度</option></optgroup>
+                                 <optgroup label="特殊规则"><option value="101" {$request['type']==='101'?'selected':''}>商品</option><option value="111" {$request['type']==='111'?'selected':''}>固定</option></optgroup>
+                             </select>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="layui-form-item layui-input-inline">
+                     <label class="layui-form-label"  style="width:86px">积分规则状态</label>
+                     <div class="layui-inline">
+                         <div class="layui-input-inline" style="text-align:left">
+                             <select name="status" class="jl-control-type">
+                                 <option value="">请选择类型</option>
+                                 <option value="0" {$request['status']==='0'?'selected':''}>申请</option>
+                                 <option value="1" {$request['status']==='1'?'selected':''}>启用</option>
+                                 <option value="11" {$request['status']==='11'?'selected':''}>停用</option>
+                                 <option value="21" {$request['status']==='21'?'selected':''}>审核通过</option>
+                                 <option value="31" {$request['status']==='43'?'selected':''}>审核拒绝</option>
+                             </select>
+                         </div>
+                     </div>
+                 </div>
+                <!-- <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                     <span class="data-table-screen-title">业务员：</span>
+                     <div class="layui-input-inline">
+                         <input name="sale_name" value="{$request['sale_name']}" placeholder="请选择业务员" class="layui-input jl-select-users layui-form-label-pinyin-admin" type="text">
+                         <input name="sale_id"  value="{$request['sale_id']}" placeholder="请选择业务员" class="layui-input jl-select-users" type="hidden">
+                     </div>
+                 </div>-->
+                 <div class="layui-col-xs12 layui-col-sm6 layui-col-md6 layui-input-inline" style="width:auto;float:none;vertical-align:top;">
+                     <button class="layui-btn-sm layui-btn" lay-submit lay-filter="screen" style="width: 100px">
+                         筛选
+                     </button>
+                     <span class="clear-btn layui-btn-sm layui-btn layui-btn-primary" style="width: 100px">清空</span>
+                 </div>
+             </form>
+         </blockquote>
+        <table lay-filter="data-table" class="data-table">
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','laypage','tabController'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var tabController = layui.tabController;
+            var laypage = layui.laypage;
+            var request = {$request | json_encode};
+            var list_data = {$integralList | json_encode};
+            console.log(list_data, request);
+            table.render({
+                elem: '.data-table',
+                data: list_data ? list_data : [],
+                page: false,
+                //url:"{:U(Admin/Customer/customerProductSampleList)}",
+                limit: request.pageSize || 10,
+                cellMinWidth: 100,
+                height: 'full-220',
+                cols: [[
+                    {field: 'id', title: 'ID', fixed: 'left',align:'center', width: 60}
+                    , {field: 'integral_name',align:'center', title: '规则名称'}
+                    , {field: 'type', title: '规则类型',width: 120,align:'center',templet:function(d){
+                        var rule_type={1:'基础规则-单笔',21:'基础规则-月度',41:'基础规则-年度',101:'特殊规则-商品',111:'特殊规则-登录',112:'特殊规则-供应方案',113:'特殊规则-需求方案',114:'特殊规则-发起洽谈',203:'订单退款',205:'积分提取去个人钱包',211:''};
+                        return rule_type[d['type']];
+                    }}
+                    , {field: 'scale',width: 120,align:'center', title: '兑换比例(%)'}
+                 /*   , {field: 'scale_step',width: 120,align:'center', title: '积分递增幅度'}*/
+                    , {field: 'num',align:'center', title: '固定积分数'}
+                    , {field: 'status', align:'center',title: '规则状态',templet:function(d){
+                        var status={1:'启用',11:'停用',0:'申请',21:'审核通过',31:'审核拒绝'};
+                        return status[d['status']];
+                        }}
+                    , {field: 'min_amount',align:'center', title: '最少销售额'}
+                    , {field: 'max_amount',align:'center', title: '最大销售额'}
+                    , {field: 'cate_all',align:'center', title: '绑定分类',tplType:'cate',templet:function(d){
+                            return '<span type="text"  class="layui-btn layui-btn-sm  jl-control-cate_all"  style="background:'+(d.cateList?(d.cateList[0]?"#009688":"#c2c2c2"):"#c2c2c2")+'" data-data="'+(d.cateList?(d.cateList[0]?encodeURIComponent(JSON.stringify(d.cateList)):""):"")+'">查看详情</span><input value="'+(d.cate_id||"")+'" type="hidden" class="layui-input layui-input-cate_all"  />';
+                        }}
+                    , {field: 'p_signs',align:'center', title: '绑定商品',tplType:'product',templet:function(d){
+                            return '<span type="text" class="layui-btn layui-btn-sm  jl-control-p_signs"  style="background:'+(d.productList?(d.productList[0]?"#009688":"#c2c2c2"):"#c2c2c2")+'" data-data="'+(d.productList?(d.productList[0]?encodeURIComponent(JSON.stringify(d.productList)):""):"")+'">查看详情</span><input value="'+(d.p_signs||"")+'" type="hidden" class="layui-input layui-input-p_signs"  />';
+                        }
+                    }
+                   /* , {field: 'cell_code',align:'center', title: '绑定项目',tplType:'product',templet:function(d) {
+                            return '<span type="text" class="layui-btn layui-btn-sm  jl-control-cell_code"  style="background:' + (d.integral_item ? (d.integral_item[0] ? "#009688" : "#c2c2c2") : "#c2c2c2") + '" ">' + (d.integral_item[0]?d.integral_item[0].item_name : "无") + '</span>';
+                        }
+                        }*/
+                    , {field: 'sys_uid',align:'center', title: '创建人'}
+                    , {field: 'start_time',align:'center', width: 200, title: '规则开始时间'}
+                    , {field: 'end_time', align:'center',width: 200,title: '规则结束时间'}
+                    , {field: 'update_at',align:'center', title: '操作时间'}
+                    , {field: 'create_at',align:'center',  title: '创建时间'}
+                    , {
+                        field: 'handle', title: '操作',align:'center',width:160, fixed: 'right', templet: function (d) {
+                            var retrun_str = '';
+                            retrun_str += '<div class="data-table-handle-box" data-id="{{ d.id }}">';
+                            if (d.status == 1) {
+
+                                retrun_str += '<span lay-event="stop" >停用</span>';
+                            }else if(d.status == 11||d.status == 21){
+                                retrun_str += '<span lay-event="start" >启用</span>';
+                            };
+                            if (d.status == 0 ||d.status==31) {
+                                retrun_str += '<span lay-event="del">删除</span>';
+                            };
+                            retrun_str += '<span lay-event="edit" >修改</span>';
+                            if (d.status == 0) retrun_str += '<span lay-event="check">审核</span> </div>';
+                            return retrun_str;
+                        }
+                    }
+                ]],
+                done:function(){
+                    //查看执行项目
+                    $('.jl-control-p_signs').on('click',function(){
+                        product_cate(this,true);
+                    });
+                    //查看绑定分类
+                    $('.jl-control-cate_all').on('click',function(){
+                        product_cate(this,false);
+                    });
+                    var product_cate=function(self,isProduct){
+                        var that=self;
+                        var shop_name= $(that).data("data")?JSON.parse(decodeURIComponent($(that).data("data"))):[] ;
+                        var strs="";
+                        $.each(shop_name,function(index,item){ strs+='<div ><span style="display:inline-block;margin:5px 0;border:1px solid #ddd;padding:5px 10px;width: 76%;text-align:center">'+(item.p_sign||item.cate_name)+'</span> </div>';}) ;
+                        if(shop_name.length<1){
+                            strs+="<div><span style=\"display:inline-block;margin:5px 0;border:1px solid #ddd;padding:5px 10px;width: 76%;text-align:center\">无</span> </div>"
+                        };
+                        layer.open({
+                            title:isProduct?'查看商品':'查看分类',
+                            type: 0,
+                            area:["20vw"],
+                            content: '<div style=\'max-height:60vh;overflow-y:auto\'>'+strs+'</div>',
+                            maxHeight:600,
+                            shadeClose:true,
+                            btn:["确定"],
+                            success: function(){
+                            },
+                            yes:function (index, layero) {
+                                layer.closeAll();
+                            }
+                        });
+                    };
+                }
+            });
+            //工具按钮
+            table.on('tool(data-table)', function (obj) {
+                var source = obj.data;
+                var layEvent = obj.event;
+                if (layEvent === 'edit') {
+                    jlTool.sendIframeMsg('go', {
+                        title: '规则修改',
+                        url: '/Admin/Integral/add_edit_points?Action=edit& id=' + source.id,
+                        icon: ''
+                    });
+                }
+                else if (layEvent === 'check') {
+                    //del_check({id:source.id,status:21},obj);
+                    layer.open({
+                        title:'审核',
+                        type: 0,
+                        content: (
+                            '<div class="layui-form jl-check-modal " style="width: 320px"> ' +
+                            '<input type="radio" name="pass" value="21" title="通过" checked> ' +
+                            '<input type="radio" name="pass" value="31" title="不通过"> ' +
+                            '</div>'
+                        ),
+                        success: function(){
+                            form.render('radio');
+                            $(".layui-form-radio div").css("font-size","14px")
+                        },
+                        yes:function (index) {
+                            var check_status = $('.jl-check-modal').find("input:checked").val();
+                            del_check({id:source.id,status:check_status},obj);
+                        }
+                    });
+                }
+                else if (layEvent === 'del') {
+                    layer.confirm('确定要删除吗？', function (index) {
+                        layer.close(index);
+                        del_check({id:source.id,status:source.status,delete:1},obj);
+                    })
+                }else if(layEvent ==='start'){
+                    var this_status=source.status;
+                    if(this_status==='11'){
+                        jlTool.sendIframeMsg('go', {
+                            title: '规则修改',
+                            url: '/Admin/Integral/add_edit_points?Action=edit& id=' + source.id,
+                            icon: ''
+                        });
+                    }else{
+                        start_stop({id:source.id,status:'1'});
+                    }
+                }else if(layEvent ==='stop'){
+                    start_stop({id:source.id,status:'11'});
+                }
+            });
+            function del_check(data,obj){
+                $.post('/Admin/Integral/checkIntegral',data,
+                    function (res) {
+                        res = $.parseJSON(res);
+                        if (res.error === 0) {
+                            if(data.delete){
+                                obj.del();
+                            };
+                            return layer.msg(res.msg,{icon:6,time:1000},function(){
+                                    queryTable();
+                                });
+
+                        }else{
+                            return layer.msg(res.msg,{icon: 5});
+                        }
+                    })
+            }
+            function start_stop(data){
+                $.post('/Admin/Integral/integralRuleAction',data,
+                    function (res) {
+                        res = $.parseJSON(res);
+                        if (res.error === 0) {
+                                return layer.msg(res.msg,{icon:6,time:1000},function(){
+                                    queryTable();
+                            });
+                        }else{
+                            return layer.msg(res.msg,{icon:5});
+                        }
+                    })
+            }
+            //添加新规则
+            $('.add-btn').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'添加新规则',
+                    url:'/Admin/Integral/add_edit_points',
+                    icon:''
+                });
+            });
+                //分页初始化
+                laypage.render({
+                    elem: 'data-table-page',
+                    limit: request.pageSize || 10,
+                    count: request.count ? Number(request.count) : 0,
+                    curr: request.page || 1,
+                    layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                    jump: function (obj, first) {
+                        if (!first) {
+                            queryTable($.extend({}, request, {
+                                pageSize: obj.limit,
+                                page: /*String(obj.limit)===String(request.pageSize) ? */obj.curr
+                            }));
+                        }
+                    }
+                });
+                //筛选
+                form.on('submit(screen)', function (data) {
+                    //data.field.pid=data.field.p_id;
+
+                    queryTable(data.field);
+                    return false;
+                });
+                var queryTable = function (query) {
+                    query = jlTool.urlEncode(query);
+                    window.location.href = '/Admin/Integral/integralRuleList?' + query
+                };
+                $('.clear-btn').on('click', function () {
+                    queryTable()
+                });
+                //搜索输入拼音首字母自动补全
+                var response_data = [];
+                $(".layui-form-label-pinyin-customer").autocomplete({
+                    source: "/Admin/Customer/companyPinyinSearch?disable20=disable20",
+                    minLength: 2,
+                    close: function (event, ui) {
+
+
+                    },
+                    select: function (event, ui) {
+                        var $this = $(".layui-form-label-pinyin-customer");
+                        var value = ui.item.value;
+                        var id = JSON.parse($("#autoComplete_index_data").val());
+                        var index = response_data.indexOf(value);
+                        $this.siblings("input").val(id[index]);
+                        setTimeout(function () {
+                            response_data = [];
+                        }, 0)
+
+                    },
+                    response: function (event, data) {
+                        response_data = [];
+                        $.each(data.content, function (item, value) {
+                            response_data.push(value.value);
+                        });
+                    }
+                });
+                $(".layui-form-label-pinyin-product").autocomplete({
+                    source: "/Admin/Product/productList?autoComplete=autoComplete",
+                    minLength: 2,
+                    close: function (event, ui) {
+                    },
+                    select: function (event, ui) {
+                        var $this = $(".layui-form-label-pinyin-product");
+                        var value = ui.item.value;
+                        var id = JSON.parse($("#autoComplete_index_data").val());
+                        var index = response_data.indexOf(value);
+                        $this.siblings("input").val(id[index]);
+                        setTimeout(function () {
+                            response_data = [];
+                        }, 0)
+
+                    },
+                    response: function (event, data) {
+                        response_data = [];
+                        $.each(data.content, function (item, value) {
+                            response_data.push(value.value);
+                        });
+                    }
+                });
+                $(".layui-form-label-pinyin-admin").autocomplete({
+                    source: "/Admin/Customer/adminPinyinSearch",
+                    minLength: 2,
+                    close: function (event, ui) {
+
+                    }, select: function (event, ui) {
+                        var $this = $(".layui-form-label-pinyin-admin");
+                        var value = ui.item.value;
+                        var id = JSON.parse($("#autoComplete_index_data").val());
+                        var index = response_data.indexOf(value);
+                        $this.siblings("input").val(id[index]);
+                        setTimeout(function () {
+                            response_data = [];
+                        }, 0)
+
+                    },
+                    response: function (event, data) {
+                        $.each(data.content, function (item, value) {
+                            response_data.push(value.value);
+                        });
+                    }
+                });
+        });
+    </script>
+</block>

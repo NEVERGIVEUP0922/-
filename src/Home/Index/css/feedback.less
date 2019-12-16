@@ -1,0 +1,169 @@
+@import "../../Public/css/init.less";
+
+
+
+.jl-search-content{
+  display: none;
+}
+
+.jl-line{
+  border-top: 2px solid @color;
+  margin-top: 0;
+
+}
+
+#jl-feedback{
+  width: 1160px;
+  margin: 0 auto;
+  padding:0 20px;
+  >p{
+    color:@dark-grey;
+    height: 24px;
+    padding-left: 20px;
+    span{
+      color:@color;
+    }
+  }
+}
+.jl-top{
+  margin-top: 40px;
+}
+
+.js-success{
+  text-align: center;
+  height: 150px;
+  background: #fafafa;
+  padding-top: 30px;
+  box-sizing: border-box;
+  .font18(#74bf5e);
+  p{
+    margin-bottom: 24px;
+  }
+  img{
+    width: 26px;
+    vertical-align: middle;
+    margin-top: -4px;
+    margin-right: 10px;
+  }
+  a{
+    display: inline-block;
+    width: 178px;
+    height: 38px;
+    .font18(@color);
+    line-height: 38px;
+    border:@border03;
+    background: #f9ecec;
+  }
+}
+
+.jl-false{
+  position: relative;
+  .jl-feedback-content{
+    border-color: @color;
+  }
+  .jl-false-note{
+    position: absolute;
+    top: 25px;
+    right: -25px;
+    width: 15px;
+    height: 14px;
+    background: url("../../Public/img/sprite.png") no-repeat -104px -151px;
+  }
+}
+.js-false{
+  .jl-false-note{
+    right: -10px;
+    top: 5px;
+  }
+}
+
+.jl-feedback-content{
+  width: 100%;
+  min-height: 200px;
+  box-sizing: border-box;
+  border:@border02;
+  padding: 15px 20px;
+  margin-top: 20px;
+}
+
+.jl-degree,.jl-contact-way{
+  border:@border02;
+  margin-top: 20px;
+  color:@dark-grey;
+  padding-bottom: 10px;
+  dt{
+    height: 38px;
+    line-height: 38px;
+    background: #f9f9f9;
+    border-bottom:@border02;
+    padding-left: 20px;
+    margin-bottom: 15px;
+    span{
+      color:@color;
+    }
+  }
+  dd{
+    padding-left: 48px;
+    height: 32px;
+    line-height: 32px;
+  }
+}
+.jl-degree>dd{
+  cursor:default;
+  width:auto;
+}
+
+.jl-contact-way{
+  padding-bottom: 25px;
+  dd{
+    padding-left: 20px;
+    float: left;
+    margin-right: 60px;
+    height: 40px;
+    p,input{
+      float: left;
+      height: 40px;
+      line-height: 40px;
+    }
+    p{
+      width: 70px;
+    }
+    input{
+      width: 253px;
+      border:@border02;
+      padding-left: 20px;
+      box-sizing: border-box;
+    }
+  }
+}
+
+.jl-refer{
+  width: 410px;
+  height: 40px;
+  border: none;
+  background: @color;
+  .font18(#fff);
+  display: block;
+  margin: 50px auto 0;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

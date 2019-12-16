@@ -1,0 +1,183 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link href="__PUBLIC__/Common/module/viewerjs/1.0.0/viewer.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .jl-check-modal div{
+            font-size: 14px;
+        }
+    </style>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">水单列表</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="overflow: hidden">
+            <div class="layui-btn-group" style="font-size:14px">
+                <span style="padding: 9px 15px">客户名称</span>
+                 <input value="{$request.user_id_name}" type="text" name="user_id_name" placeholder="请输入客户名称" class="layui-input layui-form-label-pinyin-customer" style="display: inline-block;width: auto">
+                <input value="{$request.user_id}" type="hidden" name="user_id" placeholder="请选择客户" class="layui-input  layui-form-label-pinyin-customer" style="display: inline-block;width: auto">
+            </div>
+            <div class="layui-btn-group" style="font-size:14px">
+                <span style="padding: 9px 15px">业务员</span>
+                <input value="{$request.saleId_name}" type="text" name="saleId_name" placeholder="请输入业务员名称" class="layui-input layui-form-label-pinyin-admin" style="display: inline-block;width: auto">
+                <input value="{$request.saleId}" type="hidden" name="saleId" placeholder="请选择业务员" class="layui-input jl-select-user layui-form-label-pinyin-admin" style="display: inline-block;width: auto">
+            </div>
+                <div class="layui-btn-group">
+                <button class="layui-btn search-btn">检索</button>
+                <button class="layui-btn layui-btn-primary clear-btn">清空</button>
+            </div>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table"></table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/viewerjs/1.0.0/viewer.min.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var request = {$request|json_encode};
+            var form = layui.form;
+            var list_data = {$list|json_encode};
+            initInput({"admin":"","customer":""});
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Order/payImgList?'+query
+            };
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-220',
+                cols: [[ //表头
+                    {field: 'id', title: 'ID', fixed: 'left'}
+                    ,{field: 'order_sn', title: '订单编号'}
+                    ,{field: 'status', title: '状态',templet:function (d) {
+                        var h = { '0':'待审核', '1':'不通过', '2':'通过' };
+                        return h[d.status];
+                    }}
+                    ,{field: 'user_name', title: '客户名称'}
+                    ,{field: 'check_amount', title: '已审核金额'}
+                    ,{field: 'pay_type', title: '水单类型',templet: function(d){ return (d.pay_type == 0 ? "订单支付":"账期还款")}}
+                    ,{field: 'sale_name', title: '业务员名称'}
+                    ,{field: 'pay_img', title: '水单图片',templet: function(d){ return (
+                        '<button class="js-check-img layui-btn layui-btn-sm" data-img="'+d.pay_img+'">查看图片</button>'
+                    )}}
+                    ,{field: 'sys_uid', title: '审核人'}
+                    ,{field: 'check_time', title: '审核时间'}
+                    ,{field: 'create_at', title: '创建时间'}
+                    ,{field: 'update_at', title:'更新时间'}
+                    , {field: 'handle', title: '操作', align: 'center', fixed: 'right', templet:function (d) {
+                        return (
+                            '<div class="data-table-handle-box" data-id="'+d.id+'">' +
+                            ((parseInt(d.status)===0)?'<span class="js-check" data-sn='+d.order_sn+'>审核</span>':'')+
+                            '</div>'
+                        )
+                    }}
+                ]],
+                done:function () {
+                    $('.js-check').on('click',function () {
+                        var $this = $(this);
+                        layer.open({
+                            title:'审核',
+                            type: 0,
+                            content: (
+                                '<div class="layui-form jl-check-modal" style="width: 320px"> ' +
+                                '<input type="radio" name="pass" value="2" title="通过" checked> ' +
+                                '<input type="radio" name="pass" value="1" title="不通过"> ' +
+                                '<div class="sure-money"> ' +
+                                '<p style="padding: 8px 0;">确认收款金额：</p> ' +
+                                '<input type="text" name="title" placeholder="请输入确认收款金额" autocomplete="off" class="layui-input js-check-price"> ' +
+                                '</div> ' +
+                                '</div>'
+                            ),
+                            success: function(){
+                                form.render('radio');
+                                $(".jl-check-modal .layui-form-radio").on("click",function(){
+                                    if($(this).prev("input").val() == 2){
+                                        $(".jl-check-modal .sure-money").slideDown(100);
+                                    }else{
+                                        $(".jl-check-modal .sure-money").slideUp(100);
+                                    };
+                                });
+                            },
+                            yes:function (index, layero) {
+                                var pay_amount = $('.js-check-price').val();
+                                var data = {
+                                    'order_sn':$this.data('sn'),
+                                    'id':$this.parent().data('id'),
+                                    'status':$('input[name="pass"]:checked').val(),
+                                    'pay_amount':pay_amount
+                                };
+                                if(!parseFloat(pay_amount)){
+                                    layer.tips('请输入确认的收款金额', '.js-check-price');
+                                    return;
+                                }
+                                $.post('/Admin/Order/payImgAction',data,function (res) {
+                                    res = $.parseJSON(res);
+                                    if(res.error===0){
+                                        layer.close(index);
+                                        layer.msg('操作成功');
+                                        setTimeout(function () {
+                                            window.location.reload()
+                                        },500)
+                                    }
+                                    else {
+                                        layer.msg(res.msg)
+                                    }
+                                })
+                            }
+                        });
+                    })
+                }
+
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request,{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            $('.js-check-img').click(function () {
+                var img = $(this).data('img');
+                var myImage = new Image();
+                myImage.src = img;
+                var viewer = new Viewer(myImage,{toolbar:false});
+                viewer.show();
+            });
+            //检索按钮
+            $('.search-btn').on('click',function () {
+                queryTable($.extend(request,{
+                    user_id_name:$('input[name="user_id_name"]').val() || "",
+                    user_id:$('input[name="user_id"]').val() || "",
+                    saleId:$('input[name="saleId"]').val() || "",
+                    saleId_name:$('input[name="saleId_name"]').val() || ""
+                }));
+                return false
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+                return false
+            })
+        })
+    </script>
+</block>

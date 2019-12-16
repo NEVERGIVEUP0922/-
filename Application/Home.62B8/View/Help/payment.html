@@ -1,0 +1,90 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">账期申请</a></li>
+        <li class="jl-l"><a href="javascript:;">账期支付</a></li>
+    </ul>
+
+    <div class="jl-register jl-payments">
+        <ul>
+            <li>1、玖隆芯城乐意授信账期给有信用有市场能力的客户</li>
+            <li>2、请提交相关资料进行申请流程</li>
+            <li>3、我们的后台业务员会在收到您的申请后及时审核并联系您协商相关事宜。</li>
+            <li>温馨提示：在个人中心（企业中心）有账期说明，阅读后可点击账期申请。</li>
+        </ul>
+        <img class="jl-first-img" src="__PUBLIC__/Home/Public/img/help/img12.png" alt="">
+        <img src="__PUBLIC__/Home/Public/img/help/img13.png" alt="">
+    </div>
+
+    <!-- 账期支付 -->
+    <ul class="jl-logins jl-question">
+        <li>
+            <h4>1、账期支付有什么功能？</h4>
+            <p>
+                账期支付是玖隆芯城专为玖隆芯城会员打造的专属线上支付服务，会员可往自己的账期账户充值，芯付通账户内的余额可用于支付账期支付平台的订单、运费，因订单产生的退款（如退货货款、额外关税补缴等）将退回至账期账户。
+            </p>
+        </li>
+        <li>
+            <h4>2、如何查看账期订单明细？</h4>
+            <p>
+                登陆玖隆芯城账户，在个人中心 > 账期订单中可查看账期订单明细。
+            </p>
+        </li>
+        <li>
+            <h4>3、账期支付有什么功能？</h4>
+            <p>
+                账期支付是玖隆芯城专为玖隆芯城会员打造的专属线上支付服务，会员可往自己的账期账户充值，芯付通账户内的余额可用于支付账期支付平台的订单、运费，因订单产生的退款（如退货货款、额外关税补缴等）将退回至账期账户。
+            </p>
+        </li>
+        <li>
+            <h4>4、账期支付有什么功能？</h4>
+            <p>
+                账期支付是玖隆芯城专为玖隆芯城会员打造的专属线上支付服务，会员可往自己的账期账户充值，芯付通账户内的余额可用于支付账期支付平台的订单、运费，因订单产生的退款（如退货货款、额外关税补缴等）将退回至账期账户。
+            </p>
+        </li>
+        <li>
+            <h4>5、如何查看账期订单明细？</h4>
+            <p>
+                登陆玖隆芯城账户，在个人中心 > 账期订单中可查看账期订单明细。
+            </p>
+        </li>
+        <li>
+            <h4>6、账期支付有什么功能？</h4>
+            <p>
+                账期支付是玖隆芯城专为玖隆芯城会员打造的专属线上支付服务，会员可往自己的账期账户充值，芯付通账户内的余额可用于支付账期支付平台的订单、运费，因订单产生的退款（如退货货款、额外关税补缴等）将退回至账期账户。
+            </p>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+                $('.jl-help-left h4').on('click',function(){
+                    $(this).parent().toggleClass('jl-active');
+                });
+                $('.jl-titles .jl-r').on('click',function(){
+                    $(this).addClass('jl-active').siblings().removeClass('jl-active');
+                    $('.jl-register').css('display','block');
+                    $('.jl-logins').css('display','none');
+                });
+                $('.jl-titles .jl-l').on('click',function(){
+                    $(this).addClass('jl-active').siblings().removeClass('jl-active');
+                    $('.jl-register').css('display','none');
+                    $('.jl-logins').css('display','block');
+                });
+            })
+        });
+    </script>
+</block>

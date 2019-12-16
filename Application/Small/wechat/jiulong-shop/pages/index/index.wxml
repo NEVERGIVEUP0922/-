@@ -1,0 +1,54 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page" wx:if="{{show}}">
+  <block wx:for="{{shop.sorts}}" wx:key="">
+    <include src="search.wxml" wx:if="{{item.type == 'search' && item.visible == '1'}}" />
+    <include src="adv.wxml" wx:if="{{item.type == 'adv' && item.visible == '1'}}" />
+    <include src="nav.wxml" wx:if="{{item.type == 'nav' && item.visible == '1'}}" />
+    <include src="notice.wxml" wx:if="{{item.type == 'notice' && item.visible == '1'}}" />
+    <include src="cube.wxml" wx:if="{{item.type == 'cube' && item.visible == '1'}}" />
+    <include src="banner.wxml" wx:if="{{item.type == 'banner' && item.visible == '1'}}" />
+    <include src="recommand.wxml" wx:if="{{item.type == 'recommand' && item.visible == '1'}}" />
+  </block>
+
+  <view id="recommand" wx:if="{{storeRecommand}}">
+    <view class="fui-line" style="background:url(../../static/images/recommend_left.png) center center /40% 16px no-repeat; margin:3% auto;">
+      <view class="text text-ff6600" style="font-size:40rpx;background:none" >全部商品</view>
+    </view>
+    <view class="fui-goods-group block border" style="padding:8rpx 0;border-top:1rpx solid #ddd">
+      <block wx:for="{{storeRecommand}}" wx:for-index="idx" wx:key="">
+        <navigator class="fui-goods-item" data-goodsid="{{item.id}}" url="/pages/goods/detail/index?id={{item.id}}&cate_id={{item.cate_id}}">
+          <view style="width:34%">
+            <view class="image" style="background-image:url('{{item.img}}');"></view>
+            <view class="salez" style="background-image: url('{{shop.saleout}}'); " wx:if="{{item.total <= 0}}"></view>
+          </view>
+          <view class="detail" style="width:60%">
+            <view >
+              <view class="name" style="height:50rpx;font-size:34rpx;white-space:nowrap;text-overflow:ellipsis;">
+                 {{item.title}}
+              </view>
+            </view>
+            <view class="index_detail">
+              <text class="text">{{item.detail}}</text>
+            </view>         
+            <view class="index_sale" style="color:#323">
+              <text class="text">库存：{{item.store}}</text>
+               <!-- <text class="text" style="margin-left:4%">已售：{{item.salenum}}</text> -->
+            </view>
+            <view class="index_buy">
+              <view class="text" style="float:left;width:64%;overflow:hidden;text-overflow:ellipsis">单价：<text style="color:#DF433E;">￥{{item.rangeprice}}</text></view>
+               <text class="text02" bindtap="likebuy" data-id="{{item.id}}" style="float:right;margin-right:1%;color:#DF433E">立即购买 </text>
+            </view>
+          </view>
+        </navigator>
+      </block>
+    </view>
+  </view>
+  <view class="fui-loading" wx:if="{{loading}}">
+    <view class="icon"></view>
+    <view class="text">正在加载...</view>
+  </view>
+  <view class="fui-loading empty" wx:if="{{empty}}">
+    <view class="text">没有更多了</view>
+  </view>
+  <include src="/pages/common/copyright.wxml" />
+</view>

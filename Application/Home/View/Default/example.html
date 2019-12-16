@@ -1,0 +1,124 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-index" />
+<block name="title">首页</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/search-index.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <!-- 产品 -->
+    <p style="margin-top: 470px">{\{~}}</p>
+    <div id="jl-product" >
+        <script id="jl-tpl-product-box" type="text/x-dot-template">
+            {\{~it:value:index }}
+            <div class="jl-new-product">
+                <p class="jl-bg{{=index+2}}"></p>
+                <div class="jl-title">
+                    <span>
+                        {{=value.title}}
+                        {{=value.title2 || ''}}
+                    </span>
+                    LATEST PRODUCT
+                    {{ for(var key in value ){ }}
+                    {{= key }}
+                    {{ } }}
+                </div>
+                <div class="jl-container">
+                    <div class="jl-c-left">
+                        <img src="__PUBLIC__/Home/Public/img/product01.png" alt="">
+                    </div>
+                    <div class="jl-c-right">
+                        <ul>
+                            {\{~value.product:value3:index3 }}
+                            <li class="jl-c-li01">
+                                <p></p>
+                                <div class="jl-word-des">
+                                    <h4>{{=value3.title}}</h4>
+                                    <p>替代料号MURATA 替代号MURATA...</p>
+                                    <div class="jl-describe">
+                                        <p>描述下这个产品描述下这个产品</p>
+                                        <p>描述下这个产品描述下这个产品</p>
+                                    </div>
+                                    <p>应用领域、应用领域...</p>
+                                    <div class="jl-price">
+                                        <span>价格：￥10.44</span>
+                                        <a href="#">查看详情</a>
+                                    </div>
+                                </div>
+                            </li>
+                            {\{~}}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <ul class="jl-brand">
+                {\{~value.brand:value2:index2 }}
+                <li><a href="#"><img src="__PUBLIC__/Home/Public/img/images/brand_0{{=index2+1}}.png" alt=""></a></li>
+                {\{~}}
+            </ul>
+            {\{~}}
+        </script>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery','dot'], function($,doT) {
+                $(function () {
+                    var product = [{
+                        title:'产品型号MURATA'
+                    },{
+                        title:'产品型号MURATB'
+                    },{
+                        title:'产品型号MURATC'
+                    },{
+                        title:'产品型号MURATD'
+                    }];
+                    var brand = [{
+                        name:'1',
+                        image:'__PUBLIC__/Home/Public/img/images/brand_01.png'
+                    },{
+                        name:'2',
+                        image:'__PUBLIC__/Home/Public/img/images/brand_02.png'
+                    },{
+                        name:'3',
+                        image:'__PUBLIC__/Home/Public/img/images/brand_03.png'
+                    },{
+                        name:'4',
+                        image:'__PUBLIC__/Home/Public/img/images/brand_04.png'
+                    },{
+                        name:'5',
+                        image:'__PUBLIC__/Home/Public/img/images/brand_05.png'
+                    },{
+                        name:'6',
+                        image:'__PUBLIC__/Home/Public/img/images/brand_06.png'
+                    }];
+                    var data = [{
+                        title:'最新产品',
+                        title2:'真的最新产品',
+                        product:product,
+                        brand:brand
+                    },{
+                        title:'原厂专区',
+                        product:product,
+                        brand:brand
+                    },{
+                        title:'应用市场 ',
+                        product:product,
+                        brand:brand
+                    }];
+                    var page_tpl = doT.template($('#jl-tpl-product-box').text());
+                    var page_html = page_tpl(data);
+                    var $container = $('#jl-product');
+                    $container.append(page_html);
+                    $('.jl-search').click(function () {
+                        $container.append(page_html)
+                    })
+                })
+            });
+        })
+    </script>
+</block>

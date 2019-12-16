@@ -1,0 +1,110 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout" />
+
+<block name="title">商品目录</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/catalogue.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+
+    <!-- banner -->
+    <div id="jl-catalogue-banner">
+        <img src="__PUBLIC__/Home/Index/img/banner160.jpg" alt="">
+    </div>
+
+    <!-- 主要内容 -->
+    <div id="jl-catalogue-main">
+        <volist name="cate" id="vo">
+            <h4 data-id="{$vo.id}"><a href="#">{$vo.cate_name}</a></h4>
+            <if condition=" $vo.leaf neq 1 ">
+                <ul class="jl-goods-classify jl-cle">
+                    <volist name="vo['children']" id="two">
+                        <?php $k = ($key)%5; ?>
+                        <if condition="$k eq 0">
+                            <li class="jl-last-good">
+                                <else/>
+                            <li>
+                        </if>
+                            <if condition=" $two.leaf neq 1 ">
+                                <p>
+                                    <span class="js-search" data-id="{$two.id}"><a href="#">{$two.cate_name}</a></span>
+                                    <!--<button class="jl-select-btn"><i></i></button>-->
+                                </p>
+                                <!--<ol class="jl-goods-popup">-->
+                                    <!--<volist name="two['children']" id="three">-->
+                                            <!--<li><a href="#">{$three.cate_name}</a></li>-->
+                                    <!--</volist>-->
+                                <!--</ol>-->
+                                <else/>
+                                <p>
+                                    <span class="js-search"><a href="#">{$two.cate_name}</a></span>
+                                    <!--<button class="jl-select-btn"><i></i></button>-->
+                                </p>
+                            </if>
+                        </li>
+                    </volist>
+                </ul>
+            </if>
+        </volist>
+    </div>
+
+    <div class="jl-line"></div>
+</block>
+
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function(){
+            require(['jquery'],function($){
+                $('.jl-select-btn').on('click',function(){
+                    var btn=$(this).children();
+                    if(btn.hasClass('jl-cur')){
+                        btn.removeClass('jl-cur');
+                        $(this).parent().siblings('ol').css('display','none');
+                    }else{
+                        btn.addClass('jl-cur');
+                        $(this).parent().siblings('ol').css('display','block');
+                    }
+                });
+
+//                $('#jl-catalogue-main h4').on('click',function(){
+//                    var search_key=$(this).html();
+//                    var h = '{:U("Home/Product/search")}';
+////                    window.location.href = '{:U(home/product/search)}';
+//                    window.location.href = h + '?product='+search_key+'&search=head';
+//                });
+
+                //搜索
+                var $cate_id=$('#js-submit input[name=cate_id]');
+                $('#jl-catalogue-main>h4,.js-search').on('click',function(){
+                    var $input=$(this).attr('data-id');
+                    $cate_id.val($input);
+                    $('#js-submit').trigger('submit');
+                });
+
+                //鼠标移入
+//                var $li_width=$('.jl-goods-classify li').width();
+//                console.log($li_width);
+//                $('.jl-goods-classify li').hover(function(){
+//                    var $width=$(this).find('.js-search a').width();
+//                    $width-=$li_width;
+//                    if($width>0){
+//                        $(this).find('.js-search a').animate({'marginLeft':-$width});
+//                    }
+//                },function(){
+//                    var $width=$(this).find('.js-search a').width();
+//                    $width-=$li_width;
+//                    if($width>0){
+//                        $(this).find('.js-search a').stop().animate({'marginLeft':0});
+//                    }
+//                })
+
+            });
+        });
+    </script>
+
+</block>

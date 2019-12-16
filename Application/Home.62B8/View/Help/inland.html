@@ -1,0 +1,46 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-l"><a href="javascript:;">国内交货</a></li>
+    </ul>
+
+    <!-- 账期支付 -->
+    <ul class="jl-question">
+        <li>
+            <h4>1、用户收到到货通知短信后，需携带已盖公/合同章的销售订单合同，到以下地址提货。</h4>
+            <h4>2、若自提货物超出尺寸60cm*40cm*10cm，则默认发送顺丰快递，查看物流信息请到【会员中心】查看。</h4>
+        </li>
+        <li>
+            <h4>华强北自提点:</h4>
+            <h4>自提地址：深圳市福田区深南中路佳和华强大厦华强电子世界。</h4>
+            <h4>联系电话：0755-55555079</h4>
+            <h4>提货时间：周一至周六14:30-17:30</h4>
+        </li>
+        <li>
+            <h4>物流中心自提点：</h4>
+            <h4>自提地址：广东省深圳市龙岗区坂田街道。</h4>
+            <h4>联系电话：0755-23223795</h4>
+            <h4>提货时间：周一至周六 09:00-18:30（午休时间：12:00~13:30）</h4>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

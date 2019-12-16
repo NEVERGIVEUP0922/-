@@ -1,0 +1,153 @@
+<!-- 前台公共页面尾文件  -->
+<script>
+    var PHP_PUBLIC = '__PUBLIC__';
+    var VERSION_NUM = '{$version_num}';
+</script>
+<script type="text/javascript">
+    var _uba = _uba || [];
+    (function() {
+        var ub = document.createElement('script'); ub.type = 'text/javascript'; ub.async = true; ub.src = PHP_PUBLIC +'/Common/module/uba/1.0/uba.min.js';
+        var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ub, s);
+    })();
+</script>
+<style>
+	.hidden-scroll{
+		padding-right: 8px;
+		overflow-y: hidden;
+	}
+	#jl-change-customer-list>li{
+		border-bottom: 1px solid #ddd;
+		padding:8px 6px;
+		cursor: pointer;
+	}
+	#jl-change-customer-list>li:hover{
+		background-color: #ececec;
+	}
+	.jl-change-customer-search>button{
+		float: left;
+		height: 100%;
+		border: none;
+		background-color: #e84343;
+		color: white;
+		width: 20%;
+		box-sizing: border-box;
+	}
+	.jl-change-customer-search>input{
+		padding: 10px;
+		float: left;
+		height: 100%;
+		width: 80%;
+		box-sizing: border-box;
+	}
+</style>
+<script src="__PUBLIC__/Common/module/requirejs/2.3.4/require.min.js"></script>
+<script src="__PUBLIC__/Home/Public/js/require-config.js"></script>
+<script>
+    require(['jquery'],function ($) {
+        setTimeout(function () {
+            var $box = $('#jl-change-customer-box');
+            var $list = $('#jl-change-customer-list');
+            var $content = $('.jl-change-customer-content');
+            $box.fadeIn();
+            var getData = function (name) {
+                var query = {
+                    page:1,
+                    pageSize:100
+                };
+                if(name) query['name'] = name;
+                $.get('/Home/User/userLoginChange',query,function (res) {
+                    try {
+                        res = $.parseJSON(res);
+                    } catch (e) {
+                        res = []
+                    }
+                    if(res&&$.isArray(res)){
+                        var li = '';
+                        $.each(res,function (index,value) {
+                            li += '<li data-id="'+value.id+'">'+value.nick_name+'</li>'
+                        });
+                        $list.html(li);
+                    }
+                });
+            };
+            getData();
+            var isLeaving = false;
+            var isReadyLeaving = false;
+            var isEntering = false;
+            var isclick=true;
+            var closeBox = function () {
+                $('html').removeClass('hidden-scroll');
+                $('body').removeClass('hidden-scroll');
+                isLeaving = true;
+                $content.each(function () {
+                    $(this).slideUp(200,function () {
+                        $box.animate({width:'50px'},function () {
+                            isLeaving = false;
+                        });
+                    });
+                })
+            };
+            var $search = $('.jl-change-customer-search');
+            $search.children('button').click(function () {
+                var name = $('.jl-change-customer-search').children('input').val().trim();
+                getData(name);
+            });
+            $search.children('input').keydown(function (event) {
+                if(event.keyCode===13){
+                    var name = $('.jl-change-customer-search').children('input').val().trim();
+                    getData(name);
+                }
+            });
+            $list.on('click','li',function () {
+                var id = $(this).data('id');
+                $.post('/Home/User/userLoginChange',{user_id:id},function (res) {
+                    window.location.reload()
+                })
+            });
+        },1)
+    });
+</script>
+<script>
+    require(['jquery','Public/js/search'], function($,search) {
+        var data = {
+            url:"{:U('Home/Product/search')}"
+        };
+        var request={$request|json_encode};
+        search(data,request);
+        var cart_count="{$basket_goods_num}";
+        if (cart_count > 99) {
+            $('.js-cart-num').html("···");
+        } else {
+            $('.js-cart-num').html(cart_count);
+        }
+        //回到顶部
+        $(window).scroll(function(event){
+            var height=$(window).scrollTop();
+            if(height<=0){
+                $('.js-scroll-top a').css('display','none');
+            }else{
+                $('.js-scroll-top a').css('display','block');
+            }
+        });
+        $('.js-scroll-top').on('click',function(){
+            $("html,body").animate({scrollTop:$("html").offset().top},"fast");
+        });
+        //自适应分类导航高度
+        var nav_height =469, nav_num ={$cate_num},nav_h=null;
+        if(nav_num>10){
+            nav_h = nav_height/nav_num;
+            $('.jl-sidebar>ul>li>a').css('height', nav_h+'px');
+            $('.jl-sidebar>ul>li>a').css('line-height', nav_h+'px');
+            $('.jl-sidebar>ul').addClass('jl-height-counted');
+        }else{
+            nav_h = nav_height/10;
+            $('.jl-sidebar>ul>li>a').css('height', nav_h+'px');
+            $('.jl-sidebar>ul>li>a').css('line-height', nav_h+'px');
+        }
+    })
+</script>
+<block name="js">
+
+</block>
+</body>
+</html>

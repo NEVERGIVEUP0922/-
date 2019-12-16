@@ -1,0 +1,84 @@
+<!-- 搜索悬浮框 -->
+<div class="js-search-nav">
+    <div class="jl-main">
+        <a href="#" class="jl-logo-float"></a>
+        <div class="jl-search">
+            <input type="text" class="jl-key-float" placeholder="请输入搜索关键字">
+            <div class="jl-submit-float">
+                <b></b>
+            </div>
+            <div class="js-search-float">
+                <ul>
+                    <li><p><span>C</span>MF-NSMF020-2</p><s>约1455333个商品</s></li>
+                    <li><p><span>C</span>MF-NSMF020-2</p><s>约1455333个商品</s></li>
+                    <li><p><span>C</span>MF-NSMF020-2</p><s>约1455333个商品</s></li>
+                    <li><p><span>C</span>MF-NSMF020-2</p><s>约1455333个商品</s></li>
+                </ul>
+                <span>关闭</span>
+            </div>
+        </div>
+    </div>
+    <div class="line"></div>
+</div>
+<!-- 搜索 -->
+<div class="jl-container">
+    <!--{:dd($get)}-->
+    <div id="jl-search">
+        <div class="jl-search-left">
+            <a href="{:U('Home/Default/index')}" class="jl-logo"></a>
+        </div>
+        <div class="jl-search-center">
+            <block name="nav-title">购物车</block>
+        </div>
+
+        <div class="jl-search-content">
+            <ul class="jl-search-type">
+                <li data-type="2" class="jl-active">型号</li>
+                <li data-type="1">品牌</li>
+                <li data-type="3">功能</li>
+            </ul>
+            <div class="jl-search">
+                <input name="search" class="jl-key-word" type="text" placeholder="请输入搜索关键字" autocomplete="off">
+                <button class="jl-submit-search">
+                    <b></b>
+                </button>
+                <div class="js-search-float">
+                    <ul>
+                        <li><p><span>C</span>MF-NSMF020-2</p><s>约1455333个商品</s></li>
+                        <li><p><span>C</span>MF-NSMF020-2</p><s>约1455333个商品</s></li>
+                        <li><p><span>C</span>MF-NSMF020-2</p><s>约1455333个商品</s></li>
+                        <li><p><span>C</span>MF-NSMF020-2</p><s>约1455333个商品</s></li>
+                    </ul>
+                    <span><a href="#">关闭</a></span>
+                </div>
+            </div>
+        </div>
+        <div class="jl-payment-details">
+            <if condition="$get.active eq 'account'">
+                <p class="jl-details-top">
+                    <span>
+                        <s>应付金额:</s>
+                        <b style="margin-left: 10px"><block name="payable"></block></b>
+                    </span>
+                </p>
+                <p class="jl-details-bottom">
+                    <s style="color:#393939;margin-right: 10px">支付信息:</s>
+                    <span class="js-details-text"><block name="goodName"></block></span>
+                </p>
+                <else />
+                <p class="jl-details-top">
+                    订单提交成功，请尽快付款！订单号：
+                    <block name="transaction"></block>
+                    <span>
+                        <s>应付金额:</s>
+                        <b><block name="payable"></block></b>
+                    </span>
+                </p>
+                <p class="jl-details-bottom">
+                    商品名称：
+                    <span class="js-details-text"><block name="goodName"></block></span>
+                </p>
+            </if>
+        </div>
+    </div>
+</div>

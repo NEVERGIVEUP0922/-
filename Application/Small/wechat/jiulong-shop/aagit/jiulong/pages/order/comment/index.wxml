@@ -1,0 +1,54 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page" wx:if="{{show}}">
+  <view class="fui-list-group" style="margin-top:0">
+    <!-- <view class="fui-list-group-title">
+      <image src="/static/images/icon/shop.png"></image>
+      <text class="shop">{{shopname}}</text>
+    </view> -->
+    <block wx:for="{{list[0].order_goods}}" wx:for-item="val" wx:for-index="ind" wx:key="*this">
+      <view class="list-container" style="border-top:20rpx solid #efeff4; ">
+        <view class="fui-list">
+          <view class="fui-list-media">
+            <image src="{{val.thumb}}"></image>
+          </view>
+          <view class="fui-list-inner">
+            <view class="text">{{val.p_name}}</view>
+            <view class="text">单价：{{val.p_price_true}}</view>
+            <view class="text">总价：{{val.total}}</view>
+          </view>
+        </view>
+        <view class="fui-cell-group evaluate">
+          <view class="fui-cell must">
+            <view class="fui-cell-label">评分</view>
+            <block wx:for="{{stars_class}}" wx:key="*this">
+              <image data-key="{{index}}" bindtap="select" data-index="{{ind}}" class="star-image image-32" src="{{key[ind] >= index ? selectedSrc : normalSrc}}"></image>
+            </block>
+            <text class="fui-label {{stars_class[key]}}">{{key[ind] != -1 ? stars_text[key[ind]] : '未评价'}}</text>
+          </view>
+          <view class="fui-cell">
+            <view class="fui-cell-label">晒图</view>
+            <view class="fui-images fui-images-sm">
+              <block wx:for="{{imgs[ind]}}" wx:key="*this" wx:for-index="imgInd">
+                <image data-index="{{imgInd}}" data-pindex="{{ind}}" src="{{item}}" style="width:100rpx;height:100rpx;" class="image image-sm" data-type="image-preview" catchtap="upload">
+                  <content>
+                    <text data-index="{{imgInd}}" data-pindex="{{ind}}" class="image-remove" data-type="image-remove" style="border-radius:50%;background-color:#fff;font-size:32rpx;"  catchtap="upload">×</text>
+                  </content>
+                </image>
+              </block>
+            </view>
+            <view class="fui-uploader fui-uploader-sm" data-type="image" data-pindex="{{ind}}" style="width:100rpx;height:100rpx;" catchtap="upload" wx:if="{{imgs[ind].length<3}}"></view>
+          </view>
+          <view class="fui-cell must">
+            <view class="fui-cell-label">评论</view>
+          </view>
+          <view class="textarea">
+            <textarea bindinput="change" data-index="{{ind}}" data-id="{{val.p_id}}" data-name="content" style="height:150rpx" placeholder="商品满意吗？来分享你的感受吧"></textarea>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+  <view class="fui-footer" style="bottom:4rpx;">
+    <view bindtap="submit" class="btn btn-danger block" style="line-height:10rpx;">提交评价</view>
+  </view>
+</view>

@@ -1,0 +1,342 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .data-table-screen .layui-input,
+        .data-table-screen .layui-select,
+        .data-table-screen .layui-textarea{
+            height: 30px;
+        }
+        .data-table-screen>div{
+            margin-bottom: 10px;
+        }
+        .data-table-screen-title{
+            display: inline-block;
+            width: 100px;
+        }
+    </style>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">发票订单列表</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="padding-bottom: 5px">
+            <form class="data-table-screen layui-row layui-form layui-input-inline" action="" lay-filter="screen-form">
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6 ">
+                    <span class="data-table-screen-title">客户：</span>
+                    <div class="layui-input-inline">
+                        <input name="user" value="{$request['user']}" class="layui-input list-clear-input" type="text" placeholder="输入客户id或客户名称搜索">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">ERP客户：</span>
+                    <div class="layui-input-inline">
+                        <input name="fcustname" value="{$request['fcustname']}" class="layui-input list-clear-input" type="text" placeholder="输入ERP客户编码或ERP客户名称">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">类别：</span>
+                    <?php $isin = in_array("1",$request['show_site']); ?>
+                    <if condition="$isin">
+                        <input type="checkbox" name="show_site1" title="未开" checked lay-skin="primary" class="list-clear-checkbox">
+                        <else />
+                        <input type="checkbox" name="show_site1" title="未开" lay-skin="primary" class="list-clear-checkbox">
+                    </if>
+                    <?php $isin = in_array("2",$request['show_site']); ?>
+                    <if condition="$isin">
+                        <input type="checkbox" name="show_site2" title="处理中" checked lay-skin="primary" class="list-clear-checkbox">
+                        <else />
+                        <input type="checkbox" name="show_site2" title="处理中" lay-skin="primary" class="list-clear-checkbox">
+                    </if>
+                    <?php $isin = in_array("3",$request['show_site']); ?>
+                    <if condition="$isin">
+                        <input type="checkbox" name="show_site3" title="已开" checked lay-skin="primary" class="list-clear-checkbox">
+                        <else />
+                        <input type="checkbox" name="show_site3" title="已开" lay-skin="primary" class="list-clear-checkbox">
+                    </if>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <button class="screen—btn layui-btn layui-btn-sm" lay-submit lay-filter="screen" style="width: 100px">
+                        筛选
+                    </button>
+                    <span class="clear-btn layui-btn layui-btn-sm layui-btn-primary" style="width: 100px">清空</span>
+                </div>
+            </form>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="status">
+                {{#  if(d.status == '未开' ){ }}
+                <span style="color: #e84343">{{ d.status }}</span>
+                {{#  } else if( d.status == '正在处理' ) { }}
+                <span style="color: #FF5722">{{ d.status }}</span>
+                {{#  } else if( d.status == '已处理' ) { }}
+                <span style="color: #5FB878">{{ d.status }}</span>
+                {{#  } }}
+            </script>
+            <script type="text/html" id="data-table-handle-tpl">
+                <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="detail">查看详细</button>
+                {{#  if(d.status == '未开' ){ }}
+                <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="agree">审核</button>
+                {{#  } }}
+                {{#  if(d.status == '正在处理'){ }}
+                <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="reject">开票</button>
+                {{#  } }}
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var list_data = {$list|json_encode};
+            console.log(list_data);
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/OrderInvoice/index?'+query
+            };
+            //检索按钮
+            $('.search-btn').on('click',function () {
+                queryTable({
+                    user_name:$('input[name="user_name"]').val(),
+                });
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            });
+            var status_cn = [
+                '未开',
+                '正在处理',
+                '已开'
+            ];
+            function eachReplace() {
+                $.each(list_data.list,function (index,value) {
+                    value.status = status_cn[value.status];
+                });
+            }
+            eachReplace();
+            var Ins = table.render({
+                elem: '.data-table',
+                id : 'test',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 80,
+                height:'full-216',
+                cols: [[ //表头
+                    {type:'checkbox'},
+                    {field: 'id', title: '发票id'}
+                    ,{field: 'status', title: '处理状态', templet:'#status'}
+                    ,{field: 'user_id', title: '客户id'}
+                    ,{field: 'user_name', title: '会员名称'}
+                    ,{field: 'user_name', title: 'ERP客户名称'}
+                    ,{field: 'sys_name', title: '所属业务员'}
+                    ,{field: 'invoice_price', title: '发票金额'}
+                    ,{field: 'create_time', title: '申请时间'}
+                    ,{field: 'update_time', title: '最后处理时间'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right', minWidth:250,toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                var tr = obj.tr;
+                switch( layEvent ){
+                    case 'detail': //申请详情
+                        layer.open({
+                            title:'发票申请信息',
+                            area:['1400px','700px'],
+                            closeBtn:1,
+                            content:'<div class="layui-row layui-col-space12">' +
+                            '            <div class="layui-col-xs6 blockQuote-with-table">' +
+                            '                <blockquote class="layui-elem-quote">发票申请信息</blockquote>' +
+                            '                <table class="layui-table">' +
+                            '                    <tbody>' +
+                            '                    <tr><td>发票抬头</td><td>'+ source.invoice_header +'</td></tr>' +
+                            '                    <tr><td>收票人</td><td>'+ source.invoice_owner +'</td></tr>' +
+                            '                    <tr><td>公司地址</td><td>'+source.company_address+'</td></tr>' +
+                            '                    <tr><td>税务登记号</td><td>'+source.company_tax_code+'</td></tr>' +
+                            '                    <tr><td>开户行</td><td>'+source.company_bank_name+'</td></tr>' +
+                            '                    <tr><td>开行账号</td><td>'+source.company_bank_acount+'</td></tr>' +
+                            '                    <tr><td>公司电话</td><td>'+source.company_phone+'</td></tr>' +
+                            '                    <tr><td>详细地址</td><td>'+source.address+'</td></tr>' +
+                            '                    <tr><td>手机</td><td>'+source.mobile+'</td></tr>' +
+                            '                    </tbody>' +
+                            '                </table>' +
+                            '            </div>' +
+                            '            <div class="layui-col-xs6 blockQuote-with-table">\n' +
+                            '                <blockquote class="layui-elem-quote">信息</blockquote>\n' +
+                            '                <table class="layui-table">\n' +
+                            '                    <tbody>\n' +
+                            '                    <tr><td>发票总金额</td><td>'+source.invoice_price+'</td></tr>\n' +
+                            '                    <tr><td>申请时间</td><td>'+source.create_time+'</td></tr>\n' +
+                            '                    <tr><td>处理状态</td><td>发票'+source.status+'</td></tr>\n' +
+                            '                    </tbody>\n' +
+                            '                </table>\n' +
+                            '            </div>\n' +
+                            '        </div>',
+                        });
+
+                        break;
+                    case 'agree': //批准申请
+                        // var load = layer.load(3, {time: 10*1000});
+                        // $.post('/Admin/Retreat/agreeRetreat',{re_sn:source.re_sn},function(data){
+                        //     layer.close(load);
+                        //     if( data.status === 0  ){
+                        //         layer.msg( source.re_sn+' 操作成功',{icon:1,time:3000},function(){
+                        //             location.reload();
+                        //         } );
+                        //     }else{
+                        //         layer.alert( data.content );
+                        //     }
+                        // });
+                        // location.reload()
+                        break;
+                    case 'reject': //批准驳回
+                        layer.prompt({
+                            formType: 2,
+                            value: '请输入驳回原因',
+                            title: '驳回原因',
+                            area: ['400px', '250px'] //自定义文本域宽高
+                        }, function(value, index, elem){
+                            if( value === '' || value === '请输入驳回原因' ){
+                                layer.msg('请输入驳回原因',{icon:2,anim:6});
+                            }else{
+                                layer.close( index );
+                                var load = layer.load();
+                                $.post('/Admin/Retreat/rejectRetreat',{re_sn:source.re_sn,action_desc:value},function(data){
+                                    layer.close(load);
+                                    if( data.status === 0  ){
+                                        layer.msg( source.re_sn+' 退款申请已驳回',{icon:1,time:3000}, function(){
+                                            location.reload();
+                                        });
+                                    }else{
+                                        layer.alert( data.content );
+                                    }
+                                });
+                            }
+
+                        });
+                        // form.render();
+                        break;
+                    case 'delivery':
+                        layer.confirm('是否确认收货', {icon: 3, title:'提示'},function(){
+                            var load = layer.load(3, {time: 10*1000});
+                            $.post('/Admin/Retreat/agreeRetreatDelivery',{re_sn:source.re_sn},function(data){
+                                layer.close(load);
+                                if( data.status === 0  ){
+                                    layer.msg( source.re_sn+'收货成功!请手动完成相应退款操作',{icon:1,time:3000}, function(){
+                                        location.reload();
+                                    });
+                                }else{
+                                    layer.alert( data.content );
+                                }
+                            });
+                        });
+                        break;
+                    case 'commit':
+                        layer.confirm('请确认是否已完成退款?', {icon: 3, title:'提示'},function(){
+                            var load = layer.load(3, {time: 10*1000});
+                            $.post('/Admin/Retreat/commitRetreat',{re_sn:source.re_sn},function(data){
+                                layer.close(load);
+                                if( data.status === 0  ){
+                                    layer.msg( source.re_sn+' 操作成功!',{icon:1,time:3000}, function(){
+                                        location.reload();
+                                    });
+                                }else{
+                                    layer.alert( data.content );
+                                }
+                            });
+                        });
+                        break;
+                    case 'log':
+                        var str = '<table class="layui-table"><tr><td>操作人</td><td>操作内容</td><td>操作备注</td><td>操作时间</td></tr>';
+                        var action = {
+                            0:'创建申请',
+                            1:'批准申请',
+                            2:'驳回申请',
+                            3:'客户修改申请',
+                            4:'客户发货',
+                            5:'确认收货',
+                            6:'退款完成',
+                            7:'退款撤销',
+                            8:'部分VM审核',
+                        };
+
+                        for( var i=0; i < source.logs.length; i++){
+                            var l = source['logs'][i];
+                            str +='<tr><td>';
+                            if( l.user_type == 0 ){
+                                str += l.user_name;
+                            }else{
+                                str += l.handle_name;
+                            }
+                            str +='</td><td>'+action[l['action_type']]+'</td><td>';
+                            if( l.user_type == 0 ){
+                                str += source.retreat_desc;
+                            }else{
+                                str += l.action_desc;
+                            }
+                            str +='</td><td>'+ l.create_time +'</td></tr>';
+                        }
+                        str += '</table>';
+                        layer.open({
+                            title: '退款订单操作纪录',
+                            closeBtn: 1,
+                            shadeClose: true,
+                            area:['800px', '300px'],
+                            content:str,
+                        });
+                        form.render();
+                        break;
+                }
+            });
+
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            form.on('submit(screen)', function(data){
+                var res = {};
+                queryTable($.extend({},{
+                    is_online:request.is_online?request.is_online:null,
+                    is_del:request.is_del?request.is_del:null,
+                    cate_id:request.cate_id,
+                    pageSize:request.pageSize,
+                    page:1
+                },res));
+                return false;
+            });
+            //清空
+            $('.clear-btn').on('click',function () {
+                $('.list-clear-input').val('');
+                $('.list-clear-checkbox').prop('checked',false);
+                form.render('checkbox', 'screen-form');
+            });
+
+        });
+    </script>
+</block>

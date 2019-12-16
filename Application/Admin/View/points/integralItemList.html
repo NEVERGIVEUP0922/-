@@ -1,0 +1,314 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .data-table-screen .layui-input,
+        .data-table-screen .layui-select,
+        .data-table-screen .layui-textarea{
+            height: 30px;
+        }
+        .data-table-screen>div{
+            margin-bottom: 10px;
+        }
+        .data-table-screen-title{
+            display: inline-block;
+        }
+    </style>
+</block>
+<block name="content">
+    <div style="height: calc(100vh - 20px);">
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title navBar" href="javascript:">积分项目列表</a>
+            </span>
+            <button style="margin-left: 16px;margin-bottom: 4px" class="add-btn layui-btn layui-btn-sm">添加积分项目</button>
+        </blockquote>
+        <!-- <blockquote class="layui-elem-quote" style="padding-bottom: 5px">
+             <form class="data-table-screen layui-row layui-form layui-input-inline" action="" lay-filter="screen-form">
+                 <div class="layui-col-xs12 layui-col-sm6 layui-col-md6 ">
+                     <span class="data-table-screen-title">客户：</span>
+                     <div class="layui-input-inline">
+                         <input name="nick_name" value="{$request['nick_name']}" placeholder="请选择客户" class="layui-input jl-select-customers layui-form-label-pinyin-customer" type="text">
+                         <input name="uid" value="{$request['uid']}" placeholder="请选择客户" class="layui-input jl-select-customers" type="hidden">
+                     </div>
+                 </div>
+                 <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                     <span class="data-table-screen-title">产品型号：</span>
+                     <div class="layui-input-inline">
+                         <input name="p_sign" value="{$request['p_sign']}" placeholder="请选择商品型号" class="layui-input jl-select-products layui-form-label-pinyin-product " type="text">
+                         <input name="pid" value="{$request['pid']}" placeholder="请选择商品型号" class="layui-input jl-select-products" type="hidden">
+                     </div>
+                 </div>
+                 <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                     <span class="data-table-screen-title">业务员：</span>
+                     <div class="layui-input-inline">
+                         <input name="sale_name" value="{$request['sale_name']}" placeholder="请选择业务员" class="layui-input jl-select-users layui-form-label-pinyin-admin" type="text">
+                         <input name="sale_id"  value="{$request['sale_id']}" placeholder="请选择业务员" class="layui-input jl-select-users" type="hidden">
+                     </div>
+                 </div>
+                 <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                     <button class="layui-btn-sm layui-btn" lay-submit lay-filter="screen" style="width: 100px">
+                         筛选
+                     </button>
+                     <span class="clear-btn layui-btn-sm layui-btn layui-btn-primary" style="width: 100px">清空</span>
+                 </div>
+             </form>
+         </blockquote>-->
+        <table lay-filter="data-table" class="data-table">
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','laypage','tabController'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var tabController = layui.tabController;
+            var laypage = layui.laypage;
+            var request = {$request | json_encode};
+            var list_data = {$integralItemList | json_encode};
+            console.log(list_data, request);
+            table.render({
+                elem: '.data-table',
+                data: list_data ? list_data : [],
+                page: false,
+                //url:"{:U(Admin/Customer/customerProductSampleList)}",
+                limit: request.pageSize || 10,
+                cellMinWidth: 100,
+                height: 'full-140',
+                cols: [[
+                    {field: 'id', title: 'ID', fixed: 'left',align:'center', width: 60}
+                    , {field: 'item_name',align:'center', title: '项目名称'}
+                    , {field: 'item_describe', title: '项目描述',width: 120,align:'center'}
+                    , {field: 'status', align:'center',title: '规则状态',templet:function(d){
+                        var status={1:'启用',2:'停用',0:'初始状态'};
+                        return status[d['item_status']];
+                        }}
+                    , {field: 'integral_rule_id',align:'center', title: '绑定积分规则',tplType:'cate',templet:function(d){
+                            return '<span type="text"  class="layui-btn layui-btn-sm  jl-control-cate_all"  style="background:'+(d['integral_rule_list'].id?'#009688':'#c2c2c2')+';"  data-id="'+d['integral_rule_list'].id+'">'+(d['integral_rule_list'].integral_name||"无")+'</span>';
+                        }}
+                    , {field: 'sys_uid',align:'center', title: '创建人'}
+                    , {field: 'update_time',align:'center', title: '操作时间'}
+                    , {field: 'create_time',align:'center',  title: '创建时间'}
+                    , {
+                        field: 'handle', title: '操作',align:'center',width:160, fixed: 'right', templet: function (d) {
+                            var retrun_str = '';
+                            retrun_str += '<div class="data-table-handle-box" data-id="{{ d.id }}">';
+                            if (d.item_status == 1) {
+
+                                retrun_str += '<span lay-event="stop" data-integral-id="'+d.integral_id+'">停用</span>';
+                            }else if(d.item_status == 2 || d.item_status == 0){
+                                retrun_str += '<span lay-event="start" >启用</span>';
+                            };
+                            if (d.item_status == 0 ||d.item_status==2) {
+                                retrun_str += '<span lay-event="del">删除</span>';
+                            };
+                            retrun_str += '<span lay-event="edit" >修改</span>';
+                            return retrun_str;
+                        }
+                    }
+                ]],
+                done:function(){
+                    //查看执行项目
+                    $('.jl-control-cell_code').on('click',function(){
+                        product_cate(this,true);
+                    });
+                    //查看绑定分类
+                    $('.jl-control-cate_all').on('click',function(){
+                        product_cate(this,false);
+                    });
+                    var product_cate=function(self,isProduct){
+                        var that=self;
+                        var shop_name= $(that).data("data")?JSON.parse(decodeURIComponent($(that).data("data"))):[] ;
+                        var strs="";
+                        $.each(shop_name,function(index,item){ strs+='<div ><span style="display:inline-block;margin:5px 0;border:1px solid #ddd;padding:5px 10px;width: 76%;text-align:center">'+(item.p_sign||item.cate_name)+'</span> </div>';}) ;
+                        if(shop_name.length<1){
+                            strs+="<div ><span style=\"display:inline-block;margin:5px 0;border:1px solid #ddd;padding:5px 10px;width: 76%;text-align:center\">无</span> </div>"
+                        };
+                        layer.open({
+                            title:isProduct?'查看商品':'查看分类',
+                            type: 0,
+                            area:["20vw"],
+                            content: strs,
+                            maxHeight:600,
+                            shadeClose:true,
+                            btn:["确定"],
+                            success: function(){
+                            },
+                            yes:function (index, layero) {
+                                layer.closeAll();
+                            }
+                        });
+                    };
+                }
+            });
+            //工具按钮
+            table.on('tool(data-table)', function (obj) {
+                debugger
+                var source = obj.data;
+                var layEvent = obj.event;
+                if (layEvent === 'edit') {
+                    jlTool.sendIframeMsg('go', {
+                        title: '规则修改',
+                        url: '/Admin/Integral/add_edit_item?Action=edit& id=' + source.id,
+                        icon: ''
+                    });
+                }
+                else if (layEvent === 'del') {
+                    layer.confirm('确定要删除吗？', function (index) {
+                        layer.close(index);
+                        start_stop({id:source.id,item_status:source.status,delete:1},obj);
+                    })
+                }else if(layEvent ==='start'){
+                    start_stop({id:source.id,item_status:'1'});
+                }else if(layEvent ==='stop'){
+                    var integral_id=source.integral_rule_id;
+                    var end_time='';
+                    if(integral_id){
+                        end_time=source.integral_rule_list.end_time;
+                        if(new Date(end_time) - Date.now()>0){
+                            layer.confirm('有积分规则未到期，停用将导致积分规则停用，是否继续停用',function(index){
+                                if(index){
+                                    start_stop({id:source.id,item_status:'2'});
+                                    layer.close(index);
+                                }
+                            });
+                        }else{
+                            start_stop({id:source.id,item_status:'2'});
+                        }
+                    }else{
+                        start_stop({id:source.id,item_status:'2'});
+                    };
+                }
+            });
+            function start_stop(data){
+                $.post('/Admin/Integral/integralItemList',data,
+                    function (res) {
+                        res = $.parseJSON(res);
+                        if (res.error === 0) {
+                                return layer.msg(res.msg,{icon:6,time:1000},function(){
+                                    queryTable();
+                            });
+                        }else{
+                            return layer.msg(res.msg,{icon:5});
+                        }
+                    })
+            }
+            //添加新规则
+            $('.add-btn').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'添加积分项目',
+                    url:'/Admin/Integral/add_edit_item',
+                    icon:''
+                });
+            });
+                //分页初始化
+                laypage.render({
+                    elem: 'data-table-page',
+                    limit: request.pageSize || 10,
+                    count: request.count ? Number(request.count) : 0,
+                    curr: request.page || 1,
+                    layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                    jump: function (obj, first) {
+                        if (!first) {
+                            queryTable($.extend({}, request, {
+                                pageSize: obj.limit,
+                                page: /*String(obj.limit)===String(request.pageSize) ? */obj.curr
+                            }));
+                        }
+                    }
+                });
+                //筛选
+                form.on('submit(screen)', function (data) {
+                    //data.field.pid=data.field.p_id;
+                    queryTable(data.field);
+                    return false;
+                });
+                var queryTable = function (query) {
+                    query = jlTool.urlEncode(query);
+                    window.location.href = '/Admin/Integral/integralItemList?' + query
+                };
+                $('.clear-btn').on('click', function () {
+                    queryTable()
+                });
+                //搜索输入拼音首字母自动补全
+                var response_data = [];
+                $(".layui-form-label-pinyin-customer").autocomplete({
+                    source: "/Admin/Customer/companyPinyinSearch?disable20=disable20",
+                    minLength: 2,
+                    close: function (event, ui) {
+
+
+                    },
+                    select: function (event, ui) {
+                        var $this = $(".layui-form-label-pinyin-customer");
+                        var value = ui.item.value;
+                        var id = JSON.parse($("#autoComplete_index_data").val());
+                        var index = response_data.indexOf(value);
+                        $this.siblings("input").val(id[index]);
+                        setTimeout(function () {
+                            response_data = [];
+                        }, 0)
+
+                    },
+                    response: function (event, data) {
+                        response_data = [];
+                        $.each(data.content, function (item, value) {
+                            response_data.push(value.value);
+                        });
+                    }
+                });
+                $(".layui-form-label-pinyin-product").autocomplete({
+                    source: "/Admin/Product/productList?autoComplete=autoComplete",
+                    minLength: 2,
+                    close: function (event, ui) {
+                    },
+                    select: function (event, ui) {
+                        var $this = $(".layui-form-label-pinyin-product");
+                        var value = ui.item.value;
+                        var id = JSON.parse($("#autoComplete_index_data").val());
+                        var index = response_data.indexOf(value);
+                        $this.siblings("input").val(id[index]);
+                        setTimeout(function () {
+                            response_data = [];
+                        }, 0)
+
+                    },
+                    response: function (event, data) {
+                        response_data = [];
+                        $.each(data.content, function (item, value) {
+                            response_data.push(value.value);
+                        });
+                    }
+                });
+                $(".layui-form-label-pinyin-admin").autocomplete({
+                    source: "/Admin/Customer/adminPinyinSearch",
+                    minLength: 2,
+                    close: function (event, ui) {
+
+                    }, select: function (event, ui) {
+                        var $this = $(".layui-form-label-pinyin-admin");
+                        var value = ui.item.value;
+                        var id = JSON.parse($("#autoComplete_index_data").val());
+                        var index = response_data.indexOf(value);
+                        $this.siblings("input").val(id[index]);
+                        setTimeout(function () {
+                            response_data = [];
+                        }, 0)
+
+                    },
+                    response: function (event, data) {
+                        $.each(data.content, function (item, value) {
+                            response_data.push(value.value);
+                        });
+                    }
+                });
+        });
+    </script>
+</block>

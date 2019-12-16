@@ -1,0 +1,153 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-cart" />
+
+<block name="title">搜索</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/cart.css">
+</block>
+
+<block name="nav-title">购物车</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <ul id="jl-cart-progress" class="jl-cle">
+        <li class="jl-cur">
+            <p>
+                <span class="jl-serial">1</span>
+                我的购物车
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li>
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">2</span>
+                确认订单信息
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-progress-last">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">3</span>
+                成功提交订单
+            </p>
+        </li>
+    </ul>
+
+    <div id="jl-cart-main">
+        <ul id="jl-cart-title" class="jl-cle">
+            <li class="jl-check">全选</li>
+            <li class="jl-goods">商品</li>
+            <li class="jl-trademark">品牌</li>
+            <li class="jl-detail">详情</li>
+            <li class="jl-price">单价/元</li>
+            <li class="jl-count">数量</li>
+            <li class="jl-subtotal">小计/元</li>
+            <li class="jl-operation">操作</li>
+        </ul>
+
+        <ul id="jl-cart-content" class="jl-cle">
+            <li>
+                <p class="jl-check">
+                    <span class="jl-box"></span>
+                </p>
+                <p class="jl-goods">
+                    <img src="__PUBLIC__/Home/Public/img/images/new.png" alt="">
+                </p>
+                <p class="jl-trademark">MURATA</p>
+                <p class="jl-detail">
+                    <s>封装：5000</s>
+                    <s>批号：TOP-1</s>
+                    <s>交期：3-5个工作日</s>
+                </p>
+                <p class="jl-price">￥0.25</p>
+                <p class="jl-count">
+                    <button class="jl-minus">-</button>
+                    <input type="text" value="1">
+                    <button class="jl-add">+</button>
+                </p>
+                <p class="jl-subtotal">￥2500</p>
+                <p class="jl-operation">
+                    <i class="jl-delete"></i>
+                </p>
+            </li>
+            <li>
+                <p class="jl-check">
+                    <span class="jl-box"></span>
+                </p>
+                <p class="jl-goods">
+                    <img src="__PUBLIC__/Home/Public/img/cart/cart01.png" alt="">
+                </p>
+                <p class="jl-trademark">MURATA</p>
+                <p class="jl-detail">
+                    <s>封装：5000</s>
+                    <s>批号：TOP-1</s>
+                    <s>交期：3-5个工作日</s>
+                </p>
+                <p class="jl-price">￥0.25</p>
+                <p class="jl-count">
+                    <button class="jl-minus">-</button>
+                    <input type="text" value="1">
+                    <button class="jl-add">+</button>
+                </p>
+                <p class="jl-subtotal">￥2500</p>
+                <p class="jl-operation">
+                    <i class="jl-delete"></i>
+                </p>
+            </li>
+            <li>
+                <p class="jl-check">
+                    <span class="jl-box"></span>
+                </p>
+                <p class="jl-goods">
+                    <img src="__PUBLIC__/Home/Public/img/cart/cart01.png" alt="">
+                </p>
+                <p class="jl-trademark">MURATA</p>
+                <p class="jl-detail">
+                    <s>封装：5000</s>
+                    <s>批号：TOP-1</s>
+                    <s>交期：3-5个工作日</s>
+                </p>
+                <p class="jl-price">￥0.25</p>
+                <p class="jl-count">
+                    <button class="jl-minus">-</button>
+                    <input type="text" value="1">
+                    <button class="jl-add">+</button>
+                </p>
+                <p class="jl-subtotal">￥2500</p>
+                <p class="jl-operation">
+                    <i class="jl-delete"></i>
+                </p>
+            </li>
+        </ul>
+
+        <ul id="jl-settlement" class="jl-cle">
+            <li class="jl-check">
+                <span class="jl-box jl-cur"></span>
+            </li>
+            <li>全选</li>
+            <li class="jl-remove"><a href="#">移入收藏夹</a></li>
+            <li><a href="#">批量删除</a></li>
+            <li class="jl-settle"><button>计算</button></li>
+            <li class="jl-total">总金额（不含运费）：<span>￥2500</span></li>
+        </ul>
+    </div>
+
+    <div id="jl-cart-empty">
+        <img src="__PUBLIC__/Home/Public/img/no-product.png" alt="">
+        <p>您的购物车还是空的，赶紧行动吧！</p>
+    </div>
+
+
+    <div class="jl-line"></div>
+
+</block>
+
+<block name="js">
+</block>

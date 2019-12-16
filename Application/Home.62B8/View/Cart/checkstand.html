@@ -1,0 +1,107 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-checkstand" />
+
+<block name="title">搜索</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/checkstand.css">
+</block>
+
+<block name="nav-title">收银台</block>
+<block name="transaction">599146493616</block>
+<block name="payable">￥2525.00</block>
+<block name="goodName">MURATA</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <div id="jl-checkstand">
+        <div class="jl-checkstand-main">
+            <ul class="jl-checkstand-way">
+                <li class="jl-cur">
+                    <div class="jl-way-left">
+                        <i class="jl-selected"></i>
+                        <span class="jl-bank-icon">
+                            <img src="__PUBLIC__/Home/Public/img/cart/brank01.png" alt="">
+                        </span>
+                        <b>支付宝支付</b>
+                        <s>储蓄卡（1454）</s>
+                    </div>
+                    <div class="jl-way-right">支付<b>2526.00</b>元</div>
+                </li>
+                <li>
+                    <div class="jl-way-left">
+                        <i class="jl-selected"></i>
+                        <span class="jl-bank-icon">
+                            <img src="__PUBLIC__/Home/Public/img/cart/brank01.png" alt="">
+                        </span>
+                        <b>支付宝支付</b>
+                        <s>储蓄卡（1454）</s>
+                    </div>
+                    <div class="jl-way-right">支付<b>2526.00</b>元</div>
+                </li>
+                <li>
+                    <div class="jl-way-left">
+                        <i class="jl-selected"></i>
+                        <span class="jl-bank-icon">
+                            <img src="__PUBLIC__/Home/Public/img/cart/brank01.png" alt="">
+                        </span>
+                        <b>支付宝支付</b>
+                        <s>储蓄卡（1454）</s>
+                    </div>
+                    <div class="jl-way-right">支付<b>2526.00</b>元</div>
+                </li>
+                <li>
+                    <div class="jl-way-left">
+                        <i class="jl-selected"></i>
+                        <span class="jl-bank-icon">
+                            <img src="__PUBLIC__/Home/Public/img/cart/brank01.png" alt="">
+                        </span>
+                        <b>支付宝支付</b>
+                        <s>储蓄卡（1454）</s>
+                    </div>
+                    <div class="jl-way-right">支付<b>2526.00</b>元</div>
+                </li>
+                <li>
+                    <div class="jl-way-left">
+                        <i class="jl-selected"></i>
+                        <span class="jl-bank-icon">
+                            <img src="__PUBLIC__/Home/Public/img/cart/brank01.png" alt="">
+                        </span>
+                        <b>支付宝支付</b>
+                        <s>储蓄卡（1454）</s>
+                    </div>
+                    <div class="jl-way-right">支付<b>2526.00</b>元</div>
+                </li>
+            </ul>
+            <div class="jl-more-way jl-cle">
+                <button class="jl-more-bank">更多快捷方式</button>
+                <button class="jl-add-bank">添加新卡/网银支付</button>
+            </div>
+            <button class="jl-payment">立即支付</button>
+        </div>
+    </div>
+
+    <div class="jl-add-popup">
+        <div class="jl-bg"></div>
+        <div class="jl-add-main">
+            <ul class="jl-title">
+                <li class="jl-cur">快捷支付</li>
+                <li>网银支付</li>
+            </ul>
+            <i class="jl-close"></i>
+            <p class="jl-card-number jl-cle">
+                <span>银行卡号</span>
+                <input type="text" placeholder="请输入详细银行卡号进行识别">
+            </p>
+            <button class="jl-next">下一步</button>
+        </div>
+    </div>
+
+</block>
+
+<block name="js">
+</block>

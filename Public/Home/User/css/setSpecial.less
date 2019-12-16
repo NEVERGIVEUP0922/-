@@ -1,0 +1,193 @@
+@import "../../Public/css/init.less";
+
+
+.jl-mandatory{
+  margin-left: 10px;
+}
+.jl-special-ticket{
+  color:@dark-grey;
+  position: relative;
+  padding-bottom: 60px;
+}
+#jl-add-ticket{
+  padding-bottom: 45px;
+  border:@border02;
+}
+.jl-title{
+  height: 40px;
+  line-height: 40px;
+  background: @bg-color;
+  padding-left: 30px;
+}
+.jl-form-group{
+  margin-top: 20px;
+  padding-left: 30px;
+  label{
+    display: inline-block;
+    width: 100px;
+  }
+  >div{
+    display: inline-block;
+    position: relative;
+    margin-right: 10px;
+  }
+  .jl-last{
+    margin-right: 0;
+  }
+}
+//.jl-chose-cur{
+//  background:@color url("../../Public/img/tick.png") no-repeat center center;
+//  background-size:90%;
+//  border-color: @color;
+//}
+.user_name,.phone,.jl-addr{
+  width: 538px;
+  height: 40px;
+  line-height: 40px;
+  border:@border02;
+  box-sizing: border-box;
+  padding-left: 20px;
+}
+.phone{
+  width: 254px;
+}
+.jl-addr{
+  width: 124px;
+
+}
+.jl-arr-select{
+  position: absolute;
+  right: 20px;
+  top: 12px;
+  display: inline-block;
+  width: 10px;
+  height: 14px;
+  background: url("../../Public/img/sprite.png") no-repeat -35px -180px;
+}
+
+.jl-btn{
+  width: 180px;
+  height: 40px;
+  border: none;
+  .font18(#fff);
+  display: block;
+  margin: 50px auto;
+  cursor: pointer;
+  background:@grey ;
+}
+.jl-save,.jl-modification{
+  background: @color;
+}
+
+//已保存的收货地址
+.jl-save-ticket{
+  width: 100%;
+  border-collapse:collapse;
+  margin-bottom: 20px;
+}
+td{
+  border:@border02;
+  padding: 10px 0 10px 17px;
+  box-sizing: border-box;
+}
+.jl-save-name{
+  width: 116px;
+  background: @bg-color;
+  padding-left: 20px;
+}
+.jl-save-detail{
+  width: 312px;
+  color:@medium-grey;
+  line-height: 24px;
+
+}
+.jl-save-set{
+  width: 116px;
+  text-align: center;
+  .jl-defalt{
+    color:@green;
+  }
+  p,.jl-amend,.jl-deleted{
+    color:@color;
+  }
+  p{
+    margin-top: 20px;
+  }
+}
+.jl-notes{
+  color:@color;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-left: 30px;
+}
+
+.jl-top-arr,.jl-bottom-arr{
+  right: 20px;
+}
+
+
+body{
+  background: #fff;
+}
+.jl-c-hidden{
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  filter:alpha(opacity=0);
+}
+.jl-y-select-title{
+  width: 124px;
+  box-sizing: border-box;
+  padding: 0 20px;
+  border-color:@light-gray ;
+}
+.jl-form-group .jl-c-de{
+  margin-right: 0;
+  .js-select-third{
+    //margin-right: 0;
+  }
+}
+
+.jl-hint{
+  display: none;
+  position: absolute;
+  bottom: 80px;
+  right: 50%;
+  margin-right: -220px;
+  color:@color;
+}
+.jl-invoice-id{
+  display: none;
+}
+.jl-false-note{
+  right: 10px;
+  top: 2px;
+}
+.js-address{
+  .jl-false-note{
+    width: 15px;
+    right: 8px;
+    margin-right: 10px;
+  }
+  .jl-mandatory{
+    margin-left: -14px;
+  }
+}
+.js-chose{
+  position: relative;
+}
+.jl-defalt-addr{
+  opacity: 0;
+  filter:alpha(opacity=0);
+  position: absolute;
+  top: -6px;
+  left: 123px;
+  height: 30px;
+  width: 200px;
+  cursor: pointer;
+}
+
+
+
+

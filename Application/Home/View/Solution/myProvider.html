@@ -1,0 +1,322 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout-sol-center" />
+
+<block name="title">我的供应方案</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project_upload.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.4/css/layui.css" rel="stylesheet"  media="all">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		.myPro_desir{
+			color:#e84343;
+		}
+		.gray-color{
+			color:#ddd;
+		}
+	</style>
+</block>
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main"><!-- 主要内容 -->
+	<!--面包屑导航系统-->
+	<!--{$breadcrum}-->
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--项目管理中心具体内容-->
+		<div class="projectContent">
+			<if condition="$res eq null">
+				<div id="jl-purchase-fault">
+					<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+					<p class="jl-fault">还没有任何内容哦!</p>
+					<a href="{:U('Home/Solution/myProviderUpload')}" class="jl-browse">点击发布方案</a>
+				</div>
+			<else />
+				<foreach name="res" item="vo">
+				<div class="mysol mysol3">
+					<i class="save-data"  style="overflow: hidden" data-draft="{$vo.draft}" data-check_status="{$vo.check_status}" data-publish_status="{$vo.publish_status}" data-pro_id="{$vo.id}" data-pro_sn="{$vo.pro_sn}"></i>
+					<div class="mysol_children1_div">
+						<div class="div_img_0">
+							<notempty name="vo.conver_image">
+								<!--<div class="div_img_1"><img src="/Uploads/{$vo.conver_image}" alt=""></div>-->
+								<div class="div_img_1"><img src="{$prefix}{$vo.conver_image}{$suffix}" alt=""></div>
+							<else />
+							<div class="div_img_1"><img src="__PUBLIC__/Home/Public/img/logo.png" alt=""></div>
+							</notempty>
+							<div class="word-gy" style="height:20px;line-height:20px;margin-left:40px;">供应方案</div>
+						</div>
+						<div class="div_ul_0">
+							<ul id="browse_ul_a">
+								<li>
+									<div class="project_sol_info redword" style="max-width:140px;display: inline;">
+										{$vo.pro_name}
+									</div>
+									<if condition="$vo['jl_self'] eq 1">
+										<div class="detail-ziying">
+											<div class="detail-ziying-s">自营</div>
+										</div>
+									</if>
+								</li>
+								<li>
+									<div class="project_sol_name height-line">方案编号:</div>
+									<div class="project_sol_info" style="width:140px;">{$vo.pro_sn}</div>
+								</li>
+								<li>
+									<div class="project_sol_name height-line">方案类型:</div>
+									<div class="project_sol_info" style="width:140px;">{$vo.types}</div>
+								</li>
+								<li>
+									<!--<div class="project_sol_name height-line">发&nbsp;布&nbsp;者&nbsp;:</div>-->
+									<div class="project_sol_name height-line">发布状态:</div>
+									<div class="project_sol_info" style="width:140px;">
+										<span class="jl-red" style="display: inline-block;padding-left:5px;">
+										<if condition="$vo.publish_status eq 1">发布中<else/>未发布</if>
+										</span>
+									</div>
+								</li>
+								<li>
+									<div class="project_sol_name height-line">发布时间:</div>
+									<div class="project_sol_info" style="width:130px;">{$vo.pubtime}</div>
+								</li>
+							</ul>
+						</div>
+						<div class="clear"></div>
+					</div>
+					<table>
+						<tr>
+							<td colspan="8">
+								<a href="javascript:;">
+									<div class="td-file" data-method="confirmTrans" data-file="{$vo.bom}" data-file_type="bom">
+										<img src="__PUBLIC__/Home/Solution/img/BOM_file.png" alt="" class="img-file">
+										<empty name="vo.bom">
+										<span class="gray-color">BOM表</span>
+											<div class="w-tip">
+												<div class="w-inner1"></div>
+												<div class="w-inner2">没有文件</div>
+											</div>
+											<else /><span>BOM表</span>
+										</empty>
+									</div>
+								</a>
+								<a href="javascript:;">
+									<div class="td-file" data-method="confirmTrans" data-file="{$vo.pcbas}" data-file_type="pcbas">
+										<img src="__PUBLIC__/Home/Solution/img/PCBA_file.png" alt="" class="img-file">
+										<empty name="vo.pcbas">
+										<span class="gray-color">PCBA</span>
+											<div class="w-tip">
+												<div class="w-inner1"></div>
+												<div class="w-inner2">没有文件</div>
+											</div>
+											<else /><span>PCBA</span>
+										</empty>
+									</div>
+								</a>
+								<a href="javascript:;">
+									<div class="td-file" data-method="confirmTrans" data-file="{$vo.code}" data-file_type="code">
+										<img src="__PUBLIC__/Home/Solution/img/CODE_file.png" alt="" class="img-file">
+										<empty name="vo.code">
+										<span class="gray-color">代码包</span>
+											<div class="w-tip">
+												<div class="w-inner1"></div>
+												<div class="w-inner2">没有文件</div>
+											</div>
+											<else /><span>代码包</span>
+										</empty>
+									</div>
+								</a>
+								<a href="javascript:;">
+									<div class="td-file" data-method="confirmTrans" data-file="{$vo.files}" data-file_type="files">
+										<img src="__PUBLIC__/Home/Solution/img/ANOTHER_file.png" alt="" class="img-file">
+										<empty name="vo.files">
+										<span class="gray-color">其他文档</span>
+											<div class="w-tip">
+												<div class="w-inner1"></div>
+												<div class="w-inner2">没有文件</div>
+											</div>
+											<else /><span>其他文档</span>
+										</empty>
+									</div>
+								</a>
+								<div class="clear"></div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="textAlign-top ">方案简要描述:</td>
+							<td colspan="6" class="text-font-size"><div class="project_sol_info desc-hidden1" data-method="describe">{$vo.synopsis}</div></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="textAlign-top ">方案详细描述:</td>
+							<td colspan="6" class="text-font-size"><div class="desc-hidden2"><a href="javascript:;"  class="checkmore" data-method="describe" data-pro_desc="{$vo.pro_desc}">>>>点击查看更多</a></div></td>
+						</tr>
+						<!--<tr>-->
+							<!--<td colspan="8" style="text-align:right;"><a href="javascript:;"  class="checkmore" data-method="describe" data-pro_desc="{$vo.pro_desc}">查看更多>>></a></td>-->
+						<!--</tr>-->
+						<tr>
+							<td colspan="8">
+								<div class="ziying" style="background: #fff;"></div>
+								<div class="check_status" data-method="updataInfo">
+									<if condition ="$vo.draft eq 1 "><span>点击修改</span>
+									<elseif condition="$vo.draft eq 0 && $vo.check_status eq 0 "/><span>审核中</span>
+									<elseif condition="$vo.draft eq 0 && $vo.check_status eq 1 && $vo.publish_status eq 0 "/><span>未发布</span>
+									<elseif condition="$vo.draft eq 0 && $vo.check_status eq 1 && $vo.publish_status eq 1 "/><span>点击下架</span>
+									<elseif condition="$vo.draft eq 0 && $vo.check_status eq 1 && $vo.publish_status eq 2 "/><span>已结束</span>
+									<elseif condition="$vo.draft eq 0 && $vo.check_status eq 2 "/>
+										不通过
+									<else/>
+									</if>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				</foreach>
+			</if>
+		</div>
+		<div class="clear" ></div>
+		{$page}
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool', ,'layer','webuploader'], function ($, modal, pikaday, jlTool,WebUploader) {
+                /*文件为空的提示框*/
+				$('.td-file').mouseover(function(){
+				    $(this).find('.w-tip').css('display','block');
+				});
+                $('.td-file').mouseout(function(){
+                    $(this).find('.w-tip').css('display','none');
+                });
+                /*单独文件上传(.bak)*/
+                $('.td-file').on('click',function(){
+                    var _this = $(this);
+					var _draft= _this.parents('.mysol').find('.save-data').data('draft');
+					var _file = _this.data('file');
+                    if(_draft ==1) {
+                        var othis = _this, method = othis.data('method');
+                        active[method] ? active[method].call(this, othis) : '';
+                    }
+                });
+                /*查看更多*/
+				$(".checkmore").on('click',function(event){/*点击查看更多*/
+                    event.stopPropagation();
+				    var _descri	= $(this).data('pro_desc');
+                    var othis   = $(this),method = othis.data('method');
+                    	active[method] ? active[method](_descri) : '';
+				});
+				/*结束发布/修改草稿*/
+				$('.check_status').on('click',function(event){
+                    event.stopPropagation();
+				    var _this=$(this);
+				    var _data=_this.parents('.mysol').find('.save-data').data();/*保存的数据*/
+
+				    if(_data.draft===0 && _data.check_status===1 && _data.publish_status===1){/*结束发布*/
+						modal.confirm({
+							title:'提示',
+							brief:'方案下架后,将不能重新发布此方案,您确定吗?',
+							confirmText:'确定',
+                            isCenter:true,
+							confirm:function(){
+							    var the_end ={};
+							    the_end.publish_status = 1;
+							    the_end.pro_id =_data['pro_id'];
+								$.ajax({
+									type:'GET',
+									url:"/Home/Solution/updataProvider",
+									data:the_end,
+									success:function(res){
+                                        if(res.status==999) {
+                                            window.location.href = '/Home/Account/login';
+                                            return;
+                                        }
+									    if(res.status===1000){
+                                            _this.find('span').html('已结束');
+                                            $('#pub_status1').html('未发布');
+									        modal.alert({
+												title:'下架成功'
+											});
+										}else{
+									        modal.alert({
+												title:res.content
+											});
+										}
+									}
+								});
+							}
+						});
+					}else if(_data.draft===1){/*修改草稿*/
+                        var othis = _this, method = othis.data('method');
+                        active[method] ? active[method](_data.pro_id): '';
+					}
+				});
+				//iframe页面跳转(x)
+//				function browse_mysol(){
+//				    location.reload();
+//				    console.log(22);
+//				}
+//				function return_index(){
+//				    console.log(11);
+//				    location.href = '/Home/Solution/provider';
+//				}
+				/*点击到方案详情*/
+				$('.mysol').on('click',function(){
+				    var _this = $(this);
+				    var save_data  = _this.find('.save-data').data();
+				    if(save_data.publish_status==1 && save_data.check_status==1){
+				        window.open('/Home/solution/proDetail?id='+save_data.pro_id);
+//				        window.location.href = '/Home/solution/proDetail?id='+save_data.pro_id;
+					}else{
+				        alert('此方案还没有上架!');
+					}
+				});
+                /*弹层相关*/
+                    var active = {
+                        describe: function( text){
+                            var descri = text;
+                            var url = descri
+							console.log(url);
+                            layer.open({
+                                type: 2
+                                , title: false
+                                , closeBtn: 2
+                                , area: ["60%", '80%']
+                                , shade: 0.5
+                                , id: 'LAY_layuipro'
+                                , btn: ['关闭页面']
+                                , content: url
+                            });
+                        }
+						,updataInfo: function (id) {
+                            var url = "/Home/Solution/updataProvider?" + "pro_id="+id;
+                            layer.open({
+                                type: 2
+                                , title: false
+                                , closeBtn: 2
+                                , area: ["100%", '100%']
+								, scrollbar: false
+                                , shade: 0.5
+                                , id: 'LAY_layuipro'
+                                , btn: ['关闭页面']
+                                , content: [url,'no']
+                                , end:function(){
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    };
+            });
+        });
+	</script>
+</block>

@@ -1,0 +1,100 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page navbar order" wx:if="{{show}}" style="padding:0;min-height:100vh;background-color:#f8f8f8">
+  <scroll-view class="fui-tab-scroll fixed"  scroll-x="true" wx:if="{{list.order_retreat.length != 0}}">
+    <view class="item">订单编号:{{list.order_sn}}</view>
+  </scroll-view>
+  <view class="contain" wx:if="{{list.order_retreat.length != 0}}" wx:key="*this">
+    <block wx:for="{{list.order_retreat}}" wx:for-index="idd" wx:key="">
+      <view class="fui-list-group noclick" style="border-bottom:10px solid #efeff4">
+        <view hover-class="none"  url="/pages/order/detail/index?id={{item.id}}">
+          <view class="fui-list-group-title">
+            <view class="order-num">退款编号：
+              <text>{{item.re_sn}}</text>
+            </view>
+            <view class="statuscss">{{item.statusstr}}</view>
+          </view>
+          <navigator hover-class="none"  url="/pages/order/refund_detail/index?order_sn={{item.order_sn}}&re_sn={{item.re_sn}}">
+            <block wx:for="{{item.order_retreat_goods}}" wx:for-index="idx" wx:key="self" wx:for-item="val">
+              <view class="fui-list goods-info">
+                <view class="fui-list-media">
+                  <image src="{{val.thumb}}" class="round goods_img" style="width:140rpx;height:140rpx;border:1rpx solid #efeff4"></image>
+                </view>
+                <view class="fui-list-inner">
+                  <view class="text text-left" style="font-size:32rpx;font-weight:600;">{{val.p_name}}</view>
+                  <view class="subtitle text-left">单价：￥{{val.p_price}}</view>
+                  <view class="subtitle text-left">
+                    退货数量：{{val.retreat_self_num}}个
+                    <text style="float:right;margin-right:20rpx">{{item.retreat_type== '1'?'仅退货':(item.retreat_type == '0'?'仅退款':'退货退款')}}</text>
+                    </view>
+                </view>
+                <view class="num" style="position:absolute;right:10rpx;bottom:30rpx">
+                  <view class="text-right" >
+                    <!-- <text>￥{{val.retreat}}</text> -->
+                  </view>
+                </view>
+              </view>
+            </block>
+          </navigator>
+          <view class="fui-list list-padding" >
+            <text class="fui-list-inner text-right totle" wx:if="{{item.retreat_type != 1}}">
+              <text>共</text>
+              <text class="text-danger">{{item.order_retreat_goods.length}}</text>
+              <text>个商品 退款总金额</text>
+              <text class="text-danger">
+                <text>￥</text>
+                <text>{{item.retreat_money}}</text>
+              </text>
+            </text>
+            <text class="fui-list-inner text-right totle" wx:else>仅退货</text>
+            <view class="morehandle" bindtap="moreHandle" data-self="{{idd}}">更多操作 <text class="{{isTurn == idd ? 'changeTurn' : ''}}">{{buttonText}}</text></view>
+          </view>
+        </view>
+        <view class="fui-list list-padding" wx:if="{{buttonStatus == idd}}">
+          <view class="fui-list-inner text-right">
+            <block wx:if="{{item.handle_status<=3 || item.handle_status==8}}">
+              <navigator class="btn btn-danger btn-default-o" url="/pages/order/refund/index?id={{list.order_sn}}&re_sn={{item.re_sn}}" wx:if="{{item.handle_status==3 || item.handle_status==1}}">
+                    修改申请
+              </navigator>
+              <view data-type="repeal" bindtap="handle" class="btn btn-default btn-default-o" wx:if="{{item.handle_status!=3}}" data-order_sn="{{list.order}}" data-re_sn="{{item.re_sn}}">
+                撤销申请
+              </view>
+            </block>
+            <navigator class="btn btn-danger btn-default-o" wx:if="{{item.handle_status==2}}" url="/pages/order/refundLogistic/index?order_sn={{list.order_sn}}&re_sn={{item.re_sn}}">
+                    填写物流信息
+              </navigator>
+            <block wx:if="{{(item.ship_status ==4 || item.ship_status <=0 && item.pay_status>0 ) && item.pay_type==1 && item.total >0}}">
+              <block wx:if="{{item.is_retreat <=0}}">
+                <navigator class="btn btn-danger btn-default-o" url="/pages/order/refund/index?id={{item.order_sn}}" wx:if="{{item}}">
+                    退货/退款
+                </navigator> 
+              </block>
+              <block wx:elif="{{item.is_retreat>0}}">
+                <navigator class="btn btn-danger btn-default-o" url="/pages/order/refund/index?id={{item.order_sn}}" wx:if="{{item}}">
+                    退货/退款
+                </navigator> 
+              </block>
+            </block>
+          </view> 
+        </view>
+      </view>
+    </block>
+    <view style="background-color:#f8f8f8">
+      <view class="fui-loading empty " style="color:#999;margin:0 auto;padding:1em 0" wx:if="{{loaded && list.order_retreat.length > 0}}">
+        <view class="text">没有更多了</view>
+      </view>
+    </view>
+  </view>
+  <view class="center" style="margin-top:90rpx;" wx:if="{{list.order_retreat.length == 0 && empty}}">
+    <view class="empty">
+      <image class="light" src="/static/images/icon/lights-128.png"></image>
+      <view class="text-cancel">暂时没有任何退款订单</view>
+      <navigator open-type="switchTab" url="/pages/index/index" class="btn btn-default-o">
+        到处逛逛
+      </navigator>
+    </view>
+  </view>
+  <!-- <navigator hover-class="none" open-type="switchTab" url="/pages/member/index/index" class="fui-dot">
+    <image src="/static/images/icon-white/people.png"></image>
+  </navigator> -->
+  <include src="/pages/order/public/verify.wxml" />
+</view>

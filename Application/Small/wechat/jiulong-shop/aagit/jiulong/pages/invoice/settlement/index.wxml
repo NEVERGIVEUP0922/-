@@ -1,0 +1,78 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page" wx:if="{{show}}">
+  <view class="fui-cell-group">
+    <view class="fui-cell">
+      <view class="fui-cell-label">发票抬头</view>
+      <view class="fui-cell-info">
+        <input class="fui-input" data-type="invoice_header" bindinput="onChange" placeholder="发票抬头" value="{{detail.invoice_header}}" />
+      </view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">企业电话</view>
+      <view class="fui-cell-info">
+        <input class="fui-input" data-type="company_phone" type="number" bindinput="onChange" placeholder="企业电话" value="{{detail.company_phone}}"/>
+      </view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">注册地址</view>
+      <view class="fui-cell-info" bindtap="selectArea" data-type="company_area_code" style="min-height:30rpx" data-area="{{detail.province}} {{detail.city}} {{detail.area}}">{{!detail.province || !detail.city ? '请选择省市区' : detail.province + ' ' + detail.city + ' ' + detail.area}}</view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">详细地址</view>
+      <view class="fui-cell-info">
+        <input class="fui-input" bindinput="onChange" data-type="company_address" placeholder="街道，楼牌号等" value="{{detail.company_address}}"/>
+      </view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">识别号</view>
+      <view class="fui-cell-info">
+        <input class="fui-input" data-type="company_tax_code" type="text" bindinput="onChange" placeholder="纳税人识别号" value="{{detail.company_tax_code}}"/>
+      </view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">开户银行</view>
+      <view class="fui-cell-info">
+        <input class="fui-input" data-type="company_bank_name" type="text" bindinput="onChange" placeholder="开户银行" value="{{detail.company_bank_name}}"/>
+      </view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">银行账号</view>
+      <view class="fui-cell-info">
+        <input class="fui-input" data-type="company_bank_acount" type="number" bindinput="onChange" placeholder="银行账号" value="{{detail.company_bank_acount}}"/>
+      </view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">收票人</view>
+      <view class="fui-cell-info">
+        <input class="fui-input" data-type="invoice_owner" type="text" bindinput="onChange" placeholder="收票人" value="{{detail.invoice_owner}}"/>
+      </view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">联系电话</view>
+      <view class="fui-cell-info">
+        <input class="fui-input" data-type="mobile" type="number" bindinput="onChange" placeholder="联系电话" value="{{detail.mobile}}"/>
+      </view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">所在地址</view>
+      <view class="fui-cell-info" bindtap="selectArea" data-type="area_code" style="min-height:30rpx" data-area="{{detail01.province}} {{detail01.city}} {{detail.area}}">{{!detail01.province || !detail01.city ? '请选择省市区' : detail01.province + ' ' + detail01.city + ' ' + detail01.area}}</view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">详细地址</view>
+      <view class="fui-cell-info">
+        <input class="fui-input" bindinput="onChange" data-type="address" placeholder="街道，楼牌号等" value="{{detail.address}}"/>
+      </view>
+    </view>
+    <view class="fui-cell">
+      <label bindtap="setDefault" data-status="{{status}}">
+         <radio color="#fd5454" checked="{{status  ? true : false}}" class="zoom-70" name="invoice_status" style="margin-top:-1%;"/>设为默认发票
+      </label>
+    </view>
+  </view>
+  <include src="/pages/common/city-picker.wxml" />
+  <view class="fui-mask {{showPicker ? 'show' : ''}}"></view>
+  <view bindtap="submit" class="i_btn btn-danger block" style="border-width:12px">{{subtext}}</view>
+  <view class="fui-toast {{FoxUIToast.show ? 'in' : 'out'}}">
+    <view class="text">{{FoxUIToast.text}}</view>
+  </view>
+</view>

@@ -1,0 +1,126 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page navbar" wx:if="{{show}}" style="padding:0">
+  <view class="fui-cell-group {{code ? 'toggleSend-group' : ''}}"  >
+    <view class="fui-list-group-title">
+      <view class="order-num">订单号：
+          <text>{{order.order_sn}}</text>
+      </view>
+    </view>
+    <view  class="fui-list goods-item" wx:for="{{order.order_goods}}" wx:for-item="val" wx:for-index="ind" wx:key="">
+      <radio  bindtap="selected" checked="{{val.selected == 1 ? true : ''}}" class="zoom-90" data-type="{{val.type}}" color="#ff6600" data-key="{{key}}" data-id="{{val.p_id}}" data-select="{{val.selected}}" />
+      <view class="fui-list-media">
+          <image src="{{val.thumb}}" class="round goods_img" style="width:140rpx;height:140rpx"></image>
+      </view>
+      <view class="fui-list-inner jl-shop">
+          <view class="text">{{val.p_name}}</view>
+          <view class="">单价：{{val.p_price_true}}</view>
+
+          <view class="cart-option text" style="color:#323;overflow:hidden"><text style="float:left;padding:1% 0">数量：</text>
+          <!-- <text style="color:#DF433E">￥{{val.p_num}}</text> -->
+              <view bindtap="number" data-num="{{val.changeNum}}" data-check="{{val.pnum_check}}" class="fui-number small" data-index="{{ind}}" >
+                 <view data-action="minus" data-num="{{val.changeNum}}" class="minus {{val.changeNum <= 1 ? 'disabled' : ''}}">-</view>
+                 <input  data-action="change" bindblur="changeNum" data-check="{{val.pnum_check}}" data-num="{{val.changeNum}}" data-index="{{ind}}" name=""  type="tel" value="{{val.changeNum}}" class="num shownum">
+                </input>
+                 <view data-action="plus" class="plus {{val.changeNum >= val.pnum_check ? 'disabled' : ''}}">+</view>
+              </view>
+            </view>
+
+          <!-- <view style="">
+            <text >数量：{{val.p_num}}个</text> <text style="float:right;color:#DF433e">￥{{val.total}}</text>
+          </view> -->
+      </view>
+     </view>
+     <view class="check" style="padding:10rpx 30rpx;border-top:1rpx solid #ddd">
+        <label bindtap="editcheckall" data-check="{{editcheckall ? true : false}}" >
+          <radio class="zoom-90" color="#ff6600" checked="{{editcheckall ? true : ''}}" style="margin-top:-6rpx"/>全选
+        </label>
+      </view>
+  </view>
+  <view class="fui-cell-group" style="border-top:20rpx solid #efeff4;margin:0 ">
+    <view class="fui-cell" hover-class="none">
+      <view class="fui-cell-label">
+        服务类型
+      </view>
+      <view class="fui-cell-info">
+        <picker bindchange="change" class="right" data-name="rtypeIndex" range="{{rtypeArr}}" value="{{rtypeIndex}}" >
+          {{rtypeArr[rtypeIndex]}}
+        </picker>
+        <text class="{{refundstate == 1 ? '' : 'hidden'}}">{{rtypeArr[rtypeIndex]}}</text>
+      </view>
+      <view class="fui-cell-remark {{refundstate == 0 ? '' : 'hidden'}}"></view>
+    </view>
+    <view class="fui-cell">
+      <view class="fui-cell-label">货物状态</view>
+      <view class="fui-cell-info">
+        <input type="text" bindchange="change" disabled='true' data-name="content" class="fui-input right" placeholder="选填" value="{{re_delivery_status[order.ship_status]}}" />
+      </view>
+    </view>
+    <!-- <view class="fui-cell" hover-class="none" url="">
+      <view class="fui-cell-label">
+        {{rtypeArrText[rtypeIndex]}}原因
+      </view>
+      <view class="fui-cell-info">
+        <picker class="right" bindchange="change" data-name="reasonIndex" range="{{reasonArr}}" value="{{reasonIndex}}">
+          {{reasonArr[reasonIndex]}}
+        </picker>
+      </view>
+      <view class="fui-cell-remark" wx:if="{{order.refundstate == 0}}"></view>
+    </view> -->
+  
+    <view class="fui-cell" wx:if="{{rtypeIndex != 1 &&isrtypeIndex}}">
+      <view class="fui-cell-label" style="width:60%">{{rtypeArrText[reasonIndex]}}金额
+        <text style="color:#888"> 最多退款{{order.retreat_money_ok}}元 </text>
+      </view>
+      <view class="fui-cell-info">
+        <input type="text" data-name="price" disabled='true' placeholder="最大退款金额{{retreat_max_money-order.retreat_money_ok>0?order.retreat_money_ok:retreat_max_money}}元" class="right" value="{{order.retreat_money_ok-price>0?price:order.retreat_money_ok}}" />
+      </view>
+    </view>
+
+    <view class="fui-cell" style="border-top:20rpx solid #efeff4">
+      <textarea bindinput="changetext" data-name="retreat_desc" placeholder="请输入1-100字的退款说明" value="{{order.retreat_desc}}"></textarea>
+    </view>
+
+    <view class="fui-cells " style="border-top:20rpx solid #efeff4">
+      <view class="fui-cell-label" style="padding:25rpx;">上传凭证<text style="color:#888">(最多上传三张图片)</text></view>
+      <view  class="fui-cell">  
+        <view class="fui-images fui-images-sm">
+          <block wx:for="{{imgs}}" wx:key="">
+            <image data-index="{{index}}" src="{{item}}" class="image image-sm" style="height:150rpx;width:150rpx;" data-type="image-preview" catchtap="upload">
+              <content>
+                <text data-index="{{index}}" class="image-remove" data-type="image-remove" style="border-radius:50%;background-color:#fff;font-size:32rpx;" catchtap="upload">×</text>
+              </content>
+            </image>
+          </block>
+        </view>
+        <view class="fui-uploader fui-uploader-sm" data-type="image" catchtap="upload" wx:if="{{isImgok}}"></view>
+        <view class="fui-cell-info"></view>
+      </view>
+    </view>
+    <view class="fui-title" wx:if="{{rtypeIndex != 2 && order.refundstate == 0}}">您可退款的最大金额为
+      <text class="text-danger">￥
+        <text>{{order.refundprice}}</text>
+      </text>
+    </view>
+    <view class="fui-cell" wx:if="{{order.refundstate == 1}}">
+      <view class="fui-cell-label">申请时间</view>
+      <view class="fui-cell-info">{{refund.createtime}}</view>
+    </view>
+  </view>
+  <view class="fui-footer text-right" style="position:static">
+    <block >
+      <view bindtap="submit" class="btn btn-danger btn-submit" style="border:none">提交申请</view>
+      <!-- <view bindtap="refundcancel" class="btn btn-default btn-default-o back">取消申请</view> -->
+    </block>
+    <block wx:if="{{order.refundstate == 1}}">
+      <view class="btn btn-danger" wx:if="{{refund.status == 3 && order.refund == 5}}">确认收到换货物品</view>
+      <navigator url="" wx:if="{{refund.status == 3 && order.refund == 5}}">
+        <view class="btn btn-primary" wx:if="{{refund.status == 3 && order.refund == 5}}">查看换货物流</view>
+      </navigator>
+      <navigator class="btn btn-primary" wx:if="{{refund.status == 3 || order.refund == 4}}">
+        {{refund.express ? '修改' : '填写'}}快递单号
+      </navigator>
+      <view class="btn btn-danger" bindtap="edit" wx:if="{{refund.status == 0}}">修改申请</view>
+      <view class="btn btn-default-o" bindtap="refundcancel" wx:if="{{refund.status != 5}}">取消申请</view>
+    </block>
+  </view>
+</view>

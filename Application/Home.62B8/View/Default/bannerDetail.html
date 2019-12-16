@@ -1,0 +1,47 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout" />
+<block name="title">商品详情页</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Product/css/detail.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div style="width:1200px;margin:0 auto;text-align: center">
+        <if condition="$request.banner eq 123">
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail03.jpg" style="width:80%;"/>
+            <elseif condition="$request.banner eq 456"/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail02.jpg" style="width:80%;"/>
+            <elseif condition="$request.banner eq first"/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail_first_charge.jpg" style="width:80%;"/>
+                <!--<div style="text-align:center;width:1200px;margin:0 auto;font-size:30px">
+                    <a href="/Uploads/Pdf/2018-02-01/first_charge.pdf" class="media"></a>
+                </div>-->
+            <elseif condition="$request.banner eq 'yinpin'"/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail_yinpin.jpg" style="width:80%;"/>
+            <elseif condition="$request.banner eq 'liang'"/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail_liang.jpg" style="width:80%;"/>
+            <else/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail01.jpg" style="width:80%;"/>
+        </if>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/3.1.0/jquery.min.js"></script>
+    <script src="__PUBLIC__/Common/module/bup/bup.js"></script>
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function() {
+            require(['jquery','pdfmeta','pdfmetadata'], function ($) {
+                //pdf
+               /* $.fn.media.defaults.silverlight.isWindowless= "true";
+                setTimeout(function(){$('.media').media( { width: 1200, height: 900, autoplay: true,caption:false } );},1000);*/
+                require(['Module/echo/1.7.3/echo.min'], function (echo) {
+
+                });
+            });
+        });
+
+    </script>
+</block>

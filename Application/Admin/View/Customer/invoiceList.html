@@ -1,0 +1,323 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+    <style>
+        .jl-fp-form{  line-height: 36px;  }
+        .layui-table-view .jl-order-list-container td,
+        .layui-table-view .jl-order-list-container th{
+            padding: 9px 15px;
+        }
+    </style>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">发票列表</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="overflow: hidden">
+            <span>
+                   <span style="padding: 9px 15px">业务员</span>
+                   <input value="{$request.sys_uid}" type="hidden" name="sys_uid" placeholder="请选择业务员" class="layui-input jl-select-user" style="display: inline-block;width: auto">
+                   <input value="{$request.sys_uid_name}" type="text" name="sys_uid_name" placeholder="请选择业务员" class="layui-input jl-select-user layui-form-label-pinyin-admin" style="display: inline-block;width: auto">
+            </span>
+            <span>
+                <span style="padding: 9px 15px">客户</span>
+                <input value="{$request.user_id}" type="hidden" name="user_id" placeholder="请选择客户" class="layui-input jl-select-customer" style="display: inline-block;width: auto">
+                <input value="{$request.user_id_name}" type="text" name="user_id_name" placeholder="请选择客户" class="layui-input jl-select-customer layui-form-label-pinyin-customer" style="display: inline-block;width: auto">
+            </span>
+
+            <div class="layui-btn-group">
+                <button class="layui-btn search-btn">检索</button>
+                <button class="layui-btn layui-btn-primary clear-btn">清空</button>
+            </div>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" data-id="{{ d.id }}" style="width: 100%">
+                    <span lay-event="detail">详情</span>
+                    {{#  if(d.implment_status==0){ }}
+                    <span lay-event="handle">处理</span>
+                    {{#  } }}
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+        <div class="jl-invoice-form" style="display: none">
+            <div class="layui-form jl-fp-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">发票类型</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-invoice_type">invoice_header</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">发票抬头</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-invoice_header">invoice_header</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业电话</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-company_phone">company_phone</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业地区</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-company_area_code">company_phone</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">详细地址</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-company_address">company_address</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">纳税人识别号</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-company_tax_code">company_tax_code</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">开户银行</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-company_bank_name">company_bank_name</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">银行账号</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-company_bank_acount">company_bank_acount</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">收票人</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-invoice_owner">invoice_owner</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号码</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-mobile">mobile</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">所在地址</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-area_code">address</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">详细地址</label>
+                    <div class="layui-input-block">
+                        <span class="jl-fp-address">address</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool', 'element', 'form', 'selectUser','selectCustomer','handleDistrict'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var selectUser = layui.selectUser;
+           // selectUser.initInput(false,false,'fullname');
+            var selectCustomer = layui.selectCustomer;
+            //selectCustomer.initInput(false,false,false);
+            initInput({"admin":"","customer":""});
+            var handleDistrict = layui.handleDistrict;
+            var list_data = {$list|json_encode};
+            var request = {$request|json_encode};
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Customer/invoiceList?' + query
+            };
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height: 'full-226',
+                cols: [[
+                    {field: 'id', title: '编号', fixed: 'left'}
+                    , {field: 'implment_status', title: '处理状态',templet:function (d) {
+                        switch (d.implment_status){
+                            case '0':
+                                return '未处理';
+                            case '1':
+                                return '已处理';
+                        }
+                    }}
+                    , {field: 'invoice_type', title: '开票类型',templet:function (d) {
+                        switch (d.invoice_type){
+                            case '1':
+                                return '专票';
+                            case '2':
+                                return '普票';
+                        }
+                    }}
+                    , {title: '订单',templet: function(d){
+                        var productHtml = '';
+                        $.each(d.orderList,function (index,value) {
+                            productHtml += (
+                                '<tr> ' +
+                                '<td>'+value.order_sn+'</td> ' +
+                                '<td>'+value.create_at+'</td> ' +
+                                '<td>'+value.total_origin+'</td> ' +
+                                '<td>'+value.total+'</td> ' +
+                                '<td>'+value.already_paid+'</td> ' +
+                                '<td>'+value.update_at+'</td> ' +
+                                '</tr> '
+                            )
+                        });
+                        return (
+                            '<div>' +
+                            '<button class="layui-btn layui-btn-sm jl-show-order-list">查看订单信息</button>' +
+                            '<div class="jl-order-list-container" style="display: none;padding: 10px;">' +
+                            '<table class="layui-table"> ' +
+                            '<colgroup> ' +
+                            '<col width="160"> ' +
+                            '<col width="100"> ' +
+                            '<col width="100"> ' +
+                            '<col width="100"> ' +
+                            '<col width="100"> ' +
+                            '<col width="100"> ' +
+                            '</colgroup> ' +
+                            '<thead> ' +
+                            '<tr> ' +
+                            '<th>订单编号</th> ' +
+                            '<th>下单时间</th> ' +
+                            '<th>原总价</th> ' +
+                            '<th>实付总价</th> ' +
+                            '<th>已支付金额</th> ' +
+                            '<th>更新时间</th> ' +
+                            '</tr> ' +
+                            '</thead> ' +
+                            '<tbody> ' + productHtml + '</tbody> ' +
+                            '</table>' +
+                            '</div>' +
+                            '</div>'
+                        )
+                    }}
+                    , {field: 'saleName', title: '业务员'}
+                    , {field: 'customerName', title: '客户'}
+                    , {field: 'invoice_header', title: '发票抬头'}
+                    , {field: 'invoice_owner', title: '开票人'}
+                    , {field: 'mobile', title: '手机'}
+                    , {field: 'invoice_price', title: '开票金额'}
+                    , {field: 'invoice_tax', title: '税率'}
+                    , {
+                        field: 'handle', title: '操作', align: 'center', fixed: 'right',
+                        toolbar: '#data-table-handle-tpl'
+                    }
+                ]],
+                done:function () {
+                    $('.jl-show-order-list').on('click',function () {
+                        var $content = $(this).siblings('.jl-order-list-container');
+                        layer.open({
+                            type: 1,
+                            title:'订单详情',
+                            area:['750px'],
+                            content: $content,
+                            success:function () {
+
+                            },
+                            yes: function(index, layero){
+
+                            }
+                        })
+                    })
+                }
+            });
+            //工具按钮
+            table.on('tool(data-table)', function (obj) {
+                var source = obj.data;
+                var layEvent = obj.event;
+                if (layEvent === 'handle') {
+                    layer.confirm('确认已处理吗？',function(index){
+                        var data = {
+                            id:source.id
+                        };
+                        $.post('/Admin/Customer/invoiceImplement',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('操作成功');
+                                setTimeout(function () {
+                                    window.location.reload()
+                                },500)
+                            }
+                            else {
+                                layer.msg(res.msg)
+                            }
+                        })
+                    });
+                } else if (layEvent === 'detail') {
+                    layer.open({
+                        type: 1,
+                        title:'发票详情',
+                        area:['650px','60%'],
+                        content: $('.jl-invoice-form'),
+                        success:function () {
+                            $.each(source,function (index,value) {
+                                if(index==='invoice_type'){
+                                    if(value==='1'){
+                                        $('.jl-fp-'+index).text('增值税票')
+                                    } else {
+                                        $('.jl-fp-'+index).text('普通')
+                                    }
+                                } else if ((index==='company_area_code')||(index==='area_code')){
+                                    $('.jl-fp-'+index).text(handleDistrict.getData(value).join(' '))
+                                } else {
+                                    $('.jl-fp-'+index).text(value)
+                                }
+                            })
+                        }
+                    })
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request, {
+                            pageSize: obj.limit,
+                            page: String(obj.limit) === String(list_data.pageSize) ? obj.curr : 1
+                        }));
+                    }
+                }
+            });
+            //检索按钮
+            $('.search-btn').on('click',function () {
+
+                queryTable($.extend(request,{
+                    sys_uid:$('input[name="sys_uid"]').val(),
+                    user_id:$('input[name="user_id"]').val(),
+                    sys_uid_name:$('input[name="sys_uid_name"]').val(),
+                    user_id_name:$('input[name="user_id_name"]').val()
+                }));
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            })
+        })
+    </script>
+</block>

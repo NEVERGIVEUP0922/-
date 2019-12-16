@@ -1,0 +1,24 @@
+/*可以在这里添加你自己的css*/
+.containers{
+    width:1200px;margin:1% auto;text-align: center
+}
+.containers>p{
+    font-family:'苹方 粗体',sans-serif;
+    text-align:left;
+}
+.lefts{
+    overflow:hidden;
+    width:100%;
+}
+.lefts>div{
+    font-family:'苹方 粗体',sans-serif;
+    float:left;
+    width:40%;
+    text-align:left;
+    margin:0 5%;
+    font-size:18px;
+    color:#000
+}
+img {
+    max-width: 100%; /*图片自适应宽度*/
+}

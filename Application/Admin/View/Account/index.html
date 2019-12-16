@@ -1,0 +1,263 @@
+<extend name="Layout:layout-tab" />
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/css/list.css" media="all" />
+</block>
+<block name="content">
+	<blockquote class="layui-elem-quote list_search layui-form">
+		<div class="layui-inline">
+			<div class="layui-input-inline">
+				<input type="text" value="" placeholder="请输入关键字" class="layui-input search_input">
+			</div>
+			<a class="layui-btn search_btn">查询</a>
+		</div>
+		<div class="layui-inline">
+			<a class="layui-btn layui-btn-normal add">添加管理员</a>
+		</div>
+		<div class="layui-inline">
+			<a class="layui-btn layui-btn-danger add">删除管理员</a>
+		</div>
+	</blockquote>
+	<div class="layui-form list_list">
+		<table class="layui-table">
+			<colgroup>
+				<col width="50">
+				<col width="70">
+				<col width="12%">
+				<col width="12%">
+				<col width="12%">
+				<col width="12%">
+				<col width="20%">
+			</colgroup>
+			<thead>
+			<tr>
+				<th><input type="checkbox" name="" lay-skin="primary" lay-filter="allChoose" id="allChoose"></th>
+				<th>用户id</th>
+				<th>用户名</th>
+				<th>用户组</th>
+				<th>用户状态</th>
+				<th>创建时间</th>
+				<th>最后登录</th>
+				<th>登录ip</th>
+				<th>操作</th>
+			</tr>
+			</thead>
+			<tbody class="list_content"></tbody>
+		</table>
+	</div>
+	<div id="page"></div>
+</block>
+<block name="js">
+	<script>
+        layui.use(['table','layer', 'form','element', 'laypage'], function(){
+            var table = layui.table, layer = layui.layer, form=layui.form, element=layui.element, laypage = layui.laypage;
+            var tableData;
+            //列表数据请求
+            $.ajax({
+                url:'getList',
+                type:'post',
+                success:function(res){
+                    tableData = res;
+                    newTable(tableData);
+                }
+            });
+
+            //全选
+            form.on('checkbox(allChoose)', function(data){
+                var child = $(data.elem).parents('table').find('tbody input[type="checkbox"]:not([name="is_earnest"])');
+                child.each(function(index, item){
+                    item.checked = data.elem.checked;
+                });
+                form.render('checkbox');
+            });
+
+            //批量处理
+            $('body').on('click', '.handle_more', function(){
+                var $checkbox = $('.list_list tbody input[type="checkbox"][name="checked"]');
+                var $checked = $('.list_list tbody input[type="checkbox"][name="checked"]:checked');
+                if( $checked.length == 0 ){
+                    layer.msg('请选择待处理需求');
+                }else{
+                    var ids = [];
+                    var index = layer.msg('批量处理中，请稍候',{icon: 16,time:false,shade:0.8});
+                    for( i=0; i<$checked.length;i++ ){
+                        var t=$checked.eq(i),id=t.attr('data-id');
+                        ids.push(id);
+                    }
+                    $.ajax({
+                        url:"{:U('Admin/Release/changeStatus')}",
+                        type: 'POST',
+                        data : {id:ids},
+                        dataType: 'json',
+                        success: function(res){
+                            if( res.status == 0 ){
+                                for( i=0; i<$checked.length;i++ ){
+                                    var t=$checked.eq(i);
+                                    t.parents("tr").find("td#handle_status").text("已处理").css('color','#f61515');
+                                    t.parents("tr").find('input[type="checkbox"][name="checked"]').prop("checked",false);
+                                }
+                                form.render();
+                                layer.close(index);
+                                layer.msg('处理成功',{icon:6,time:2000});
+                            }else{
+                                layer.close(index);
+                                for( i=0; i<$checked.length;i++ ){
+                                    var t=$checked.eq(i);
+                                    t.parents("tr").find('input[type="checkbox"][name="checked"]').prop("checked",false);
+                                }
+                                layer.msg('系统繁忙!处理失败',{icon:6,time:2000});
+                            }
+                        }
+                    });
+                }
+            });
+
+            //单个处理
+            $('body').on('click', '.handle', function(){
+                var t = $(this),id = t.attr('data-id');
+                var index = layer.msg('处理中，请稍候',{icon: 16,time:false,shade:0.8});
+                $.ajax({
+                    url:"{:U('Admin/Release/changeStatus')}",
+                    type: 'POST',
+                    data : {id:id},
+                    dataType: 'json',
+                    success: function(res){
+                        if( res.status == 0 ){
+                            form.render();
+                            layer.close(index);
+                            t.parents("tr").find("td#handle_status").text("已处理").css('color','#f61515');
+                            t.remove();
+                            layer.msg('处理成功',{icon:6,time:2000});
+                        }else{
+                            layer.close(index);
+                            layer.msg('系统繁忙!处理失败',{icon:6,time:2000});
+                        }
+                    }
+                });
+            });
+
+            //添加
+            $('body').on('click', '.add', function(){
+                var index = layer.open({
+                    title : "添加管理员",
+                    type : 2,
+                    content : "add",
+                    area: ['800px', '400px'],
+                    success : function(layero, index){
+                        setTimeout(function(){
+                            layer.tips('点击此处返回列表页', '.layui-layer-setwin .layui-layer-close', {
+                                tips: 3
+                            });
+                        },100)
+                    }
+                });
+            });
+
+            //删除
+            $('body').on('click', '.delete', function(){
+                var t = $(this),id = t.attr('data-id');
+                var open = layer.open({
+                    title:'提醒',
+                    shade: 0.3,
+                    fixed: true,
+                    content:'确定要删除吗?',
+                    btn:['确定','取消'],
+                    yes:function(){
+                        var index = layer.load();
+                        $.ajax({
+                            url: '{:U("Admin/Account/delete")}',
+                            type: 'POST',
+                            data : {id:id},
+                            dataType: 'json',
+                            success: function(res){
+                                if( res.status == 0 ){
+                                    layer.close(index);
+                                    layer.close(open);
+                                    t.parent().parent().remove();
+                                    layer.msg('删除成功',{icon:6,time:2000});
+                                }else{
+                                    layer.close(index);
+                                    layer.msg('删除失败',{icon:6,time:2000});
+                                }
+                            }
+                        });
+
+                    }
+                });
+            });
+
+            //编辑
+            $('body').on('click', '.edit', function(){
+                var t = $(this),id = t.attr('data-id');
+                var index = layer.open({
+                    title : "编辑管理员信息",
+                    type : 2,
+                    content : "{:U('Admin/Account/edit')}?id="+id,
+                    area: ['800px', '400px'],
+                    success : function(layero, index){
+                        setTimeout(function(){
+                            layer.tips('点击此处返回列表页', '.layui-layer-setwin .layui-layer-close', {
+                                tips: 3
+                            });
+                        },100)
+                    }
+                });
+            });
+            //渲染table数据
+            function newTable(that) {
+                function rendor( data, curr )
+                {
+                    var html = '';
+                    if(!that){
+                        data = tableData.concat().splice(curr*nums-nums, nums);
+                    }else{
+                        data = that.concat().splice(curr*nums-nums, nums);
+                    }
+                    if ( data.length != 0 ) {
+                        for( i=0; i<data.length; i++ ){
+                            html  += '<tr>'
+                                +'<td><input type="checkbox" name="checked" lay-skin="primary" lay-filter="choose" data-id="'+ data[i].id +'" ></td>'
+                                + '<td>'+ data[i].id +'</td>';
+                            html += '<td>'+ data[i].user_name +'</td>'
+                                +'<td>'+ data[i].group_name +'</td>';
+                            if( data[i].status == 0 ){
+                                html += '<td style="color:#66dcef">正常</td>';
+                            }else if( data[i].status == 1 ){
+                                html += '<td style="color:#f61515">锁定</td>';
+                            }
+                            html += '<td>'+ data[i].create_time +'</td>'
+                                 + '<td>'+ data[i].login_time +'</td>'
+	                             + '<td>'+ data[i].last_ip +'</td>';
+
+	                        html += '<td>'
+		                        +'<a class="layui-btn  detail"  data-id="'+ data[i].id +'"><i class="iconfont-jl icon-jl-help"></i> 查看详细</a>'
+                                +'<a class="layui-btn  edit"  data-id="'+ data[i].id +'"><i class="iconfont-jl icon-jl-help"></i> 修改信息</a>'
+                                +'<a class="layui-btn  delete"  data-id="'+ data[i].id +'"><i class="iconfont-jl icon-jl-help"></i> 删除用户</a>'
+		                        +'</td>'
+		                        +'</tr>';
+
+                        }
+                    }else{
+                        html = '<tr><td colspan="8">暂无数据</td></tr>';
+                    }
+                    return  html;
+                }
+                //分页
+                var nums = 10; //每页出现的数据量
+                if(that){
+                    tableData = that;
+                }
+                laypage.render({
+                    elem: 'page',
+                    count: tableData.length,
+                    limit: nums,
+                    jump : function(obj){
+                        $('.list_content').html(rendor( tableData, obj.curr ));
+                        $('.list_list thead input[type="checkbox"]').prop("checked",false);
+                        form.render();
+                    }
+                })
+            }
+
+        });
+	</script>
+</block>

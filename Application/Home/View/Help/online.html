@@ -1,0 +1,41 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">在线支付</a></li>
+    </ul>
+    <div class="jl-online">
+        <h4>网银支付</h4>
+        <p>用户可通过以下18家银行,在线支付玖隆芯城订单。</p>
+        <p>
+            温馨提醒：目前各银行对于网上支付均有卡种、金额的限制，因各银行政策不同，建议您在申请网上支付功能时向银行咨询相关事宜。
+        </p>
+        <img src="__PUBLIC__/Home/Public/img/help/img9.png" alt="">
+        <h4>支付宝支付</h4>
+        <p>当支付单笔金额人民币1万元以上或者外币等值1000美元以上业务的，支付宝需核对用户的有效身份证件或其他必要文件，留存有效身份证件的彩色扫描件，
+            且完成支付宝要求的相关身份验证。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img10.png" alt="">
+        <h4>微信支付</h4>
+        <p>当支付单笔金额人民币1万元以上或者外币等值1000美元以上业务的，微信支付需核用户的有效身份证件或其他必要文件，留存有效身份证件的彩色扫描件，且完成微信支付要求的相关身份验证。</p>
+        <img src="__PUBLIC__/Home/Public/img/help/img11.png" alt="">
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

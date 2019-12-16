@@ -1,0 +1,490 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-index"/>
+<block name="title">首页</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/search-index.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <style>
+        img.jl-banner-img{
+            width:745px !important;
+            height:400px !important;
+        }
+        .lj-slide-box{
+            text-align: left;
+
+        }
+        .jl-background{
+            background-color: #e84343;
+            color: #fff;
+            padding: 8px;
+            border-radius: 2px;
+        }
+        .jl-order-notice ul{
+            overflow:hidden
+        }
+        .jl-order-notice ul li{
+            float:left;
+            width:20%;
+            height:30px;
+        ;line-height:30px;
+            text-align:center;
+        }
+        .jl-order-notice ul.header li{
+            background-color:#e2e0e1;
+        }
+        .jl-order-notice ul.header li:nth-child(2n){
+            background-color:#ededed
+        }
+        .jl-order-notice-container{
+            height:110px;
+            overflow:hidden;
+        }
+        .jl-notice li a{
+            display:block;
+            text-overflow: ellipsis;
+            overflow:hidden;
+            white-space: nowrap;
+            width:100%;
+        }
+    </style>
+    <!-- banner -->
+    <div id="jl-banner" style="background-color:#fff;width:1200px;margin:0 auto;">
+        <div style="width:745px;height:400px;transform: translate(-12px);margin: 0 auto;border-right:1px solid #ddd">
+            <div class="swiper-container" >
+                <div class="swiper-wrapper" >
+
+                    <volist name="advertPhoto" id="val">
+                        <a href="{$val.jump_url}" class="swiper-slide" >
+                            <div class="lj-slide-box">
+                                <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif"
+                                     data-echo="{$val.photo_url}">
+                            </div>
+                        </a>
+                    </volist>
+
+
+
+
+
+                    <!-- <a href="{:U('Home/Product/bannerDetail')}?banner=first" class="swiper-slide" >
+                         <div class="lj-slide-box">
+                             <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif"
+                                  data-echo="__PUBLIC__/Home/Index/img/banner10.jpg">
+                         </div>
+                     </a>
+                     <a href="{:U('Home/Product/bannerDetail')}?banner=123" class="swiper-slide" >
+                         <div class="lj-slide-box">
+                             <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif"
+                                  data-echo="__PUBLIC__/Home/Index/img/banner1.jpg">
+                         </div>
+                     </a>
+                     <a href="{:U('Home/product/bannerDetail')}?banner=123" class="swiper-slide" >
+                         <div class="lj-slide-box">
+                             <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif"
+                                  data-echo="__PUBLIC__/Home/Index/img/banner2.jpg">
+                         </div>
+                     </a>
+                     <a href="{:U('Home/product/bannerDetail')}?banner=123" class="swiper-slide">
+                         <div href="{:U('Home/product/bannerDetail')}" class="lj-slide-box">
+                             <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif"
+                                  data-echo="__PUBLIC__/Home/Index/img/banner3.jpg">
+                         </div>
+                     </a>
+                     <a href="{:U('Home/product/bannerDetail')}?banner=123" class="swiper-slide" >
+                         <div class="lj-slide-box">
+                             <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif"
+                                  data-echo="__PUBLIC__/Home/Index/img/banner4.jpg">
+                         </div>
+                     </a>
+                     <a href="{:U('Home/product/bannerDetail')}?banner=5678" class="swiper-slide" >
+                         <div class="lj-slide-box">
+                             <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif" data-echo="__PUBLIC__/Home/Index/img/banner5.jpg" alt="">
+                         </div>
+                     </a>
+                    &lt;!&ndash; <a href="{:U('Home/product/bannerDetail')}?banner=5678" class="swiper-slide" >
+                         <div class="lj-slide-box">
+                             <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif" data-echo="__PUBLIC__/Home/Index/img/banner6.jpg" alt="">
+                         </div>
+                     </a>&ndash;&gt;
+                     <a href="{:U('Home/product/bannerDetail')}?banner=5678" class="swiper-slide" >
+                         <div class="lj-slide-box">
+                             <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif" data-echo="__PUBLIC__/Home/Index/img/banner7.jpg" alt="">
+                         </div>
+                     </a>-->
+                    <!--<a href="{:U('Home/product/bannerDetail')}?banner=5678" class="swiper-slide" >
+                        <div class="lj-slide-box">
+                            <img class="jl-banner-img" src="__PUBLIC__/Common/module/echo/1.7.3/blank.gif" data-echo="__PUBLIC__/Home/Index/img/banner8.jpg" alt="">
+                        </div>
+                    </a>-->
+                </div>
+                <div class="pagination"></div>
+            </div>
+            <div  class="jl-order-notice" style="border-right: 1px solid #f2f2f2;border-bottom: 1px solid #f2f2f2;height:140px;overflow:hidden;width:745px;margin:0 auto;-webkit-box-sizing: border-box;padding:0 0%;border-top:10px solid #fff">
+                <ul class="header" style="overflow:hidden;">
+                    <li>客户名称</li><li>下单编号</li><li>下单时间</li><li>下单金额</li><li>下单状态</li>
+                </ul>
+                <div class="jl-order-notice-container">
+                    <div class="jl-order-notice-content" style="display:block;overflow:hidden">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="jl-login" style="border-right:1px solid #ddd;left:79%;border-left:1px solid #ddd">
+            <div class="jl-login-top">
+                <div class="jl-head jl-cle">
+                    <a href="{:U('Home/User/index')}">
+                        <?php $avator = session('userInfo.avator');if( !file_exists(SITE_PATH.$avator) || empty($avator) ){echo '<img src="__UPLOAD__/User/avator/default.png" alt="">';}else{echo "<img src=".$avator.">";}?>
+                    </a>
+                    <p>
+                        Hi，你好
+                        <br>
+                        欢迎来到玖隆芯城
+                    </p>
+                </div>
+                <div class="jl-btn-login">
+                    <?php $type = $_SESSION['userInfo']['user_type'] ?>
+                    <if condition="$is_login gt 0 ">
+                        <if condition="$type eq 1">
+                            <a href="{:U(\'Home/User/index\')}" class="jl-person-login">个人中心</a>
+                            <else/>
+                            <a href="{:U(\'Home/User/index\')}" class="jl-person-login">企业中心</a>
+                        </if>
+                        <elseif condition="$is_login eq 0"/>
+                        <button type="button" onclick="location.href='{:U(\'Home/Account/login\')}'">登录</button>
+                        <button type="button" onclick="location.href='{:U(\'Home/Account/register\')}'">注册</button>
+                    </if>
+                </div>
+            </div>
+            <div class="jl-login-center">
+                <p>
+                    <span>公告</span>
+                </p>
+                <ul class="jl-notice">
+                    <volist name="advertText" id="val">
+                        <if condition="$val.isedit == 1 ">
+                            <li><a href="{:U('Home/product/bannerDetail_text')}?banner={$val.id}">{$val.text_titile}</a></li>
+                        <else/>
+                            <li><a href="{$val.text}">{$val.text_titile}</a></li>
+                        </if>
+                    </volist>
+                    <!--<li><a href="{:U('Home/product/bannerDetail')}?banner=first">首推充电王，IA4054非你莫属</a></li>
+                    <li><a href="{:U('Home/product/bannerDetail')}?banner=first_success">玖隆芯城-上线首日捷报</a></li>
+                    <li><a href="{:U('Home/product/bannerDetail')}?banner=123">玖隆芯城-首家专注国产芯片销售平台</a></li>-->
+                    <!--<li>Synopsys嵌入式</li>
+                    <li>Synopsys嵌入式</li>
+                    <li>Synopsys嵌入式</li>-->
+                </ul>
+            </div>
+            <div class="jl-login-bottom">
+                <ul>
+                    <li class="jl-icon01">
+                        <p></p>
+                        良心国产
+                    </li>
+                    <li class="jl-icon02">
+                        <p></p>
+                        应用推荐
+                    </li>
+                    <li class="jl-icon03">
+                        <p></p>
+                        最优价格
+                    </li>
+                    <li class="jl-icon04">
+                        <p></p>
+                        方案设计
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- 热销产品 -->
+    <div id="jl-hot-product" class="jl-cle">
+        <div class="jl-title">
+            <span class="jl-background"><span>热销产品</span> HOT-SALE PRODUCT</span>
+        </div>
+        <ul>
+            <?php $k = count($hot) ?>
+            <volist name="hot" id="h">
+                <li class="{$i==$k?'jl-hot-li-last':''}" data-id="{$h.p_sign}">
+                    <div class="jl-img">
+                        <notempty name="h.cover_image">
+                            <img src="{$h.cover_image}" alt="">
+                            <else/>
+                            <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                        </notempty>
+                    </div>
+                    <div class="jl-describe">
+                        <h4>{$h.p_sign}</h4>
+                        <p class="jl-p-describe">{$h.replace_desc}</p>
+                        <p class="jl-p-describe" style="height:90px">{$h.parameter}</p>
+                    </div>
+                    <p>
+                        <span>价格：￥{$h.price}</span>
+                        <a href="javascript:;">查看详情</a>
+                    </p>
+                </li>
+            </volist>
+        </ul>
+    </div>
+    <!-- 产品 -->
+    <div id="jl-product">
+        <!-- 最新产品 -->
+        <div class="jl-new-product">
+            <p class="jl-bg2"></p>
+            <div class="jl-title">
+                <span class="jl-background"><span>最新产品</span> LATEST PRODUCT</span>
+            </div>
+            <div class="jl-container jl-cle">
+                <!-- <div class="jl-c-left">
+                     <img src="__PUBLIC__/Home/Public/img/product01.png" alt="">
+                 </div>-->
+                <div class="jl-c-right">
+                    <ul>
+                        <?php $k = count($new) ?>
+                        <volist name="new" id="n" key="d">
+                            <if condition="($k lt 5 or $k lt 10) and $k eq $d">
+                                <li class="jl-c-li0{$i}" data-id="{$n.p_sign}" style="border-right:1px solid #f0f0f0">
+                                    <else/>
+                                <li class="jl-c-li0{$i}" data-id="{$n.p_sign}">
+                            </if>
+                            <p>
+                                <notempty name="n.cover_image">
+                                    <img src="{$n.cover_image}" alt="">
+                                    <else/>
+                                    <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                </notempty>
+                            </p>
+                            <div class="jl-word-des">
+                                <h4>{$n.p_sign}</h4>
+                                <div class="jl-describe"><p>{$n.parameter}</p></div>
+                                <div class="jl-price">
+                                    <span>批量价格：￥{$n.price}</span>
+                                    <a href="javascript:;">查看详情</a>
+                                </div>
+                            </div>
+                            </li>
+                        </volist>
+
+                        <!-- <volist name="new" id="n">
+                             <li class="{$i==$k?'jl-hot-li-last':''}" data-id="{$n.p_sign}">
+                                 <div class="jl-img">
+                                     <notempty name="hn.cover_image">
+                                         <img src="{$n.cover_image}" alt="">
+                                         <else/>
+                                         <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                     </notempty>
+                                 </div>
+                                 <div class="jl-describe">
+                                     <h4>{$n.p_sign}</h4>
+                                     <p class="jl-p-describe">{$n.replace_desc}</p>
+                                     <p>{$n.parameter}</p>
+                                 </div>
+                                 <p>
+                                     <span>价格：￥{$n.price}</span>
+                                     <a href="javascript:;">查看详情</a>
+                                 </p>
+                             </li>
+                         </volist>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 商标 -->
+        <ul class="jl-brand">
+            <volist name="brand1" id="b">
+                <li data-id="{$b.id}">
+                    <a href="javascript:;"><img src="{$b.logo}" alt="{$b.brand_name}"></a>
+                </li>
+            </volist>
+        </ul>
+        <!-- 原厂专区 -->
+        <div class="jl-factory">
+            <p class="jl-bg3"></p>
+            <div class="jl-title">
+                <span class="jl-background"><span>推荐产品</span> RECOMMEND PRODUCT</span>
+            </div>
+            <div class="jl-container">
+                <!--<div class="jl-c-left">
+                    <img src="__PUBLIC__/Home/Public/img/product02.png" alt="">
+                </div>-->
+                <div class="jl-c-right jl-cle">
+                    <ul>
+                        <?php $k = count($recommend) ?>
+                        <volist name="recommend" id="n" key="l">
+                            <if condition="($k lt 5 or $k lt 10) and $k eq $l">
+                                <li class="jl-c-li0{$i}" data-id="{$n.p_sign}" style="border-right:1px solid #f0f0f0">
+                                    <else/>
+                                <li class="jl-c-li0{$i}" data-id="{$n.p_sign}">
+                            </if>
+                            <p>
+                                <notempty name="n.cover_image">
+                                    <img src="{$n.cover_image}" alt="">
+                                    <else/>
+                                    <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                </notempty>
+                            </p>
+                            <div class="jl-word-des">
+                                <h4>{$n.p_sign}</h4>
+                                <div class="jl-describe"><p>{$n.parameter}</p></div>
+                                <div class="jl-price">
+                                    <span>批量价格：￥{$n.price}</span>
+                                    <a href="javascript:;">查看详情</a>
+                                </div>
+                            </div>
+                            </li>
+                        </volist>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 商标 -->
+        <ul class="jl-brand">
+            <volist name="brand2" id="b">
+                <li data-id="{$b.id}"><a href="javascript:;"><img src="{$b.logo}" alt="{$b.brand_name}"></a></li>
+            </volist>
+        </ul>
+        <!-- 应用市场 -->
+        <div class="jl-factory">
+            <p class="jl-bg4"></p>
+            <div class="jl-title">
+                <span class="jl-background"><span>特卖产品</span> SPECIAL SELL PRODUCT</span>
+            </div>
+            <div class="jl-container">
+                <!-- <div class="jl-c-left">
+                     <img src="__PUBLIC__/Home/Public/img/product03.png" alt="">
+                 </div>-->
+                <div class="jl-c-right jl-cle">
+                    <ul>
+                        <?php $k = count($speialSell) ?>
+                        <volist name="speialSell" id="n" key="j">
+                            <if condition="($k lt 5 or $k lt 10) and $k eq $j">
+                                <li class="jl-c-li0{$i}" data-id="{$n.p_sign}" style="border-right:1px solid #f0f0f0">
+                                    <else/>
+                                <li class="jl-c-li0{$i}" data-id="{$n.p_sign}">
+                            </if>
+                            <p>
+                                <notempty name="n.cover_image">
+                                    <img src="{$n.cover_image}" alt="">
+                                    <else/>
+                                    <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                </notempty>
+                            </p>
+                            <div class="jl-word-des">
+                                <h4>{$n.p_sign}</h4>
+                                <div class="jl-describe"><p>{$n.parameter}</p></div>
+                                <div class="jl-price">
+                                    <span>批量价格：￥{$n.price}</span>
+                                    <a href="javascript:;">查看详情</a>
+                                </div>
+                            </div>
+                            </li>
+                        </volist>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 商标 -->
+        <ul class="jl-brand">
+            <volist name="brand3" id="b">
+                <li data-id="{$b.id}"><a href="javascript:;"><img src="{$b.logo}" alt="{$b.brand_name}"></a></li>
+            </volist>
+        </ul>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['jquery'], function ($) {
+            /*分类列表的滚动事件处理：效果不好
+             var $popup = $('.jl-popup');
+             $popup.mouseenter(function (e) {
+             var tops = $(document).scrollTop();
+             $(document).on("scroll", function () {
+             $(document).scrollTop(tops);
+             });
+             });
+             $popup.mouseleave(function (e) {
+             $(document).off("scroll");
+             });*/
+            //console.log({$advertPhoto|json_encode});
+            //订单轮播
+            var $container = $(".jl-order-notice-content");
+            var timer2,timer3;
+            function getOrder(){
+                $container.html("");
+                clearInterval(timer2);
+                $.post("/Home/Default/infoOrder",function(res,error){
+                    //console.log(res);
+                    if(res.length>0){
+                        var str="";
+                        $.each(res,function(index,value){
+                            str += " <ul><li>"+value.user_name+"</li><li>"+value.order_id+"</li><li>"+value.order_time+"</li><li>"+value.order_money+"</li><li>"+value.order_status+"</li></ul>";
+                        });
+                    }
+                    $container.html(str);
+                    getUpdate();
+                    timer2 = setInterval(function(){ getOrder();},30000);
+                },"json")
+            }
+            function getUpdate(){
+                var $top = - $container.height();
+                clearInterval(timer3);
+                //console.log($width);
+                $container.animate({"margin-top":+($top )+"px"},26000,"linear",function(){
+                    $(this).css("margin-top",0);
+                });
+                timer3 = setInterval(function(){
+                    $container.animate({"margin-top":+$top+"px"},26000,"linear",function(){
+                        $(this).css("margin-top",0);
+                    });
+                },20000) ;
+            };
+            getOrder();
+
+            //品牌点击处理
+            var $brand_id = $('#js-submit input[name=brand_id]');
+            $('.jl-brand li a').on('click', function () {
+                var $input = $(this).parent().attr('data-id');
+                $brand_id.val($input);
+                $('#js-submit').trigger('submit');
+            });
+            //订单轮播展示
+            /*var orderList =[{user_name:"唐***",order_id:"A20180905185633",order_time:"16分钟前",order_money:"￥14.26",order_status:"待发货"},{user_name:"李***",order_id:"K20180905185633",order_time:"18分钟前",order_money:"￥14.26",order_status:"待发货"},{user_name:"唐***",order_id:"A20180905185633",order_time:"16分钟前",order_money:"￥14.26",order_status:"待发货"},{user_name:"雷***",order_id:"Ah2018090518563",order_time:"14分钟前",order_money:"￥14.26",order_status:"待发货"}];
+            var str="";
+            $.each(orderList,function(index,value){
+                str +="<ul><li>"+value.user_name+"</li><li>"+value.order_id+"</li><li>"+value.order_time+"</li><li>"+value.order_money+"</li><li>"+value.order_status+"</li></ul>";
+            });
+            var $container = $(".jl-order-notice-content");
+            $container.html(str);
+            var timer = setTimeout(function(){
+                var $top = - $container.height();
+                $container.animate({"margin-top":$top},5000,function(){
+                    $container.css("margin-top",0);
+                });
+                setInterval(function(){
+                    $container.animate({"margin-top":$top},5000,function(){
+                        $container.css("margin-top",0);
+                    });
+                },5000);
+                clearTimeout(timer);
+            },100);*/
+            //banner右侧信息
+            var is_login = '{:is_login()}';
+            if (is_login > 0) {
+                $('.jl-btn-login button').css('display', 'none');
+                $('.jl-person-login').css('display', 'block');
+            }
+            //详情页跳转
+            $('#jl-hot-product li,.jl-c-right li').on('click', function () {
+                var id = $(this).attr("data-id");
+                window.open("{:U('Home/Product/detail')}?sign=" + id);
+            });
+        });
+        require(['Index/js/scroll']);
+    </script>
+</block>

@@ -1,0 +1,344 @@
+<!-- 前台首页模板文件  -->
+
+<extend name="Layout:layout-user-center"/>
+
+<block name="title">找回密码</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/logo-header.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/register.css">
+</block>
+
+<block name="user-nav">找回密码</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-reg-wrap">
+        <h3 class="jl-reg-tit">
+            <a href="{:U('Home/Account/login')}">我已经注册，马上登录></a>
+        </h3>
+        <div class="jl-reg-msg">
+            <div class="jl-reg-p-tit">
+                <i class="jl-password-bg"></i>
+                <span class="jl-reg-user jl-paw-tit">找回密码</span>
+            </div>
+            <div class="jl-reg-de">
+                <form method="post">
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <label for="jl-reg-phone" class="jl-reg-p">手机号码</label>
+                            <input id="jl-reg-phone" class="jl-reg-text js-next-input" type="text" name="user_mobile" placeholder="请输入手机号码">
+                        </div>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <input type="text" class="js-next-input jl-c-hidden">
+                            <label for="jl-reg-code" class="jl-reg-p">手机验证码</label>
+                            <button  type="button" class="jl-reg-btn" id="js-ver-code">获取短信验证码</button>
+                            <input id="jl-reg-code" type="text" name="mobile_code" class="jl-reg-text jl-p-code js-next-input" placeholder="请输入手机验证码">
+                        </div>
+                        <span class="jl-nor-tips jl-reg-tips02">
+                           <i class="jl-code-bg"></i>
+                            验证码已发送
+                        </span>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <label for="jl-reg-set" class="jl-reg-p">设置密码</label>
+                            <input id="jl-reg-set" class="jl-reg-text js-next-input" type="password" name="user_pass" placeholder="请输入密码">
+                        </div>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <label for="jl-reg-affirm" class="jl-reg-p">确认密码</label>
+                            <input id="jl-reg-affirm" class="jl-reg-text js-next-input js-submit-input" type="password" name="user_pass"  placeholder="请输入密码">
+                        </div>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-paw-btn">
+                        <input type="button" class="jl-reg-put" id="js-enroll" value="确 定">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery','jl-modal'], function ($,modal) {
+                require(['Account/js/common_register']);
+                var $user_mobile = $('#jl-reg-phone');
+                //公共增加和去除类
+                var pawTips =  function (text, type, input) {
+                    var $tipsSpan = $(input).parent().siblings('.jl-reg-nor');
+                    $tipsSpan.show();
+                    if(type!==1){
+                        $tipsSpan.addClass('jl-reg-nor-active');
+                    }
+                    else{
+                        $tipsSpan.removeClass('jl-reg-nor-active');
+                    }
+                    $tipsSpan.children('.jl-nor-text').html(text);
+                };
+
+                //手机号验证
+                //方法判断手机号
+                var pawPhone = function (input) {
+                    if($(input).val()===''){
+                        return true
+                    }
+                    else {
+                        $(input).parent().siblings('.jl-reg-nor').hide();
+                        return false
+                    }
+                };
+
+                //光标移入文本框时
+                $user_mobile.focus(function () {
+                    pawTips('请输入正确的手机号码',1,this);
+                    $(this).off('focus');
+                });
+                $user_mobile.keydown(function () {
+                    pawTips('请输入正确的手机号码',1,this);
+                });
+                //当光标移开文本框时
+                var isChecked = false;
+                $user_mobile.blur(function () {
+                   var user_mobile = $user_mobile.val();
+                    //判断手机号是否存在
+                    if( user_mobile ){
+                        $.post(
+                            "{:U('Home/Account/ajaxCheckMobile')}",
+                            {user_mobile :user_mobile,type:1},
+                            function (res) {
+                                if(res.status === 0){
+                                    $user_mobile.parent().siblings('.jl-reg-nor').hide();
+                                    isChecked=true;
+                                }
+                                else {
+                                    pawTips(res.content,2,$user_mobile);
+                                    isChecked =false;
+                                }
+                            }
+                        )
+                    }
+                    else {
+                        pawTips('手机号码不能为空',2,$user_mobile);
+                    }
+                });
+
+
+
+                //手机验证码
+                var $paw_code = $('#jl-reg-code');
+                $paw_code.focus(function () {
+                   if($user_mobile.val()==='') {
+                       pawTips('请输入手机号码', 2, $user_mobile);
+                       $paw_code.parent().siblings().hide();
+                       $(this).off('focus');
+                   }
+                    $(this).parent().css('border-color','#ddd');
+                });
+                $paw_code.keydown(function () {
+                    pawTips('请输入验证码',1,this);
+                });
+
+
+                var $btn_code = $('#js-ver-code');
+                var timer;
+                var num_number = 60;
+                $btn_code.click(function () {
+                    var $disabled = $btn_code.attr("disabled");
+                    if($disabled){
+                        return false;
+                    }
+                    if (!isChecked) {
+                        $user_mobile.focus();
+                        return false;
+                    }
+                    var mobile = $user_mobile.val();
+                    //发送验证码请求
+                    $btn_code.attr('disabled', 'disabled');
+                    $.post(
+                        "{:U('Home/Account/sendSms')}",
+                        {mobile: mobile},
+                        function (res) {
+                            if (res.status === 0) {
+                                $('.jl-nor-tips').css('display','block');
+                                sendCode();
+                                timer = setInterval(sendCode, 1000);
+                            }
+                            else {
+                                $btn_code.attr('disabled', false);
+                            }
+                        }
+                    );
+                });
+                function sendCode() {
+                    if (num_number === 0) {
+                        $btn_code.html('重新获取验证码');
+                        $('.jl-nor-tips').css('display','none');
+                        num_number = 60;
+                        clearInterval(timer);
+                        $btn_code.attr('disabled', false);
+                    }
+                    else {
+                        $btn_code.css('color','#777');
+//                        $btn_code.attr('disabled', 'disabled');
+                        $btn_code.html(num_number + '秒后重新发送');
+                        num_number--;
+                    }
+                }
+
+
+                //输入的手机验证码正确与否请求
+                $('#jl-reg-code').blur(function () {
+                    var that = this;
+                    if($(that).val()===''){
+                        pawTips('验证码不能为空',2,$(that));
+                    }
+                    else {
+                        var mobile_code = $(that).val();
+                        $.post(
+                            "{:U('Home/Account/checkSms')}",
+                            {mobile_code:mobile_code},
+                            function (res) {
+                                if(res.status===0){
+                                    $('.jl-nor-tips').css('display','block');
+                                    $(that).parent().siblings('.jl-reg-nor').hide();
+                                }
+                                else {
+                                    pawTips('验证错误',2 ,$(that));
+                                }
+                            }
+                        )
+                    }
+                });
+
+
+
+
+                //设置密码
+                var $paw_set= $('#jl-reg-set');
+                var reg_password = /^[a-zA-Z]+[\w]{5,20}/;
+                var norSetPaw = function (input) {
+                    if ($(input).val() === '') {
+                        pawTips('密码不能为空', 2, input);
+                        return true;
+                    }
+                    else if (!reg_password.test($(input).val())) {
+                        pawTips('密码至少6位,字母数字组成,必须以字母开头', 2, input);
+                        return true
+                    }
+                    else {
+                        $(input).parent().siblings().hide();
+                        return false;
+                    }
+                };
+                $paw_set.focus(function () {
+                    pawTips('密码至少6位,字母数字组成,必须以字母开头', 1, this);
+                    $(this).off('focus');
+                });
+                $paw_set.keydown(function () {
+                    pawTips('密码至少6位,字母数字组成,必须以字母开头', 1, this);
+                });
+                $paw_set.blur(function () {
+                    norSetPaw(this);
+                });
+
+                //确认密码
+                var $paw_affirm=$('#jl-reg-affirm');
+                $paw_affirm.focus(function () {
+                    pawTips('请再次输入密码', 1, this);
+                });
+                $paw_affirm.blur(function () {
+                    if ($paw_affirm.val() === '') {
+                        pawTips('请输入确认密码', 2, this);
+                    }
+                    else if ($paw_affirm.val() !== $paw_set.val()) {
+                        pawTips('两次密码输入不一致', 2, this);
+                    }
+                    else {
+                        $paw_affirm.parent().siblings().hide();
+                    }
+                });
+
+
+
+                //点击确认提交
+                $('#js-enroll').click(function () {
+                    var isPass = true;
+                    var $phone_tips = $user_mobile.parent().siblings('.jl-reg-nor');
+                    if($phone_tips.hasClass('jl-reg-nor-active')){
+                        isPass = false
+                    }
+                    else {
+                        if (pawPhone($user_mobile[0])) {
+                            $user_mobile.focus();
+                            pawTips('请输入手机号码', 2, $user_mobile);
+                            isPass = false
+                        }
+                    }
+
+                    if (pawPhone($paw_code[0])) {
+                        pawTips('请输入验证码', 2, $paw_code);
+                        isPass = false
+                    }
+                    if (norSetPaw($paw_set[0])) {
+                        pawTips('请输入密码', 2, $paw_set);
+                        isPass = false
+                    }
+                    if(!isPass){
+                        return false
+                    }
+                    var data = {
+                        user_mobile:$.trim($user_mobile.val()),
+                        mobile_code:$paw_code.val(),
+                        new_pass:$paw_set.val(),
+                        re_pass:$paw_affirm.val()
+                    };
+
+                    $.post("{:U('Home/Account/passForget')}", data, function (res) {
+                        if (res.status === 0000) {
+                            location.href="{:U('Home/Account/forget_paw_success')}";
+                        }
+                        else {
+                            modal.alert({
+                                title:'找回密码失败',
+                                content:res.content
+                            })
+                        }
+                    });
+                });
+
+
+
+
+                //最后一个文本框按下回车键之后
+//                $('#js-enroll').on('keydown',function (e) {
+//                    if(e.keyCode===13){
+//                        $('.js-submit-input').trigger('click');
+//                    }
+//                });
+            });
+        })
+
+    </script>
+</block>

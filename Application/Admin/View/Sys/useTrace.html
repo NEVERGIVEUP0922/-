@@ -1,0 +1,391 @@
+<extend name="Layout:layout-tab" />
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+	<link href="/Public/Common/module/layui/2.2.4/css/layui.css?v=118" rel="stylesheet">
+	<style>
+		body{margin:0 !important;}
+	</style>
+</block>
+<block name="content">
+	<div class="table-container" style="width: 54%;height:400px;display: inline-block">
+		<!--<blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb" style="visibility: visible;">
+                <a class="jl-main-title" href="javascript:">行为轨迹列表</a>
+            </span>
+		</blockquote>
+		<blockquote class="layui-elem-quote list_search">
+			<div class="layui-inline">
+				<a class="layui-btn layui-btn-normal add_btn" style="background:#1AA094">添加</a>
+			</div>
+			&lt;!&ndash;<div class="layui-inline">
+                <a class="layui-btn layui-btn-danger batchDel">批量删除</a>
+            </div>&ndash;&gt;
+		</blockquote>-->
+		<table class="data-table" lay-filter="data-table">
+			<script type="text/html" id="data-table-handle-tpl">
+				<div class="data-table-handle-box" data-id="{{ d.id }}">
+					<!--<span class="action-upload-img" lay-event="edit">修改</span>-->
+					<span lay-event="look">查看轨迹图</span>
+				</div>
+			</script>
+		</table>
+		<div id="page"></div>
+	</div>
+	<div style="width: 44%;height:400px;display: inline-block;vertical-align:top;">
+		<div id="selfDataShow" style="width: 100%;height:calc(50vh - 30px);"></div>
+		<div id="DataShow" style="width: 100%;height:calc(50vh - 30px);"></div>
+	</div>
+</block>
+<block name="js">
+	<script src="__PUBLIC__/Common/module/echarts/4.0.4/echarts.min.js"></script>
+	<script src="__PUBLIC__/Common/module/echarts/4.0.4/uba.js"></script>
+	<script>
+        layui.use(['table','layer','jlTool', 'form','laypage','actionTpl'], function(){
+            var table = layui.table, layer = layui.layer, form=layui.form;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var actionTpl = layui.actionTpl;
+            //列表展示
+            var request = {$request|json_encode};
+            //图表展示
+            // 基于准备好的dom，初始化echarts实例
+            var selfDataShow = echarts.init(document.getElementById('selfDataShow'), 'uba');
+            var DataShow = echarts.init(document.getElementById('DataShow'), 'uba');
+            data=[{_id:'5aab6e68044c7dfd49b87cd2',user_id:17951,first_ts:'1521183404',last_ts:'1521184543',stay_ts:5,visit_ts:'1521184683',visit_count:7,create_time:'1521184360',ip:'119.139.196.82'}];
+			var getData=JSON.parse('{"data":{"15":[{"_id":{"link_name":"我的评价"},"num_time":17422},{"_id":{"link_name":"我的订单"},"num_time":420},{"_id":{"link_name":"账期说明"},"num_time":2},{"_id":{"link_name":"我的报表"},"num_time":113},{"_id":{"link_name":"方案中心"},"num_time":5658},{"_id":{"link_name":"品牌目录"},"num_time":359},{"_id":{"link_name":"A类音频功放_A类音频功放采购"},"num_time":3365},{"_id":{"link_name":"个人信息"},"num_time":6},{"_id":{"link_name":"登录"},"num_time":0},{"_id":{"link_name":"手机绑定"},"num_time":54},{"_id":{"link_name":"航天民芯_异步升压_MT3608-SOT23-6_价格_图片_数据手册"},"num_time":10023},{"_id":{"link_name":"报备列表"},"num_time":2},{"_id":{"link_name":"明智类比_异步升压_IA1607CA25TR-TSOT23-5_价格_图片_数据手册"},"num_time":339},{"_id":{"link_name":"异步升压_异步升压采购"},"num_time":2301},{"_id":{"link_name":"个人中心"},"num_time":21},{"_id":{"link_name":"已开发票"},"num_time":0},{"_id":{"link_name":"明智类比_异步升压_IA1607AA25TR-TOST23-5_价格_图片_数据手册"},"num_time":39},{"_id":{"link_name":"明智类比_异步升压_IA1607BA25TR-TSOT23-5_价格_图片_数据手册"},"num_time":1885},{"_id":{"link_name":"玖隆首页-同步ERP真实数据和操作-元器件一站式采购平台"},"num_time":7771},{"_id":{"link_name":"单键电阻式触摸_单键电阻式触摸采购"},"num_time":39},{"_id":{"link_name":"明智类比_N沟道MOS_IA2N60T1-TO251_价格_图片_数据手册"},"num_time":256},{"_id":{"link_name":"积分BOM表"},"num_time":31},{"_id":{"link_name":"方案详情页"},"num_time":0},{"_id":{"link_name":"购物车"},"num_time":4},{"_id":{"link_name":"搜索"},"num_time":24065}]}}');
+            var myData=[];
+            var getEchartData=function(xData,yData){
+                if(!xData||typeof xData !=="object"){
+                    layer.msg('参数错误s4ss');
+                    return ;
+				};
+                if(!yData||typeof yData !=="object"){
+                    yData=[];
+				};
+                var returnData=[];
+                $.each(xData,function(ind,val){
+                    var stay_time=0;
+                    $.each(yData,function(idx,vlx){
+                        if(vlx._id.link_name.indexOf(val)>-1){
+                            stay_time+=Number(vlx.num_time);
+						};
+
+                    });
+                    returnData[ind]=stay_time;
+                });
+                return returnData;
+			};
+			var echar_data={x:['首页','详情页','搜索页','方案','个人','购物车','样品'],y:[]};
+            //折线 柱状图公共初始化配置
+            var baseOpt = {
+                title: {
+                    left: 'center',
+					text:'轨迹图',
+					subtext:'停留时间'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        },
+                    }
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {readOnly:false},
+                        magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                legend: {
+                    top: '5px',
+                    left: '0%',
+                    selected:{'近15天': true,'近30天': false,'近三个月': false},
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: true,
+                    axisLabel: {
+                        interval: 1,
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    data: echar_data.x,
+                },
+                yAxis: [
+                    {
+                        type: 'value',
+                        boundaryGap: true,
+                        axisLine:{show:true},
+                        axisLabel : {
+                            formatter: '{value}s'
+                        }
+                    },
+                ],
+                series : [
+                    {
+                        name:'近15天',
+                        type:'line',
+                        data:[0, 2, 5, 10, 12, 13, 10],
+                        markPoint : {
+                            data : [
+                                {type : 'max', name: '最大值'},
+                                {type : 'min', name: '最小值'}
+                            ]
+                        },
+                        markLine : {
+                            data : [
+                                {type : 'average', name: '平均值'}
+                            ]
+                        }
+                    },
+                    {
+                        name:'近30天',
+                        type:'line',
+						label:{
+                            show:false
+						},
+                        data:[10, 20, 6, 10, 120, 85, 10],
+                        markPoint : {
+                            data : [
+                                {type : 'max', name: '最大值'},
+                                {type : 'min', name: '最小值'}
+                            ]
+                        },
+                        markLine : {
+                            data : [
+                                {type : 'average', name: '平均值'}
+                            ]
+                        }
+                    },{
+                        name:'近三个月',
+                        type:'line',
+                        data:[500, 255, 544, 100, 124, 136, 150],
+                        markPoint : {
+                            data : [
+                                {type : 'max', name: '最大值'},
+                                {type : 'min', name: '最小值'}
+                            ]
+                        },
+                        markLine : {
+                            data : [
+                                {type : 'average', name: '平均值'}
+                            ]
+                        }
+                    }
+                    ]
+            };
+            var getOpt=function(opt,data){
+                var opts=$.extend(true,{},opt);
+                if(data.type==='self'){
+					opts.title.text=data.name+'轨迹图';
+				};
+                if(data.xAxis.length>0){
+                    opts.xAxis.data=data.xAxis;
+				};
+				opts.series[0].data=getEchartData(echar_data.x,data.series[15]);
+				opts.series[1].data=getEchartData(echar_data.x,data.series[30]);
+				opts.series[2].data=getEchartData(echar_data.x,data.series[90]);
+				;
+                return opts;
+			};
+           // console.log('get',echar_data.x,getData.data[15],getEchartData(echar_data.x,getData.data[15]));
+            //DataShow.setOption(getOpt(baseOpt,{type:'public',xAxis:[],series:getData.data}));
+            selfDataShow.setOption(getOpt(baseOpt,{type:'self',xAxis:[],series:[,],name:'个人'}));
+            request={pageSize:10};
+            var tableData={'data':[{"_id":"5c7510198f88eab02700002d","uba_id":"21307064339c491a2408a9b00","vid":"1fb79f492c9c0791","user_id":1750,"link_url":"http://www.daxin2.com/Home/Order/createOrder.html?pid[]=1650&pid[]=10&","link_id":"5c750f988f88eae02700002b","link_info":{"cle_url":"/Home/Order/createOrder/pid/","model":"home","controller":"order","action":"createorder","mca":"home@order@createorder","params":{"pid":["1650","10"]}},"reffer_url":"http://www.daxin2.com/Home/Basket/basketDetail.html","reffer_id":"5c7510198f88eab02700002c","reffer_info":{"cle_url":"/Home/Basket/basketDetail.html","model":"home","controller":"basket","action":"basketdetail","mca":"home@basket@basketdetail","params":""},"first_ts":"1551175625","last_ts":"1551175625","visit_ts":"1551175703","stay_ts":4,"visit_count":"2","refresh_count":0,"refresh_list":"","client_id":"5c73c1cb8f88ea7c26000029","ip":"127.0.0.1","trace_event":[],"create_time":"1551175705","link_name":"购物车","link_data":{"_id":"5c750f988f88eae02700002b","link_url":"/Home/Order/createOrder/pid/","link_name":"购物车","count":2,"create_time":"1551175576"},"reffer_data":{"_id":"5c7510198f88eab02700002c","link_url":"http://www.daxin2.com/Home/Basket/basketDetail.html","link_sign":"站内访问","link_type":200,"create_time":"1551175705","count":1},"client_data":[]},{"_id":"5c75101f8f88eae02700002e","uba_id":"21307064339c491a2408a9b00","vid":"1fb79f492c9c0791","user_id":1750,"link_url":"http://www.daxin2.com/Home/Default/index.html","link_id":"5c750f818f88eac40700002b","link_info":{"cle_url":"/Home/Default/index.html","model":"home","controller":"default","action":"index","mca":"home@default@index","params":""},"reffer_url":"http://www.daxin2.com/Home/Order/createOrder.html?pid[]=1650&pid[]=10&","reffer_id":"5c75101f8f88eae02700002d","reffer_info":{"cle_url":"/Home/Order/createOrder/pid/","model":"home","controller":"order","action":"createorder","mca":"home@order@createorder","params":{"pid":["1650","10"]}},"first_ts":"1551175625","last_ts":"1551175703","visit_ts":"1551175708","stay_ts":3,"visit_count":"3","refresh_count":0,"refresh_list":"","client_id":"5c73c1cb8f88ea7c26000029","ip":"127.0.0.1","trace_event":[],"create_time":"1551175711","link_name":"玖隆首页-同步ERP真实数据和操作-元器件一站式采购平台","link_data":{"_id":"5c750f818f88eac40700002b","link_url":"/Home/Default/index.html","link_name":"玖隆首页-同步ERP真实数据和操作-元器件一站式采购平台","count":13,"create_time":"1551175553"},"reffer_data":{"_id":"5c75101f8f88eae02700002d","link_url":"http://www.daxin2.com/Home/Order/createOrder.html?pid[]=1650&pid[]=10&","link_sign":"站内访问","link_type":200,"create_time":"1551175711","count":1},"client_data":[]},{"_id":"5c7510248f88ea3c2400002b","uba_id":"21307064339c491a2408a9b00","vid":"1fb79f492c9c0791","user_id":1750,"link_url":"http://www.daxin2.com/Home/Product/search.html","link_id":"5c7510248f88ea3c24000029","link_info":{"cle_url":"/Home/Product/search.html","model":"home","controller":"product","action":"search","mca":"home@product@search","params":""},"reffer_url":"http://www.daxin2.com/Home/Default/index.html","reffer_id":"5c7510248f88ea3c2400002a","reffer_info":{"cle_url":"/Home/Default/index.html","model":"home","controller":"default","action":"index","mca":"home@default@index","params":""},"first_ts":"1551175625","last_ts":"1551175708","visit_ts":"1551175714","stay_ts":39,"visit_count":"4","refresh_count":0,"refresh_list":"","client_id":"5c73c1cb8f88ea7c26000029","ip":"127.0.0.1","trace_event":[],"create_time":"1551175716","link_name":"单键电阻式触摸_单键电阻式触摸采购","link_data":{"_id":"5c7510248f88ea3c24000029","link_url":"/Home/Productarch.html","link_name":"搜索","count":9,"create_time":"1551175716"},"reffer_data":{"_id":"5c7510248f88ea3c2400002a","link_url":"http://www.daxin2.com/Home/Default/index.html","link_sign":"站内访问","link_type":200,"create_time":"1551175716","count":16},"client_data":[]}],"agg_sum_count":52};
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+               /* console.log('/Admin/Product/addAttribute?'+query);
+                debugger;*/
+                window.location.href = '/Admin/Product/addAttribute?'+query;
+            };
+            window.queryTable=queryTable;
+			//获取数据
+			var ajaxGet=function(){
+
+                 this.getDataGrap=function(obj){
+                     layer.load();
+                     var str='/Uba/Echarts/'+(obj.type==="self"?"trace_single":"trace_all");
+                    $.ajax({
+                        url:str,
+                        type:"get",
+                        data:obj.type==='self'?(obj.user_id>0?("user_id="+obj.user_id):("uba_id="+obj.uba_id)):"",
+                        dataType:"json",
+                        success:function(res){
+                            layer.closeAll();
+                            if(res.error === 0){
+                                layer.closeAll();
+                                if(obj.type==='self'){
+                                    selfDataShow.setOption(getOpt(baseOpt,{type:'self',xAxis:[],series:res.data,name:'个人'}));
+                                }else{
+                                    DataShow.setOption(getOpt(baseOpt,{type:'public',xAxis:[],series:res.data}));
+                                };
+                            }else{
+                                layer.msg(res.msg,{icon:5},function(){
+                                    if(obj.type==='self'){
+                                        selfDataShow.setOption(getOpt(baseOpt,{type:'self',xAxis:[],series:[],name:'个人'}));
+                                    }else{
+                                        DataShow.setOption(getOpt(baseOpt,{type:'public',xAxis:[],series:[]}));
+                                    };
+								});
+                            }
+                        }
+                    });
+                };
+                 var _this=this;
+                 this.getDataList=function(obj){
+                     layer.load();
+                    $.ajax({
+                        url:"{:U('Uba/Echarts/trace_list')}",
+                        type:"post",
+                        data:"pageSize="+obj.pageSize+"&&page="+obj.page,
+                        dataType:"json",
+                        success:function(res){
+                            layer.closeAll();
+                            if(res.error === 0){
+                                layer.closeAll();
+                                newTable(res.data,laypage,request,table,_this);
+                            }else{
+                                layer.msg(res.msg,{icon:5});
+                            }
+                        }
+                    });
+                } ;
+
+			};
+            var ajaxGet=new ajaxGet();
+            ajaxGet.getDataGrap({});
+            ajaxGet.getDataList({pageSize:10,page:1});
+            //newTable(tableData.data,laypage,request,table,ajaxGet);
+
+            //添加
+            $(".add_btn").click(function(){
+                openPopout(false);
+            });
+            var openPopout =function(obj){
+                layer.open({
+					title:["添加属性","text-align:center;font-size:16px;color:black"],
+					content:"/Admin/Product/attrAddEdit?id="+obj.id,
+					type:2,
+                    area:["30%","80vh"]
+				});
+            }
+            //改变状态
+            form.on("switch(status)", function(){
+                var check = this.checked ? 'true' : 'false',
+                    id = $(this).attr('data-id'),
+                    value = check == 'true'?0:1;
+                var index = layer.load();
+            });
+            function newTable(data,laypage,request,table,ajaxGet)
+            {
+                var getLocalTime=function(timeSecond){
+                    var times =Number(timeSecond);
+                    var fullPosition=function(data){
+                        if(Number(data)<0){
+                            layer.msg('参数错误123');
+                            return;
+						};
+                        if(data-10>=0){
+                            return data;
+						}else{
+                           return ('0'+data);
+						};
+					};
+                    if(times){
+                        times=new Date(times);
+                        var year=times.getFullYear(),
+                            month=fullPosition(times.getMonth()-(-1)),
+                            date =fullPosition(times.getDate()),
+                            hours =fullPosition(times.getHours()),
+                            minis =fullPosition(times.getMinutes()),
+                            second =fullPosition(times.getSeconds());
+                        return (year+'-'+month+'-'+date+' '+hours+':'+minis+':'+second);
+                    }else{
+                        layer.msg('日期参数错误');
+                        return '';
+                    }
+                }
+                var dataCols=[
+                    {field: '_id', title: 'ID',fixed:"left",align:'center',width:80}
+                    ,{field: 'user_id', title: '用户名称',align:'center',templet:function(d){
+                        	return d.user_id>0?d.user_id:'游客';
+						}}
+                   /* ,{field: 'first_ts',align:'center',title: '首次访问时间',templet: function(d){
+                            return getLocalTime(d.first_ts*1000);
+                        }
+                    }*/
+                    ,{field: 'link_name',align:'center',title: '访问页面'}
+                    ,{field: 'last_ts',align:'center', title: '上次访问时间',templet: function(d){
+                        	return getLocalTime(d.last_ts*1000);
+                        }
+					}
+					,{field: 'visit_ts',align:'center',title: '当前访问时间',templet: function(d){
+                            return getLocalTime(d.visit_ts*1000);
+                        }
+                     }
+					,{field: 'visit_count',align:'center', title: '访问次数',templet: function(d){
+                            return '<span>'+d.visit_count+'</span>'
+                        }
+                    }
+                    ,{field: 'stay_ts',align:'center',title: '页面停留时间'}
+                    ,{field: 'ip',align:'center',title: '访问ip'}
+                    ,{field: '访问来源',align:'center',title: '访问来源',templet:function(d){
+                        return d.reffer_data.link_sign;
+						}}
+                    ,{field: 'create_time',align:'center', title: '创建时间',templet: function(d){
+                            return getLocalTime(d.create_time*1000);
+                        }}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right',width:150, toolbar: '#data-table-handle-tpl'}
+                ];
+                table.render({
+                    elem: '.data-table',
+                    data: data.data,
+                    page: false,
+                    limit: request.pageSize || 10,
+                    cellMinWidth: 100,
+                    height:'full-100',
+                    cols: [dataCols],
+                    done:function(){
+
+					}
+
+                });
+                //form.render();
+                //分页初始化
+                laypage.render({
+                    elem: 'page',
+                    limit: request.pageSize || 10,
+                    count: data.ass_sum_count || 10,
+                    curr: request.page || 1,
+                    layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                    jump: function (obj, first) {
+                        if (!first) {
+                            ajaxGet.getDataList($.extend(request,{
+                                pageSize:obj.limit,
+                                page:String(obj.limit)===String(request.pageSize) ? obj.curr:1
+                            }));
+                        }
+                    }
+                });
+                table.on('tool(data-table)', function(obj){
+                    var data = obj.data;
+                    var event =obj.event;
+                    if(event =="edit"){
+                        //编辑
+                        openPopout(data);
+                    }else if(event =="look"){
+                        ajaxGet.getDataGrap({type:"self",user_id:obj.data.user_id,uba_id:obj.data.uba_id});
+                    }
+                })
+            };
+        });
+	</script>
+</block>

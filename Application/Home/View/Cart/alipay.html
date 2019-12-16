@@ -1,0 +1,46 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-checkstand" />
+
+<block name="title">搜索</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/checkstand.css">
+</block>
+
+<block name="nav-title">收银台</block>
+<block name="transaction">599146493616</block>
+<block name="payable">￥2525.00</block>
+<block name="goodName">MURATA</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <div id="jl-checkstand">
+        <div class="jl-weixin-pay">
+            <h4>支付宝支付</h4>
+            <div class="jl-weixin-content jl-cle">
+                <div class="jl-weixin-left">
+                    <img src="__PUBLIC__/Home/Public/img/cart/weixin-code.png" alt="">
+                    <div class="jl-prompting">
+                        <div class="jl-prompting-left"></div>
+                        <div class="jl-prompting-right">
+                            <p>请使用支付宝扫一扫</p>
+                            <p>扫描二维码支付</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="jl-weixin-right">
+                    <img src="__PUBLIC__/Home/Public/img/cart/zfb-phone.png" alt="">
+                </div>
+            </div>
+            <a class="jl-link-checkstand" href="#"><i class="jl-link"></i>选择其他支付方式</a>
+        </div>
+    </div>
+
+</block>
+
+<block name="js">
+</block>

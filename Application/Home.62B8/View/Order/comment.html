@@ -1,0 +1,116 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-cart" />
+<block name="title">发表评论</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/orderDetail.css">
+</block>
+<block name="nav-title">个人中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div id="jl-center-title">
+        <div class="jl-title-main">
+            <p>Hi，你好！{:session('userInfo.nick_name')}</p>
+            <ul class="jl-title-right">
+                <li class="{$isUserIndex?'js-personal':''}">
+                    <a href="{:U('Home/User/index')}">
+                        <if condition="$_SESSION['userType'] eq 1">
+                            个人中心<else /> 企业中心
+                        </if>
+                    </a><i></i>
+                </li>
+                <li class="{$get['action']==='0'?'js-personal':''}">
+                    <a href="{:U('Home/Order/myOrder/action/0')}">待付款（{$noPayNum}）</a><i></i>
+                </li>
+                <li class="{$get['action']==1?'js-personal':''}">
+                    <a href="{:U('Home/Order/myOrder/action/1')}">待发货（{$noShipNum}）</a><i></i>
+                </li>
+                <li class="{$get['action']==2?'js-personal':''}">
+                    <a href="{:U('Home/Order/myOrder/action/2')}">待收货（{$noDeliveryNum}）</a><i></i>
+                </li>
+                <li class="jl-title-last {$get['action']==3?'js-personal':''}">
+                    <a href="{:U('Home/Order/myOrder/action/3')}">待评价（{$noReleaseNum}）</a><i></i>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="jl-comment-content">
+        <div class="jl-comment-title">
+            <p>评价商品</p>
+        </div>
+        <volist name="goods" id="g">
+            <div class="jl-comment">
+                <div class="jl-comment-left">
+                    <div class="jl-img">
+                        <notempty name="g.cover_image">
+                            <img src="{$g.cover_image}" alt="{$g.p_name}">
+                            <else />
+                            <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                        </notempty>
+                    </div>
+                    <p>{$g.p_name}</p>
+                </div>
+                <div class="jl-comment-right">
+                    <p>
+                        <span>商品与描述相符</span>
+                        <i class="jl-star jl-cur"></i>
+                        <i class="jl-star jl-cur"></i>
+                        <i class="jl-star jl-cur"></i>
+                        <i class="jl-star jl-cur"></i>
+                        <i class="jl-star jl-cur"></i>
+                    </p>
+                    <textarea data-id="{$g.p_id}"  placeholder="亲，写点评价吧，你的评价对其他的买家有很大的帮助哦"></textarea>
+                </div>
+            </div>
+        </volist>
+        <button class="jl-publishe-comment">发表评论</button>
+    </div>
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['jquery'], function($) {
+            var order_sn='{$order_sn}';
+            var $comment=$('.jl-comment-right');
+            var $data=[];
+            $comment.on('click','.jl-star',function(){
+                $(this).parent().children('.jl-star').removeClass('jl-cur');
+                $(this).addClass('jl-cur').prevAll('.jl-star').addClass('jl-cur');
+            });
+            require(['jl-modal'],function (modal) {
+                //提交
+                $('.jl-publishe-comment').on('click',function(){
+                    for(var i=0;i<$comment.length;i++) {
+                        $data.push({
+                            id: $($comment[i]).children('textarea').attr("data-id"),
+                            star: $($comment[i]).children('p').children(".jl-cur").length,
+                            content: $($comment[i]).children('textarea').val()
+                        });
+                    }
+                    $.post(
+                        "{:U('Home/Order/comment')}",
+                        {
+                            order_sn:order_sn,
+                            data:$data,
+                        },
+                        function(res){
+                            if(res.status == 0 ){
+                                window.location.href="{:U('Home/Order/myAppraise')}";
+                            }else{
+                                modal.confirm({
+                                    title:'系统繁忙',
+                                    brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                    top:100
+                                })
+                            }
+                        }
+                    )
+
+                })
+            })
+        })
+    </script>
+</block>

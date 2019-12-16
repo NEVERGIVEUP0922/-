@@ -1,0 +1,385 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Solution/sol_public.css">
+
+	<style>
+		.sol_header{
+			margin:8px 0px 10px 10px;
+		}
+		.clear{
+			clear:both;
+		}
+		.layui-table-tips-main{/*修改layui动态生成的弹框元素,别删除*/
+			max-height: 250px;
+		}
+		.sol_desc{
+			width:400px;height:300px;
+			text-space:4px;
+			text-indent:25px;
+			line-height:25px;
+		}
+		/*.sol_imgs{*/
+		/*width:300px;*/
+		/*}*/
+		/*.sol_imgs>img{*/
+		/*width:100%;*/
+		/*}*/
+	</style>
+</block>
+<block name="content">
+	<!--<div>-->
+	<blockquote class="layui-elem-quote">
+		<!--<button class="layui-btn pro-solList">供应方案</button>-->
+		<button class="layui-btn desir-solList">需求方案</button>
+		<!--<button class="layui-btn my-solList">自营方案</button>-->
+		<!--&lt;!&ndash;<button class="layui-btn">需求方案上表</button>&ndash;&gt;-->
+		<!--<button class="layui-btn vip-info-list">会员列表</button>-->
+		<span >》》》需求方案列表</span>
+	</blockquote>
+	<blockquote class="layui-elem-quote" style="height:90px;clear:both">
+		<form class="layui-form" lay-filter="" action="">
+			<div class="layui-form-item" style="width:300px;float:left;clear:none">
+				<label class="layui-form-label">方案名称:</label>
+				<div class="layui-input-block">
+					<input type="text" name="sol_name" placeholder="请输入方案名称" autocomplete="off"
+						   class="layui-input layui-form-label-pinyin" value="{$request.where.sol_name.value}">
+				</div>
+			</div>
+			<div class="layui-form-item" style="width:300px;padding-left:25px;float:left;clear: none;">
+				<label class="layui-form-label">用户:</label>
+				<div class="layui-input-block">
+					<input type="text" name="nick_name" placeholder="请输入用户名" autocomplete="off"
+						   class="layui-input layui-form-label-pinyin" value="{$request.where.nick_name.value}">
+				</div>
+			</div>
+
+			<div class="layui-col-xs4">
+				<label class="layui-form-label">时间区间</label>
+				<div class="layui-input-block" style="overflow:hidden">
+					<input type="text" style="width:40%;float:left;" name="create_at_start" value="{$request.where.create_at_start.value}" id="pickStart" placeholder="起始时间" autocomplete="off" class="layui-input" >
+					<span style="float:left;margin:2% 1%">—</span>
+					<div class="layui-inline" style="float:left ;">
+
+						<div class="layui-input-inline">
+							<input type="text" name="create_at_end" value="{$request.where.create_at_end.value}" class="layui-input" id="pickEnd"  placeholder="结束时间">
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-form-item" style="float:left;clear:none;">
+				<label class="layui-form-label"></label>
+				<div class="layui-input-block">
+					<div class="layui-btn-group">
+						<span class="layui-btn layui-btn-sm" lay-submit lay-filter="list-query-submit">筛选</span>
+						<span class="layui-btn layui-btn-primary layui-btn-sm clear-btn"
+							  lay-submit lay-filter="">清空</span>
+					</div>
+				</div>
+			</div>
+			<div class="clear"></div>
+			<div class="layui-form-item" style="width:325px;float:left;clear:none;">
+				<label class="layui-form-label">项目类型:</label>
+				<div class="layui-inline layui-input-inline" lay-filter="sol_types">
+					<select name="types" lay-filter="sol_types" lay-search="">
+						<option value="">请选择方案类型</option>
+						<foreach name="types" item="vo" key="k">
+							<if condition="$request['where']['types']['value'] eq $vo['id']">
+								<option value="{$vo.id}" selected>{$vo.types}</option>
+								<else />
+								<option value="{$vo.id}">{$vo.types}</option>
+							</if>
+						</foreach>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item" style="float:left;clear:none;">
+				<label class="layui-form-label black_word" style="width:80px;">状态:</label>
+				<div class="layui-inline layui-input-inline" lay-filter="sol_status" style="width:190px;">
+					<select name="sol_status" lay-filter="sol_pub_status">
+						<option value="1">发布中</option>
+						<option value="2">已结束</option>
+						<option value="3">审核中</option>
+						<option value="4">已通过</option>
+						<option value="5">未通过</option>
+						<option value="9">全部方案</option>
+
+					</select>
+				</div>
+			</div>
+		</form>
+	</blockquote>
+	<table lay-filter="data-table" class="data-table">
+		<script type="text/html" id="data-table-handle-tpl">
+			<button class="layui-btn layui-btn-sm" lay-event="detail">洽谈详细</button>
+		</script>
+	</table>
+	<div id="data-table-page"></div>
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        layui.use(['table', 'layer', 'laypage', 'jlTool', 'element', 'form','commonTpl','selectCustomer','selectUser','pikadayOption','laydate'], function (){
+            var laydate = layui.laydate;
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var request = {$request|json_encode};
+            var form = layui.form;
+            var solList = {$solList|json_encode};
+            var types= {$types|json_encode};
+            var sysUserInfo = {$sysUserInfo|json_encode}
+//            console.log(request});
+            //检索:
+            form.on('submit(list-query-submit)',function(data){
+                var where = {};
+                $.each(data.field,function(index ,value){
+                    if(value){
+                        var single = {key:index,value:value};
+                        if(!value) single.value=0;
+                        switch(index){
+                            case 'sol_name':
+                                single['type']='like';break;
+                            case 'nick_name':
+                                single['type']='like';break;
+                            case 'create_at':
+                                var now = new Date();
+                                var date = now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate();
+                                single['value2'] = date;
+                                single['type'] = 'between';
+                                break;
+                            default:single['type']='eq';break;
+                        }
+                        where[index] = single;
+                    }
+                });
+//			    console.log(where);return;
+                queryTable({
+                    pageSize:request.pageSize,
+                    page:request.page,
+                    where:where
+                });
+//			    $.ajax({
+//					type:'POST',
+//					url:"/admin/Solution/solutions",
+//					data:sol_data,
+//					success:function(re){
+//					    if(re.status ===1000){
+//
+////					    	layer.msg('操作成功!');
+//						}else{
+////					        layer.msg(re.content);
+//						}
+//					}
+//				});
+            });
+            //清空
+            $('.clear-btn').on('click',function () {
+                queryTable();
+                return false
+            })
+            //日期 //时间选择初始化
+            laydate.render({
+                elem: '#pickStart',
+                done:function(value, date, endDate){
+                    var endTime = new Date($("#pickEnd").val());
+                    if(new Date(value) - endTime >0){
+                        setTimeout(function(){
+                            $("#pickStart").val($("#pickEnd").val());
+                        },500)
+                    }
+                }
+            });
+            laydate.render({
+                elem: '#pickEnd',
+                done:function(value, date, endDate){
+                    var startTime = new Date($("#pickStart").val());
+                    if(new Date(value) - startTime <0){
+                        setTimeout(function(){
+                            $("#pickEnd").val($("#pickStart").val());
+                        },500)
+                    }
+                }
+            });
+//            initInput({"admin":"","customer":""});
+//            var queryTable = function (query) {
+//                query = jlTool.urlEncode(query);
+//                window.location.href = '/Admin/Order/payImgList?'+query
+//            };
+            table.render({
+                elem: '.data-table',
+                data: solList.list?solList.list:[],
+                page: false,
+                limit: solList.pageSize,
+                cellMinWidth: 120,
+                height:'full-220',
+                cols: [[ //表头
+                    {field: 'desir_sn', width:145,title: '订单编号',fixed: 'left'}
+                    ,{field: 'desir_name', title: '方案名称'}
+                    ,{field: 'check_status',width:90, title: '审核状态',templet:function (d) {
+                        var h = { '0':'待审核', '1':'通过', '2':'不通过' };
+                        return h[d.check_status];
+                    }}
+                    ,{field: 'nick_name', title: '用户'}
+                    ,{field: 'types', title: '方案类型',templet:function(d){
+                        for(var i in types){
+                            if(types[i]['id']==d.types){return types[i]['types'] };
+                        }
+                    }}
+                    ,{field: 'delivery', title: '交付日期'}
+                    ,{field: 'budget', title: '预算'}
+                    ,{field: 'linkman', title: '联系人'}
+                    ,{field: 'mobile', title: '联系电话'}
+                    ,{field: 'company', title: '联系公司'}
+                    ,{title: '方案详情',align:'center',templet: function(d){
+//                        var pro_desc = d.pro_desc.replace(/\n/g, "<p>");
+                        var desir_desc = d.desir_desc;
+                        return (
+                            '<div>' +
+                            '<p><button class="layui-btn layui-btn-sm" style="padding:0 8px">查看方案描述</button><span style="margin: 0 50px;"></span></p>' +
+                            '<div class="sol_desc">'+desir_desc+'</div>' +
+                            '</div>'
+                        )
+                    }}
+                    ,{title: '洽谈方案',width:90,align:'center',toolbar: '#data-table-handle-tpl'}
+                    ,{field: 'sys_uid', title: '审核人',templet:function(d){
+                        if(d.sys_uid){
+                            for(var i in sysUserInfo){
+                                if(sysUserInfo[i]['uid']==d.sys_uid){
+                                    return sysUserInfo[i]['nickname'];
+                                }
+                            }
+                        }else{
+                            return '';
+                        }
+                    }}
+                    ,{field: 'check_time', title: '审核时间'}
+                    ,{field: 'create_time', title: '创建时间'}
+                    ,{field: 'update_time', title:'更新时间'}
+                    ,{field: 'handle', title: '操作', align: 'center', fixed: 'right', templet:function (d) {
+                        if(d.check_status==0){
+                            return (
+                                '<div class="data-table-handle-box">' +
+                                '<span class="js-check" data-sn="'+d.desir_sn+'" data-id=" '+d.id+'" data-sol_uid ="'+d.uid+'">审核中</span>'+
+                                '</div>'
+                            )
+                        }else if(d.check_status==1){
+                            return (
+                                '<div class="data-table-handle-box">' +
+                                '<span class="js-check" data-sn="'+d.desir_sn+'" data-id=" '+d.id+'" data-sol_uid ="'+d.uid+'">通过</span>'+
+                                '</div>'
+                            )
+                        }else if(d.check_status==2){
+                            return (
+                                '<div class="data-table-handle-box">' +
+                                '<span class="js-check" data-sn="'+d.desir_sn+'" data-id=" '+d.id+'" data-sol_uid ="'+d.uid+'">不通过</span>'+
+                                '</div>'
+                            )
+                        }
+                    }}
+                ]],
+                done:function () {
+                    $('.js-check').on('click',function () {
+                        var $this = $(this);
+                        layer.open({
+                            title:['审核','font-size:15px'],
+                            type: 0,
+                            content: (
+                                '<div class="layui-form jl-check-modal" style="width: 250px"> ' +
+                                '<input type="radio" name="pass" value="1" title="通过" checked> ' +
+                                '<input type="radio" name="pass" value="2" title="不通过"> ' +
+                                '</div>'
+                            ),
+                            success: function(){
+                                form.render('radio');
+                                $('.layui-form-radio').css('font-size','14px');
+                            },
+                            yes:function (index, layero) {
+                                var	check_data	= {
+                                    'sol_id':$this.data('id'),
+                                    'sol_uid':$this.data('sol_uid'),
+                                    'sol_type':2,
+                                    'desir_sn':$this.data('sn'),
+                                    'check_status':$('input[name="pass"]:checked').val()
+                                };
+                                $.post('desirAudit',check_data,function (res) {
+                                    if(res.status==1000){
+                                        layer.close(index);
+                                        layer.msg('操作成功', {area:['200px', '50px']});
+                                        setTimeout(function () {
+                                            queryTable();
+                                        },500)
+                                    }
+                                    else {
+                                        layer.msg('操作失败', {area:['200px', '50px']});
+                                    }
+                                })
+                            }
+                        });
+                    })
+                }
+
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: solList.pageSize,
+                count: solList.count,
+                curr: solList.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request,{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(solList.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            //洽谈 //工具按钮
+            table.on('tool(data-table)', function(obj){
+                console.log(obj.data);
+                var con_data = obj.data;
+                var layEvent = obj.event;
+                	con_data = jlTool.urlEncode({id:con_data.id,desir_sn:con_data.desir_sn});
+                switch( layEvent ){
+                    case 'detail':
+                        jlTool.sendIframeMsg('go',{
+                            title:'方案洽谈',
+                            url:'/Admin/Solution/converseList?'+con_data,
+                            icon:''
+                        });
+                        break;
+                }
+            });
+
+            //跳转函数
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = 'desirSolutions?'+query
+            };
+            //状态
+            var status_value=request.where.sol_status.value;
+            $("select[name='sol_status'] option").each(function(d){
+//			    console.log(d);
+                var option_obj = $(this);
+                if(option_obj.val() == status_value){
+                    option_obj.attr('selected',true);
+                }
+                form.render('select');
+            });
+            //新窗口(洽谈)
+			$('.btn-converse').click(function(){
+                jlTool.sendIframeMsg('go',{
+                    title:'需求方案审核',
+                    url:'/Admin/Solution/converseList',
+                    icon:''
+                });
+			});
+        });
+	</script>
+</block>

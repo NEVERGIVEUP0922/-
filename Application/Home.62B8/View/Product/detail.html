@@ -1,0 +1,794 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout" />
+<block name="title">商品详情页</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Product/css/detail.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <style>
+        .containers{
+            width:1200px;margin:1% auto;text-align: center
+        }
+        .containers>p{
+            font-family:'苹方 粗体',sans-serif;
+            text-align:left;
+        }
+        .lefts{
+            overflow:hidden;
+            width:100%;
+        }
+        .lefts>div{
+            font-family:'苹方 粗体',sans-serif;
+            float:left;
+            width:40%;
+            text-align:left;
+            margin:0 5%;
+            font-size:18px;
+            color:#000;
+            overflow:hidden;
+        }
+    </style>
+    <!-- 面包屑导航 -->
+    <div id="jl-brand">
+        <ul class="jl-brand-url">
+            <li><a href="{:U('Home/Default/index')}">首页</a></li>
+            <li>></li>
+            <?php $k = count($path); ?>
+            <volist name="path" id="p">
+                <li><a href="{:U('Home/Product/search', ['cate_id'=>$p['id']])}">{$p['name']}</a></li>
+                <if condition="$k eq $i">
+                    <li>&gt;&nbsp;&nbsp;<a href="#"> {$info['name']}</a></li>
+                    <else />
+                     <li>></li>
+                </if>
+            </volist>
+            <!--<li><a href="#">LED背光驱动</a></li>-->
+            <!--<li>></li>-->
+            <!--<li><a href="#">ST照明DC-DC驱动</a></li>-->
+        </ul>
+    </div>
+    <!-- 商品详情 -->
+    <div id="jl-detail" class="jl-cle">
+        <div class="jl-detail-left">
+            <div class="jl-detail-picture">
+                <notempty name="info.cover_image">
+                    <img src="{$info.cover_image}" class="jl-detail-picture-img" alt="">
+                    <else />
+                    <img src="http://www.17sucai.com/preview/869565/2017-12-12/fdj/img/a1.png"  class="jl-detail-picture-img" alt="">
+                </notempty>
+
+            </div>
+            <div class="jl-detail-picture-small">
+
+                    <notempty name="info.cover_image">
+                        <img src="{$info.cover_image}"  data-url="{$info.cover_image}" style='width:70px;height:70px;padding:2px 2px 2px 2px;border:2px solid transparent;margin:4px 4px 4px 0;' alt="">
+                        <else />
+                        <img src="http://www.17sucai.com/preview/869565/2017-12-12/fdj/img/a1.png" data-url="http://www.17sucai.com/preview/869565/2017-12-12/fdj/img/a1.png" style='width:70px;height:70px;padding:2px 2px 2px 2px;border:2px solid transparent;margin:4px 4px 4px 0;'  alt="">
+                    </notempty>
+                <notempty name="info['describe_image']">
+                    <?php  $describe_image_Array = explode(";",$info["describe_image"]);?>
+                    <volist name="describe_image_Array" id="src">
+                        <img src="{$src}" data-url="{$src}" style='width:70px;height:70px;padding:2px;border:2px solid transparent;margin:4px'/>
+                    </volist>
+                    <else/>
+                </notempty>
+
+
+             </div>
+            <ul>
+                <li><a href="#"  class="jl-share"><b></b>分享</a></li>
+                <li><a href="javascript:;"  class="jl-collect"><b></b>
+                    <if condition="$collected eq 1" >
+                        已收藏
+                        <else />
+                        收藏商品
+                    </if>
+                    <sapn>（{$info['click_num']}人气）</sapn></a>
+                </li>
+            </ul>
+        </div>
+        <div class="jl-detail-center">
+            <div class="jl-center-title">
+                <span>{$info['p_sign']}</span>
+                <notempty name="info.pack_unit">
+                    <span>{$info.pack_unit}装 一{$info.pack_unit}{$info.min}{$info.unit}</span>
+                </notempty>
+            </div>
+            <div class="jl-offer">
+                <div class="jl-offer-title">
+                    区间报价
+                </div>
+                <ul class="jl-offer-content">
+                    <volist name="info.price_section" id="vo">
+                        <if condition="($info['min_open'] eq 1) OR ($vo.start egt $info['min'])">
+                            <li>
+                                <p>
+                                    <if condition="$vo.end eq 0">
+                                        {$vo.start}以上：
+                                        <else />
+                                        {$vo.start}-{$vo['end']-1}：
+                                    </if>
+                                </p>
+                                <i>￥{$vo.price}</i>
+                                <span>
+                                <empty name="vo.desc">
+                                    /{$info.unit}
+                                    <else />
+                                    /{$info.unit}
+                                </empty>（含税）
+                            </span>
+                            </li>
+                        </if>
+                    </volist>
+                </ul>
+            </div>
+            <ul class="jl-commodity-details jl-cle">
+                <notempty name="info.parameter">
+                    <li>
+                        <div class="jl-li" style="width: 100%;position: relative;">
+                            <p style="position: absolute;top:0;left: 0">功能参数</p>
+                            <span style="margin-left: 76px">{$info['parameter']}</span>
+                        </div>
+                    </li>
+                </notempty>
+                <li>
+                    <div class="jl-li">
+                        <p>能否拆</p>
+                        <span style="color: #e84343;">{$info['min_open']=='1'? '能':'不能'}</span>
+                    </div>
+                    <div class="jl-li">
+                        <p>现货库存</p>
+                        <span style="color: #e84343;"> <?php echo $info['store']>0?$info['store']:0; ?> </span>
+
+                    </div>
+                </li>
+                <li>
+                    <div class="jl-li">
+                        <p>品牌</p>
+                        <span>{$info.brand_name}</span>
+                    </div>
+                    <div class="jl-li">
+                        <p>型号</p>
+                        <span>{$info.p_sign}</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="jl-li">
+                        <p>商品类别</p>
+                        <span>{$info.cate_name}</span>
+                    </div>
+                    <div class="jl-li">
+                        <p>封装</p>
+                        <span>{$info.package}</span>
+                    </div>
+                </li>
+                <li class="jl-laster">
+                    <div class="jl-li">
+                        <p>超出现货库存交期</p>
+                        <span>{$info.delivery}天</span>
+                    </div>
+                    <div class="jl-li">
+                        <p>最小包装</p>
+                        <span>{$info.min}个</span>
+                    </div>
+                </li>
+                <li class="jl-dish">
+                    <p>{$info['pack_unit']}数:</p>
+                    <div class="jl-input-count">
+                        <span class="jl-button-subtract">-</span>
+                        <input type="text" class="input_count" value="{$default.pan}">
+                        <span class="jl-button-add">+</span>
+                    </div>
+                    <span>{$info['pack_unit']}（1{$info['pack_unit']}={$info.min}个）</span>
+                </li>
+                <if condition="$info['minorder'] eq 0 ">
+                    <li class="jl-kilo">
+                        <p>K数:</p>
+                        <div class="jl-input-count">
+                            <span class="jl-button-subtract">-</span>
+                            <input type="text" class="input_count" value="{$default.k}">
+                            <span class="jl-button-add">+</span>
+                        </div>
+                        <span>K（1K=1000个）</span>
+                    </li>
+                    <li class="jl-one">
+                        <p>个数:</p>
+                        <div class="jl-input-count">
+                            <span class="jl-button-subtract">-</span>
+                            <input type="text" class="input_count" value="{$default.g}">
+                            <span class="jl-button-add">+</span>
+                        </div>
+                        <span>个</span>
+                    </li>
+                    <else />
+                    <li class="jl-kilo" style="display: none">
+                        <p>K数:</p>
+                        <div class="jl-input-count">
+                            <span class="jl-button-subtract">-</span>
+                            <input type="text" class="input_count" value="{$default.k}">
+                            <span class="jl-button-add">+</span>
+                        </div>
+                        <span>K（1K=1000个）</span>
+                    </li>
+                    <li class="jl-one" style="display: none">
+                        <p>个数:</p>
+                        <div class="jl-input-count">
+                            <span class="jl-button-subtract">-</span>
+                            <input type="text" class="input_count" value="{$default.g}">
+                            <span class="jl-button-add">+</span>
+                        </div>
+                        <span>个</span>
+                    </li>
+                </if>
+                <li class="jl-total-num">
+                    <p>总数:</p>
+                    <div class="jl-num">
+                        <b>{$info.minorder}</b>个
+                    </div>
+                    <span>库存<b class="jl-counts"> <?php echo $info['store']>0?$info['store']:0; ?> </b>个</span>
+                </li>
+                <li class="jl-btns">
+                    <php> $appointQQ = (count($qqList['list'])==1) ? $qqList['list']['0']['qq'] : false; </php>
+                    <a class="jl-enquiry" target="_blank"
+                       href="http://wpa.qq.com/msgrd?v=3&uin={$appointQQ?$appointQQ:$info.customer_service.qq}&site=在线客服&menu=yes">立即询价</a>
+                    <if condition="$info.minorder eq 0 ">
+                        <span class="jl-addcart"><b></b>加入购物车</span>
+                        <else />
+                        <span class="jl-addcart jl-addCart-submit"><b></b>加入购物车</span>
+                    </if>
+                </li>
+            </ul>
+        </div>
+        <div class="jl-detail-right">
+            <div class="jl-right-top">
+                <div class="jl-top-logo">
+                    <img src="__PUBLIC__/Home/Public/img/images/small-logo.png" alt="">
+                </div>
+            </div>
+            <?php  $exists = file_exists(SITE_PATH.$info['pdf']) ?>
+            <div class="jl-right-middle" style="overflow:hidden">
+                <div class="jl-pdf">
+                    <if condition="$info['pdf'] and $exists">
+                        <img src="__PUBLIC__/Home/Product/img/PDF.png" alt="">
+                        <else />
+                        无PDF文件
+                    </if>
+                </div>
+            </div>
+            <div class="jl-right-bottom">
+                <if condition="$info['pdf'] and $exists">
+                    <a class="jl-pdf-btn jl-check" href="#" style="border-right: 1px solid #05BAAE">查看</a>
+                    <a class="jl-pdf-btn" href="{:U('Home/Product/downPdf',['p_id'=>$info['id']])}" >下载</a>
+                    <else />
+                    <a href="#" class="jl-pdf-btn jl-disabled" style="border-right: 1px solid #ddd">查看</a>
+                    <a class="jl-pdf-btn jl-disabled">下载</a>
+                </if>
+                <if condition="$wx_code">
+                    <p style="text-align: center;">
+                        <img src="{$wx_code}" width="80%" style="margin-top: 50px"  alt="微信扫码手机查看商品"/>
+                    </p>
+                    <p style="text-align: center;color:crimson">微信扫码查看商品</p>
+                </if>
+            </div>
+        </div>
+    </div>
+    <!-- 商品规格 -->
+    <div id="jl-specification">
+        <div class="jl-specification-title">
+            <p class="jl-cle">商品介绍</p>
+            <p >数据手册</p>
+        </div>
+        <div class="jl-specification-content jl-cle">
+            <div class="jl-specification-brief jl-specification-brief-describe"  style="width:1160px;margin:0 auto;">
+                <notempty name="info.describe">
+                    <!--{$info.describe|urlencode}-->
+                    <else />
+                    暂无介绍
+                </notempty>
+            </div>
+        </div>
+
+        <div class="jl-specification-content">
+            <div class="jl-specification-brief">
+                <!-- 数据手册 -->
+                <div id="jl-manual" class="jl-cle">
+                        <if condition="$exists and $info['pdf']" >
+                            <div class="jl-manual-content">
+                                <div id="pdf" data-src="{$info['pdf']}" style="text-align:center;width:900px;height:80vh;margin:0 auto;font-size:30px">
+                                   <!-- <a href="{$info['pdf']}" class="media"></a>-->
+                                </div>
+                            </div>
+                            <else />
+                                暂无手册信息
+                        </if>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="jl-line" ></div>
+    <!-- 弹窗 -->
+    <!-- 分享 -->
+    <div id="js-popup-share">
+        <div class="jl-bg"></div>
+        <div class="js-share">
+            <div class="js-share-title">分享给好友<span class="js-close"></span></div>
+            <div class="js-share-content">
+                <p class="jl-share-title">点击图标立即分享商品链接</p>
+                <dl class="js-share-way jl-cle">
+                    <dt>分享到：</dt>
+                    <dd>
+                        <script type="text/javascript">document.write(['<a href="http://v.t.sina.com.cn/share/share.php?&appkey=3579524106&url=',encodeURIComponent(document.location),'&content=utf-8','&title=',encodeURIComponent("{$info[name]}" || document.title),'" target="_blank"  title="分享到新浪微博"><img src="https://img01.sogoucdn.com/app/a/100520115/a52781e7f6e1ea44721773b20836585c" style="width:22px;height:22px;" alt="分享到新浪微博" /><\/a>'].join(''));</script>
+                        <!-- <wb:share-button appkey="3579524106" addition="simple" type="icon" default_text="{$info['name']}"></wb:share-button>-->
+<!--
+                        <a target="_blank" href="http://v.t.sina.com.cn/share/share.php?&appkey=3579524106&url="+encodeURIComponent(document.location.href)+"&title="+encodeURIComponent('{$info[\'name\']}')+"&content=utf-8"><img src="https://img01.sogoucdn.com/app/a/100520115/a52781e7f6e1ea44721773b20836585c" style="width:22px;height:22px;" alt="分享到新浪微博" /></a>
+-->
+                        <span class="jl-share-platform jl-sina-title">新浪微博</span>
+                    </dd>
+                    <dd>
+                        <script type="text/javascript">document.write(['<a href="http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=',encodeURIComponent(location.href),'&title=',encodeURIComponent("{$info['name']}"|| document.title),'" target="_blank"  title="分享到QQ空间"><img src="http://qzonestyle.gtimg.cn/ac/qzone_v5/app/app_share/qz_logo.png" alt="分享到QQ空间" /><\/a>'].join(''));</script>
+                        <span class="jl-share-platform">QQ空间</span>
+                    </dd>
+                    <dd>
+                        <a href="javascript:void(function(){var d=document,title='{$info[\'name\']}',e=encodeURIComponent,s1=window.getSelection,s2=d.getSelection,s3=d.selection,s=s1?s1():s2?s2():s3?s3.createRange().text:'',r='https://www.douban.com/recommend/?url='+e(d.location.href)+'&title='+e(title)+'&sel='+e(s)+'&v=1',w=450,h=330,x=function(){if(!window.open(r,'douban','toolbar=0,resizable=1,scrollbars=yes,status=1,width='+w+',height='+h+',left='+(screen.width-w)/2+',top='+(screen.height-h)/2))location.href=r+'&r=1'};if(/Firefox/.test(navigator.userAgent)){setTimeout(x,0)}else{x()}})()"><img src="https://img3.doubanio.com/pics/fw2douban_s.png" alt="推荐到豆瓣" /></a>
+                        <span class="jl-share-platform">豆瓣</span>
+                    </dd>
+                </dl>
+                <button class="jl-share-btn">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- 分享未登录 -->
+    <div id="js-popup-login">
+        <div class="jl-bg"></div>
+        <div class="js-share">
+            <div class="js-share-title">你还尚未登录<span class="js-close"></span></div>
+            <div class="js-share-content">
+                <h4>密码登录</h4>
+                <form id="js-share-login" action="">
+                    <div class="jl-form-grop">
+                        <b class="jl-user-icon"></b>
+                        <input type="text" name="user_name" class="user-name" placeholder="请输入用户名" autocomplete="off">
+                        <p>
+                            <i class="jl-notice"></i>
+                            <span>用户名不能为空</span>
+                        </p>
+                    </div>
+                    <div class="jl-form-grop">
+                        <b class="jl-password-icon"></b>
+                        <input type="password" name="user_pwd" class="user-pwd" placeholder="请输入密码" autocomplete="off">
+                        <p>
+                            <i class="jl-notice"></i>
+                            <span></span>
+                        </p>
+                    </div>
+                    <p class="jl-cle">
+                        <a href="{:U('Home/Account/passForget')}" class="jl-forgot-password">忘记密码</a>
+                    </p>
+                    <button class="js-login-btn">登录</button>
+                </form>
+                <ul class="jl-login-way">
+                    <li>
+                        <a href="{:U('Home/Account/login',['type'=>'qq'])}" class="jl-way">
+                            <img src="__PUBLIC__/Home/Public/img/images/qq.png" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{:U('Home/Account/login',['type'=>'wechat'])}" class="jl-way">
+                            <img src="__PUBLIC__/Home/Public/img/images/weiixn.png" alt="">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{:U('Home/Account/login',['type'=>'sina'])}" class="jl-way">
+                            <img src="__PUBLIC__/Home/Public/img/images/sina1.png" alt="">
+                        </a>
+                    </li>
+                    <li class="jl-last-choose">
+                        <a href="{:U('Home/Account/register')}" class="jl-run-reg">
+                            <img src="__PUBLIC__/Home/Public/img/images/login_register.png" alt="">
+                            <span>立即注册</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <!--<script src="__PUBLIC__/Common/module/jquery/3.1.0/jquery.min.js"></script>
+    <script src="__PUBLIC__/Common/module/bup/bup.js"></script>-->
+    <!--<script src="http://www.daxin.com/Public/Common/module/pdf_self/pdfObj/pdfobj.js?v=118"></script>
+    <script>
+        PDFObject.embed("https://www.longicmall.com/Uploads/productPdf/2018-07-16/5b4c11d2e11e5.pdf", "#pdf");
+    </script>-->
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function(){
+            require(['jquery',/*'pdfmeta','pdfmetadata',*/'bup','pdfobj'],function($){
+                require(['Module/echo/1.7.3/echo.min'],function (echo) {
+                    echo.init({
+                        callback: function (element) {
+                            $(element).removeClass('jl-lazy-pdf-img');
+                        }
+                    });
+                });
+                var PDFObject = require("pdfobj");
+                //pdf
+                setTimeout(function(){
+                    var pdfSrc = $("#pdf").data("src");
+                    if(pdfSrc){
+                        PDFObject.embed(pdfSrc, "#pdf",{pdfOpenParams: {
+                                pagemode: "thumbs",
+                                navpanes: 0,
+                                toolbar: 0,
+                                statusbar: 0,
+                                view: "FitV"
+                            }
+                        });
+                    };
+                },200)
+                var path = {$info|json_encode};
+                var bigs = {$big|json_encode};
+               /* var execl = new ActiveXObject("Excel.Sheet");*/
+               // console.log(path,decodeURIComponent(path.describe+''),path.describe+'');
+                //图片放大
+                $(document).ready(function(){
+                    $(".jl-detail-picture-img").BUP("jl-detail-picture-img",1.5);
+                    if(!path.describe){ return;};
+                    var htmls=getHtml((path.describe+'').indexOf('null')>-1?'':path.describe);
+                    if(path.describe)$(".jl-specification-brief-describe").html(htmls);
+                    function getHtml(describe){
+                        var reg=/(<p>)+|[\u2E80-\u9FFF]+/g;///^<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)$/g;
+                        var returndata;
+                        var returnObj=describe;
+                        if(!describe){return describe};
+                        if(!reg.test(describe+"")){
+                            returndata=decodeURIComponent(describe+'');
+                            return arguments.callee(returndata);
+                        }else{
+                            return returnObj;
+                        };
+                    }
+                })
+                //详情图图片切换
+                $(".jl-detail-picture-small img").on("mouseover",function(){
+                    $(this).css("border-color","#e84343").siblings().css("border-color","transparent");
+                    $(".jl-detail-picture img").attr({"src":$(this).attr("data-url")});
+                    $(".jl-detail-picture-img").BUP("jl-detail-picture-img",1);
+                });
+                var is_login='{:is_login()}';
+                //切换
+                $('.jl-specification-title').children('p').on('click',function () {
+                    $(this).addClass('jl-cle').siblings().removeClass('jl-cle');
+                    var index = $(this).index();
+                    $('.jl-specification-content').hide().eq(index).show()
+                });
+                //点击查看滚动
+                $('.jl-check').on('click',function(){
+                    var $box = $('.jl-specification-title');
+                    $box.children('p').eq(1).trigger('click');
+                    $("html,body").animate({scrollTop:$box.offset().top},1000);
+                });
+                //分享弹窗
+                $('.jl-share').on('click',function(){
+                    $("#js-popup-share").show();
+                });
+                $('.jl-share-btn').on('click',function () {
+                    $("#js-popup-share").hide()
+                });
+                //关闭弹窗
+                $('.js-close').on('click',function(){
+                    $('body').css('overflow','auto');
+                    $("#js-popup-login").css('display','none');
+                    $("#js-popup-share").css('display','none');
+                });
+                require(['jl-modal'],function (modal) {
+                    //商品数量加减
+                    var stock=parseInt('{$info.store}');
+                    var input_count=$('.input_count');
+                    var min=parseInt('{$info.min}');
+                    input_count.change(function(){
+                        var counts=parseInt($('.jl-dish .input_count').val()*min)+parseInt($('.jl-kilo .input_count').val()*1000)+parseInt($('.jl-one .input_count').val());
+                        if(counts>0){
+                            $('.jl-addcart').addClass('jl-addCart-submit');
+                        }
+                        else{
+                            $('.jl-addcart').removeClass('jl-addCart-submit');
+                        }
+                        $('.jl-num>b').html(counts);
+                    });
+                    //$('.jl-dish .jl-button-add').click()
+                    $('.jl-dish .jl-button-add,.jl-kilo .jl-button-add,.jl-one .jl-button-add').on('click',function(){
+                        var counts=parseInt($('.jl-dish .input_count').val()*min)+parseInt($('.jl-kilo .input_count').val()*1000)+parseInt($('.jl-one .input_count').val());
+                        var $count=0;
+                        if($(this).parents().hasClass('jl-one')){
+                            $count=1;
+                        }
+                        else if($(this).parents().hasClass('jl-kilo')){
+                            $count=1000;
+                        }
+                        else{
+                            $count=min;
+                        }
+                        counts=counts+$count;
+                        var input=$(this).siblings('.input_count').val();
+                        input++;
+                        $(this).siblings('.input_count').val(input);
+                        $('.jl-num>b').html(counts);
+                        if(counts>0){
+                            $('.jl-addcart').addClass('jl-addCart-submit');
+                        }
+                        else{
+                            $('.jl-addcart').removeClass('jl-addCart-submit');
+                        }
+                    });
+                    $('.jl-dish .jl-button-subtract,.jl-kilo .jl-button-subtract,.jl-one .jl-button-subtract').on('click',function(){
+                        var counts=parseInt($('.jl-dish .input_count').val()*min)+parseInt($('.jl-kilo .input_count').val()*1000)+parseInt($('.jl-one .input_count').val());
+                        var input=$(this).siblings('.input_count').val();
+                        if(input>0){
+                            input--;
+                            $(this).siblings('.input_count').val(input);
+                            counts=parseInt($('.jl-dish .input_count').val()*min)+parseInt($('.jl-kilo .input_count').val()*1000)+parseInt($('.jl-one .input_count').val());
+                        }
+                        if(counts>0){
+                            $('.jl-addcart').addClass('jl-addCart-submit');
+                        }
+                        else{
+                            $('.jl-addcart').removeClass('jl-addCart-submit');
+                        }
+                        $('.jl-num>b').html(counts);
+                    });
+                    //加入购物车
+                    var $price = $.parseJSON('{$info.price_section|json_encode}');
+                    var number=0/*parseInt('{$basket_goods.num}')*/;
+                    number=number?number:0;
+                    $('.jl-addcart').on('click',function(){
+                        if(!$price){
+                            modal.alert({
+                                title:'加入购物车失败',
+                                brief:'价格出错，请联系客服',
+                                top:100
+                            });
+                        }
+                        else{
+                            var $count=$('.jl-num>b').html();
+                            var id='{$p_id}';
+                            number+=parseInt($count);
+                            var data={"pid":id,"num":number};
+                            $.ajax({
+                                type:'POST',
+                                url:"{:U('Home/Basket/basketaddproduct')}",
+                                data:data,
+                                success:function(res){
+                                    var data= $.parseJSON(res);
+                                    if(data.error===0){
+                                        _uba.push( ['addTraceEvent',{"name":'product_add_cart',"data":{"pid":id,"num":number}}, 'unload' ] );
+                                        modal.confirm({
+                                            type:'fade',
+                                            confirmText: '去购物车',
+                                            cancelText: '再逛逛',
+                                            title:'加入购物车',
+                                            brief:'已成功加入购物车',
+                                            top:100,
+                                            confirm:function () {
+                                                location.href="{:U('Home/Basket/basketDetail')}";
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        number-=parseInt($count);
+                                        modal.confirm({
+                                            type:'fade',
+                                            title:'系统繁忙',
+                                            brief:'不好意思哦！'+data.msg+'，请稍后重试！',
+                                            top:100
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    //加入收藏夹
+                    $('.jl-collect:contains("已收藏")').addClass('js-collect');
+                    var url = "{:U('Home/Product/addCollect',['p_id'=>$info['id']])}";
+                    $('.jl-collect').on('click', function(){
+                        var coll = '{$collected}',title='';
+                        if( is_login == 0 ){
+                            window.location.href = '/Home/Account/login';
+                            return;
+                            $("#js-popup-login").css('display','block');
+                            //登陆验证
+                            $('.user-name').on('blur',function(){
+                                if($(this).val()===""){
+                                    $(this).siblings('p').css('display','block');
+                                }
+                                else{
+                                    $(this).siblings('p').css('display','none');
+                                }
+                            });
+                            $('.user-pwd').on('blur',function(){
+                                if($(this).val()===''){
+                                    $('.user-pwd').siblings('p').css('display','block').children('span').html('密码不能为空');
+                                }
+                                else{
+                                    $(this).siblings('p').css('display','none');
+                                }
+                            });
+                            $('.js-login-btn').on('click',function (e) {
+                                e.preventDefault();
+                                var user=$('.user-name').val();
+                                var password=$('.user-pwd').val();
+                                if(user===""){
+                                    $('.user-name').focus().siblings('p').css('display','block');
+                                }
+                                else if(password===""){
+                                    $('.user-pwd').focus().siblings('p').css('display','block').children('span').html('密码不能为空');
+                                }
+                                else{
+                                    var data = {
+                                        user_name:user,
+                                        user_pass:password
+                                    };
+                                    $.post("{:U('Home/Account/login')}",data, function (res) {
+                                        if(res.status===0){
+
+                                        }
+                                        else {
+                                            $('.user-pwd').siblings('p').css('display','block').children('span').html('用户名或密码错误');
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        else{
+                            if( coll == '1' ){
+                                title = "收藏夹已存在该商品";
+                            }
+                            else {
+                                title = '已成功加入收藏夹';
+                                var id = '{$p_id}';
+                                _uba.push( ['addTraceEvent',{"name":'product_add_collect',"data":{"pid":id}}, 'unload' ] );
+                                $('.jl-collect').addClass('js-collect');
+                            }
+                            $.ajax({
+                                url:url,
+                                type:'get',
+                                success:function(res){
+                                    if( res.status == 0 ){
+                                        modal.confirm({
+                                            type: 'fade',
+                                            confirmText: '查看收藏夹',
+                                            title: '收藏夹',
+                                            brief: title,
+                                            top:100,
+                                            confirm: function(){
+                                                location.href="{:U('Home/User/favorite')}";
+                                            },
+                                            cancel:function(){
+                                                location.reload();
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        modal.confirm({
+                                            type:'fade',
+                                            title:'系统繁忙',
+                                            brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                            top:100
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+                //数据手册
+                var count='{:count($small)}';
+                var small_img=$('.jl-thumbnail-content>li');
+                var big_img=$('.jl-manual-left>li');
+                var num1=1;
+                var num2=1;
+                var height_top=parseInt($('.jl-thumbnail-content').css('top'));
+                var height=parseFloat(small_img.css('height'));
+                $('.jl-slidedown').on('click',function(){
+                    if(count-num1>2){
+                        $('.jl-thumbnail-content').css('top',-height*num1);
+                        num1++;
+                        height_top=height_top-height;
+                    }
+                    else{
+                        $('.jl-slideup').css("cursor", 'pointer');
+                    }
+                    require(['Module/echo/1.7.3/echo.min'],function (echo) {
+                        echo.render();
+                    });
+                });
+                $('.jl-slideup').on('click',function(){
+                    if(height_top<0){
+                        $('.jl-thumbnail-content').css('top',height_top+height);
+                        height_top+=height;
+                        num1--;
+                    }
+                    else{
+                        $('.jl-slidedown').css("cursor", 'pointer');
+                    }
+                });
+                $('#img1').addClass('jl-cur');
+                $('.small1').addClass('jl-cur');
+                small_img.on('click',function(e){
+                    e.preventDefault();
+                    small_img.removeClass('jl-cur');
+                    $(this).addClass('jl-cur');
+                    var id=$(this).children('a').attr('href');
+                    big_img.removeClass('jl-cur');
+                    $(id).addClass('jl-cur');
+                    require(['Module/echo/1.7.3/echo.min'],function (echo) {
+                        echo.render();
+                    });
+                });
+                //大图切换
+                $(".jl-manual-left").hover(function(){
+                    var list=$(this).children();
+                    if($(list[1]).hasClass('jl-cur')){
+                        $('.jl-arr-right').fadeIn();
+                    }
+                    else if($(list[list.length-2]).hasClass('jl-cur')){
+                        $('.jl-arr-left').fadeIn();
+                    }
+                    else{
+                        $('.jl-arr-left,.jl-arr-right').fadeIn();
+                    }
+                },function () {
+                    $('.jl-arr-left,.jl-arr-right').fadeOut();
+                });
+                $(".jl-arr-left").on("click",function () {
+                    var id=$(this).siblings('.jl-cur').attr("id");
+                    id=parseFloat(id.substring(3))-1;
+                    $('.jl-arr-right').fadeIn();
+                    if(id<=1){
+                        id=1;
+                        $('.jl-arr-left').fadeOut();
+                    }
+                    else{
+                        $('.jl-arr-left').fadeIn();
+                    }
+                    if(id>=3&&id<=small_img.length){
+                        height_top=parseInt($('.jl-thumbnail-content').css('top'));
+                        $('.jl-thumbnail-content').css('top',height_top+height);
+                        num1--;
+                    }
+                    $('#img'+id).addClass('jl-cur').siblings().removeClass('jl-cur');
+                    var $img = $('#img'+id).addClass('jl-cur').find("img");
+                    if($img.data('echo')) $img.attr("src",$img.data('echo'));
+                    $('.jl-thumbnail-content .small'+id).addClass('jl-cur').siblings().removeClass('jl-cur');
+                });
+                $(".jl-arr-right").on("click",function () {
+                    var id=$(this).siblings('.jl-cur').attr("id");
+                    var length=$('.jl-manual-left li').length-2;
+                    id=parseFloat(id.substring(3))+1;
+                    $('.jl-arr-left').fadeIn();
+                    if(id>=small_img.length){
+                        id=small_img.length;
+                        $('.jl-arr-right').fadeOut();
+                    }
+                    else{
+                        $('.jl-arr-right').fadeIn();
+                    }
+                    if(id>3){
+                        $('.jl-thumbnail-content').css('top',-height*num1);
+                        num1++;
+                    }
+                    $('#img'+id).addClass('jl-cur').siblings().removeClass('jl-cur');
+                    var $img = $('#img'+id).addClass('jl-cur').find("img");
+                    if($img.data('echo')) $img.attr("src",$img.data('echo'));
+                    $('.jl-thumbnail-content .small'+id).addClass('jl-cur').siblings().removeClass('jl-cur');
+                });
+            });
+        });
+    </script>
+</block>

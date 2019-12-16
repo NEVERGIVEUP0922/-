@@ -1,0 +1,31 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">企业简介</a></li>
+    </ul>
+    <div class="jl-invoices">
+        <h5>经过多年的坚持和努力，公司现已发展成为中国最有竞争力的集成电路供应商之一。天玖隆的客户群主要分布在安防监控，数码消费电子，单片机系列（白色家电、玩具、电动自行车），工业控制，无线通讯，仪器仪表，医疗电子等领域。</h5>
+        <h5>天玖隆注重技术增值服务和产品资源整合，天玖隆依靠强大的方案研发团队和客户一起开发新产品，为客户提供整套解决方案和集成电路产品。天玖隆存在的价值是降低客户BOM成本，增强客户产品市场竞争力。天玖隆非常重视客户关系的建立和维护，我们将“服务感动客户”的理念贯穿始终，用服务紧抓客户。天玖隆的管理已经全面实现信息化，公司采用先进的ERP、商品条码、OA、CRM系统管理日常营运，为客户提供快捷、准确、高效的服务。</h5>
+        <h5>公司已经先后在深圳、香港、上海、杭州、北京建立分公司和物流中心。天玖隆的愿景是：与优秀的民族IC设计公司携手，一起开发国际市场，把中国的IC销往全世界。</h5>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

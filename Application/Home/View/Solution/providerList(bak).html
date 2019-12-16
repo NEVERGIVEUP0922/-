@@ -1,0 +1,600 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout" />
+
+<block name="title">方案中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Product/css/detail.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Product/css/search.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/solCenter.css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.4/css/layui.css" rel="stylesheet"  media="all">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		.sol-info li{
+			height:35px;
+			line-height:35px;
+		}
+		.sol-c-s{/*收藏和咨询*/
+			float:left;
+			margin:50px 0 0 0;
+			box-sizing: border-box;
+		}
+		.sol-c-s>div{
+			margin-bottom:20px;
+		}
+		.b-v-c{
+			margin:10px 0 0 0 ;
+			float:left;
+		}
+		.jl-cs-qr{/*kefu*/
+			display: none;
+			position: absolute;
+			bottom: 96px;
+			right: 205px;
+			width: 150px;
+			height: 150px;
+			border: 1px solid #ddd;
+		}
+		.sol-customer-content tr:hover{
+			color:#e84343;
+		}
+		.sol-serach0{/*不能移至css文件*/
+			display: inline-block;overflow: hidden;height: 34px;
+		}
+		.sol-serach1{
+			padding:0 10px 0 0px;
+			height:34px;line-height: 34px;
+		}
+		.sol-serach2{
+			margin-right:0px!important;
+		}
+		.sol-serach2>input{
+			border-right:rgba(255,0,0,.3)!important;
+			border:1px solid #777;
+			height:34px;
+		}
+		.sol-serach3{
+			height:32px;line-height: 32px;
+			padding:0px;
+			margin:0px;
+			width:50px;
+			border:1px solid #e84343;
+			border-top-right-radius: 2px;
+			border-bottom-right-radius: 2px;
+			background: #e84343;
+			color:#fff;
+			text-align: center;
+			cursor: pointer;
+		}
+		.layui-input{
+			height:32px;
+			border-color: #777;
+		}
+		.layui-form-select dl dd.layui-this{
+			background: #e84343!important;
+		}
+		.layui-form-select dl{
+			top:32px;
+		}
+	</style>
+</block>
+
+<block name="main"><!-- 主要内容 -->
+	<!--页面布局主区域1-->
+	<div class="jl-in-width jl-banner-container" style="margin:0 auto">
+		<!--页面布局次区域1-->
+		<div class="sol-options">
+			<!-- 供应/需求 选项-->
+			<div class="jl-sol baiZiHongDi" id="sol-provider" data-type="{$proType}">供应方案</div>
+			<div class="jl-sol baiDiHongZi" id="sol-desired" data-type="{$desirType}">需求方案</div>
+		</div>
+		<!--页面布局次区域2-->
+		<div class="mian2">
+			<!-- 免责说明 -->
+			<div class="disclaimer">
+				<div class="dis-a">说明:</div>
+				<div class="dis-b black_word">
+					非玖隆芯城自营方案,玖隆芯城只做牵线媒介作用,均线下自由合作,玖隆芯城对非自营方案不承担任何方案交易风险,请谨慎选择合作!
+				</div>
+			</div>
+			<!-- 搜索框 -->
+			<div class="jl-main">
+				<div class="sol-serach">
+					<!--<div class="sol_search1">-->
+						<!--<label for="sol-keyword" class="black_word">方案关键词:</label>-->
+						<!--<input type="text" value="{$req['keyword']}" maxlength="10" class="jl-key-float" id="sol-keyword"  placeholder="请输入方案名称/方案编号/作者" />-->
+						<!--<div class="sol-submit-button search_sure" value="确定">搜索</div>-->
+					<!--</div>-->
+					<form class="layui-form ">
+						<div class="layui-form-item sol-serach0">
+							<label class="layui-form-label sol-serach1 black_word">关键词搜索:</label>
+							<div class="layui-input-inline sol-serach2">
+								<input type="text" name="keyword" lay-verify="required" value="{$req['keyword']}" placeholder="请输入方案名称/方案编号/作者" autocomplete="off" class="layui-input">
+							</div>
+							<label class="layui-form-label sol-serach3" lay-filter="">搜索</label>
+						</div>
+
+						<div class="layui-form-item"style="display: inline-block;">
+							<label class="layui-form-label sol-serach1 black_word">项目类型:</label>
+							<div class="layui-inline layui-input-inline" lay-filter="" style="margin:0px;">
+								<select name="sol_types" id="sol-types-id" class="sol-types" lay-filter="sol_types" style="border:1px solid #777;" lay-search="">
+									<option value="">请选择方案类型</option>
+										<foreach name="soltypes" item="t">
+									<option value="{$t.id}">{$t.types}</option>
+										</foreach>
+								</select>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- 排序头 (需重新写css)-->
+			<if condition="$res eq null">
+				<div style="border:1px solid #ddd;width:100%;">
+					<div class="no-sol">
+						<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+						<p class="jl-fault">没有搜到相关方案!</p>
+						<a href="{:U('Home/Default/index')}" class="jl-browse">返回首页</a>
+					</div>
+				</div>
+			<else />
+				<div class="jl-title">
+					<ul class="jl-sort">
+							<li class="jl-defa" data-sork="pubtime">发布日期<b></b></li>
+							<li class="jl-news" data-sork="browse">浏览量<b></b></li>
+							<li class="jl-sales" data-sork="volume">成交量<b></b></li>
+					</ul>
+					<div class="jl-title-right">筛选出<span style="color:#e84343">{$count}</span>条满足条件的方案</div>
+				</div>
+			<!-- 供应方案列表+分页 -->
+			<foreach name="res" item="vo">
+				<div class="sol-list" data-id="{$vo.id}">
+					<div class="sol-conver-image">
+						<div>
+							<notempty name="vo.conver_image">
+								<img src="/Uploads/{$vo.conver_image}" alt="" width="100%" />
+							<else />
+								<img src="__PUBLIC__/Home/Solution/img/jl.png" width="100%" alt="{$vo.pro_name}"/>
+							</notempty>
+							<!--<br>-->
+							<!--<span class="js-access" style="color: #e84343;line-height: 26px"></span>-->
+						</div>
+						<if condition="$vo[jl_self] eq 1">
+							<div class="baiZiHongDi p_botton1"  style="margin-left:38px;width:50px;height:20px;line-height:20px;">自营</div>
+						</if>
+					</div>
+					<div class="sol-info">
+						<ul style="margin-top:12px;">
+							<li>
+								<div class="info-name">方案名称:</div>
+								<div class="info-name-a" style="color:#e84343;margin:0 0 0 15px; width:225px;">
+									{$vo.pro_name}
+								</div>
+							</li>
+							<li>
+								<div class="info-name">方案描述:</div>
+								<div class="info-name-a" style="margin:0 0 0 15px; width:470px;height:30px;">{$vo.synopsis}</div>
+							</li>
+							<li>
+								<div class="info-name">方案编号:</div>
+								<div class="info-name-a" style="margin:0 20px 0 15px; width:132px;">{$vo.pro_sn}</div>
+								<div class="info-name">方案类型:</div>
+								<div class="info-name-a"style="margin:0 15px 0 15px; width:110px;">{$vo.types}</div>
+								<div class="info-name" style="width:80px;">供应PCBA:</div>
+								<div class="info-name-a" style="margin:0 0 0 0px; width:50px;" >
+									<if condition="$vo.pcba eq 1">是<else />否</if></div>
+							</li>
+							<li style="font-size: 13px;line-height: 45px;height:47px;">
+								<div class="nick_picture">
+									<empty name="vo.nick_picture"><img src="/Public/Home/Solution/img/avator.png" alt="">
+										<else /><img src="{$vo.nick_picture}" alt="">
+									</empty>
+								</div>
+
+								<div class="b-v-c">
+									<div class="info-name" style="margin:0 0 0 22px;width:47px;color:black;">发布者:</div>
+										<if condition="$vo[jl_self] eq 1">
+											<a href="/Home/Solution/provider?keyword=jl_self">
+											<div class="info-name-a wathet_word the_auth" style="margin:0 15px 0 15px; width:80px;color:	#87CEFA;">
+												玖隆芯城
+											</div>
+											</a>
+										<else />
+											<a href="/Home/Solution/provider?keyword={$vo.nick_name}">
+											<div class="info-name-a wathet_word the_auth" style="margin:0 15px 0 15px; width:80px;color:	#87CEFA;">
+												{$vo.nick_name}
+											</div>
+											</a>
+										</if>
+									<div class="info-name" style="width:50px;">浏览量:</div>
+									<div class="info-name-a" style="margin:0 15px 0 5px; width:45px;">{$vo.browse}</div>
+									<div class="info-name" style="width:50px;">成交量:</div>
+									<div class="info-name-a" style="margin:0 15px 0 5px; width:45px;">{$vo.volume}</div>
+									<div class="info-name" style="width:50px;">收藏量:</div>
+									<div class="info-name-a" style="margin:0 0 0 5px; width:45px;">{$vo.collection}</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="sol-c-s">
+						<div class="need-service baiZiHongDi">咨询客服</div>
+						<div class="collect_img sol_collect" data-collected="{$vo.collected}" data-sol_sn="{$vo.pro_sn}" data-sol_id="{$vo.id}" data-id="{$vo.uid}">
+							<if condition="$vo['collected'] eq 1"><i style="background: url(/Public/Home/Solution/img/shop.png) no-repeat 1px -435px;"></i>已收藏
+								<else /><i></i>收藏
+							</if>
+						</div>
+					</div>
+				</div>
+			</foreach>
+			<div>{$page}</div>
+		</if>
+		</div>
+		<!--页面布局次区域3-->
+		<div class="mian3">
+			<!-- 最新方案 -->
+			<div class="sol-new">
+				<ul>
+					<li>
+						<div class="ranking-list">最新的方案</div>
+						<div class="upload-sol baiZiHongDi">我要上传方案</div>
+						<div class="clear"></div>
+					</li>
+					<hr>
+					<foreach name="list.new" item="v" key="k">
+						<li>
+							<div class="new-hot-list">
+								<a href="{:U('Home/Solution/proDetail/id/'.$v['id'])}">
+									<div class="nhl-div1">{$k+1}.</div>
+									<div class="nhl-div2">{$v.pro_name}</div>
+									<div class="nhl-div3">
+										<if condition="$v[jl_self] eq 1">
+											<a href="/Home/Solution/provider?keyword=jl_self">
+												<div class="wathet_word the_auth" style="margin:0 15px 0 15px; width:63px;">
+													玖隆芯城
+												</div>
+											</a>
+										<else />
+											<a href="/Home/Solution/provider?keyword={$v.nick_name}">
+												<div class="wathet_word the_auth" style="margin:0 15px 0 15px; width:63px;">
+													{$v.nick_name}
+												</div>
+											</a>
+										</if>
+									</div>
+								</a>
+							</div>
+						</li>
+					</foreach>
+				</ul>
+			</div>
+
+			<!-- 热门方案 -->
+			<div class="sol-hot">
+				<ul>
+					<li>
+						<div class="ranking-list">最热的方案</div>
+						<!--<div class="upload-sol baiZiHongDi">上传方案</div>-->
+						<div class="clear"></div>
+					</li>
+					<hr>
+					<foreach name="list.hot" item="v" key="k">
+						<li>
+							<div class="new-hot-list">
+								<a href="{:U('Home/Solution/proDetail/id/'.$v['id'])}">
+									<div class="nhl-div1">{$k+1}.</div>
+									<div class="nhl-div2">{$v.pro_name}</div>
+									<div class="nhl-div3">
+										<if condition="$v[jl_self] eq 1">
+											<a href="/Home/Solution/provider?keyword=jl_self">
+												<div class="wathet_word the_auth" style="margin:0 5px 0 15px; width:63px;">
+													玖隆芯城
+												</div>
+											</a>
+										<else />
+											<a href="/Home/Solution/provider?keyword={$v.nick_name}">
+												<div class="wathet_word the_auth" style="margin:0 5px 0 15px; width:63px;">
+													{$v.nick_name}
+												</div>
+											</a>
+										</if>
+									</div>
+								</a>
+							</div>
+						</li>
+					</foreach>
+				</ul>
+			</div>
+		</div>
+		<div class="clear"></div>
+		<!--咨询客服弹窗-->
+		<div id="sol-customer">
+			<div class="sol-customer-title">咨询客服<span class="js-close" style="display: inline-block;margin-right: 0px;
+    margin-top: 0px;"></span></div>
+			<div class="sol-customer-content">
+				<ul class="service-window">
+					<notempty name="qqList">
+						<if condition=>
+
+						<else /><!--当客服有多人时-->
+							<volist name="qqList.list" id="sale">
+								<li>
+									<div style="width:100px;">{$sale.nickname}</div>
+									<div style="width:200px;">{$sale.mobile}</div>
+									<div style="width:80px;">
+										<a href="http://wpa.qq.com/msgrd?v=3&uin={$sale.qq}&site=在线客服&menu=yes" target="_blank">
+											<img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" >
+										</a>
+									</div>
+									<notempty name="sale.wechat">
+										<div class="jl-cs-wx-container" style="width:80px;">
+											<img class="jl-cs-wx fugai" src="__PUBLIC__/Home/Index/img/qrcode.png" >
+											<img class="jl-cs-qr" src="{$sale.wechat}" alt="">
+										</div>
+									</notempty>
+								</li>
+							</volist>
+						</if>
+					</notempty>
+				</ul>
+				<!--<table id="customer-popup" width="100%">-->
+					<!--<notempty name="qqList">-->
+						<!--<if condition="count($qqList['list']) eq 1">-->
+							<!--<tr>&lt;!&ndash;当客服只有一人时&ndash;&gt;-->
+								<!--<td width="16%">{$qqList.list.0.nickname}</td>-->
+								<!--<td width="48%">{$qqList.list.0.mobile}</td>-->
+								<!--<td width="16%">-->
+									<!--<a href="http://wpa.qq.com/msgrd?v=3&uin={$qqList.list.0.qq}&site=在线客服&menu=yes" target="_blank">-->
+										<!--<img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" alt="QQ丢失了">-->
+									<!--</a>-->
+								<!--</td>-->
+								<!--<td width="16%">-->
+									<!--<a href="javascript:;">-->
+										<!--<img class="jl-cs-wx" src="__PUBLIC__/Home/Index/img/qrcode.png" >-->
+										<!--<img class="jl-cs-qr" src="" >&lt;!&ndash;测试&ndash;&gt;-->
+									<!--</a>-->
+								<!--</td>-->
+							<!--</tr>-->
+						<!--<else />&lt;!&ndash;当客服有多人时&ndash;&gt;-->
+							<!--<volist name="qqList.list" id="sale">-->
+<!--li-->
+								<!--&lt;!&ndash;<tr style="height:50px;vertical-align: text-top;">&lt;!&ndash;当客服只有一人时&ndash;&gt;&ndash;&gt;-->
+									<!--&lt;!&ndash;<td width="16%">{$sale.nickname}</td>&ndash;&gt;-->
+									<!--&lt;!&ndash;<td width="48%">{$sale.mobile}</td>&ndash;&gt;-->
+									<!--&lt;!&ndash;<td width="16%">&ndash;&gt;-->
+										<!--&lt;!&ndash;<a href="http://wpa.qq.com/msgrd?v=3&uin={$sale.qq}&site=在线客服&menu=yes" target="_blank">&ndash;&gt;-->
+											<!--&lt;!&ndash;<img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" >&ndash;&gt;-->
+										<!--&lt;!&ndash;</a>&ndash;&gt;-->
+									<!--&lt;!&ndash;</td>&ndash;&gt;-->
+									<!--&lt;!&ndash;<td width="16%">&ndash;&gt;-->
+										<!--&lt;!&ndash;<notempty name="sale.wechat">&ndash;&gt;-->
+											<!--&lt;!&ndash;<div class="jl-cs-wx-container">&ndash;&gt;-->
+												<!--&lt;!&ndash;<img class="jl-cs-wx" src="__PUBLIC__/Home/Index/img/qrcode.png" >&ndash;&gt;-->
+												<!--&lt;!&ndash;&lt;!&ndash;<img class="jl-cs-qr" src="{$sale.wechat}" alt="走失中!">&ndash;&gt;&ndash;&gt;-->
+												<!--&lt;!&ndash;<img class="jl-cs-qr" src="" >&lt;!&ndash;测试&ndash;&gt;&ndash;&gt;-->
+											<!--&lt;!&ndash;</div>&ndash;&gt;-->
+										<!--&lt;!&ndash;</notempty>&ndash;&gt;-->
+									<!--&lt;!&ndash;</td>&ndash;&gt;-->
+								<!--&lt;!&ndash;</tr>&ndash;&gt;-->
+								<!--<li>-->
+									<!--<div>{$sale.nickname}</div>-->
+									<!--<div>-->
+										<!--<a href="http://wpa.qq.com/msgrd?v=3&uin={$sale.qq}&site=在线客服&menu=yes" target="_blank">-->
+											<!--<img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" >-->
+										<!--</a>-->
+									<!--</div>-->
+									<!--<div>{$sale.mobile}</div>-->
+									<!--<notempty name="sale.wechat">-->
+										<!--<div class="jl-cs-wx-container">-->
+											<!--<img class="jl-cs-wx" src="__PUBLIC__/Home/Index/img/qrcode.png" >-->
+											<!--&lt;!&ndash;<img class="jl-cs-qr" src="{$sale.wechat}" alt="走失中!">&ndash;&gt;-->
+											<!--<img class="jl-cs-qr" src="" >&lt;!&ndash;测试&ndash;&gt;-->
+										<!--</div>-->
+									<!--</notempty>-->
+								<!--</li>-->
+							<!--</volist>-->
+							<!--<tr>-->
+								<!--<td width="16%">{$qqList.list.0.nickname}</td>-->
+								<!--<td width="48%">{$qqList.list.0.mobile}</td>-->
+								<!--<td width="16%">-->
+									<!--<a href="http://wpa.qq.com/msgrd?v=3&uin={$qqList.list.0.qq}&site=在线客服&menu=yes" target="_blank">-->
+										<!--<img class="jl-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" alt="丢失了">-->
+									<!--</a>-->
+								<!--</td>-->
+								<!--<td width="16%">-->
+									<!--<a href="javascript:;">-->
+										<!--<img class="js-cs-qq" src="__PUBLIC__/Home/Index/img/qq.png" alt="丢失了">-->
+									<!--</a>-->
+								<!--</td>-->
+							<!--</tr>-->
+						<!--</if>-->
+					<!--</notempty>-->
+				<!--</table>-->
+			</div>
+		</div>
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','layer'], function ($, modal, pikaday, jlTool,layer) {
+                var jlTool = layui.jlTool;
+                //获取关键词,方案小类型,方案大类型的值;
+				var sear_data={};
+                var request= {$req|json_encode};
+                var _val = $(".sol-serach2").children('input');//
+                var type1= $("#sol-provider").data('type');
+                var type2= $("#sol-desired").data('type');
+                var form =layui.form;
+					form.on("select(sol_types)",function(obj){
+						sear_data.types=obj.value;//小分类
+                });
+				//状态
+				var types_value = request.types;
+
+				$("select[name='sol_types'] option").each(function(obj){
+                    var option_obj = $(this);
+                    if(option_obj.val() == types_value){
+                        option_obj.attr('selected',true);
+                    }
+                    form.render('select');
+                });
+                //搜索框
+                $(".sol-serach3").on("click", function () {
+					sear_data.keyword= _val.val();
+					sear_data.type1  = type1;//大分类
+					sear_data.type2  = type2;
+                    sear_data.types  = jQuery("#sol-types-id  option:selected").val();
+					if(type1 == 1&& type2 != 2){
+						//type1 ==1表示供应方案
+						var url	= "{:U('Home/Solution/provider')}";
+							url	= (sear_data) ? url + '?' + jlTool.urlEncode(sear_data) : url;
+							window.location = url;
+					}else if(type1 !=1 && type2 == 2){
+						//type2 ==2表示需求方案.
+						var url	= "{:U('Home/Solution/desired')}";
+							url	= (sear_data) ? url + '?' + jlTool.urlEncode(sear_data) : url;
+							window.location = url;
+					}
+                });
+
+                //发布者搜索
+				$('.the_auth').on('click',function(event){
+				    event.stopPropagation();
+				    var url = $(this).parent('a').attr('href');
+				    location.href= url;
+				});
+				//供应方案链接
+                $('#sol-provider').on('click',function(){
+                    var url	= "{:U('Home/Solution/provider')}";
+                    window.location = url;
+                });
+                //需求方案链接
+                $('#sol-desired').on('click',function(){
+                    var url	= "{:U('Home/Solution/desired')}";
+                    window.location = url;
+                });
+                /*上传方案链接*/
+                $('.upload-sol').on('click',function(){
+                    window.location.href="/Home/Solution/myProviderUpload.html";
+				})
+                //方案详情链接
+                $('.sol-list').on('click',function(){
+                    var id=$(this).data('id');
+                    if(id){
+                        window.open("{:U('Home/Solution/proDetail')}?id="+encodeURIComponent(id));
+                    }
+                });
+
+                //页面条数转
+                var selfurl=window.location;
+                var request ={$request|json_encode};
+                $(".pageSize").val(request["pageSize"]?decodeURIComponent(request["pageSize"]) : "10");
+                $(".pageSize").change(function(){
+                    var nums=parseInt($(this).val());
+                    if(selfurl.search){
+                        location.href=location.href.split("pageSize")[0]+(location.href.split("pageSize")[1] ? "":"&")+("pageSize="+nums);
+                    }else{
+                        location.href=location.href.split("pageSize")[0]+"&pageSize="+nums;
+                    }
+                });
+                /*咨询客服*/
+                $('.need-service').on('click',function(event){
+                    event.stopPropagation();
+                    $('#sol-customer').show();
+				});
+                //关闭弹窗
+                $('.js-close').on('click',function(){
+                    $('body').css('overflow','auto');
+                    $("#sol-customer").css('display','none');
+                });
+				//收藏
+                $('.sol_collect').on('click',function(event){
+                    event.stopPropagation();
+                    var _this= $(this);
+                    var data = _this.data();
+					data.collected =1;
+					$.ajax({
+						type:'get',
+						url:'/Home/Solution/solCollectAdd',
+						data:data,
+						success:function(res){
+							if(res.status==999) {
+							    window.location.href = '/Home/Account/login';
+							    return;
+							}
+							modal.alert({
+								title:res.content,
+							});
+							if(res.status==1000){
+								_this.html("<i style='background: url(/Public/Home/Solution/img/shop.png) no-repeat 1px -435px;'></i>已收藏");
+							}
+							if(res.status==1001){
+								modal.confirm({
+									title:res.content,
+									isCenter:true,
+									confirmText:'确定',
+									confirm:function(){
+										window.location.href="/Home/Solution/solCollectList";
+									}
+								});
+							}else{
+                                data.collected =0;
+							}
+						},
+						error:function(res){
+							console.log(res);
+							alert('系统繁忙,请稍后再试!');
+						}
+					});
+                });
+                //排序
+                var _sork = "{$req.sork}";
+                $('.jl-sort').children('li').each(function(){
+//                    	console.log($(this).data('sork'));
+                    if($(this).data('sork')==_sork){
+//                      console.log($(this).data('sork'));
+                        $(this).addClass('jl-cur');
+                    }
+                });
+                //时间排序
+                $('.jl-defa').on('click',function(){
+                    window.location.href="/Home/Solution/provider?sork="+$(this).data('sork');
+                });
+                //浏览量
+                $('.jl-news').on('click',function(){
+                    window.location.href="/Home/Solution/provider?sork="+$(this).data('sork');
+                });
+                //成交量
+				$('.jl-sales').on('click',function(){
+				    window.location.href="/Home/Solution/provider?sork="+$(this).data('sork');
+				});
+				//kefu
+                $('.fugai').mouseover(function(){
+                    $(this).next().css('display','block');
+                });
+                $('.fugai').mouseout(function(){
+                    $(this).next().css('display','none');
+                });
+                //关闭按钮
+                /*$('.js-water-modal .jl-modal-secondary-btn').on('click',function () {
+                    $('#js-upload-container').removeClass('js-uploaded');
+                    $('.jl-upload-img').attr('src','');
+                    $('.js-water-modal').hide();
+                });
+                $('.js-water-modal .jl-modal-close-icon').on('click',function () {
+                    $('#js-upload-container').removeClass('js-uploaded');
+                    $('.jl-upload-img').attr('src','');
+                    $('.js-water-modal').hide();
+                });*/
+
+            });
+        });
+	</script>
+</block>

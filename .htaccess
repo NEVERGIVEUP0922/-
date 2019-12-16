@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+ RewriteEngine on
+ #RewriteCond %{SERVER_PORT} !^443$
+  #RewriteRule ^(.*)?$ https://%{SERVER_NAME}/$1 [L,R]
+  RewriteCond %{REQUEST_URI} !^.*(\.css|\.js|\.gif|\.png|\.jpg|\.jpeg|\.bmp|\.flv|\.ico|\.pdf|\.xsl|\.doc)$
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+ RewriteRule ^(.*)$ index.php?s=/$1 [QSA,PT,L]
+</IfModule>
+#<FilesMatch ".(flv|gif|jpg|jpeg|png|ico|swf|css|txt|pdf)$">
+#Header set Cache-Control "max-age=36000"
+#</FilesMatch>

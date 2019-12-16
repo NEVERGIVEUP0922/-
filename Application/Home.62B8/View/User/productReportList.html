@@ -1,0 +1,141 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-center" />
+<block name="title">报备列表</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <style>
+        .jl-report-apply-container{  width: 1200px;  margin: 0 auto;  }
+        .jl-report-apply-header{  margin-top: 36px  }
+        .jl-report-apply-title{
+            width: 212px;
+            height: 38px;
+            border: 1px solid #393939;
+            margin: 0 auto 28px;
+            color: #393939;
+            line-height: 38px;
+            text-align: center;
+            font-size: 20px;
+        }
+        .jl-report-apply-brief{  text-align: left;width: 630px;margin: 0 auto;  }
+        .jl-mandatory{  margin-right: 8px;  }
+        .jl-report-apply-table{
+            margin:0 auto;
+            margin-top: 26px;
+            font-size: 18px;
+            width: 100%;
+        }
+        .jl-report-apply-table tr{
+            min-height: 40px;
+        }
+        .jl-report-apply-table th{
+            background-color: #f0f0f0;
+            padding:8px 0;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+        .jl-report-apply-table tr:first-child{
+            border-top: 1px solid #ddd;
+        }
+        .jl-report-apply-table td{
+            border:1px solid #ddd;
+            min-height: 26px;
+            text-align: center;
+            padding:6px 8px;
+        }
+        .jl-handle-btn{
+            margin-bottom: 80px;
+            font: 18px "Microsoft YaHei";
+            width: 410px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+        }
+        .jl-report-apply-submit{
+            background: #e84343;
+            color: #fff;
+            margin-right: 32px;
+        }
+        .jl-report-cancel-submit{
+            background: white;
+            border: 1px solid #ddd;
+        }
+        .jl-report-apply-table .jl-report-apply-require{
+            color: #e84343;
+        }
+        .jl-report-apply-table .jl-report-apply-input{
+            display: block;
+            width: 100%;
+            height: 100%;
+            border:none;
+        }
+        .jl-report-apply-table .jl-report-apply-checkbox{
+
+        }
+        .jl-report-apply-table .jl-report-apply-select{
+            display: block;
+            width: 100%;
+            height: 100%;
+            border:none;
+        }
+        .jl-add-product-btn{
+            width: 100%;
+            line-height: 36px;
+            font-size: 16px;
+            background-color: white;
+            border:1px solid #ddd;
+            border-top: none;
+        }
+        .jl-add-product-btn:hover{
+            color: #e84343;
+        }
+    </style>
+</block>
+<block name="nav-title">个人中心</block>
+<block name="main">
+    <div>
+        <table class="jl-report-apply-table">
+            <tr>
+                <th>编号</th>
+                <th>报备产品型号</th>
+                <th>报备时间</th>
+                <th>项目名称</th>
+                <th>应用描述</th>
+                <th>审核状态</th>
+            </tr>
+            <volist name="list.list" id="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td style="text-align: left">
+                        <volist name="vo.item" id="it">
+                            <div>{$i}、{$it.p_sign}</div>
+                        </volist>
+                    </td>
+                    <td>{$vo.create_at}</td>
+                    <td>{$vo.project_name}</td>
+                    <td>{$vo.describe}</td>
+                    <td class="jl-report-apply-require">
+                        <switch name="vo.check_status">
+                            <case value="0">未审核</case>
+                            <case value="1">不通过</case>
+                            <case value="2">通过</case>
+                            <case value="3">已处理</case>
+                        </switch>
+                    </td>
+                </tr>
+            </volist>
+        </table>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function(){
+            require(['jquery','jl-modal'],function($,modal){
+                var list = {$list|json_encode};
+                //console.log(list);
+            });
+        });
+    </script>
+</block>

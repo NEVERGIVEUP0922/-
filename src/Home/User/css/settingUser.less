@@ -1,0 +1,635 @@
+@import "../../Public/css/init.less";
+
+
+.js-false{
+  .jl-false-note02{
+    right: 5px;
+    top: 3px;
+  }
+}
+
+
+.js-false-info{
+  position: relative;
+  .jl-false-note{
+    position: absolute;
+    right:46px;
+    top: 13px;
+  }
+  .jl-note-add{
+    right: 43%;
+  }
+  .jl-note-add02{
+    right: 0;
+  }
+  .jl-note-add03{
+    right: 20px;
+  }
+}
+.js-false-fe{
+  position: relative;
+  .jl-false-note{
+    position: absolute;
+    right: -23px;
+    top:2px;
+  }
+}
+
+.jl-per-information{
+  box-sizing: border-box;
+  width: 100%;
+  border: @border02;
+  padding-bottom: 50px;
+  padding-top: 20px;
+  z-index: 1;
+}
+.jl-per-cell{
+  .jl-per-left{
+    float: left;
+    padding-left: 30px;
+    width: 85px;
+    .font14(@dark-grey);
+   .jl-per-label{
+     line-height: 40px;
+   }
+  .jl-per-gender-tit{
+    line-height: 16px;
+    }
+  }
+  &.jl-item-top{
+    margin-top: 20px;
+  }
+  .jl-per-star{
+    width: 58px;
+  }
+
+  .jl-per-right {
+    float: left;
+    height: 65px;
+    .jl-add-detail{
+      width: 538px;
+    }
+    .jl-per-name{
+      background: @bg-color;
+    }
+    &.jl-per-h{
+      height: 60px;
+      .jl-false-note{
+        right: 34px;
+        top: 2px;
+      }
+      .jl-note02{
+        right: 39px;
+      }
+      .jl-add-note01{
+        position: absolute;
+        top: 13px;
+        right: 45px;
+      }
+    }
+    .jl-note-normal{
+      right: 39px;
+    }
+    .jl-c-de{
+      .jl-add-note2{
+        right: 5px;
+        top: 3px;
+      }
+    }
+  }
+
+  //height为60
+  .jl-info-right{
+    height: 60px;
+    .jl-per-active{
+      .jl-date-list{
+        display: block;
+        .jl-list-active{
+          background-color: @color;
+          color:white;
+        }
+      }
+    }
+  }
+.jl-c-em-i{
+  margin-left: 0;
+}
+
+  .jl-info-s{
+    height: 36px;
+  }
+  .jl-info-images{
+    height: 144px;
+  }
+}
+.jl-info-request{
+  height: 35px;
+  .font12(@medium-grey);
+  line-height: 35px;
+}
+.jl-per-input{
+  box-sizing: border-box;
+  height: 40px;
+  padding: 10px 0 10px 20px;
+  width: 253px;
+  .font14(@dark-grey);
+  border: @border06;
+}
+.jl-per-item{
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border: 3px solid @bg-color;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+  .jl-per-upload{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 18px;
+    opacity: 0;
+  }
+  .jl-per-write{
+    position: absolute;
+    bottom:0;
+    display: block;
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    background: rgba(0,0,0,0.32);
+    .font12(#ffffff);
+    text-align: center;
+  }
+}
+#js-info-img{
+  .webuploader-pick{
+    width: 96px;
+    height: 100px;
+  }
+}
+
+#js-upload-btn{
+  .webuploader-pick{
+    width: 96px;
+    height: 96px;
+  }
+}
+
+#js-year{
+  height: 38px;
+}
+.jl-date-list{
+  display: none;
+  position: absolute;
+  height: 216px;
+  overflow: auto;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  z-index: 4;
+  border-bottom: 1px solid #ddd;
+  &>li{
+    box-sizing: border-box;
+    width: 100%;
+    background: white;
+    border: 1px solid #a8a8a8;
+    border-bottom: none;
+    border-top: none;
+    font: 14px "Microsoft YaHei";
+    color: #393939;
+    padding: 4px 0;
+    padding-left: 17px;
+  &:hover{
+    background-color: @color;
+    color: white;
+  }
+  }
+}
+
+.jl-per-bir{
+  position: relative;
+  box-sizing: border-box;
+  display: inline-block;
+  width: 124px;
+  height: 40px;
+  line-height: 38px;
+  cursor: pointer;
+  margin-right: 15px;
+  .jl-per-y{
+    position: relative;
+    border:1px solid @grey;
+    padding-left: 20px;
+    padding-right: 22px;
+    .jl-per-c{
+      .font14(@dark-grey);
+    }
+    .jl-per-t{
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      width: 0;
+      height: 0;
+      border-width: 4px;
+      border-style: solid;
+      border-color: transparent transparent @dark-grey transparent;
+    }
+    .jl-per-b{
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      width: 0;
+      height: 0;
+      border-width: 4px;
+      border-style: solid;
+      border-color: @dark-grey transparent  transparent  transparent;
+    }
+  }
+}
+.jl-info-w{
+  width: 130px;
+}
+
+//单选框圆
+.jl-per-item-g{
+  float: left;
+  height: 16px;
+  margin-right: 20px;
+  cursor: pointer;
+  &.jl-per-w{
+    margin-left: 0;
+  }
+}
+.jl-per-radio1{
+  z-index: 10;
+  position: relative;
+  left: 0;
+  top: -17px;
+}
+.jl-per-radio2{
+  z-index: 10;
+  position: relative;
+  left: 41px;
+  top: -17px;
+}
+#jl-per-woman{
+  position: relative;
+  left: 41px;
+  z-index: 11;
+  opacity: 0;
+}
+#jl-per-man{
+  position: relative;
+  z-index: 11;
+  opacity: 0;
+}
+.jl-per-circle-b{
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  display: block;
+  border-radius: 50%;
+  border: @border06;
+}
+.jl-per-circle-s{
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 5px;
+  height: 5px;
+  display: block;
+  border-radius: 50%;
+  background: #FFFFFF;
+}
+.jl-per-submit{
+  display: block;
+  width: 180px;
+  height: 40px;
+  line-height: 40px;
+  margin: 49px auto 68px;
+  text-align: center;
+  .font18(#fff);
+  border: none;
+  cursor: pointer;
+}
+.jl-save-submit{
+  background-color: @color;
+}
+.jl-save-gray{
+  background-color: @grey;
+}
+
+
+//收货地址标题
+.jl-address-tit{
+  box-sizing: border-box;
+  width: 973px;
+  background: @bg-color;
+  padding-left: 30px;
+  .font14(@dark-grey);
+  margin-bottom: 23px;
+  .jl-add-h2{
+    line-height: 39px;
+  }
+}
+.jl-add-item{
+  padding-top: 0;
+}
+.jl-add-address{
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.jl-add-top{
+  padding-top: 3px;
+}
+.jl-add-import{
+  display: inline-block;
+ margin-left: 15px;
+  width: 7px;
+  height: 7px;
+  background: url(../../Public/img/bg-big.png) no-repeat 0 0;
+}
+.jl-add-import02{
+  margin-left: 0;
+}
+.jl-add-import03{
+  margin-left: -15px;
+}
+.jl-add-choose{
+  padding-left: 115px;
+  overflow: hidden;
+  cursor: pointer;
+  .jl-add-box{
+    float: left;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: @border06;
+    margin-top: 3px;
+    cursor: pointer;
+    border-radius: 3px;
+    &.jl-add-active-box{
+      border: @border03;
+      background: url(../../Public/img/sprite.png) no-repeat -159px -28px;
+    }
+  }
+
+  .jl-add-default{
+    float: left;
+    .font14(@medium-grey);
+    display: inline-block;
+    height: 16px;
+    margin-left: 14px;
+  }
+}
+
+
+//收货地址操作
+.jl-add-list{
+  width: 100%;
+  height: 39px;
+  background: @bg-color;
+  overflow: hidden;
+  li{
+    float: left;
+    .font14(@dark-grey);
+    line-height: 39px;
+    text-align: center;
+  }
+}
+
+.jl-add-content{
+  width: 100%;
+  min-height: 60px;
+  //height: 76px;
+  border-bottom: @border02;
+  li{
+    float: left;
+    //line-height: 25px;
+    padding: 20px 0;
+    text-align: center;
+    .font14(@medium-grey);
+  }
+  .jl-add-content-ad{
+    text-align: left;
+  }
+}
+.jl-add-list01{
+  width: 103px;
+}
+.jl-add-list02{
+  width: 190px;
+}
+
+.jl-add-list03{
+  width:192px;
+  margin-left: 27px;
+  margin-right: 51px;
+}
+.jl-add-list04{
+  width: 114px;
+}
+li.jl-add-list05{
+  width: 87px;
+  padding-left: 39px;
+}
+li.jl-add-list06{
+  width: 167px;
+}
+.jl-add-content .jl-add-list06{
+  width: 167px;
+  color: @color;
+}
+li.jl-add-handle{
+  color: @color;
+  cursor: pointer;
+}
+.jl-add-content li.jl-add-set-def{
+  color: @green;
+  cursor: pointer;
+}
+.jl-add-save{
+  padding-left: 32px;
+  p{
+    .font14(@color);
+    line-height: 43px;
+  }
+}
+
+.jl-c-hidden{
+  width: 1px;
+  height: 1px;
+  position: relative;
+  left: 12px;
+  top:-16px;
+  border: none;
+}
+.jl-c-address.jl-y-select-active .lj-option-box{
+  display: block;
+}
+.jl-c-po{
+  position: absolute;
+}
+
+//手机绑定
+.jl-per-right {
+  .jl-bind-code {
+    box-sizing: border-box;
+    height: 40px;
+    width: 159px;
+    border: @border06;
+    border: @border06;
+    border-left: none;
+    background-color: @bg-color;
+    .font14(@dark-grey);
+    cursor: pointer;
+  }
+  .jl-bind-cc{
+    display: none;
+    margin-left: 35px;
+    .jl-bind-image{
+      position: relative;
+      left: -10px;
+      top: 2px;
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      background: url('../../Public/img/user/code.png') no-repeat center;
+    }
+  }
+  .jl-bind-cc2{
+    margin-left: 15px;
+  }
+}
+.jl-add-margin{
+  margin-bottom: 25px;
+}
+.jl-per-cell{
+  .jl-bind-left{
+    width: 102px;
+  }
+  .jl-bind-tips{
+    height: 25px;
+    line-height: 25px;
+    color: @color;
+    .jl-bind-bg{
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      background: url('../../Public/img/bg-big.png') no-repeat -24px 0;
+    }
+  }
+  //修改密码
+  .jl-change-left{
+    width: 139px;
+  }
+}
+
+//企业信息
+.jl-info-add{
+  width: 538px;
+}
+//账号绑定
+.jl-acc-bg{
+  background-color: @shaw;
+  width: 910px;
+  margin: 0 auto;
+  margin-top: 20px;
+}
+.jl-acc-left{
+  float: left;
+  width: 840px;
+  line-height: 40px;
+  padding-left: 22px;
+  .jl-acc-qq{
+    position: relative;
+    display: inline-block;
+    top: 8px;
+    width: 25px;
+    height: 25px;
+    background: url(../../Public/img/sprite.png) no-repeat 0 -203px ;
+  }
+  .jl-acc-xin{
+    position: relative;
+    display: inline-block;
+    top: 8px;
+    width: 25px;
+    height: 25px;
+    background: url(../../Public/img/sprite.png) no-repeat -35px -203px ;
+  }
+  .jl-acc-bo{
+    position: relative;
+    display: inline-block;
+    top: 8px;
+    width: 25px;
+    height: 25px;
+    background: url(../../Public/img/bg-big.png) no-repeat -38px 0;
+  }
+  .jl-acc-text{
+    padding-left: 10px;
+  }
+  .jl-acc-b{
+    font-size: 13px;
+    color: @dark-grey;
+  }
+}
+.jl-acc-right{
+  float: right;
+  line-height: 40px;
+  width: 48px;
+  text-align: left;
+  .jl-acc-bind{
+    .font14(@green);
+    cursor: pointer;
+  }
+}
+.jl-acc-item02{
+  padding-left: 61px;
+  padding-top: 14px;
+  .jl-acc-detail{
+    .font14(@grey);
+    line-height: 25px;
+  }
+}
+.jl-acc-relieve{
+  box-sizing: border-box;
+  width: 100px;
+  height: 30px;
+  border: @border03;
+  background-color: #f7e6e6;
+  .font14(@color);
+  margin: 14px 0;
+  cursor: pointer;
+  a{
+    .font14(@color);
+  }
+}
+.jl-acc-item03{
+  padding-left: 61px;
+  padding-top: 11px;
+  .jl-acc-binding{
+    .font18(@grey);
+    line-height: 31px;
+  }
+}
+.jl-acc-none{
+  display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

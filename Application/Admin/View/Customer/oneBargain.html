@@ -1,0 +1,410 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/select2/4.0.5/css/select2.min.css"/>
+</block>
+<block name="content">
+    <div>
+
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">{$request?'编辑':'新增'}价格管理规则</a>
+            </span>
+            <button class="layui-btn" lay-submit lay-filter="bargain" style="margin-left: 16px;padding:0 14px;height:30px;line-height:30px">提交</button>
+            <button style="margin-left: 16px;" class="add-btn layui-btn action-add layui-btn-sm">添加行</button>
+        </blockquote>
+        <form class="layui-form layui-form-form" id="forms" action="" enctype="multipart/form-data">
+
+            <table id="addTable-table" lay-filter="addTable">
+                <script type="text/html" id="handle-tpl">
+                    <div class="oneBargin">
+                        <span lay-event="delete" class="layui-btn layui-btn-danger layui-btn-sm">删除</span>
+                        <span lay-event="add" class="layui-btn  layui-btn-sm">添加</span>
+                    </div>
+                </script>
+            </table>
+        </form>
+    </div>
+</block>
+<block name="js">
+    <script id="htmlMob" type="text/html">
+       <div class="layui-form-container">
+        <div class="layui-form-item layui-required">
+            <label class="layui-form-label">商城型号</label>
+            <div class="layui-input-block">
+                <input type="text" name="p_id" placeholder="请选择商品" autocomplete="off"
+                       class="layui-input jl-select-product" value="{$bargain.p_sign}" data-id="{$bargain.p_id}">
+            </div>
+            <div class="is_tax" style="color:#dd514c"></div>
+        </div>
+        <div class="layui-form-item layui-required">
+            <label class="layui-form-label">erp型号</label>
+            <div class="layui-input-block">
+                <select name="fitemno" lay-filter="aihao">
+                    <option value="{$bargain.fitemno}" selected>{$bargain.fitemno}</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">优惠价未税</label>
+            <div class="layui-input-block">
+                <input type="text" name="discount_price" placeholder="请输入优惠价未税" autocomplete="off"
+                       class="layui-input check-empty-input" value="{$bargain.discount_price}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">优惠价含税</label>
+            <div class="layui-input-block">
+                <input type="text" name="discount_price_tax" placeholder="请输入优惠价含税" autocomplete="off"
+                       class="layui-input check-empty-input" value="{$bargain.discount_price_tax}">
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <label class="layui-form-label">换型号开票</label>
+            <div class="layui-input-block">
+                <if condition="$bargain.is_invoice_change eq 1">
+                    <input type="checkbox" name="is_invoice_change" lay-skin="switch" lay-text="开启|关闭" value="1" checked>
+                    <else/>
+                    <input type="checkbox" name="is_invoice_change" lay-skin="switch" lay-text="开启|关闭" value="1" >
+                </if>
+                <if condition="$bargain.discount_price_invoice_change gt 0">
+                    <input style="margin-top: 12px" type="text" name="discount_price_invoice_change" placeholder="请输入换票后优惠价含税"
+                           autocomplete="off" class="layui-input" value="{$bargain.discount_price_invoice_change}">
+                    <else/>
+                    <input style="margin-top: 12px" type="text" name="discount_price_invoice_change" placeholder="请输入换票后优惠价含税"
+                           autocomplete="off" class="layui-input">
+                </if>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">返点单价</label>
+            <div class="layui-input-block">
+                <if condition="$bargain.return_price gt 0">
+                    <input type="text" name="return_price" placeholder="请输入返点单价" autocomplete="off"
+                           class="layui-input" value="{$bargain.return_price}">
+                    <else/>
+                    <input type="text" name="return_price" placeholder="请输入返点单价" autocomplete="off"
+                           class="layui-input">
+                </if>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">数量限制</label>
+            <div class="layui-input-block">
+                <input type="text" name="min_buy" placeholder="请输入数量限制" autocomplete="off"
+                       class="layui-input" value="{$bargain.min_buy}">
+                <p class="js-min_buy-tips" style="display: none;color: #dd514c">需大于所选商品价格区间中第一条的值：<span></span></p>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="bargain">提交</button>
+            </div>
+        </div>
+        </div>
+    </script>
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script src="__PUBLIC__/Common/module/select2/4.0.5/js/select2.min.js"></script>
+    <script>
+        layui.use(['table','layer', 'jlTool','element','form','selectProduct','selectCustomer','actionTpl'], function () {
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var actionTpl = layui.actionTpl;
+            var form = layui.form;
+            var table = layui.table;
+            var selectProduct = layui.selectProduct;
+            var selectCustomer = layui.selectCustomer;
+            var single_data = {$bargain|json_encode};
+            var request = {$request|json_encode};
+            var demo = {
+                'uid':'', 'p_sign':'','is_tax':' ', 'product_fitemno':[], 'discount_price':'', 'discount_price_tax':'', 'is_invoice_change':'','discount_price_invoice_change':'',
+                'return_price':'', 'min_buy':'','p_price_true':''
+            };
+            if(single_data){
+                if(single_data.length>0) {
+                    $.each(single_data,function(index,value){
+                        if(value.product_fitemno.length <1){
+                            single_data[index].product_fitemno= [{"fitemno":value.fitemno,"p_sign":value.fitemno}];
+                            single_data[index].p_price_true = single_data[index].p_price_true || '';
+                        };
+                    });
+                }
+            }
+            var tableIns,cols;
+            //console.log(single_data);
+            //获取订单商品
+           /* var getOrderProduct = function(){
+                $.ajax({
+                    url:"/Admin/Order/orderList",
+                    method:"get",
+                    dataType:"json",
+                    data:{"order_sn":request.order_sn},
+                    success:function(res,err){
+                        console.log(res);
+                        if(res.error == 0 && res.data.list.length>0){
+                            initTable(res.data.list[0].goodsList);
+                        }else{
+                            layer.msg(res.msg);
+                        }
+                    }
+                });
+            };*/
+            var initTable = function () {
+                //console.log(single_data);
+                single_data = $.isArray(single_data)?single_data:[single_data];
+                var data =  request.order_sn||request.id ? single_data:[demo];
+                cols = [
+                    {field: 'uid', title: '客户',fixed: 'left', tplType:'input',templet:function(d){
+                            var middleValue='';
+                           d.uid_text = d.customer_name ? d.customer_name : (d.uid_text ? ( middleValue=d.uid , d.uid = d.uid_text,d.uid_text = middleValue) : "");
+                            return actionTpl.input('uid',d,true);
+                        }},
+                    {field: 'p_sign', title: '商城型号', tplType:'input',templet:function(d){
+                            var middleValue='';
+                            d.p_sign_id = d.p_id ? d.p_id : (d.p_sign_id ? ( d.p_sign_id/*middleValue=d.p_sign_id , d.p_sign_id  = d.p_sign,d.p_sign  = middleValue*/) : "");
+                            //console.log(d);
+                           return actionTpl.selectErpProduct('p_sign',d);
+                        }},
+                    {field: 'is_tax', title: '有无进项', tplType:'input',templet:function(d){
+                            d.is_tax_text = d.is_tax === "0" ? '没有进项': (d.is_tax == 1 ? '有进项'  :'' )  ;
+                            return actionTpl.inputReadOnly('is_tax',d);
+                        }},
+                    {field: 'product_fitemno',width:200,title: 'ERP型号',tplType:'select',templet:function(d){
+                            return actionTpl.selectBargain('product_fitemno',d);
+                        }},
+                    {field: 'discount_price', title: '优惠价（未税）',tplType:'input',templet:actionTpl.input('discount_price')},
+                    {field: 'discount_price_tax', title: '优惠价（含税）',tplType:'input',templet:actionTpl.input('discount_price_tax')},
+                    //{field: 'p_price_true', title: '实付单价',tplType:'input',templet:actionTpl.input('p_price_true')},
+                    {field: 'is_invoice_change', title: '是否换型号',tplType:'checkbox',templet:function(d){
+                        var str='';
+                        if(d.is_invoice_change == 1){
+                            str= '<input type="checkbox" class="jl-control-is_invoice_change" name="is_invoice_change" lay-skin="switch" lay-text="开启|关闭" value="1" checked>';
+                        }else{
+                            str= '<input type="checkbox" class="jl-control-is_invoice_change" name="is_invoice_change" lay-skin="switch" lay-text="开启|关闭" value="1" >';
+                        }
+                         return '<div class="layui-input-block" style="margin-left:33px">' + str+'</div>';
+                    }},
+                    {field: 'discount_price_invoice_change', title: '换型号开票优惠价(含税)',tplType:'input',templet:actionTpl.input('discount_price_invoice_change')},
+                    {field: 'return_price', title: '返点单价',width:100,tplType:'input',templet:actionTpl.input('return_price')},
+                    {field: 'min_buy', title: '数量限制',width:100,tplType:'input',templet:actionTpl.input('min_buy')},
+                    {field: 'handle', title: '操作',toolbar:'#handle-tpl',fixed: 'right',width:130},
+                ];
+
+            tableIns = table.render({
+                    elem: '#addTable-table',
+                    height:'full-120',
+                    data:data,
+                    page: false,
+                    cellMinWidth:160,
+                    cols: [cols],
+                    limit:50,
+                    done:function(){
+                        $(".layui-form tr td").find("div.layui-table-cell").css({'line-height':'40px','height':'40px'});
+                        $(".layui-table-cell").css("overflow","visible");
+                        //客户赋值
+                        /* selectCustomer.initInput('.jl-control-uid',function(){
+
+                         },false,request.action);*/
+
+                        //搜索输入拼音首字母自动补全
+                        var response_data=[];
+                        $( ".layui-form-label-pinyin-customer" ).autocomplete({
+                            source: "/Admin/Customer/companyPinyinSearch?disable20=disable20",
+                            minLength: 2,
+                            classes: {
+                                "ui-menu": "highlight"
+                            },
+                            close:function(event,ui){
+
+
+                            },
+                            select:function(event,ui){
+                                var $this = $( ".layui-form-label-pinyin-customer" );
+                                var value = ui.item.value;
+                                var id=JSON.parse($("#autoComplete_index_data").val());
+                                var index = response_data.indexOf(value);
+                                $this.siblings("input").val(id[index]);
+                                setTimeout(function(){ response_data = [];},0)
+
+                            },
+                            response:function( event, data ) {
+                                response_data = [];
+                                $.each(data.content,function(item,value){
+                                    response_data.push(value.value);
+                                });
+                            }
+                        });
+
+                         selectProduct.initInput('.jl-select-erp-product',function(data,element){
+                            var element_get_index =  element.parents("tr").data("index");
+                             var cloneObj = {};//$.extend( {}, demo);
+                             console.log(data);
+                             cloneObj.is_tax_text = data.is_tax == "0" ? '没有进项': (data.is_tax == 1 ?'有进项':'' )  ;
+                             cloneObj.is_tax = data.is_tax;
+                             cloneObj.product_fitemno = data.product_fitemno;
+                             cloneObj.fitemno = data.fitemno;
+                             cloneObj.p_sign = data.p_sign;
+                             cloneObj.p_sign_id = data.id;
+                             var datas = getData();
+                             //console.log(datas);
+                             datas[element_get_index] = $.extend( {}, datas[element_get_index],cloneObj);
+                             tableIns.reload({
+                                 data:datas
+                             });
+                         },false,'true');
+                    }
+                });
+                //删除按钮
+                table.on('tool(addTable)', function(obj){
+                    if(obj.event === 'delete'){ //删除
+                        layer.confirm('删除只是放弃编辑这一行，不会影响数据', function(index){
+                            obj.tr.remove();
+                            layer.close(index);
+                        });
+                    }
+                    //添加同一客户
+                    if(obj.event === 'add'){
+                        var tr = obj.tr;
+                        var value = {};
+                        value.index_num = $(tr[0]).data("index");
+                        value.user_name = $(tr[1]).find("td[data-field = uid]").find("input[name = uidtitle]").val();
+                        value.uid = $(tr[1]).find("td[data-field = uid]").find("input[name = uid]").val();
+                        addRow(undefined,false,false,value);
+                    }
+                });
+            };
+            initTable();
+            //添加一行
+            $(".add-btn").off("click").on("click",function(){
+                addRow();
+            })
+            var addRow = function (value,elems,keys,addSame) {
+                var data = value ? getData(value["p_sign"]):getData();
+                var cloneDemo=JSON.parse(JSON.stringify(demo));
+                if(value){
+                    if(keys==0 && data){
+                        elems.val(value.fitemno);
+                        elems.parent().parent().siblings("[data-field=fstcb]").find("div").text(value.fstcb)
+                        elems.data('id',value.id);
+                        return;
+                    };
+                    cloneDemo['fitemno'] = value.fitemno;cloneDemo['fstcb'] = value.fstcb};
+                if(addSame){
+                    cloneDemo['customer_name'] = addSame.user_name;
+                    cloneDemo['uid'] = addSame.uid;
+                    data.splice(Number(addSame.index_num) + 1,0,cloneDemo);
+                }else{
+                    data.push(cloneDemo);
+                };
+                tableIns.reload({
+                    data:data
+                });
+               // initTable();
+            };
+            //获取数据
+            var getData = function (exestPsign) {
+                var array = [];
+                $('.layui-form-form .layui-table-fixed-l>.layui-table-body').find('tr').each(function (index) {
+                    var $tr = $(this).parents('.layui-table-fixed-l').siblings('.layui-table-main').find('tr').eq(index);
+                    var single = {};
+                    var _this = this;
+                    $.each(cols,function (index,value) {
+                        // console.log(4);
+                        if(value.field==='p_sign'){
+                            if(exestPsign && exestPsign==$(_this).find('.jl-control-p_sign').val()){
+                                array=null;
+                                return  false;
+                            }
+                            single[value['field']] = $tr.find('.jl-control-'+value['field']).val();
+                            single[value['field']+'_id'] = $tr.find('.jl-control-'+value['field']+'-id').val();
+
+                        }
+                        else if(value.tplType==='input'||value.tplType==='time'){
+                            if(value['field'] == "uid" ){
+                                   single[value['field']] = $(_this).find('.jl-control-'+value['field']).val();
+                                   single[value['field']+'_text'] = $(_this).find('.jl-control-'+value['field']+'-id').val();
+                            }else{
+                                single[value['field']] = $tr.find('.jl-control-'+value['field']).val();
+                                single[value['field']+'_text'] = $tr.find('.jl-control-'+value['field']+'-id').val();
+                            }
+                        }
+                        else if(value.tplType==='select'){
+                            var inputValue = $tr.find('.jl-control-'+value['field']).val();
+                            var objValue = $.parseJSON($tr.find('.jl-control-'+value['field']+'-span').text());
+                            if(inputValue){
+                                $.each(objValue[value.field],function (index) {
+                                    objValue[value.field][index].p_sign = inputValue ;
+                                });
+                                $tr.find('.jl-control-'+value['field']+'-span').text(JSON.stringify(objValue)) ;
+                            }
+                            single[value['field']] = objValue ? objValue[value.field] : [];
+                        }else if(value.tplType==='checkbox'){
+                            single[value['field']] = $tr.find('.jl-control-'+value['field']).prop('checked')?1:0
+                        }
+                    });
+                    if(array)array.push(single);
+                });
+                // console.log("array",array);
+                return array
+            };
+            form.on('submit(bargain)', function(data){
+                var datas = getData();
+                var prive_on=false;
+                var changeModel = false;
+                $.each(datas,function(index,item){
+                    var middle='';
+                    middle = item.uid;
+                    if(request.id)item.id = single_data.id;
+                    item.uid = item.uid_text;
+                    item.uid_text = middle;
+                    item.p_id = item.p_sign_id;
+                    item.fitemno = item.product_fitemno[0].p_sign ;
+                    item.is_invoice_change = item.is_invoice_change?item.is_invoice_change:'0';
+                    item.discount_price_invoice_change = item.discount_price_invoice_change?item.discount_price_invoice_change:'0';
+                    if(!item.discount_price && !item.discount_price_tax && item.is_invoice_change ==0){ prive_on = true ;return;};
+                    if(item.is_invoice_change == 1 && item.discount_price_invoice_change == 0){ changeModel = true;return};
+                });
+                if(prive_on){ layer.msg('优惠价含税和不含税不能同时为空');return;}
+                if(changeModel){ layer.msg('请填写换型号开票优惠价');return;}
+                var $tips = $('.js-min_buy-tips:visible');
+                if($tips.length!==0){
+                    var limit = parseInt($tips.children('span').text());
+                    if(parseInt(data.field.min_buy)<=limit){
+                        layer.msg('数量限制需大于所选商品价格区间中第二条的值');
+                        return false;
+                    }
+                }
+                $.post('/Admin/Customer/oneBargain',{data:datas},function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        layer.msg('提交保存成功');
+                        jlTool.sendIframeMsg('refresh','customerProductBargainList');
+                        setTimeout(function () {
+                            jlTool.sendIframeMsg('go',{
+                                title:'价格详情',
+                                url:'/Admin/Customer/customerProductBargainList?id='+res.id,
+                                icon:''
+                            });
+                        },500)
+                    }
+                    else {
+                        var text="";
+                        $.each(res.failed,function(index,item){
+                            text+=item.msg+";<br/>";
+                        });
+                        layer.open({
+                            content:text,
+                            type:0,
+                            btn:["确定"],
+                            yes:function(){
+                                layer.closeAll();
+                            }
+                        });
+                    }
+                });
+                return false;
+            });
+        });
+
+    </script>
+</block>

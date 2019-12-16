@@ -1,0 +1,124 @@
+<div id="jl-help" class="jl-cle">
+    <?php
+        $menu=[
+            'buy_option'=>[
+                'login'=>'注册/登录',
+                'find'=>'找回密码',
+                'process'=>'购物流程',
+                'question'=>'顾客须知',
+                'invoicing'=>'开票须知',
+            ],
+            'pay_type'=>[
+                'online'=>'在线支付',
+                'payment'=>'账期支付',
+                'duties'=>'关税说明',
+            ],
+            'delivery_type'=>[
+                'undone'=>'同城自取',
+                'courier'=>'快递配送',
+                'logistics'=>'物流配送',
+                'jl'=>'玖隆配送',
+                'inland'=>'国内交货',
+                'hongkong'=>'香港交货',
+            ],
+            'service_type'=>[
+                'personage'=>'账期申请（个人）',
+                'enterprise'=>'账期申请（企业）',
+            ],
+            'customer_service_type'=>[
+                'afterSale'=>'售后说明',
+                'salesReturn'=>'退换货/退款说明',
+                'invoice'=>'发票说明',
+            ],
+            'about_type'=>[
+                'regard'=>'关于玖隆芯城',
+                'culture'=>'企业文化',
+                'contact'=>'联系我们'
+            ],
+        ];
+    ?>
+    <ul class="jl-help-left">
+        <li>
+            <h4>购物指南<i class="jl-arr-t"></i></h4>
+            <ol>
+                <foreach name="menu.buy_option" item="vo" >
+                    <if condition="ACTION_NAME eq $key ">
+                        <li class="js-active">
+                        <else />
+                        <li>
+                    </if>
+                    <a href='{:U("Home/Help/$key")}'>{$vo}</a></li>
+                </foreach>
+            </ol>
+        </li>
+        <li>
+            <h4>支付方式<i class="jl-arr-t"></i></h4>
+            <ol>
+                <foreach name="menu.pay_type" item="vo" >
+                    <if condition="ACTION_NAME eq $key ">
+                        <li class="js-active">
+                            <else />
+                        <li>
+                    </if>
+                    <a href='{:U("Home/Help/$key")}'>{$vo}</a></li>
+                </foreach>
+            </ol>
+        </li>
+        <li>
+            <h4>配送方式<i class="jl-arr-t"></i></h4>
+            <ol>
+                <foreach name="menu.delivery_type" item="vo" >
+                    <if condition="ACTION_NAME eq $key ">
+                        <li class="js-active">
+                            <else />
+                        <li>
+                    </if>
+                    <a href='{:U("Home/Help/$key")}'>{$vo}</a></li>
+                </foreach>
+            </ol>
+        </li>
+        <li>
+            <h4>特色服务<i class="jl-arr-t"></i></h4>
+            <ol>
+                <foreach name="menu.service_type" item="vo" >
+                    <if condition="ACTION_NAME eq $key ">
+                        <li class="js-active">
+                            <else />
+                        <li>
+                    </if>
+                    <a href='{:U("Home/Help/$key")}'>{$vo}</a></li>
+                </foreach>
+            </ol>
+        </li>
+        <li>
+            <h4>售后服务<i class="jl-arr-t"></i></h4>
+            <ol>
+                <foreach name="menu.customer_service_type" item="vo" >
+                    <if condition="ACTION_NAME eq $key ">
+                        <li class="js-active">
+                            <else />
+                        <li>
+                    </if>
+                    <a href='{:U("Home/Help/$key")}'>{$vo}</a></li>
+                </foreach>
+            </ol>
+        </li>
+        <li>
+            <h4>关于我们<i class="jl-arr-t"></i></h4>
+            <ol>
+                <foreach name="menu.about_type" item="vo" >
+                    <if condition="ACTION_NAME eq $key ">
+                        <li class="js-active">
+                            <else />
+                        <li>
+                    </if>
+                    <a href='{:U("Home/Help/$key")}'>{$vo}</a></li>
+                </foreach>
+            </ol>
+        </li>
+    </ul>
+    <div class="jl-help-right">
+        <block name="main"></block>
+    </div>
+</div>
+<div class="jl-line"></div>

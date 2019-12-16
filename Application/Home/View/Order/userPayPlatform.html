@@ -1,0 +1,191 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-checkstand" />
+<block name="title">收银台</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/checkstand.css">
+</block>
+<block name="nav-title">收银台</block>
+<block name="transaction">{$orderinfo.order_sn}</block>
+<block name="payable">
+    <empty name="account">
+        <assign name="total" value="$orderinfo['order_balances']" />
+        <assign name="payment" value="$orderinfo['payment']" />
+        <else />
+        <assign name="total" value="$account" />
+    </empty>
+    ￥<?php echo sprintf("%.2f",$total);?>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div id="jl-checkstand">
+        <div class="jl-checkstand-main">
+            <ul class="jl-checkstand-way">
+                <!--{:dd($payment)}-->
+                <volist name="payment" id="pay">
+                    <eq name="pay.user_id" value="0">
+                            <li class="{$i==1?'jl-cur':''}" data-type="{$pay.bank_name}">
+                                <div class="jl-way-left">
+                                    <i class="jl-selected"></i>
+                                    <span class="jl-bank-icon">
+                                        <img src="{$pay.img}" alt="">
+                                    </span>
+                                    <b>{$pay.bank_name}</b>
+                                    <if condition="$pay['bank_name'] == '银联支付'"><span style="color: #e84343;">单笔不能超过2000元，单卡单日不能超过5000元，请合理选择！</span></if>
+                                </div>
+                                <div class="jl-way-right">支付<b><?php echo sprintf("%.2f",$total);?></b>元</div>
+                            </li>
+                    </eq>
+                </volist>
+            </ul>
+            <button class="jl-payment">立即支付</button>
+              <!--支付宝支付-->
+            <form style="display: none" id="js-submit-alipay" action="{:U('Home/Pay/alipay')}" method="post">
+                订单号：<input type="text" name="order_sn" value="{$orderinfo['order_sn']}">
+                <input type="submit" value="生成支付宝订单">
+            </form>
+            <form style="display: none" id="js-submit-account" action="{:U('Home/Pay/alipay')}" method="post">
+                <volist name="get.orderSn_arr" id="orderSn">
+                    <input type="text" name="orderSn_arr[{$key}]" value="{$orderSn}">
+                </volist>
+                <input type="text" name="active" value="{$get['active']}">
+                <input type="submit" value="生成支付宝订单">
+            </form>
+            <!--银联支付-->
+            <form style="display: none" id="js-submit-back" action="{:U('Home/Pay/wappay')}" method="post">
+                123：<input type="text" name="txnAmt" value="{$orderinfo['order_balances']}">
+                456：<input type="text" name="order_sn" value="{$orderinfo['order_sn']}">
+                <input type="submit" value="生成支付宝订单">
+            </form>
+            <form style="display: none" id="js-back-account" action="{:U('Home/Pay/wappay')}" method="post">
+                <volist name="get.orderSn_arr" id="orderSn">
+                    <input type="text" name="orderSn_arr[{$key}]" value="{$orderSn}">
+                </volist>
+                <input type="text" name="active" value="{$get['active']}">
+                <input type="submit" value="生成支付宝订单">
+            </form>
+        </div>
+    </div>
+    <div class="jl-add-popup">
+        <div class="jl-bg"></div>
+        <div class="jl-add-main">
+            <ul class="jl-title">
+                <li class="jl-cur">快捷支付</li>
+                <li>网银支付</li>
+            </ul>
+            <i class="jl-close"></i>
+            <p class="jl-card-number jl-cle" style="padding-top: 26px">
+                <span>开户行</span>
+                <input class="js-bank-input" style="margin-left: 36px" type="text" placeholder="请输入开户行名称">
+            </p>
+            <p class="jl-card-number jl-cle">
+                <span>银行卡号</span>
+                <input class="js-card-input" type="text" placeholder="请输入详细银行卡号进行识别">
+            </p>
+            <button class="jl-next">下一步</button>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery','jl-modal','jl-tool'], function ($,modal,jlTool) {
+                var orderinfo = {$orderinfo|json_encode};
+                var goods_list = {$goods_list|json_encode};
+                var goods_num = {$goods_num|json_encode};
+                var account = {$account|json_encode};
+                var payment = {$payment|json_encode};
+                var request = {$get|json_encode};
+                var section = {$_SESSION|json_encode};
+                //console.log(account,payment,section);
+
+
+                //更多
+                $('.jl-more-bank').on('click',function () {
+                    $('.jl-checkstand-way li').show();
+                    $(this).hide()
+                });
+                var text = (function () {
+                    var t = goods_list ? goods_list[0].p_name:(
+                        '订单'+request.orderSn_arr[0]+(request.orderSn_arr.length===1?'':'等')+'账期'
+                    );
+                    return (goods_num>1)?t+'等多件':t
+                })();
+                $('.js-details-text').text(text);
+                //
+                $('.jl-checkstand-way').on('click','li',function () {
+                    $(this).addClass('jl-cur').siblings().removeClass('jl-cur')
+                });
+                $('.jl-add-bank').on('click',function () {
+                    $('.jl-add-popup').show()
+                });
+                $('.jl-close').on('click',function () {
+                    $('.jl-add-popup').hide()
+                });
+                var $card_input = $('.js-card-input');
+                var $btn = $('.jl-next');
+                $card_input.on('keyup',function () {
+                    var length = $card_input.val().length;
+                    if(length!==0){
+                        $btn.addClass('jl-cur')
+                    }
+                    else {
+                        $btn.removeClass('jl-cur')
+                    }
+                });
+                $btn.on('click',function () {
+                    var name = $('.js-bank-input').val();
+                    var account = $card_input.val();
+                    $.post(
+                        "{:U('Home/Order/editUserOrderPayment')}",
+                        {bank_name:name,bank_acount:account},
+                        function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                window.location.reload()
+                            }
+                            else{
+                                modal.alert({
+                                    title:res.msg
+                                })
+                            }
+                        }
+                    )
+                });
+                if(request.active==="account"){
+                    //账期还款
+                    $('.jl-payment').on('click',function () {
+                        var type=$('.jl-checkstand-way .jl-cur').attr('data-type');
+                        if(type==="微信"){
+                            var query = jlTool.urlEncode(request);
+                            window.location.href="{:U('Home/Pay/wechatScanQRcodePay')}"+'?'+query;
+                        }
+                        else if(type==='支付宝'){
+                            $("#js-submit-account").submit();
+                        }
+                        else{
+                            $('#js-back-account').submit();
+                        }
+                    });
+                }
+                else{
+                    //订单提交
+                    $('.jl-payment').on('click',function () {
+                        var type=$('.jl-checkstand-way .jl-cur').attr('data-type');
+                        if(type==="微信"){
+                            location.href="{:U('Home/Pay/wechatScanQRcodePay')}?order_sn={$orderinfo['order_sn']}";
+                        }
+                        else if(type==="支付宝"){
+                            $("#js-submit-alipay").submit();
+                        }
+                        else{
+                            $('#js-submit-back').submit();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</block>

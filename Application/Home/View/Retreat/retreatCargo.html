@@ -1,0 +1,505 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-cart" />
+<block name="title">退货/退款</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/retreatCargo.css">
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/layui/2.2.5/css/layui.css">
+</block>
+<block name="nav-title">退货/退款</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-brands">
+        <li><a>您的位置</a></li>
+        <li>&gt;</li>
+        <li><a href="{:U('Home/Default/index')}">首页</a></li>
+        <li>&gt;</li>
+        <li><a href="{:U('Home/User/index')}">个人中心</a></li>
+        <li>&gt;</li>
+        <li class="jl-last"><a href="{:U('Home/Order/myOrder')}">我的订单</a></li>
+    </ul>
+    <ul class="jl-progress-money jl-cle" <?php if($data['retreat']['retreat_type'] == 0) echo 'style="display:block"'; ?>>
+    <?php $retreatText='';if($data['pay_status'] != 0 and $data['ship_status'] == 0){ $retreatText = '仅退款';
+        }elseif ($data['pay_status'] == 0 and $data['ship_status'] == 4){ $retreatText = '仅退货';
+        }elseif (($data['order_status'] == 3) or ($data['pay_status'] != 0 and $data['ship_status'] == 4)){ $retreatText = '退货退款';}else{};?>
+
+        <li class="jl-cur">
+            <p>
+                <span class="jl-serial">1</span>
+                买家申请{$retreatText}
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li>
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">2</span>
+                玖隆处理{$retreatText}申请
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-progress-last">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">3</span>
+                {$retreatText}完毕
+            </p>
+        </li>
+    </ul>
+    <ul class="jl-progress-cargo jl-cle" <?php if($data['retreat']['retreat_type'] == 0) echo 'style="display:none"'; ?>>
+        <li class="jl-cur">
+            <p>
+                <span class="jl-serial">1</span>
+                买家申请退货/退款
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li>
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">2</span>
+                玖隆处理退货申请
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li>
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">3</span>
+                买家退货
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-progress-last">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">4</span>
+                退款完毕
+            </p>
+        </li>
+    </ul>
+    <div class="jl-retreat jl-cle">
+        <div class="jl-retreat-left">
+            <ul class="jl-retreat-content">
+                <li>
+                    <table class="layui-table jl-retreat-goods" lay-even lay-skin="nob">
+                        <tr>
+                            <td>选择退货产品：</td>
+                            <td>申请退货产品</td>
+                            <td>申请退货数量</td>
+                        </tr>
+                        <volist name="data.order_goods" id="g">
+                            <if condition="($g['erp_num']-$g['retreat_num']) gt 0">
+                                <tr>
+                                    <td>
+                                        <div class="layui-form">
+                                            <input class="asd" type="checkbox" name="check[]"  checked lay-filter="check">
+                                        </div>
+                                    </td>
+                                    <td>{$g.p_name}<input type="hidden" name="pid[]" data-total="{$g.pay_subtotal}" data-price="{$g.p_price_true}" value="{$g.p_id}"></td>
+                                    <td><div class="layui-form"><input   type="text" name="pnum[]" value="{$g['erp_num']-$g['retreat_num']}" data-p_num="{$g['p_num']}" max="{$g['erp_num']-$g['retreat_num']}" min="0"></div></td>
+                                </tr>
+                            </if>
+                        </volist>
+                    </table>
+                    <!--<notempty name="data.p_img">-->
+
+                        <!--<img src="{$data.p_img}" alt="{$data.p_name}">-->
+                        <!--<else />-->
+                        <!--<img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">-->
+                    <!--</notempty>-->
+                    <!--<div class="jl-goods-detail">-->
+                        <!--<p>{$data.p_name}</p>-->
+                        <!--<span>封装：{$data.spec}   批号：{$data.batch}   交期：{$data.delivery}</span>-->
+                    <!--</div>-->
+                </li>
+                <li class="jl-return-goods">
+                    <p>服务类型：</p>
+                    <div class="jl-goods-detail">
+
+                        <!-- 已有付款 未发货 -->
+                        <if condition="$data['pay_status'] neq 0 and $data['ship_status'] eq 0">
+                            <p class="jl-return-money" myAttr="0"><i class="jl-choose-circle jl-choose-active"></i>仅退款<div style="color:#e84343;margin-left: 25px;">本单已全部发货，请与客户沟通清楚，否则可能审核失败</div></p>
+                            <!-- 已有付款 已收货-->
+                            <elseif condition="$data['pay_status'] eq 0 and $data['ship_status'] eq 4" />
+                                <p class="jl-return-money" myAttr="1"><i class="jl-choose-circle jl-choose-active"></i>仅退货<div style="color:#e84343;margin-left: 25px;">仅退货不退款，如您已支付，请谨慎选择！</div></p>
+                            <!-- 已有付款 未收货-->
+                            <elseif condition="($data['order_status'] eq 3) or ($data['pay_status'] neq 0 and $data['ship_status'] eq 4)" />
+                                <div class="jl-return-money" style="margin-top:10px;height:40px" myAttr="0"><i class="jl-choose-circle "></i>仅退款 <p style="color:#e84343;display:none;margin-left: 25px;">本单已全部发货，请与客户沟通清楚，否则可能审核失败</p></div>
+                                <div class="jl-return-money" style="margin-top:10px;height:40px" myAttr="1"><i class="jl-choose-circle"></i>仅退货 <p style="color:#e84343;display:none;margin-left: 25px;">仅退货不退款，如您已支付，请谨慎选择！
+                                </p></div>
+                                <div class="jl-return-cargo" style="margin-top:10px;height:40px" myAttr="2"><i class="jl-choose-circle jl-choose-active"></i>退货退款</div>
+                            <else />
+                                没有付款 没有发货
+                        </if>
+
+                    </div>
+                </li>
+               <if condition="$data['pay_status'] eq 0 and $data['ship_status'] eq 4">
+
+                   <else/>
+                    <li class="jl-logistics-state" style="display:block" >
+                        <p>退款路径：</p>
+                        <div class="jl-goods-detail">
+                                    <!--<p myAttr="1"><i class="jl-choose-circle"></i>退回玖隆钱包</p>-->
+                                    <p myAttr="2"><i class="jl-choose-circle jl-choose-active"></i>货款原路返回</p>
+    <!--
+                                    <s>玖隆已发货，请先<a href="{:U('Home/Order/detail',['order_sn'=>$data['order_sn']])}">查看物流信息</a>，或联系玖隆</s>
+    -->
+                        </div>
+                    </li>
+                    <li class="li_return_money">
+                        <p class="jl-lh">退款金额：</p>
+                        <div class="jl-goods-detail js-return-money">
+                            <i class="jl-money">￥</i>
+                            <input class="js-money input" readonly type="text" min="0" max="{$hymoney}" value="{$hymoney}">
+                            <!--<present name="data['retreat']['retreat_money']">
+                                <input class="js-money input" type="text" min="0" max="{$hymoney}" value="{$hymoney}">
+                                <else />
+                                <input class="js-money input" type="text" value='0'>
+                            </present>-->
+
+                            <b class="jl-mandatory"></b>
+                            <i class="jl-false-note"></i>
+                            <s>最多 ￥<b class="js-most">{$hymoney}</b>,不含发货邮费¥{$data.delivery_price}</s>
+                        </div>
+                    </li>
+                </if>
+                <li class="js-return-detail">
+                    <p class="jl-lh">退款/退货<br/>说明:</p>
+                    <div class="jl-goods-detail">
+                        <textarea class="jl-retreat-desc" placeholder="请输入退款/退货说明">{$data.retreat.retreat_desc}</textarea>
+                        <i class="jl-false-note"></i>
+                        <b class="jl-mandatory"></b>
+                    </div>
+                </li>
+                <li>
+                    <p>上传照片：</p>
+                    <ol class="jl-imgs">
+                        <notempty name="data.retreat.retreat_img">
+                            <volist name="data.retreat.retreat_img" id="img">
+                                <li class="jl-protocol jl-protocol-photo">
+                                    <a href="javascript:;" class="a-upload">
+                                        <input type="file" name="retreat_img[]">
+                                        <img src="{$img}" alt="">
+                                    </a>
+                                    <s class="jl-remove"></s>
+                                </li>
+                            </volist>
+                        </notempty>
+                    </ol>
+                    <div class="jl-upload">
+                        <div id="js-upload-btn" class="jl-protocol">
+                            <a href="javascript:;" class="a-upload">
+                                <input type="file" name="retreat_img[]">
+                                <img src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                            </a>
+                            <s></s>
+                        </div>
+                        <div class="jl-clear">上传凭证（最多三张）</div>
+                    </div>
+                    <b class="jl-mandatory"></b>
+                </li>
+                <li class="jl-btns">
+                    <p></p>
+                    <div class="jl-goods-detail">
+                        <button class="jl-submit">提交</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <include file="Public:retreat_order_detail" />
+    </div>
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/layui/2.2.5/layui.js"></script>
+    <script>
+      /*  console.log({$data|json_encode});*/
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function(){
+            require(['jquery','jl-modal','jl-price'],function($,modal,jlPrice){
+                var data={$data|json_encode};
+                var hymoney = {$hymoney|json_encode};
+                console.log("{$hymoney}",{$hymoney|json_encode});
+                if(data['retreat']){
+                    var elemt = $(".jl-goods-detail").find("div[myattr="+data['retreat']['retreat_type']+"]");
+                    elemt.find("i").addClass("jl-choose-active");
+                    elemt.siblings().find("i").removeClass("jl-choose-active");
+                    if(data['retreat']['retreat_type'] == 1){
+                        $(".li_return_money").show(200);
+                    }
+                }
+                require(['webuploader'],function(WebUploader){
+                    var uploader = WebUploader.create({
+                        pick:'#js-upload-btn',
+                        auto: true,
+                        swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                        server: "{:U('Home/Order/upload')}",
+                       accept: {
+                           title: 'Images',
+                           extensions: 'gif,jpg,jpeg,bmp,png',
+                           mimeTypes: 'image/*'
+                       },
+                        formData:{
+                            path: 'Order/retreate'
+                        }
+                    });
+                    uploader.on( 'uploadSuccess', function( file ,res) {
+                        var $list = $('.jl-imgs');
+                        var length = $list.children().length;
+                        if(length<3){
+                            if(length===2){
+                                $('.jl-upload').hide()
+                            }
+                            var html =
+                                '<li class="jl-protocol jl-protocol-photo">\n' +
+                                '<a href="javascript:;" class="a-upload">\n' +
+                                '<img src="'+res[0]+'" alt="">\n' +
+                                '</a>\n' +
+                                '<s class="jl-remove"></s>\n' +
+                                '</li>';
+                            $list.append(html);
+                        }
+                    });
+                    uploader.on( 'uploadError', function() {
+                        modal.alert({
+                            title:'上传失败'
+                        })
+                    });
+                    $('.jl-imgs').on('click','.jl-remove',function () {
+                        var $list = $('.jl-imgs');
+                        var length = $list.children().length;
+                        if(length===3){
+                            $('.jl-upload').show()
+                        }
+                        $(this).parent().remove();
+                    })
+                });
+                //获取选择的产品 及数量
+                var d = getEach('.asd');
+                if(data ){
+                    getMaxRetreatMoney( d,true );
+                }
+
+                //价格
+                $('.jl-retreat-goods').on( 'input', 'input', function(){
+                    //console.log(1233);
+                    var v = $(this).val()?$(this).val():0;
+                    var max= $(this).attr('max');
+                    if( parseInt(v) > max || parseInt(v) < 0 ){
+                        $(this).val(max);
+                        getMaxRetreatMoney( getEach('.asd') );
+                        return false;
+                    }
+                    $(this).val(parseInt(v))
+                    getMaxRetreatMoney( getEach('.asd') );
+                });
+                function getEach( elem ) {
+                    var da=[];
+                    $(elem+':checked').each(function(){
+                        var $tr = $(this).parents('tr');
+                        var pid = parseFloat($tr.children('td').eq(1).find('input').val());
+                        var pnum = parseFloat($tr.children('td').eq(2).find('input').val());
+                        var T_p_num = parseFloat($tr.children('td').eq(2).find('input').data("p_num"));
+                        da.push({
+                            pid:pid,
+                            T_p_num:T_p_num,
+                            pnum:pnum,
+                            ptotal:parseFloat($tr.children('td').eq(1).find('input').data('total')),
+                            pprice:parseFloat($tr.children('td').eq(1).find('input').data('price')),
+                        });
+                    });
+                    return da;
+                }
+                //计算退款max金额
+                function getMaxRetreatMoney( data,firstDate ){
+//                    //var sum_ori = parseFloat({$data.total_origin});//原始总价
+                    var sum = parseFloat({$data.total}); //实付
+                    var disc = parseFloat({$data.total_discount}); //折扣
+                    var re_total = 0;
+                    $.each(data,function (index,value) {
+                       // re_total += parseFloat(value.pnum)*parseFloat(value.pprice);
+                        re_total += parseFloat(value.ptotal * (value.pnum /value.T_p_num));
+                    });
+                    var re_real = re_total - re_total/(sum+disc)*disc;
+                    re_total = hymoney > re_total? re_total:hymoney;
+                    var theMost = Number($('b.js-most').text());
+                    if(firstDate){ $('b.js-most').text(jlPrice.fixed_float(re_total) > theMost ? theMost : jlPrice.fixed_float(re_total));};
+                    $('input.js-money').val( jlPrice.fixed_float(re_total) > theMost ? theMost : jlPrice.fixed_float(re_total));
+                    //$('b.js-most').html( jlPrice.fixed_float(re_total) );
+                }
+               /* //服务类型
+                if($('.jl-return-cargo').children('i').hasClass('jl-choose-active')){
+                    $('.jl-logistics-state').css("display","none");
+                }*/
+                //仅退款或仅退货
+                $('.jl-return-money').on('click',function(){
+                    $(this).siblings().children('.jl-choose-circle').removeClass('jl-choose-active');
+                    $(this).siblings().find("p").hide(200);
+                    if($(this).attr("myattr") == 1){
+                        $(".li_return_money").hide(200);
+                        $('.jl-logistics-state').css("display","none");
+                    }else{
+                        $('.jl-logistics-state').css("display","block");
+                        $(".li_return_money").show(200);
+                    }
+                    $(this).children('.jl-choose-circle').addClass('jl-choose-active');
+
+                    $(this).data('sevice_type',0).find("p").show(200);
+                    $('.jl-progress-money').css('display','none');
+                    $('.jl-progress-cargo').css('display','none');
+                });
+                //退货退款
+                $('.jl-return-cargo').on('click',function(){
+                    $(".li_return_money").show(200);
+                    $(this).siblings().children('.jl-choose-circle').removeClass('jl-choose-active').find("p").hide(200);
+                    $(this).siblings().find("p").hide(200);
+                    $(this).children('.jl-choose-circle').addClass('jl-choose-active');
+                    $('.jl-logistics-state').css("display","block");
+                    $(this).data('sevice_type',1).find("div").show(200);
+                    $('.jl-progress-money').css('display','none');
+                    $('.jl-progress-cargo').css('display','block');
+                });
+                //货物状态
+                $('.jl-logistics-state .jl-goods-detail p').on('click',function(){
+                    $(this).siblings().children('.jl-choose-circle').removeClass('jl-choose-active');
+                    $(this).children('.jl-choose-circle').addClass('jl-choose-active');
+                });
+                //退款金额
+                var reg4=/^\D$/;
+                var $most=Number($('.js-most').html());
+                var timer = null;
+                $('.js-money.input').on('input',function () {
+                    var $this = $(this);
+                    var $money=$this.val();
+                    clearTimeout(timer);
+                    timer = setTimeout(function(){
+                        if(reg4.test($money)||$money>$most||$money===""){
+                            $this.parent().addClass('js-false');
+                        }
+                        else{
+                            $this.parent().removeClass('js-false');
+                        }
+                    },500)
+
+                });
+                //退款说明
+                $('.jl-retreat-desc').on('blur',function(){
+                    var $detail=$(this).val();
+                    if($detail===""){
+                        $(this).parent().addClass('js-false');
+                    }
+                    else{
+                        $(this).parent().removeClass('js-false');
+                    }
+                });
+                require(['jl-modal'],function (modal) {
+                    layui.use(['layer', 'form'], function () {
+                        var layer = layui.layer
+                            , form = layui.form;
+                        form.on( 'checkbox', function(){
+                            var d = getEach('.asd');
+                            getMaxRetreatMoney( d );
+                        });
+                    });
+                    //提交
+                    $('.jl-submit').on('click',function() {
+                        if($('.jl-retreat-desc').val()===""){
+                            $('.jl-retreat-desc').parent().addClass('js-false');
+                            $('.jl-retreat-desc').focus();
+                        }
+                        else{
+                            $('.jl-retreat-desc').parent().removeClass('js-false');
+                        }
+                        if($('.jl-choose-active').attr("myattr") == 1){
+                            if($('.js-money').val()===""){
+                                $('.js-money').parent().addClass('js-false');
+                                $('.js-money').focus();
+                            }
+                        }
+
+                        else{
+                            $('.js-money').parent().removeClass('js-false');
+                        }
+                        var img_num=$(".jl-imgs img").length;
+                        if(img_num<=0){
+                            modal.alert({
+                                title: '照片不能为空',
+                                brief: '请上传照片，照片不能为空！',
+                                top: 100
+                            })
+                        }
+                        else{
+                            var goods = getEach('.asd');
+                            if(goods.length <= 0){
+                                modal.alert({
+                                    title: '没有选择退货产品',
+                                    brief: '请选择退货产品',
+                                    top: 100
+                                });
+                                return false;
+                            }
+                            var num=$('.jl-retreat-content .js-false').length;
+                            if(num<=0){
+                                var re_sn = '{$data.retreat.re_sn}';
+                                var order_sn = "{$data['order_sn']}";
+                                var retreat_type = $('.jl-return-goods .jl-choose-active').parent().attr('myAttr');
+                                var cargo_status = $('.jl-logistics-state .jl-choose-active').parent().attr('myAttr');
+                                var retreat_money = $('.js-money').val()|| 0;
+                                var retreat_desc = $('.jl-retreat-desc').val();
+                                var retreat_img = [];
+                                var $imgs = $('.jl-imgs img');
+                                if(retreat_type == 1){
+                                    cargo_status = "0";
+                                    retreat_money = "0";
+                                }
+                                $.each($imgs, function (index, el) {
+                                    retreat_img.push($(el).attr('src'))
+                                });
+                                var data = {
+                                    re_sn:re_sn,
+                                    order_sn: order_sn,
+                                    goods: goods,
+                                    retreat_type: retreat_type,
+                                    cargo_status: cargo_status || 0,
+                                    retreat_money: retreat_money,
+                                    retreat_desc: retreat_desc,
+                                    retreat_img: retreat_img
+                                };
+                                $.ajax({
+                                    type: 'POST',
+                                    url: "{:U('Home/Retreat/storeRetreat')}",
+                                    data: data,
+                                    success: function (res) {
+                                        if (res.status === 0) {
+                                            if(res.data){
+                                                window.location.href = "{:U('Home/Retreat/index')}?re_sn="+res.data.re_sn;
+                                            }else{
+                                                modal.confirm({
+                                                    title: '订单错误',
+                                                    brief: res.info,
+                                                    top: 100
+                                                })
+                                            }
+
+                                        } else {
+                                            modal.confirm({
+                                                title: '系统繁忙',
+                                                brief: '不好意思哦！系统繁忙，请稍后重试！',
+                                                top: 100
+                                            })
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+                });
+            });
+        });
+    </script>
+</block>

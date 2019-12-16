@@ -1,0 +1,200 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">需求列表</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="overflow: hidden">
+            <span>
+                <span style="padding: 9px 15px">客户</span>
+                 <input value="{$request.user_id}" type="hidden" name="user_id" placeholder="请选择客户" class="layui-input jl-select-customers " style="display: inline-block;width: auto">
+                 <input value="{$request.user_id_name}" type="text" name="user_id_name" placeholder="请选择客户" class="layui-input jl-select-customers layui-form-label-pinyin-customer" style="display: inline-block;width: auto">
+            </span>
+            <div class="layui-btn-group">
+                <button class="layui-btn search-btn">检索</button>
+                <button class="layui-btn layui-btn-primary clear-btn">清空</button>
+            </div>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" style="width: 100%">
+                    {{#  if((d.handle_status!=1)){ }}
+                    <span lay-event="deal">处理</span>
+                    {{#  } ; if( (d['user_id'] == "0" && d['handle_status'] == "0") ){ }}
+                    <span lay-event="push" class="jl-select-user">抛转</span>
+                    {{# } }}
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','selectCustomer','selectUser'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var selectUser = layui.selectUser;
+            var selectCustomer = layui.selectCustomer;
+            selectCustomer.initInput(false,false,'user_name');
+            var list_data = {$list|json_encode};
+            var request = {$request|json_encode};
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Customer/releaseList?'+query
+            };
+            //console.log(list_data);
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-226',
+                cols: [[
+                    {field: 'id', title: '序号', fixed: 'left',width:80}
+                    ,{field: 'handle_status', title: '处理状态',templet:function (d) {
+                        switch (d.handle_status){
+                            case '0':
+                                return '未联系';
+                            case '1':
+                                return '已处理';
+                        }
+                    }}
+                    ,{field: 'user_name', title: '客户名称'}
+                    ,{field: 'link_name', title: '联系人'}
+                    ,{field: 'point', title: '交货地点',templet:function (d) {
+                        switch (d.point){
+                            case '0':
+                                return '国内';
+                            case '1':
+                                return '香港';
+                        }
+                    }}
+                    ,{field: 'sale_id', title: '是否抛转',width:90,templet:function(d){
+                            return d.sale_id > 0 ? "是" : "否";
+                        }}
+                    ,{field: 'sale_name',width:100, title: '抛转对象'}
+                    ,{field: 'release_name', title: '需求产品名称/型号'}
+                    ,{field: 'brand_name', title: '品牌名称'}
+                    ,{field: 'price', title: '需求单价'}
+                    ,{field: 'number', title: '需求数量'}
+                    ,{field: 'delivery_time', title: '货期'}
+                    ,{field: 'is_tax', title: '是否含税',templet:function (d) {
+                        switch (d.point){
+                            case '0':
+                                return '否';
+                            case '1':
+                                return '是';
+                        }
+                    }}
+                    ,{field: 'link_name', title: '联系人'}
+                    ,{field: 'link_mobile', title: '联系人手机号码'}
+                    ,{field: 'end_time', title: '截止日期'}
+                    ,{field: 'append', title: '补充说明'}
+                    ,{field: 'create_time', title: '需求提交日期'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right',
+                        toolbar: '#data-table-handle-tpl'}
+                ]],
+                done:function () {
+                    selectUser.initInput(false,function(data){
+                        $.post("/Admin/Customer/releaseToSale",{id:table.id,"sale_id":data.uid},function(res){
+                                if(res.error == 0){
+                                    layer.open({
+                                        content:"抛转成功...",
+                                        type:0,
+                                        yes:function(){
+                                            window.location.reload();
+                                        }
+                                    });
+                                }else{
+                                    layer.msg(res.msg);
+                                }
+                        },"json");
+                    },"fullname");
+                }
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'deal'){
+                    layer.confirm('请确认已经处理',function(index){
+                        $.post('/Admin/Customer/releaseHandle',{id:source.id},function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('处理成功',{time:500}, function(){
+                                    window.location.reload()
+                                });
+                            }
+                            else {
+                                layer.tips(res.msg, '.layui-layer-btn');
+                            }
+                        })
+                    });
+                }else if(layEvent === 'push'){
+                    table.id = source.id;
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            //筛选按钮
+            $('.search-btn').on('click',function () {
+                queryTable({
+                    user_id:$('input[name="user_id"]').val(),
+                    user_id_name:$('input[name="user_id_name"]').val()
+                });
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            })
+        })
+        //搜索输入拼音首字母自动补全
+        var response_data=[];
+        $( ".layui-form-label-pinyin-customer" ).autocomplete({
+            source: "/Admin/Customer/companyPinyinSearch",
+            minLength: 2,
+            close:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-customer" );
+                var value = $this.val();
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+    </script>
+</block>

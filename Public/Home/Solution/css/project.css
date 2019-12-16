@@ -1,0 +1,587 @@
+/*页面布局css*/
+/*right*/
+.sol-center-right{
+    float: left;
+    margin-left: 20px;
+    width: 968px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+.min-size{
+    font-size: 13px;
+}
+/*内容css*/
+.projectContent{
+    width:960px;
+    /*margin-bottom:60px;*/
+    padding-bottom:24px;
+    border:1px solid transparent;
+    float:left;
+}
+.mysol{
+    float: left;
+    margin: 0 0 30px 30px;
+    padding: 5px;
+    width: 430px;
+    background: #fff;
+    /* height: 680px; */
+    border: 1px solid #ddd;
+}
+.mysol2{
+    /*height:508px;*/
+}
+.mysol3{/*补充css*/
+    padding:10px 20px 20px 20px;
+    box-sizing: border-box;
+}
+.converseList:hover,.mysol:hover{
+    box-shadow:0 0 8px #ddd;
+    border-color: transparent;
+}
+.mysol:hover .mysol-delete{
+    display:block;
+    float:right;
+}
+.mysol-delete{
+    cursor: pointer;
+    float:right;
+    margin:-15px -10px 0px 0px;
+    position: relative;
+    top: 10px;
+    right: 10px;
+    display: none;
+    width: 25px;
+    height: 25px;
+    background: url(../../Public/img/bg-big.png ) no-repeat 5px -72px;
+}
+/*collected/browse*/
+.desired-base>li{
+    line-height: 30px;
+    height:30px;
+    margin:10px 0  15px 0;
+}
+.desired-base>li>div{
+    display: inline-block;
+    vertical-align: top;
+}
+.desired-desc>div{
+    display: inline-block;
+    vertical-align: top;
+    height:75px;line-height: 25px;
+}
+.project_sol_info{/*字段值*/
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    height:30px;
+    line-height: 30px;
+    padding-right: 5px;
+    color:#222;
+}
+.project_sol_name{/*字段名*/
+    /*color:#a9a9a9;*/
+    /*color:#ddd;*/
+}
+
+/*我的供应方案的表格css*/
+table{
+    height:100%;
+}
+tr{
+    width:100%;
+    word-break:break-all;
+}
+td{
+    /*border:1px solid #ddd;*/
+    height:30px;
+    line-height:30px;
+    /*padding:6px 0px 0px 10px!important;替换*/
+    padding:6px 0px 0px 0px!important;
+    color:#777;
+}
+.redword{
+    color:#e84343;
+}
+#myProvider-img{
+    margin:5px 5px 5px 5px;
+    width:100px;
+}
+.textAlign-top{
+    vertical-align:top;
+    text-align: left;
+    border-top:1px solid #ddd;
+}
+.td-file{
+    float:left;
+    width:96px;
+    margin-bottom:10px;
+    text-align: left;
+    overflow: hidden;
+}
+/* 提示框 */
+.w-tip{
+    display:none;
+    box-sizing: border-box;
+    position:absolute;
+    width: 60px;
+    height: 20px;
+    border: 1px solid #777;
+    border-radius: 4px;
+    font-size: 10px;
+    margin:0px 0px 0px 0px;
+    background-color: #fff;
+}
+/* 提示框小角的小方块 */
+.w-tip .w-inner1{
+    position:relative;
+    background-color: #FFF;
+    width: 5px;
+    height:5px;
+    border:1px solid #777;
+    position: relative;
+    left: 27px;
+    top: -4px;
+    transform: rotate(45deg);
+    border-right: 0px;
+    border-bottom: 0px;
+}
+.w-tip .w-inner2{
+    position:relative;
+    vertical-align: top;
+    text-align: center;
+    margin:-11px 0px 0px 0px;
+    color:#777;
+}
+.img-file{
+    vertical-align:middle;
+}
+.text-font-size{/*方案描述的内容*/
+    border-top:1px solid #ddd;
+    font-size: 13px;
+}
+.desc-hidden1{
+    box-sizing: border-box;
+    padding:0 15px 15px 0;
+    height:86px;
+    width:260px;
+    overflow: hidden;
+}
+.desc-hidden2{
+    height:25px;
+    overflow: hidden;
+}
+.desc-hidden3{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 50px;
+    line-height: 25px
+}
+.checkmore{
+    font: 12px "Microsoft YaHei";
+    color: #00d0f5;
+}
+
+/*我的需求方案的表格css*/
+.myDesir-div{
+    float:left;
+    text-align:left;
+    vertical-align: middle;
+    /*margin-bottom:10px;*/
+}
+.converse-content{
+    float:right;
+    width:66px;
+    height:25px;
+    line-height: 25px;
+    text-align: center;
+    border-radius: 2px;
+}
+.ziying{
+    float:left;
+    width:60px;
+    height:30px;
+    line-height: 30px;
+    text-align: center;
+    background:#e84343;
+    color:#fff;
+    border-radius: 2px;
+    font-size:15px;
+    margin-bottom: 5px;
+}
+.ziying2{
+    margin-bottom:15px;
+}
+.check_status{
+    float:right;
+    box-sizing: border-box;
+    width:72px;
+    margin:0px 15px 0px 8px;
+    padding:2px 0px 2px 0px!important;
+    color:#e84343;
+    height:30px;
+    line-height: 30px;
+}
+.check_status span{
+    cursor:pointer;
+}
+/*我的洽谈方案*/
+.converseList{
+    border: 1px solid #ddd;
+    margin: 0 24px 24px 24px;
+    padding: 10px 20px;
+}
+.div-padding,.con-idea-div{
+    width: 560px;
+    border-top: 0px;
+    overflow: hidden;
+    line-height: 30px;
+    /*text-overflow: ellipsis;*/
+    /*white-space: nowrap;*/
+}
+.div-padding{
+    padding-left:10px;
+    color:#0C0C0C;
+}
+.con-idea-div{
+    /*height:100px;*/
+}
+.con_auth{
+    box-sizing: border-box;
+    width:200px;
+    text-align: right;
+}
+.con_auth1,.con_auth2{
+    border-radius: 4px;
+}
+.con_auth1{/*白底红框*/
+    box-sizing: border-box;
+    width:70px;
+    margin-left:60px;
+    text-align: center;
+    border:1px solid #e84343;
+    background:#fff;
+}
+.con_auth2{/*红底白字*/
+    box-sizing: border-box;
+    width:70px;
+    margin-left:60px;
+    text-align: center;
+    color:#fff;
+    background:#e84343;
+}
+.word-gy{
+    width:65px;
+    line-height: 20px;
+    text-align: center;
+    border-radius:2px;
+    /*替代*/
+    height:20px;
+    margin:4px 10px 0 16px;
+    border:1px solid transparent;
+    background-color: #e84343;
+    color:#fff;
+}
+.word-gy2{
+    width:40px;
+    line-height: 20px;
+    margin:5px 0 0 5px;
+    display: inline;
+    text-align: center;
+    border-radius:2px;
+    /*替代*/
+    border:1px solid transparent;
+    background-color: #e84343;
+    color:#fff;
+}
+
+/*洽谈中的方案*/
+.desc-hidden4{
+    height:100px;
+    overflow: hidden;
+}
+checkmore-add1{
+    margin:0px;
+    height:20px;
+    line-height: 20px;
+}
+
+/*浏览记录css*/
+/*0-9表示包含关系,a-z表并列关系*/
+.mysol div{/*临时*/
+   /*border:1px solid #ddd;*/
+
+}
+.mysol_children1_div{
+    width:100%;
+    padding-top:10px;
+}
+.div_img_0{
+    text-align: center;
+    vertical-align: middle;
+    float:left;
+}
+.div_img_1{
+    width:150px;
+    height:150px;
+    /*line-height: 150px;*//*居中显示*/
+    /*vertical-align: middle;*/
+    margin:4px;
+}
+.div_img_1 img{
+    /*border:1px solid #ddd;替代*/
+    border:1px solid #ddd;
+    max-width:150px;
+    max-height:150px;
+}
+.div_img_1+div{
+    height:30px;
+    line-height:30px;
+}
+#browse_ul_a>li{
+    clear:both;
+    height:40px;
+}
+#browse_ul_a>li>div,.div_ul_0{
+    float:left;
+    margin-left:10px;
+}
+.div_desc_a0,.div_desc_b0{
+    border-top:1px solid #ddd;
+    overflow: hidden;
+}
+.div_desc_a0{
+    padding:15px 0 15px 15px;
+}
+.div_desc_b0{
+    padding:15px 0 0 15px;
+    height:35px;
+}
+.div_desc_a1_a,.div_desc_b1_a{
+    width:25%;
+    overflow:hidden;
+    float:left;
+}
+.div_desc_a1_b,.div_desc_b1_b{
+    height:60px;
+    width:260px;
+    margin-top:0px;
+    margin-right:10px;
+    overflow: hidden;
+    float:right;
+}
+.checkmore2{
+    font: 12px "Microsoft YaHei";
+    height:40px;
+    line-height: 40px;
+    text-align: right;
+    margin-right:10px;
+}
+
+/*会员中心*/
+.projectContent div{
+    /*border:1px solid #ddd;*/
+}
+.vipState{/*声明*/
+    padding:10px;
+    background: #eee;
+}
+.VS_1_a{
+    width:10%;
+}
+.VS_1_b{
+    width:80%;
+    padding-left:10px;
+}
+.vipContent{/*表单相关*/
+    margin-top:30px;
+}
+.VC_2_form{
+    overflow: hidden;
+    margin:0 0 20px 0;
+    height:30px;
+    line-height: 30px;
+}
+.VC_3_name{
+    width:120px;
+    color:#0C0C0C;
+    text-align: right;
+}
+.VC_3_input{
+    box-sizing: border-box;
+    height:30px;
+    margin:0 0 0 40px;
+    padding-left:10px;
+    width: 400px;
+    font:  13px "Microsoft YaHei";
+    color: #393939;
+    border-radius:3px;
+    border-left: 1px solid #777 !important;
+    border-top: 1px solid #777 !important;
+}
+.xuyue_0{
+    width:100%;
+    height:30px;
+    line-height: 30px;
+    margin:20px 0 20px 0;
+    overflow: hidden;
+}
+.xuyue_0>div{
+    /*float:right;*/
+    margin-left:460px;
+    width:100px;
+    text-align: center;
+    background:#e84343;
+    color:#fff;
+}
+.VC_1_Avator{
+    position:absolute;
+    margin-left:740px;
+    text-align: center;
+}
+.VC_1_Avator>.VC_img{/*头像相关*/
+    position:relative;
+    width:150px;
+    height:150px;
+    box-sizing: border-box;
+    background:url(../img/photo.png) no-repeat;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    border:1px solid #ddd;
+    overflow: hidden;
+}
+.VC_img img{
+    width: 150px;
+    height:150px;
+    margin: 0 auto;
+    text-align:center;
+    z-index:10;
+}
+.VC_img_status{
+    position:absolute;
+    top:130px;
+    bottom: 0;
+    display: block;
+    /*margin-top:110px;*/
+    width: 150px;
+    height: 20px;
+    line-height: 20px;
+    background: rgba(0, 0, 0, 0.32);
+    font: 12px "Microsoft YaHei";
+    color: #ffffff;
+    text-align: center;
+    z-index:11;
+}
+.VC_update{
+    line-height:30px;
+    height:30px;
+    background:#e84343;
+    color:#fff;
+    cursor:pointer;
+    margin-top:20px;
+
+}
+.mobile_check{
+    color:red;
+}
+/*会员续费css*/
+.vip_apply,.vip_apply div{
+    /*border:1px solid #ddd;*/
+}
+.vip_apply{/*会员办理相关*/
+
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    outline: 0;
+    /*-webkit-overflow-scrolling: touch;*/
+    background-color: rgb(0, 0, 0);
+    /*filter: alpha(opacity=60);*/
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display:none;
+}
+.vip_apply_1{
+    background-color:#fff;
+    width:600px;
+    margin:200px  auto;
+    text-align:center;
+}
+.vip_apply_2_level{
+    height:50px;
+    line-height: 50px;
+    background-color:#e84343;
+    color:#fff;
+    font-size:16px;
+}
+.vip_apply_2_cate *{
+    margin: 0px;
+    padding: 0px;
+    border: none;
+    box-sizing: border-box;
+    outline: none;
+}
+.vip_apply_2_cate .box{
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    padding-left:50px;
+}
+.box>input{
+    display: none;
+}
+.box>label{
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    position: relative;
+    line-height: 50px;
+    color: #999;
+}
+.box>label:active{
+    background: #EEEEEE;
+}
+.box>label:after{
+    content: "";/*必须设置*/
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid red;
+    position: absolute;
+    top: 15px;
+    left: 180px;
+    border-radius: 20px;
+}
+
+.box>input:checked+label:after{/*:checked有浏览器限制*/
+    background-color:rgba(255, 0, 0, 1);
+    box-shadow: #FFF 0px 0px 0px 5px inset;
+}
+.vip_apply_2_pay{
+    width:100%;
+    /*height:54px;*/
+    text-align: center;
+}
+.vip_pay{
+    display:inline-block;
+    box-sizing: border-box;
+    width:100px;
+    height:30px;
+    line-height:30px;
+    text_align:center;
+    margin:20px 40px 20px 40px;
+    cursor:pointer;/*小手鼠标*/
+}
+
+/*清除浮动*/
+.clear{
+    clear:both;
+}
+/*分页css*/
+#jl-page{
+    text-align: left!important;
+    margin-left:30px;
+}

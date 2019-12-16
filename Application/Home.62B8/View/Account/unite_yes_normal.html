@@ -1,0 +1,207 @@
+<!-- 前台首页模板文件  -->
+
+<extend name="Layout:layout-user-center"/>
+
+<block name="title">联合登录</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/logo-header.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/register.css">
+</block>
+
+<block name="user-nav">个人用户绑定</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-reg-wrap">
+        <div class="jl-unite-top"></div>
+        <div class="jl-reg-msg">
+            <div class="jl-unite-item">
+                <div class="jl-unite-tit" >
+                    <img src="{$avator}" alt="">
+                </div>
+                <span class="jl-unite-acc jl-unite-no">没有账号，<a href="{:U('Home/Account/create', ['type'=>1])}" class="jl-unite-bind"> 完善账户> </a> </span>
+            </div>
+            <div class="jl-reg-de">
+                <form method="post">
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <label for="jl-reg-name" class="jl-reg-p">用户名</label>
+                            <input id="jl-reg-name" class="jl-reg-text js-next-input" name="user_name" type="text" placeholder="请输入您已注册的用户名">
+                        </div>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-nor-box">
+                        <div class="jl-reg-pi">
+                            <label for="jl-reg-set" class="jl-reg-p">密码</label>
+                            <input id="jl-reg-set" class="jl-reg-text js-next-input js-submit-input" type="password" name="user_pass"  placeholder="请输入密码">
+                        </div>
+                        <div class="jl-reg-nor">
+                            <i class="jl-nor-bg"></i>
+                            <span class="jl-nor-text"></span>
+                        </div>
+                    </div>
+                    <div class="jl-unite-btn">
+                        <input type="button" class="jl-reg-put" id="js-enroll" value="确定">
+                    </div>
+                </form>
+                <div class="jl-reg-switch jl-reg-switch02">
+                    <a href="{:U('Home/Account/create', ['type'=>4])}">
+                        <b class="jl-bg-r jl-unite-no"></b>
+                        <span>企业用户，绑定</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery','jl-modal'], function ($,modal) {
+                require(['Account/js/common_register']);
+                var $user_input = $('#jl-reg-name');
+                var $password = $('#jl-reg-set');
+
+
+                //公用输入提示语句的方法
+                function inputTips(text, type, input) {
+                    var $tips_box = $(input).parent().siblings();
+                    $tips_box.show();
+                    if (type !== 1) {
+                        $tips_box.addClass('jl-reg-nor-active');
+                    }
+                    else {
+                        $tips_box.removeClass('jl-reg-nor-active');
+                    }
+                    $tips_box.children('.jl-nor-text').html(text);
+                }
+
+
+//                //用户名
+//                //var res_nor_user =/^(?!\d)(?!_)(?!.*?_$)(?!.*?\-$)[a-zA-Z0-9_\u4e00-\u9fa5]{4,20}$/;
+//                var nor_user = function (input) {
+//                    if ($(input).val() === '') {
+//                        inputTips('用户名不能为空', 2, input);
+//                        return true;
+//                    }
+//                    else {
+//                        $(input).parent().siblings().hide();
+//                        return false;
+//                    }
+//                };
+//                $user_input.focus(function () {
+//                    inputTips('支持中文、字母、数字、“-”“_”的组合，4-20个字符', 1, this);
+//                    $(this).off('focus');
+//                });
+//                $user_input.keydown(function () {
+//                    inputTips('支持中文、字母、数字、“-”“_”的组合，4-20个字符', 1, this);
+//                });
+//
+//                $user_input.blur(function () {
+//                    var user_name = $user_input.val();
+//                    if( user_name ){
+//                        $.post(
+//                            "{:U('Home/Account/ajaxCheckUserName')}",
+//                            {user_name: user_name},
+//                            function (res) {
+//                                if (res.status === 1000) {
+//                                    $user_input.parent().siblings().hide();
+//                                }else if( res.status == 0 ){
+//                                    inputTips('用户不存在', 2, $user_input);
+//                                }else{
+//                                    inputTips(res.content, 2, $user_input);
+//                                }
+//                            })
+//                    }
+//                });
+//
+//
+//                //设置密码
+//                var reg_password = /^[a-zA-Z]+[\w]{5,20}/;
+//                var norSetPaw = function (input) {
+//                    if ($(input).val() === '') {
+//                        inputTips('密码不能为空', 2, input);
+//                        return true;
+//                    }
+//                    else if (!reg_password.test($(input).val())) {
+//                        inputTips('密码至少6位,字母数字组成,必须以字母开头', 2, input);
+//                        return true
+//                    }
+//                    else {
+//                        $(input).parent().siblings().hide();
+//                        return false;
+//                    }
+//                };
+//                $password.focus(function () {
+//                    inputTips('密码至少6位,字母数字组成,必须以字母开头', 1, this);
+//                    $(this).off('focus');
+//                });
+//                $password.keydown(function () {
+//                    inputTips('密码至少6位,字母数字组成,必须以字母开头', 1, this);
+//                });
+//                $password.blur(function () {
+//                    norSetPaw(this);
+//                });
+
+
+
+                $user_input.blur(function () {
+                    if($user_input.val()===''){
+                        inputTips('用户名不能为空',2,$user_input);
+                    }
+                    else {
+                        $user_input.parent().siblings('.jl-reg-nor').hide();
+                    }
+                });
+
+
+                $password.blur(function () {
+                    if($password.val()===''){
+                        inputTips('密码不能为空',2,$password);
+                    }
+                    else {
+                        $password.parent().siblings('.jl-reg-nor').hide();
+                    }
+                });
+
+
+                //最后一个文本框按回车键后
+
+//                $('.js-submit-input').on('keydown',function (e) {
+//                    if(e.keyCode===13){
+//                        $('#js-enroll').trigger('click');
+//                    }
+//                });
+
+
+                $('#js-enroll').click(function () {
+                    var user = $.trim($user_input.val());
+                    var password = $password.val();
+                    if(user===''&&password===''){
+                        inputTips('用户名不能为空',2,$user_input);
+                        inputTips('密码不能为空',2,$password);
+                    }
+                    else {
+                        var data = {
+                            user_name:user,
+                            user_pass:password
+                        };
+                        $.post("{:U('Home/Account/doCreate',['act'=>'bd'])}",data, function (res) {
+                            if(res.status===0){
+                                location.href='{:U("Home/toSuccess",["url"=>"Home-Default-index","msg"=>"账号绑定成功!","time"=>4])}';
+                            }
+                            else {
+                                inputTips('用户名或密码错误',2,$password);
+                            }
+                        })
+                    }
+                })
+            })
+        })
+    </script>
+</block>

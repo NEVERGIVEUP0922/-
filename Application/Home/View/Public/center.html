@@ -1,0 +1,224 @@
+<div id="jl-center-title">
+    <div class="jl-title-main">
+        <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Hi，你好！{:session('userInfo.nick_name')}</p>
+        <ul class="jl-title-right">
+            <li class="{$isUserIndex?'js-personal':''}">
+                <a href="{:U('Home/User/index')}">
+                    <if condition="$_SESSION['userType'] eq 1">
+                        个人中心<else /> 企业中心
+                    </if>
+                </a><i></i>
+            </li>
+            <li class="{$get['action']==='0'?'js-personal':''}">
+                <a href="{:U('Home/Order/myOrder/action/0')}">待付款（{$noPayNum}）</a><i></i>
+            </li>
+            <li class="{$get['action']==1?'js-personal':''}">
+                <a href="{:U('Home/Order/myOrder/action/1')}">待发货（{$noShipNum}）</a><i></i>
+            </li>
+            <li class="{$get['action']==2?'js-personal':''}">
+                <a href="{:U('Home/Order/myOrder/action/2')}">待收货（{$noDeliveryNum}）</a><i></i>
+            </li>
+            <li class="jl-title-last {$get['action']==3?'js-personal':''}">
+                <a href="{:U('Home/Order/myOrder/action/3')}">待评价（{$noReleaseNum}）</a><i></i>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="jl-center-main" class="jl-cle">
+    <ul class="jl-center-aside">
+        <li>
+            <p><i class="jl-indent"></i>订单中心</p>
+            <ol>
+                <empty name="isMyOrder">
+                    <li>
+                    <else />
+                        <li class="js-cur">
+                </empty>
+                    <a href="{:U('Home/Order/myOrder')}">我的订单</a></li>
+                <empty name="isMyAppraise">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/Order/myAppraise')}">我的评价</a></li>
+                <empty name="isStatement">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/myStatement')}">我的报表</a></li>
+                <empty name="isManage">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/sample/userSampleList')}">样品管理</a></li>
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-payment"></i>账期管理</p>
+            <ol>
+                <empty name="isAccountExplain">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/Order/accountExplain')}">账期说明</a></li>
+
+                <empty name="isAccountCompany">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty>
+                <empty name="Think.session.user_account_status">
+                    <if condition="$_SESSION['userType'] neq 20">
+                        <a href="{:U('Home/Order/accountRequest')}">
+                            账期申请
+                            <?php $type = session('userType') ?>
+                            <if condition="$type eq 1 ">
+                                （个人）
+                                <elseif condition="($type eq 2) OR ($type eq 20)" />
+                                ( 企业 )
+                            </if>
+                        </a>
+                    </if>
+                 <else />
+                    <a href="{:U('Home/Order/accountCompany')}">
+                        账期额度
+                    </a>
+                </empty>
+                </li>
+
+                <empty name="isAccountOrderList">
+                    {$isAccountOrderList}
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty>
+                <a href="{:U('Home/Order/accountOrderList', ['account_true'=>1])}">账期还款订单</a></li>
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-invoice"></i>发票管理</p>
+            <ol>
+                 <if condition="$isInvoiceList eq 1 ">
+                    <li class="js-cur">
+                        <else />
+                    <li>
+                </if><a href="{:U('Home/Order/invoiceList')}">已开发票</a></li>
+                <if condition="$is_invoiceOrders eq 1 ">
+                    <li class="js-cur">
+                        <else />
+                    <li>
+                </if><a href="{:U('Home/Order/invoiceOrders')}">待开发票订单</a></li>
+                <empty name="isSetSpecial">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/Order/setSpecial')}">发票设置</a></li>
+                <!--<empty name="isSetGeneral">-->
+                    <!--<li>-->
+                        <!--<else />-->
+                    <!--<li class="js-cur">-->
+                <!--</empty><a href="{:U('Home/Order/setGeneral')}">增值税普票设置</a></li>-->
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-attention"></i>关注中心</p>
+            <ol>
+                <empty name="isFavorite">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/favorite')}">收藏夹</a></li>
+                <empty name="isHistory">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/history')}">游览历史</a></li>
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-client"></i>客户服务</p>
+            <ol>
+                <empty name="isReport">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/productReportList')}">报备列表</a></li>
+                <empty name="isFeedback">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/feedback')}">意见反馈</a></li>
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-set"></i>设置</p>
+            <ol>
+                <empty name="isInfo">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/info')}">            <if condition="$_SESSION['userType'] eq 1">
+                个人信息<else /> 企业信息
+            </if></a></li>
+                <if condition="$_SESSION['userType'] neq 20">
+
+                        <if condition="$_SESSION['userType'] neq 1">
+                            <empty name="isBypassAccount">
+                                <li>
+                                    <else />
+                                <li class="js-cur">
+                            </empty>
+                            <a href="{:U('Home/User/bypassAccount')}">企业子账号</a></li>
+                            <else/>
+                        </if>
+                            <empty name="isBindPhone">
+                                <li>
+                                    <else />
+                                <li class="js-cur">
+                            </empty>
+                            <a href="{:U('Home/User/bindPhone')}">手机绑定</a></li>
+                    <else />
+                </if>
+                <empty name="isChangePassword">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/changePassword')}">修改密码</a></li>
+                <empty name="isDelivery_address">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/delivery_address')}">收货地址</a></li>
+
+                <empty name="isBindAccount">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/bindAccount')}">账号绑定</a></li>
+                <empty name="isCode">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/Order/codeIndex')}">中奖码兑换</a></li>
+            </ol>
+        </li>
+        <li>
+            <p><i class="jl-set"></i>积分</p>
+            <ol>
+                <!--<empty name="isPoints">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('Home/User/points')}">我的积分</a></li>-->
+                <empty name="isPointsBom">
+                    <li>
+                        <else />
+                    <li class="js-cur">
+                </empty><a href="{:U('/Home/default/points')}">积分报表</a></li>
+            </ol>
+        </li>
+    </ul>
+    <div id="jl-center-right">
+        <block name="main"></block>
+    </div>
+</div>
+<div class="jl-line"></div>

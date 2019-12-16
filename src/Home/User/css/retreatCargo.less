@@ -1,0 +1,592 @@
+@import "../../Public/css/init.less";
+
+.jl-progress-money{
+  display: none;
+}
+
+.jl-brands,.jl-retreat,.jl-retreat-fill{
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.jl-brands{
+  height: 50px;
+  line-height: 50px;
+  overflow: hidden;
+  li{
+    float: left;
+    margin-right: 10px;
+    a{
+      font-size: 13px;
+    }
+  }
+  .jl-last>a{
+    color:@dark-grey;
+  }
+  li:hover{
+    a{
+      color:@color;
+    }
+  }
+}
+
+.jl-retreat,.jl-retreat-fill{
+  border:@border02;
+  color:@dark-grey;
+  margin-bottom: 80px;
+}
+.jl-logistics-left{
+  float: left;
+  width: 898px;
+  padding-left: 20px;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+  border-right:@border02;
+  p{
+    line-height: 24px;
+  }
+  .jl-goods-detail input{
+    color:@dark-grey;
+  }
+  .jl-lh{
+    line-height: 40px;
+  }
+  .jl-retreat-content{
+    padding-bottom: 50px;
+    >li{
+      margin-top: 25px;
+      >p,>img,.jl-goods-detail{
+        float: left;
+      }
+      >p{
+        width: 84px;
+        min-height:40px;
+      }
+      >img{
+        width: 68px;
+        border:@border02;
+        margin-right: 20px;
+      }
+    }
+  }
+}
+.js-return{
+  float: right;
+  color:@green;
+}
+a.js-return:hover{
+  color:@green;
+}
+.jl-retreat-left,.jl-return-left{
+  float: left;
+  width: 898px;
+  padding-left: 20px;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+  border-right:@border02;
+  p{
+    line-height: 24px;
+  }
+  .jl-lh{
+    line-height: 40px;
+  }
+  .jl-retreat-content>li{
+    margin-top: 25px;
+    overflow: hidden;
+    >p,>img,.jl-goods-detail{
+      float: left;
+    }
+    >p{
+      width: 84px;
+      min-height:40px;
+    }
+    >img{
+      width: 68px;
+      border:@border02;
+      margin-right: 20px;
+    }
+  }
+}
+.jl-goods-detail{
+  position: relative;
+  float: left;
+  //margin-left: 20px;
+  p{
+    margin-bottom: 15px;
+    cursor: pointer;
+  }
+  span{
+    color:@medium-grey;
+    display: block;
+    margin-top: -10px;
+  }
+  s{
+    color:@medium-grey;
+    margin-top: 10px;
+    display: block;
+    font-size: 12px;
+    a{
+      color:@green;
+    }
+  }
+  b{
+    margin-right: 10px;
+  }
+  input{
+    width: 253px;
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid @grey;
+    color:@color;
+    padding-left: 20px;
+    box-sizing: border-box;
+  }
+  textarea{
+    border: 1px solid @grey;
+    width: 658px;
+    height: 148px;
+    padding: 15px;
+    box-sizing: border-box;
+  }
+  .jl-return-cargo{
+    margin-bottom: 0;
+  }
+  .js-money{
+    padding-left: 35px;
+  }
+}
+.js-return-money{
+  .jl-false-note{
+    right: 78px;
+  }
+}
+.js-return-detail{
+  .jl-false-note{
+    vertical-align: top;
+    right: -12px;
+    top: 0;
+  }
+  .jl-mandatory{
+    vertical-align: top;
+    margin-left: 15px;
+    top: 3px;
+  }
+}
+
+.js-prompting{
+  .js-false{
+    position: relative;
+    .jl-false-note{
+      position: absolute;
+      right: 58px;
+      top: 12px;
+    }
+  }
+  .jl-company{
+    .js-false{
+      position: relative;
+      .jl-select{
+        right: 17px;
+      }
+      .jl-false-note,.jl-mandatory{
+        position: absolute;
+        right: -30px;
+        top: 12px;
+      }
+      .jl-mandatory{
+        top: 15px;
+        right: -60px;
+      }
+    }
+  }
+}
+
+//物流选择
+.jl-logistics-select{
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 39px;
+  z-index: 99999;
+  border:@border06;
+  width: 253px;
+  box-sizing: border-box;
+  background: #fff;
+  max-height: 400px;
+  overflow: auto;
+  li{
+    padding-left: 20px;
+    height: 27px;
+    line-height: 27px;
+    cursor: pointer;
+  }
+  li:hover{
+    background: @color;
+    color: #fff;
+  }
+}
+
+.jl-upload{
+  float: left;
+  .jl-clear{
+    padding-top: 10px;
+  }
+  img{
+    width: 190px!important;
+  }
+}
+.jl-protocol{
+  width: 190px;
+  height: 100px;
+  margin-right: 10px;
+  float: left;
+  overflow: hidden;
+  .jl-mandatory{
+    vertical-align: top;
+    margin-top: 15px;
+    margin-left: 15px;
+  }
+
+  p{
+    text-align: center;
+    width: 190px;
+    font-size:  12px;
+    a{
+      display: block;
+      width: 190px;
+      text-align: center;
+      margin-top: 5px;
+      color:@green;
+      font-size: 12px;
+    }
+  }
+}
+
+.jl-protocol-photo{
+  text-align: center;
+  margin-right: 20px;
+  border:@border02;
+  background: @bg-color;
+  float: left;
+  overflow: hidden;
+  position: relative;
+  img{
+    margin-top: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.15);
+    width: 70%;
+  }
+  .js-upload-btn .webuploader-pick{
+    background: white;
+    padding: 0;
+  }
+  .jl-remove{
+    display: none;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 14px;
+    height: 14px;
+    background: url("../../Public/img/sprite.png") no-repeat -128px -114px;
+  }
+}
+.jl-protocol-photo:hover{
+  .jl-remove{
+    display: block;
+  }
+}
+.jl-clear{
+  .font12(@medium-grey);
+}
+
+//上传照片
+.a-upload {
+  width: 190px;
+  height: 100px;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+.a-upload  input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 190px;
+  height: 100px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  cursor: pointer
+}
+
+
+
+.jl-imgs{
+  float: left;
+}
+
+.jl-mandatory{
+  margin-left: 16px;
+}
+.jl-location{
+  vertical-align: top;
+  margin-top: 5px;
+}
+.jl-submit{
+  cursor: pointer;
+  width: 180px;
+  height: 40px;
+  background: @color;
+  border: none;
+  .font18(#fff);
+}
+.jl-logistics-state{
+  //display: none;
+}
+
+.jl-btns{
+  margin-top: 40px!important;
+}
+
+.jl-retreat-right{
+  float: right;
+  width: 301px;
+  padding-left: 25px;
+  padding-right: 30px;
+  box-sizing: border-box;
+  color:@medium-grey;
+  h4{
+    height: 58px;
+    .font16(@dark-grey);
+    line-height: 58px;
+    border-bottom:@border02;
+  }
+}
+.jl-order-top{
+  margin-top: 20px;
+  padding-bottom: 25px;
+  //border-bottom:@border02;
+  img,.jl-order-detail{
+    float: left;
+  }
+  img{
+    width: 68px;
+    border:@border02;
+  }
+}
+.jl-order-detail{
+  margin-left: 20px;
+  h5{
+    color:@dark-grey;
+    display: block;
+    margin-bottom: 10px;
+  }
+  p{
+    height: 24px;
+  }
+}
+.jl-order-center,.jl-order-bottom{
+  border-top:@border02;
+  padding: 20px 0;
+  color:@dark-grey;
+  p{
+    height: 24px;
+  }
+  b{
+    color:@medium-grey;
+    display: inline-block;
+    width: 70px;
+  }
+}
+
+//玖隆处理退货申请
+.jl-return-left,.jl-logistics-left{
+  padding-right: 25px;
+  padding-top: 20px;
+  h3{
+    .font18(@dark-grey);
+    height: 58px;
+    line-height: 58px;
+    font-weight: bold;
+    i{
+      display: inline-block;
+      width: 15px;
+      height: 20px;
+      background: url("../../Public/img/sprite.png") no-repeat 0 -486px;
+      margin-right: 10px;
+      position: relative;
+      top: 4px;
+    }
+  }
+  p{
+    color:@dark-grey;
+    a{
+      color:@green;
+    }
+  }
+  .jl-line{
+    margin-top: 30px;
+  }
+  .jl-last{
+    border-bottom:none;
+  }
+}
+.jl-head,.jl-negotiate-content{
+  float: left;
+}
+.jl-head{
+  width: 70px;
+  height: 70px;
+  border-radius:50%;
+  border:@border02;
+  overflow: hidden;
+  img{
+    width: 70px;
+    border-radius:50%;
+  }
+}
+.jl-amend,.jl-fill-number{
+  margin-top: 40px;
+  margin-bottom: 20px;
+  .font18(#fff);
+  width: 180px;
+  height: 40px;
+  background: @color;
+  border: none;
+  a:hover{
+    color:#fff !important;
+  }
+  a{
+    display: block;
+    color:#fff;
+  }
+}
+
+.jl-negotiate{
+  //margin-top: 20px;
+  padding: 20px 0;
+  border-bottom:@border02;
+}
+.jl-retreat .jl-negotiate-content,.jl-retreat-fill .jl-negotiate-content{
+  width: 750px;
+  margin-left: 30px;
+  >li{
+    margin-top: 0;
+    height: 25px;
+    span{
+      float: right;
+      color:@medium-grey;
+    }
+  }
+}
+
+.jl-retreat-fill,.jl-return-left{
+  .jl-news{
+    padding-top: 30px;
+    li{
+      margin-top: 0;
+      overflow: hidden;
+      p{
+        min-height: 30px;
+        float: left;
+        //width: 84px;
+      }
+    }
+    .jl-cle{
+      margin-bottom: 20px;
+    }
+  }
+  p{
+    line-height:1.5;
+  }
+  .jl-right{
+    width: 700px;
+    //background: #ddd;
+    float: left;
+    margin-left: 70px;
+    >ol{
+      float: left;
+      width: 555px;
+      margin-left: 10px;
+      >li{
+        line-height: 20px;
+        margin-bottom: 10px;
+      }
+    }
+  }
+  .jl-first{
+    margin-left: 0;
+  }
+  .jl-date{
+    width:auto;
+    float: left;
+  }
+
+}
+.return-address{
+  p{
+    color:@dark-grey;
+    span{
+      margin-left: 24px;
+    }
+  }
+  .jl-undo{
+    color:@medium-grey;
+  }
+}
+
+
+
+
+.jl-retreat-fill{
+  .jl-return-left{
+    p{
+      color:@dark-grey;
+    }
+    input{
+      color:@dark-grey ;
+    }
+  }
+}
+.jl-company{
+  .jl-goods-detail{
+    position: relative;
+  }
+  .jl-select{
+    position: absolute;
+    top: 2px;
+    right: 55px;
+    width: 9px;
+    height: 14px;
+    background: url("../../Public/img/sprite.png") no-repeat -35px -180px;
+  }
+}
+.jl-money{
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  color:@color;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

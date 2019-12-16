@@ -1,0 +1,226 @@
+<extend name="Layout:layout-tab" />
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+	<link href="/Public/Common/module/layui/2.2.4/css/layui.css?v=118" rel="stylesheet">
+</block>
+<block name="content">
+	<div class="table-container">
+		<blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb" style="visibility: visible;">
+                <a class="jl-main-title" href="javascript:">广告图管理</a>
+            </span>
+		</blockquote>
+		<blockquote class="layui-elem-quote list_search">
+			<div class="layui-inline">
+				<a class="layui-btn layui-btn-normal add_btn" style="background:#1AA094">添加</a>
+			</div>
+			<!--<div class="layui-inline">
+				<a class="layui-btn layui-btn-danger batchDel">批量删除</a>
+			</div>-->
+		</blockquote>
+		<table class="data-table" lay-filter="data-table">
+			<script type="text/html" id="data-table-handle-tpl">
+				<div class="data-table-handle-box" data-id="{{ d.id }}">
+					<span class="action-upload-img" lay-event="edit">修改</span>
+					 <span lay-event="del">删除</span>
+				</div>
+			</script>
+		</table>
+		<div id="page"></div>
+	</div>
+</block>
+<block name="js">
+	<script>
+        layui.use(['table','layer','jlTool', 'form','laypage'], function(){
+            var table = layui.table, layer = layui.layer, form=layui.form;
+			var laypage = layui.laypage;
+			var jlTool = layui.jlTool;
+            //列表展示
+			var data = {$photoAdvert|json_encode};
+			var request = {$request|json_encode};
+			console.log(data,request);
+            newTable(data,laypage,request);
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/advert/photoAdevert?'+query
+            };
+
+            //添加
+	        $(".add_btn").click(function(){
+                openPopout();
+                });
+			var openPopout =function(id){
+			    var contents="/admin/advert/add";
+			    if(id){contents="/admin/advert/add?id="+id};
+                var index = layer.open({
+                    title : id?"修改图片":"添加图片",
+                    type : 2,
+                    content :contents ,
+                    area: ['60%', '60%'],
+                    success : function(layero, index){
+                        setTimeout(function(){
+                            layer.tips('点击此处返回列表页', '.layui-layer-setwin .layui-layer-close', {
+                                tips: 3
+                            });
+                        },100)
+                    }
+                });
+			}
+            //删除
+          /*  $('body').on('click', '.del', function(){
+                var t = $(this),id = t.attr('data-id');
+					var open = layer.open({
+						title:'提醒',
+						shade: 0.3,
+                        fixed: true,
+						content:'确定要删除吗?',
+						btn:['确定','取消'],
+						yes:function(){
+						    var index = layer.load();
+						    $.ajax({
+							    url: '{:U("Admin/Banner/delete")}',
+							    type: 'POST',
+							    data : {id:id},
+							    dataType: 'json',
+							    success: function(res){
+							        if( res.status == 0 ){
+							            layer.close(index);
+                                        layer.close(open);
+                                        t.parent().parent().remove();
+							            layer.msg('删除成功',{icon:6,time:2000});
+							        }
+							    }
+						    });
+
+						}
+					});
+            });*/
+
+            //改变状态
+	        form.on("switch(status)", function(){
+               var check = this.checked ? 'true' : 'false',
+	               id = $(this).attr('data-id'),
+	               value = check == 'true'?0:1;
+                   var index = layer.load();
+                   $.ajax({
+                       url: '{:U("Admin/Banner/changeStatus")}',
+                       type: 'POST',
+                       data : {id:id,status:value},
+                       dataType: 'json',
+                       success: function(res){
+                           if( res.status == 0 ){
+                               layer.close(index);
+                               layer.msg('修改成功',{icon:6,time:2000});
+                               this.checked = check;
+                           }else{
+                               layer.close(index);
+                               layer.msg('修改失败',{icon:6,time:2000});
+                           }
+                       }
+                   });
+	        });
+
+            function newTable(data,laypage,request)
+            {
+                var dataCols=[
+                    {field: 'id', title: 'ID',fixed:"left",align:'center',width:80},
+                    {field: 'sort', title: '排序',align:'center',width:80}
+                    ,{field: 'photo_url',width: 200,align:'center',title: 'banner图片',templet: function(d){
+                            return  '<div style="width:200px;text-align:center;vertical-align: middle;display: table-cell;"><img class="data-table-img" style="width:30px;cursor: pointer" src="'+d.photo_url+'"></div>'
+                        }},
+                    {field: 'jump_url',align:'center', title: '跳转地址'},
+                    {field: 'status', title: '显示',width:80,align:'center',templet:function(d){
+                        	return d.status == 1 ?"是":"否";
+						}},
+					{field: 'position', title: '图片位置',width:120,align:'center',templet:function(d){
+                            return d.position == 1 ?"轮播图":"顶部";
+                        }}
+                    ,{field: 'update_time',align:'center', title: '更新时间'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right', toolbar: '#data-table-handle-tpl'}
+                ];
+                table.render({
+                    elem: '.data-table',
+                    data: data,
+                    page: false,
+                    limit: data.pageSize || 10,
+                    cellMinWidth: 100,
+                    height:'full-200',
+                    cols: [dataCols],
+                    done:function(){
+						$(".data-table-img").on("click",function(){
+						    var src=$(this).attr("src");
+						    layer.open({
+								title:"图片预览",
+								content:"<div style='margin:0 auto;width:80%;'><img  style='width:100%' src='"+src+"'/></div>",
+								area:["40%"],
+								btn:["确定"],
+								success:function(){
+								    $(".layui-layer-btn").css("text-align","center");
+								},
+								yes:function(){
+								    layer.closeAll();
+								}
+							});
+						})
+                    }
+                });
+                //form.render();
+                //分页初始化
+                laypage.render({
+                    elem: 'page',
+                    limit: request.pageSize || 10,
+                    count: request.count || 10,
+                    curr: request.page || 1,
+                    layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                    jump: function (obj, first) {
+                        if (!first) {
+                            queryTable($.extend(request,{
+                                pageSize:obj.limit,
+                                page:String(obj.limit)===String(request.pageSize) ? obj.curr:1
+                            }));
+                        }
+                    }
+                });
+                table.on('tool(data-table)', function(obj){
+                    var data = obj.data;
+                    var event =obj.event;
+					if(event =="edit"){
+					    //编辑
+                        openPopout(data.id);
+					}else if(event =="del"){
+					    //删去
+                        var t = $(this),id = t.attr('data-id');
+                        var open = layer.open({
+                            title:'提醒',
+                            shade: 0.3,
+                            fixed: true,
+                            content:'确定要删除吗?',
+                            btn:['确定','取消'],
+                            yes:function(){
+                                var index = layer.load();
+                                $.ajax({
+                                    url: 'delPhoto',
+                                    type: 'POST',
+                                    data : {id:data.id},
+                                    dataType: 'json',
+                                    success: function(res){
+                                        if( res.status == 0 ){
+                                            layer.close(index);
+                                            layer.close(open);
+                                            t.parent().parent().remove();
+                                            layer.msg('删除成功',{icon:6,time:2000});
+                                            location.reload();
+                                        }else{
+                                            layer.msg(res.msg,{icon:2,time:2000});
+										}
+                                    }
+                                });
+
+                            }
+                        });
+					}
+				})
+            }
+        });
+	</script>
+</block>

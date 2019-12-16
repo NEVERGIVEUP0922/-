@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/Public/Common/module/jquery/1.11.3/jquery.min.js"></script>
+</head>
+<body>
+    <script>
+        $.ajax({
+            url:"{:U('/Admin/Msg/pullMsg')}",
+            type:'get',
+            dataType:"json",
+            success:function (data) {
+                //console.log( data );
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">我的评价</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/myAppraise.css">
+</block>
+
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <dl class="jl-my-appraise">
+        <dt>
+            <ul class="jl-appraise-title">
+                <li class="jl-goods">商品</li>
+                <li class="jl-name">名称</li>
+                <li class="jl-appraise">评价</li>
+                <li class="jl-comment">评论</li>
+                <li class="jl-critics">评价人</li>
+                <li class="jl-operation">操作</li>
+            </ul>
+        </dt>
+
+        <notempty name="data">
+            <volist name="data" id="d">
+                <dd data-id="{$d.id}">
+                    <ul class="jl-appraise-content jl-cle">
+                        <li class="jl-goods">
+                            <notempty name="d.cover_image">
+                                <img src="{$d.cover_image}" alt="{$d.name}">
+                                <else />
+                                <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                            </notempty>
+                        </li>
+                        <li class="jl-name">{$d.p_sign}</li>
+                        <li class="jl-appraise">
+                            <for start="0" end="$d['star']">
+                                <i class="jl-star jl-cur"></i>
+                            </for>
+                            <for start="0" end="5-$d['star']">
+                                <i class="jl-star"></i>
+                            </for>
+                        </li>
+                        <li class="jl-comment">
+                            <empty name="d.content">
+                                <p>评价方未及时做出评价，系统默认好评！</p>
+                                <else />
+                                {$d.content}
+                            </empty>
+                            <p class="jl-time">[{$d.create_at}]</p>
+                        </li>
+                        <li class="jl-critics">{:session('userInfo.nick_name')}</li>
+                        <li class="jl-operation">
+                            <i class="jl-delete"></i>
+                        </li>
+                    </ul>
+                </dd>
+            </volist>
+            <else />
+            <div class="jl-empty">
+                <img src="__PUBLIC__/Home/Public/img/empty.png" alt="">
+                <h4>亲爱的客官，空空如也啊！</h4>
+            </div>
+        </notempty>
+
+
+    </dl>
+
+    {$page}
+    <!--<div id="jl-page" class="jl-cle">-->
+        <!--<ul>-->
+            <!--<li class="jl-pre jl-switch"><a href="#">&lt;上一页</a></li>-->
+            <!--<li class="jl-cur"><a href="#">1</a></li>-->
+            <!--<li><a href="#">2</a></li>-->
+            <!--<li><a href="#">3</a></li>-->
+            <!--<li><a href="#">4</a></li>-->
+            <!--<li class="jl-more">···</li>-->
+            <!--<li class="jl-next"><a href="#">上一页&gt;</a></li>-->
+        <!--</ul>-->
+        <!--<div class="jl-jump">-->
+            <!--<span>共<b>{$p_num}</b>页</span>-->
+            <!--到第-->
+            <!--<input type="text" value="1">-->
+            <!--页-->
+            <!--<button>确定</button>-->
+        <!--</div>-->
+    <!--</div>-->
+
+</block>
+<block name="js">
+    <script>
+        require(['jquery'], function($) {
+            require(['jl-modal'],function (modal) {
+                modal.option({
+                    left:-77
+                });
+                //删除
+                $('.jl-delete').on('click',function () {
+                    var $that=$(this);
+                    var $dd=$that.parent().parent().parent();
+                    var pid =$dd.attr("data-id");
+                    modal.confirm({
+                        title:'删除评价',
+                        brief:'您确定要删除评价吗？',
+                        top:100,
+                        confirm:function () {
+                            $.post("{:U('Home/Order/delComment')}",{id:pid}, function (res) {
+                                if(res.status===0){
+                                    $dd.remove();
+                                    if($('.jl-my-appraise').children('dd').length===0){
+                                        window.location.reload()
+                                    }
+                                }else{
+                                    modal.confirm({
+                                        title:'系统繁忙',
+                                        brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                        top:100
+                                    })
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+
+        })
+    </script>
+</block>

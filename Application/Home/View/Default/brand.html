@@ -1,0 +1,89 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout" />
+
+<block name="title">品牌目录</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/brand.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+
+    <!-- banner -->
+    <!--<div id="jl-brand-banner">
+        <img src="__PUBLIC__/Home/Index/img/banner160.jpg" alt="">
+    </div>-->
+    <style>
+        #jl-brand-main img{
+            min-height:118px;
+            height:118px;
+            vertical-align: top;
+        }
+    </style>
+    <!-- 主要内容 -->
+    <div id="jl-brand-main">
+        <h4 class="js-hot">热门品牌</h4>
+        <ul class="jl-brands">
+            <volist name="hot" id="vo">
+                <li data-id="{$vo.id}">
+                    <a href="javascript:;">
+                        <notempty name="vo.logo">
+                            <img src="{$vo.logo}" alt="{$vo.brand_name}"  width="198" >
+                            <else />
+                            <img src="/Uploads/Brand/20170908/default.png" alt="{$vo.brand_name}"  width="198" >
+                        </notempty>
+                        <p>{$vo.brand_name}</p>
+                    </a>
+                </li>
+            </volist>
+        </ul>
+
+        <h4>品牌目录</h4>
+        <volist name="data" id="vo">
+            <p>{$key}</p>
+            <ul class="jl-brands">
+                <volist name="vo" id="c">
+                    <li data-id="{$c.id}">
+                        <a href="javascript:;">
+                            <notempty name="c.logo">
+                                <img src="{$c.logo}" alt="{$c.brand_name}"  width="198" >
+                                <else />
+                                <img src="/Uploads/Brand/20170908/default.png" alt="{$c.brand_name}"  width="198" >
+                            </notempty>
+                            <p>{$c.brand_name}</p>
+                        </a>
+                    </li>
+                </volist>
+            </ul>
+        </volist>
+    </div>
+
+    <div class="jl-line"></div>
+</block>
+
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function(){
+            require(['jquery'],function($){
+
+                //搜索
+                var $brand_id=$('#js-submit input[name=brand_id]');
+                var $brand_type=$('#js-submit input[name=search_type]');
+                var $brand_search=$('#js-submit input[name=search]');
+                $('.jl-brands li').on('click',function(){
+                    var $input=$(this).attr('data-id');
+                    $brand_type.val("hot_brand");
+                    $brand_id.val($input);
+                    $brand_search.val($(this).find("p").text());
+                    $('#js-submit').trigger('submit');
+                });
+
+            });
+
+        });
+    </script>
+
+</block>

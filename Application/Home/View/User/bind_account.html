@@ -1,0 +1,158 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">账号绑定</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/settingUser.css">
+</block>
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+<block name="main">
+    <div class="jl-per-information">
+        <div class="jl-acc-bg jl-cle">
+            <div class="jl-acc-left">
+                <div class="jl-acc-qq"></div>
+                <span class="jl-acc-text">绑定QQ账号</span>
+                <span class="jl-acc-text jl-acc-b">
+                    <if condition="$qq eq 1">
+                        已绑定
+                        <else />
+                        未绑定
+                    </if>
+                </span>
+            </div>
+            <div class="jl-acc-right">
+                <span class="jl-acc-bind">
+                   <if condition="$qq eq 1">
+                        解绑
+                        <else />
+                        绑定
+                    </if>
+                </span>
+            </div>
+            <if condition="$qq eq 1">
+                <div class="jl-acc-item02 jl-acc-none jl-clear">
+                    <p class="jl-acc-detail">你正在使用的玖隆芯城账号关联QQ账号</p>
+                    <p class="jl-acc-detail">该账号下关联QQ账号将全部解绑</p>
+                    <button class="jl-acc-relieve"><a href="{:U('Home/User/cancleBind', ['type'=>'qq'])}">解除绑定</a></button>
+                </div>
+                <else />
+                <div class="jl-acc-item03 jl-acc-none jl-clear">
+                    <p class="jl-acc-binding">绑定后，可以使用QQ账号登录玖隆芯城购物</p>
+                    <button class="jl-acc-relieve"><a href="{:U('Home/Account/bind', ['type'=>'qq'])}">立即绑定</a></button>
+                </div>
+            </if>
+        </div>
+        <div class="jl-acc-bg jl-cle">
+            <div class="jl-acc-left">
+                <div class="jl-acc-xin"></div>
+                <span class="jl-acc-text">绑定微信账号</span>
+                <span class="jl-acc-text jl-acc-b">
+                  <if condition="$wechat eq 1">
+                        已绑定
+                        <else />
+                        未绑定
+                    </if>
+                    </span>
+            </div>
+            <div class="jl-acc-right">
+                <span class="jl-acc-bind">
+                <if condition="$wechat eq 1">
+                        解绑
+                        <else />
+                        绑定
+                    </if>
+                </span>
+            </div>
+            {//  jl-acc-none }
+            <if condition="$wechat eq 1">
+                    <div class="jl-acc-item02 jl-acc-none jl-clear">
+                        <p class="jl-acc-detail">你正在使用的玖隆芯城账号关联1个微信账号</p>
+                        <p class="jl-acc-detail">该账号下关联微信账号将全部解绑</p>
+                        <button class="jl-acc-relieve"><a href="{:U('Home/User/cancleBind', ['type'=>'wechat'])}">解除绑定</a></button>
+                    </div>
+                <else />
+                <div class="jl-acc-item03 jl-acc-none jl-clear">
+                    <p class="jl-acc-binding">绑定后，可以使用微信账号登录玖隆芯城购物</p>
+                    <button class="jl-acc-relieve"><a href="{:U('Home/Account/Bind', ['type'=>'wechat'])}">立即绑定</a></button>
+                </div>
+            </if>
+        </div>
+        <div class="jl-acc-bg jl-cle">
+            <div class="jl-acc-left">
+                <div class="jl-acc-bo"></div>
+                <span class="jl-acc-text">绑定微博账号</span>
+                <span class="jl-acc-text jl-acc-b" >
+                   <if condition="$sina eq 1">
+                        已绑定
+                        <else />
+                        未绑定
+                    </if>
+                </span>
+            </div>
+            <div class="jl-acc-right">
+                <span class="jl-acc-bind">
+                   <if condition="$sina eq 1">
+                        解绑
+                        <else />
+                        绑定
+                    </if>
+
+                </span>
+            </div>
+            <if condition="$sina eq 1">
+                <div class="jl-acc-item02 jl-acc-none jl-clear">
+                    <p class="jl-acc-detail">你正在使用的玖隆芯城账号新浪微博账号</p>
+                    <p class="jl-acc-detail">该账号下关联微博账号将全部解绑</p>
+                    <button class="jl-acc-relieve"><a href="{:U('Home/User/cancleBind', ['type'=>'sina'])}">解除绑定</a></button>
+                </div>
+                <else />
+                    <div class="jl-acc-item03 jl-acc-none jl-clear">
+                        <p class="jl-acc-binding">绑定后，可以使用微博账号登录玖隆芯城购物</p>
+                        <button class="jl-acc-relieve"><a href="{:U('Home/Account/Bind', ['type'=>'sina'])}">立即绑定</a></button>
+                    </div>
+            </if>
+        </div>
+    </div>
+</block>
+
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery','jl-modal'], function ($,modal) {
+                modal.option({
+                    left:-77
+                });
+                var success = '{$success}',msg = '{$msg}';
+                if( success == 1 || success == 2 ){
+                    modal.confirm({
+                        title: msg,
+                        confirm:function () {
+                            location.href="{:U('Home/User/bindAccount')}";
+                        }
+                    });
+                }
+
+                $('.jl-acc-bind').each(function () {
+                    var $bind_content = $(this).parent().siblings().last();
+                    $(this).click(function () {
+                        if($bind_content.hasClass('jl-acc-none')){
+                            $bind_content.removeClass('jl-acc-none');
+                        }
+                        else {
+                            $bind_content.addClass('jl-acc-none');
+                        }
+                    })
+                })
+            });
+        })
+    </script>
+</block>

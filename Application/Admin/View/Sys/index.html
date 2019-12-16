@@ -1,0 +1,277 @@
+<extend name="Layout:layout"/>
+<block name="title">后台首页</block>
+<block name="content">
+    <div class="wrop" style="width: 100%">
+        <div style="padding:10px 20px;"><span class="trace_user" style="padding:10px 20px;display:inline-block;background-color:#1AA094;color:#fff;border-radius:2px;cursor:pointer">行为轨迹图</span></div>
+        <div id="thirtyMin" style="width: 48%;height:400px;display: inline-block"></div>
+        <div id="currMon" style="width: 48%;height:400px;display: inline-block"></div>
+        <div id="sumReffer" style="width:20%;height:200px;display: inline-block"></div>
+    </div>
+    <table>
+    </table>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/echarts/4.0.4/echarts.min.js"></script>
+    <script src="__PUBLIC__/Common/module/echarts/4.0.4/uba.js"></script>
+    <script type="text/javascript">
+        //行为轨迹图
+        layui.use(['jlTool'],function(){
+            var jlTool=layui.jlTool;
+            var trace_user=document.getElementsByClassName('trace_user')[0];
+            trace_user.onclick=function(){
+                jlTool.sendIframeMsg('go', {
+                    title: '行为轨迹',
+                    url: '/Admin/Sys/useTrace',
+                    icon: ''
+                });
+            }
+        });
+        // 基于准备好的dom，初始化echarts实例
+        var thirtyMinChart = echarts.init(document.getElementById('thirtyMin'), 'uba');
+        var et = 60;
+        //折线 柱状图公共初始化配置
+        var baseOpt = {
+            title: {
+                left: 'center',
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    },
+                }
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            legend: {
+                top: '5px',
+                right: '10%',
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                axisLabel: {
+                    interval: 1,
+                },
+                splitLine: {
+                    show: false
+                },
+                data: [],
+            },
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+        };
+        // 指定图表的配置项和数据
+
+        //最近30分钟图表
+        thirtyMinChart.setOption(baseOpt);
+        getThirtyMinAjaxData();
+        //获取最近30分钟的分钟时间列表
+        function getLastThirtyMinTimeList() {
+            var list = [];
+            var e_d = new Date((+new Date()) - (2 * 60 * 1000));
+            var s_d = new Date((+new Date()) - (32 * 60 * 1000));
+            while ((e_d.getTime() - s_d.getTime()) > 0) {
+                var s_h = s_d.getHours().toString().length == 1 ? "0" + s_d.getHours().toString() : s_d.getHours().toString();
+                var s_m = s_d.getMinutes().toString().length == 1 ? "0" + s_d.getMinutes().toString() : s_d.getMinutes().toString();
+                list.push(s_h + ':' + s_m);
+                s_d = new Date(s_d.getTime() + (1 * 60 * 1000));
+            }
+            return list;
+        }
+        //自动更新数据
+        function autoUpdate() {
+            var iet = et;
+            var timer = setInterval(function () {
+
+                thirtyMinChart.setOption({
+                    title: {
+                        subtext: iet + '秒之后更新数据'
+                    },
+                });
+                if (iet === 0) {
+                    clearInterval(timer);
+                    getThirtyMinAjaxData();
+                }
+                iet--;
+            }, 1000);
+        }
+
+        function getThirtyMinAjaxData() {
+            thirtyMinChart.showLoading();
+            var d = getLastThirtyMinTimeList();
+            var s_t = d[0];
+            var e_t = d[d.length - 1];
+            $.ajax({
+                url: "{:U('/Uba/Echarts/getLastThirtyMinData')}",
+                type: 'get',
+                data: {startTime: s_t, endTime: e_t, type: 'all'},
+                success: function (res) {
+                    thirtyMinChart.hideLoading();
+                    if (res.error === 0) {
+                        thirtyMinChart.setOption({
+                            title: {
+                                text: '最近30分钟访问情况',
+                                subtext: et + '秒之后更新数据'
+                            },
+                            legend: {
+                                data: ['浏览量(PV)', '访客数(UV)', 'IP数(IP)'],
+                            },
+                            xAxis: {
+                                data: d
+                            },
+                            series: [{
+                                name: '浏览量(PV)',
+                                type: 'line',
+                                areaStyle: {
+                                    opacity: 0.3
+                                },
+                                markPoint: {
+                                    data: [
+                                        {type: 'max', name: '最大值'},
+                                        {type: 'min', name: '最小值'}
+                                    ]
+                                },
+                                legendHoverLink: true,
+                                data: res.data.pv
+                            }, {
+                                name: '访客数(UV)',
+                                type: 'line',
+                                areaStyle: {
+                                    opacity: 0.3
+                                },
+                                legendHoverLink: true,
+                                data: res.data.uv
+                            }, {
+                                name: 'IP数(IP)',
+                                type: 'line',
+                                data: res.data.ip
+                            }]
+                        });
+
+                        autoUpdate();
+                    }
+                }
+            });
+        }
+
+        //本月访问统计
+        var currMonChart = echarts.init(document.getElementById('currMon'), 'uba');
+        currMonChart.setOption(baseOpt);
+        getCurrMonAjaxData();
+        function getCurrMonAjaxData() {
+            currMonChart.showLoading();
+            $.ajax({
+                url: "{:U('/Uba/Echarts/getCurrMonthData')}",
+                type: 'get',
+                success: function (res) {
+                    currMonChart.hideLoading();
+                    if (res.error === 0) {
+                        console.log(res.data.timeList);
+                        currMonChart.setOption({
+                            title: {
+                                text: '本月访问详细',
+                            },
+                            xAxis: {
+                                 boundaryGap: true,
+                                axisLabel: {
+                                    interval: 1,
+                                },
+                                splitLine: {
+                                    show: true
+                                },
+                                data: res.data.timeList
+                            },
+                            legend: {
+                                data: ['浏览量(PV)', '访客数(UV)', 'IP数(IP)'],
+                            },
+                            series: [{
+                                name: '浏览量(PV)',
+                                type: 'line',
+                                areaStyle: {
+                                    opacity: 0.3
+                                },
+                                legendHoverLink: true,
+                                data: res.data.pv
+                            }, {
+                                name: '访客数(UV)',
+                                type: 'line',
+                                areaStyle: {
+                                    opacity: 0.3
+                                },
+                                legendHoverLink: true,
+                                data: res.data.uv
+                            }, {
+                                name: 'IP数(IP)',
+                                type: 'bar',
+                                data: res.data.ip
+                            }]
+                        });
+                    }
+                }
+            });
+        }
+
+        //用户访问来源统计
+        var sumRefferChat = echarts.init(document.getElementById('sumReffer'), 'uba');
+        var Coption = {
+            title: {
+                text: '用户访问来源',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                top: '5px',
+                right: '5%',
+            },
+        };
+        sumRefferChat.setOption(Coption);
+        getSumRefferAjaxData();
+        function getSumRefferAjaxData() {
+            sumRefferChat.showLoading();
+            $.ajax({
+                url: "{:U('/Uba/Echarts/getSumRefferData')}",
+                type: 'get',
+                success: function (res) {
+                    sumRefferChat.hideLoading();
+                    if (res.error === 0) {
+                        sumRefferChat.setOption({
+                            lenged: {
+                                data: res.data.xList
+                            },
+                            series: [
+                                {
+                                    name: '访问来源',
+                                    type: 'pie',
+                                    radius: '55%',
+                                    center: ['50%', '60%'],
+                                    data: res.data.data,
+                                    itemStyle: {
+                                        emphasis: {
+                                            shadowBlur: 10,
+                                            shadowOffsetX: 0,
+                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                        }
+                                    },
+                                }
+                            ]
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+</block>

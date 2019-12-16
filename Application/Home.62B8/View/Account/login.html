@@ -1,0 +1,260 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-user-center" />
+<block name="title">登录</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/logo-header.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/login-message.css">
+</block>
+<block name="user-nav">欢迎登录</block>
+<!-- 主要内容 -->
+<block name="main">
+    <!--loginWrap-->
+    <div class="jl-login-wrap" style="background-color:#091C3D">
+        <div class="jl-login-item">
+            <!--loginmsg-->
+            <div class="jl-login-msg" style="right:10px">
+                <div class="jl-login-de jl-cle">
+                    <h2 class="jl-login-tit">密码登录</h2>
+                    <form method="post">
+                        <div class="jl-login-item">
+                            <label for="jl-login-adm" class="jl-lab jl-bg01"></label>
+                            <input type="text" id="jl-login-adm" class="jl-login-user js-next-input" tabindex="1" placeholder="请输入用户名或手机号">
+                        </div>
+                        <div class="jl-login-check" id="jl-lo-adm">
+                            <i class="jl-lo-bg"></i>
+                            <span></span>
+                        </div>
+                        <div class="jl-login-item">
+                            <label for="jl-login-pw" class="jl-lab jl-bg02"></label>
+                            <input type="password" id="jl-login-pw" class="jl-login-user js-next-input js-submit-input" tabindex="2" placeholder="请输入密码">
+                        </div>
+                        <div class="jl-login-check" id="jl-login-paw">
+                            <i class="jl-lo-bg"></i>
+                            <span></span>
+                        </div>
+                        <div class="jl-login-item jl-login-for">
+                            <span class="jl-forget-pw" style="float:left"><s ><input type="checkbox" value="1" checked/><s>记住账号</s></s></span>
+                            <span class="jl-forget-pw"><a href="{:U('Home/Account/passForget')}">忘记密码</a></span>
+                        </div>
+                        <!--<div class="jl-login-item jl-login-btn">-->
+                            <input id="js-login-submit" class="js-next-input" type="button" value="登 录">
+                        <!--</div>-->
+                    </form>
+                    <button class="js-company">企业账号登录</button>
+                    <button class="js-person">个人账号登录</button>
+                </div>
+                <div class="jl-choose">
+                    <ul class="jl-choose-de jl-cle">
+                        <li>
+                            <a href="{:U('Home/Account/login',['type'=>'qq'])}" class="jl-way">
+                                <b class="jl-choose-qq-bg"></b>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:U('Home/Account/login',['type'=>'wechat'])}" class="jl-way">
+                                <b class="jl-choose-weiXin"></b>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{:U('Home/Account/login',['type'=>'sina'])}" class="jl-way">
+                                <b class="jl-choose-weiBo"></b>
+                            </a>
+                        </li>
+                        <li class="jl-last-choose">
+                            <a href="{:U('Home/Account/register')}" class="jl-run-reg">
+                                <b></b>
+                                <span>立即注册</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--loginBanner-->
+            <div class="jl-login-banner">
+                <img class="banner2" src="__PUBLIC__/Home/Account/img/banner2.jpg" alt="" style="display:none">
+                <img src="__PUBLIC__/Home/Account/img/banner3.jpg" alt="">
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery', 'jl-modal'], function($, modal) {
+                require(['Account/js/common_register']);
+                var $user_input = $('#jl-login-adm');
+                var $password_input=$('#jl-login-pw');
+                var $user_adm=$('#jl-lo-adm');
+                var $password_paw=$('#jl-login-paw');
+                var is_relogin = '{$is_relogin}';
+                var isBanner2=(Math.random()*100).toFixed(0)%2 == 0;
+                var cookes= document.cookie;
+                var cookData=cookes.split(";");
+                var dataObj={};
+                $.each(cookData,function(ind,val){
+                    var arrays=val.split("=");
+                    dataObj[arrays[0].trim()] = arrays[1];
+                });
+                //console.log(dataObj,dataObj.password);
+                if(dataObj.user){
+                    $("#jl-login-adm").val(dataObj.user);
+                    $("#jl-login-pw").val("");
+                }else{
+                    $("#jl-login-adm").val('');
+                    $("#jl-login-pw").val('');
+                }
+                if(isBanner2){
+                    $(".jl-login-banner").find("img.banner2").show(100).siblings("img").hide(100);
+                }else{
+                    $(".jl-login-banner").find("img.banner2").hide(100).siblings("img").show(100);
+                }
+                if( is_relogin ){
+                    modal.confirm({
+                        title: '账号异常',
+                        brief: '您的账号在别处登录!若非本人操作!请尽快修改您的密码!',
+                    })
+                }
+                $user_input.blur(function () {
+                    if($user_input.val()===''){
+                        $user_adm.css('visibility','visible');
+                        $('#jl-lo-adm').children('span').html('用户名不能为空');
+                    }
+                    else {
+                        $user_adm.css('visibility','hidden');
+                        $('#jl-lo-adm').children('span').html();
+                    }
+//                    var user_name = $user_input.val().trim();
+//                    $.post("{:U('Home/Account/ajaxCheckUserName')}",{user_name:user_name}, function (res) {
+//                        if(status===0){
+//                            $user_adm.css('visibility','hidden');
+//                            $('#jl-lo-adm').children('span').html();
+//                        }
+//                        else {
+//                            $user_adm.css('visibility','visible');
+//                            $('#jl-lo-adm').children('span').html(res.content);
+//                        }
+//                    })
+                });
+                $password_input.blur(function () {
+                   //判断是否为空
+                    if($password_input.val()===''){
+                        $password_paw.css('visibility','visible');
+                        $('#jl-login-paw').children('span').html('密码不能为空');
+                    }
+                    else {
+                        $password_paw.css('visibility','hidden');
+                        $('#jl-login-paw').children('span').html();
+                    }
+                });
+                $('.js-submit-input').on('keydown',function (e) {
+                    if(e.keyCode===13){
+                        $('#js-login-submit').trigger('click');
+                    }
+                });
+                //用户登录
+                $('#js-login-submit').on('click',function () {
+                    var user = $.trim($user_input.val());
+                    var password = $password_input.val();
+                    if($user_input.val()===''&&$password_input.val()===''){
+                        $user_adm.css('visibility','visible');
+                        $('#jl-lo-adm').children('span').html('用户名不能为空');
+                        $password_paw.css('visibility','visible');
+                        $('#jl-login-paw').children('span').html('密码不能为空');
+                    }
+                    else {
+                        var data = {
+                            user_name:user,
+                            user_pass:password,
+                        };
+                        var isremenber = $(".jl-forget-pw").find("input[type=checkbox]:checked").val();
+                        if(isremenber){
+                           // data = $.extend(data,{/*remember:"remember"*/});
+                        };
+                        $.post("{:U('Home/Account/login')}",data, function (res) {
+                            if(res.status===0){
+                                if(isremenber){
+                                    var times =new Date();
+                                    times.setTime(times.getTime()+30*24*3600*1000);
+                                    var str="user="+user+";Expires="+times.toGMTString();
+                                    document.cookie=str;
+                                    //document.cookie="password="+res.data.password+";Expires="+times.toGMTString();
+                                };
+                                if(res.content.data){
+                                    console.log(res.content.data);
+                                    $("#js-login-submit").css("display","none");
+                                    $(".js-company,.js-person").css("display","block");
+                                    $(".js-company").attr("data-id",res.content.data['company']['user_id']);
+                                    $(".js-person").attr("data-id",res.content.data['personal']['user_id']);
+                                }
+                                else{
+                                    location.href='{:U("Home/Default/index")}';
+                                }
+                            }
+                            else {
+                                if(res.status===1200){
+                                    $password_paw.css('visibility','visible');
+                                    $('#jl-login-paw').children('span').html(res.content);
+                                }
+                                else if(res.status===3000){
+                                    $password_paw.css('visibility','visible');
+                                    $('#jl-login-paw').children('span').html(res.content);
+                                }
+                                else {
+                                    $password_paw.css('visibility','visible');
+                                    $('#jl-login-paw').children('span').html('用户名或密码错误');
+                                }
+                            }
+                        })
+                    }
+                });
+                //选择账号
+                $(".js-company,.js-person").on("click",function(){
+                    var user = $.trim($user_input.val());
+                    var password = $password_input.val();
+                    var user_id=$(this).attr("data-id");
+                    var ischeck = $(".jl-forget-pw").find("input:checked").val();
+                    if($user_input.val()===''&&$password_input.val()===''){
+                        $user_adm.css('visibility','visible');
+                        $('#jl-lo-adm').children('span').html('用户名不能为空');
+                        $password_paw.css('visibility','visible');
+                        $('#jl-login-paw').children('span').html('密码不能为空');
+                    }
+                    else {
+                        var data = {
+                            user_name:user,
+                            user_pass:password,
+                            user_id:user_id
+                        };
+                        $.post("{:U('Home/Account/login')}",data, function (res) {
+                            if(res.status===0){
+                                /*if(ischeck){
+                                    var nows = new Date();
+                                    nows.setDate(nows.getTime()+30*24*3600*1000);
+                                    document.cookie='user_name='+user+';expires='+now.toUTCString;
+                                };*/
+                                location.href='{:U("Home/Default/index")}';
+                            }
+                            else {
+                                if(res.status===1200){
+                                    $password_paw.css('visibility','visible');
+                                    $('#jl-login-paw').children('span').html(res.content);
+                                }
+                                else if(res.status===3000){
+                                    $password_paw.css('visibility','visible');
+                                    $('#jl-login-paw').children('span').html(res.content);
+                                }
+                                else {
+                                    $password_paw.css('visibility','visible');
+                                    $('#jl-login-paw').children('span').html('用户名或密码错误');
+                                }
+                            }
+                        })
+                    }
+                });
+            });
+        })
+    </script>
+</block>

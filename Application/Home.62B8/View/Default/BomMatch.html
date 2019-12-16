@@ -1,0 +1,1091 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout" />
+
+<block name="title">BOM匹配</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/retreatCargo.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/BomPrice.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <style>
+        .layui-form-item .layui-form-checkbox[lay-skin=primary]{
+            margin-top:0;
+        }
+    </style>
+    <div id="jl-purchase-fault">
+        <div >你的位置&gt;首页&gt;BOM报价&gt;上传 结果显示</div>
+        <strong class="jl-match-title">玖隆芯城 <span class="jl-match-title-name">MT3608-SOT23-6.XLSX </span> 匹配结果分析</strong>
+        <div class="jl-match-exact jl-bom-match" style="border-top:1px solid #eee">
+            <input type="button" class="table-output" data-type="output" value="导出结果"/>
+            <input type="button" data-type="intput"  value="重新导入"/>
+            <input type="button" class="sendMail" data-type="sendMail"value="发送邮箱"/>
+            <input type="button" data-type="optimize" value="玖隆优化"/>
+        </div>
+        <div class="jl-match-exact jl-bom-match">
+            <div class="jl-match-exact-child" style="width:70%">
+                <div>
+                    <span class="choose-left"  style="width:12%;text-align:right;">是否可拆</span>
+                    <div class="choose-left" style="width:76%">
+                        <div class="jl-return-money jl-one-init" style="height:40px" myAttr="1" data-type="min_open" data-value="0"><i class="jl-choose-circle " ></i>不可拆 </div>
+                        <div class="jl-return-money jl-one-init" style="height:40px" myAttr="1" data-type="min_open" data-value="1"><i class="jl-choose-circle " ></i>可拆 </div>
+					</div>
+                </div>
+                <div style="margin:10px 0 50px">
+                    <span class="choose-left" style="width:12%;text-align:right;">库存是否充足</span>
+                    <div class="choose-left" style="width:76%">
+                        <div class="jl-return-money jl-one-init" style="height:40px" myAttr="0" data-type="store" data-value="1"><i class="jl-choose-circle " ></i>充足 </div>
+                        <div class="jl-return-money jl-one-init" style="height:40px" myAttr="1" data-type="store" data-value="2"><i class="jl-choose-circle " ></i>不充足 </div>
+					</div>
+                </div>
+            </div>
+            <div class="jl-match-exact-child" style="padding:20px 0;">
+                <div class="cart" style="color:#e84343">
+                    <span style="color:#e84343">总价约:</span><span class="shopTotal" style="font-weight:600;color:#e84343;font-size:26px">￥0.00</span>
+                </div>
+                <div class="cart">
+                    <span>已选择<span class="shopLength" style="color:#e84343;display:inline">0</span>件</span>
+                </div>
+                <div class="cart">
+                    <input type="button" class="shopCart" data-type="shopCart" value="加入购物车"/>
+                </div>
+
+            </div>
+        </div>
+        <div class="jl-match-exact jl-bom-match">
+            <div class="container" >
+                <div class="setHeader">
+                    <div class="setChild active" data-type="0">全部(<span class="blurNum"></span>)</div>
+                    <div class="setChild" data-type="1">完全匹配(<span class="comleteNum"></span>)</div>
+                    <div class="setChild" data-type="2">推荐替代品(<span class="replaceNum"></span>)</div>
+                    <div class="setChild" data-type="3">无法匹配(<span class="noNum"></span>)</div>
+                    <div class="setChild search" style="flex:2">
+                        <input class="bulkEdit" type="button" value="批量修改需求数量"/>
+                        <div class="search-result">
+                            <!--<input type="text" placeholder="请输入型号"/><input type="button" value="搜索"/>-->
+                            <div class="layui-form" lay-filter="filters">
+                                <div class="layui-form-item" pane="">
+                                    <div class="layui-input-block">
+                                        <input type="checkbox" class="layui-input-block-input" name="allCheck" lay-skin="primary" lay-filter="filters" title="全选" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bodyHeader" style="overflow:hidden;">
+                    <table cellspacing="0" cellpadding="0">
+                        <thead class="table-cell">
+                        <th ><div class="choose">选择推荐型号</div></th>
+                        <th > <div style="padding:10px 20px;position:relative">需求型号</div></th>
+                        <th ><div >需求功能分类</div></th>
+                        <th ><div >需求品牌</div></th>
+                        <!--<th ><div >需求功能</div></th>-->
+                        <th><div>需求封装</div></th>
+                        <th><div class="number">需求数量</div></th>
+                        <th><div >推荐商品</div></th>
+                        <th><div >包装</div></th>
+                        <th><div class="number">推荐数量</div></th>
+                        <!--<th><div >报价/交期</div></th>-->
+                        </thead>
+                    </table>
+                </div>
+                <div class="table-body">
+                    <table id="tableData">
+                        <thead class="table-cell" style="display:none">
+                            <th ><div class="choose">选择推荐型号</div></th>
+                            <th > <div style="padding:10px 20px;position:relative">需求型号</div></th>
+                            <th ><div >需求功能分类</div></th>
+                            <th ><div >需求品牌</div></th>
+                            <!--<th ><div >需求功能</div></th>-->
+                            <th><div>需求封装</div></th>
+                            <th><div class="number">需求数量</div></th>
+                            <th><div >推荐商品</div></th>
+                            <th><div >包装</div></th>
+                            <th><div class="number">推荐数量</div></th>
+                        <!--<th><div >报价/交期</div></th>-->
+                        </thead>
+                        <tbody class="table-cell table-data-body">
+                           <!-- <tr>
+                                <td>
+                                    <div class="jl-return-money choose" style="" myAttr="0"><i class="jl-choose-circle "></i> </div>
+                                </td>
+                                <td>
+                                    <div class="" >sendData.p_sign </div>
+                                </td>
+                                <td>
+                                    <div class="" >sendData.cate </div>
+                                </td>
+                                <td>
+                                    <div class="" >sendData.brand </div>
+                                </td>
+                                <td>
+                                    <div  >sendData.package </div>
+                                </td>
+                                <td>
+                                    <div class="number" >sendData.pnum </div>
+                                </td>
+                                <td>
+                                    <div class="" >
+                                        <div>最小包装数：+obj.min+</div>
+                                        <div>库存：'+obj.store?obj.store:0+'</div>
+                                        <div>是否可拆：+(obj.min_open==1?"否":"是")</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="" >最小包装数，库存，是否可拆</div>
+                                </td>
+                                <td>
+                                    <div class="" >min_open</div>
+                                </td>
+                            </tr>-->
+                        </tbody>
+                    </table>
+                    <div class="mendbox">
+                        <input placeholder="需求型号" name="p_sign"/>
+                        <input placeholder="需求功能分类" name="cate"/>
+                        <input placeholder="需求品牌" name="brand"/>
+                        <input placeholder="需求封装" name="package"/>
+                        <input placeholder="需求数量" name="pnum"/>
+                        <div class="mendbox-sure-cancel">
+                            <span data-type="cancel">取消</span>
+                            <span data-type="sure" style="background-color:#e84343;color:#fff">确定</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container-02">
+                <div class="center-content" >
+                    <div class="setHeader" style="padding:10px 0;background-color:#e84343;text-align:center;position:relative;color:#fff">
+                        推荐商品<span class="closeShadow" style="cursor:pointer;position:absolute;top:50%;right:10px;transform: translateY(-50%);color:#fff">X</span>
+                    </div>
+                    <div style="width:80%;margin:5% auto;border:1px solid #bbb;overflow:hidden;">
+                        <div class="bodyHeader" style="overflow:hidden;border-right: 17px solid #f2f2f2;">
+                            <table cellspacing="0" cellpadding="0">
+                                <thead class="table-cell">
+                                <th ><div class="choose">选择推荐型号</div></th>
+                                <th > <div style="position:relative">推荐型号</div></th>
+                                <!--<th ><div >需求功能分类</div></th>-->
+                                <th ><div >封装</div></th>
+                                <!--<th><div>需求封装</div></th>
+                                <th><div class="number">需求数量</div></th>
+                                <th><div >推荐商品</div></th>
+                                <th><div class="number">推荐数量</div></th>-->
+                                <th><div >分类</div></th>
+                                <th ><div >品牌</div></th>
+                                <th><div style="width:15vw">商品描述</div></th>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="table-body">
+                        <table>
+                            <tbody class="table-cell table-data-shadow">
+                             <!--<tr>
+                                 <td>
+                                     <div class="jl-return-money choose" style="" myAttr="0"><i class="jl-choose-circle "></i> </div>
+                                 </td>
+                                 <td>
+                                     <div class="" >sendData.p_sign </div>
+                                 </td>
+                                 <td>
+                                     <div class="" >sendData.cate </div>
+                                 </td>
+                                 <td>
+                                     <div class="" >sendData.brand </div>
+                                 </td>
+                                 <td>
+                                     <div class="" >sendData.brand </div>
+                                 </td>
+                             </tr>-->
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                    <div class="footer">
+                        <span data-type="cancel">取消</span>
+                        <span data-type="sure" style="background-color:#e84343;color:#fff">确定</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--<a href="mailto:name@email.com">Email</a>-->
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['jquery','/Public/Common/module/layui/2.2.5/layui.all.js','xlsxFull','xlsxShim','jl-modal','jl-price','base64','table2excel','login_page'], function ($) {
+            var modal= require("jl-modal");
+            var jlPrice=require("jl-price");
+            var form = layui.form;
+            var bomData= window.sessionStorage.getItem("bomData");
+            var is_relogin= {$is_relogin|json_encode};
+            if( is_relogin ){
+                modal.confirm({
+                    title: '账号异常',
+                    brief: '您的账号在别处登录!若非本人操作!请尽快修改您的密码!',
+                })
+            }
+            console.log("bomData",JSON.parse(bomData));
+            var origin_bomData=bomData;
+            //滚动条同步
+            $(".table-body").scroll(function(){
+                $('.container-02 .bodyHeader').scrollLeft($(this).scrollLeft());
+            });
+           //全选
+            form.on('checkbox(filters)', function(data){
+                //console.log(data);
+                var check_input=$("#tableData").find(".jl-choose-circle");
+                check_input.each(function(ind,val){
+                    var obj=JSON.parse(decodeURIComponent($(this).data("obj")));
+                    if(data.elem.checked){
+                        if(obj.p_sign){
+                            $(val).addClass("jl-choose-active");
+                        }
+                    }else{
+                        $(val).removeClass("jl-choose-active");$(".shopLength").text(0);
+                        $(".shopTotal").text("￥0.00");
+
+                    }
+                });
+                data.elem.checked&&check_price($("#tableData"));
+            });
+            //金额计算
+            var check_price=function(element){
+                var total=0;
+                var chooseId=$(element).find(".jl-choose-active");
+                if(chooseId.length<1){
+                    $(".shopLength").text(0);
+                    $(".shopTotal").text("￥0.00");
+                    $(".layui-input-block").html("<input type=\"checkbox\" class=\"layui-input-block-input\" name=\"allCheck\" lay-skin=\"primary\" lay-filter=\"filters\" title=\"全选\" />");
+                    form.render('checkbox',"filters");
+                    return;
+                };
+                chooseId.each(function(ind,val){
+                    var $this=$(this);
+                    var obj=JSON.parse(decodeURIComponent($this.data("obj")))||[];
+                    var num=parseFloat($this.parents("tr").find(".countNum").text().trim())||0;
+                    obj.basket_num=num;
+                    obj.price_section=obj.product_price;
+                    var correct_price_info = jlPrice.get_correct_price({
+                        num:num,
+                        isTax:true,
+                        product:obj
+                    });
+                    correct_price_info.num=num;
+                   // console.log("correct_price_info",correct_price_info);
+                    total+=parseFloat((correct_price_info.real_pay*num).toFixed(2));
+                });
+                var all_input=$("#tableData").find(".jl-choose-circle");
+                var choose_input = $("#tableData").find(".jl-choose-active");
+                var All_length=0;
+                all_input.each(function(ind,val){
+                    var obj=JSON.parse(decodeURIComponent($(this).data("obj")));
+                        if(obj.p_sign){
+                            All_length++;
+                        }
+                    });
+                if(All_length ==choose_input.length){
+                    $(".layui-input-block").html("<input type=\"checkbox\" class=\"layui-input-block-input\" name=\"allCheck\" lay-skin=\"primary\" lay-filter=\"filters\" checked=\"\" title=\"全选\" />");
+                    form.render('checkbox',"filters");
+                }else{
+                    $(".layui-input-block").html("<input type=\"checkbox\" class=\"layui-input-block-input\" name=\"allCheck\" lay-skin=\"primary\" lay-filter=\"filters\" title=\"全选\" />");
+                    form.render('checkbox',"filters");
+                };
+                $(".shopLength").text(chooseId.length);
+                $(".shopTotal").text('￥'+jlPrice.fixed_float(total,2));
+
+            };
+            //发邮箱-导入-导出
+            $(".jl-bom-match").off("click").on("click","input",function(){
+                   // console.log($(this).data("type"));
+                    var types = $(this).data("type");
+                    switch (types) {
+                        case 'sendMail': sendMail();break;//发邮箱
+                        case 'intput': window.sessionStorage.removeItem("bomData");/* history.back()*/window.location.href=("/Home/Default/bomPrice?action=search");break; //重新导入
+                        case 'output': /*tableToexcel()*/mailSend(false,true);break;//导出结果
+                    }
+            });
+            //发邮箱
+           var sendMail = function(){
+                var str=' <div class="layui-form" action="">' +
+                    '<div class="layui-form-item">\n' +
+                    /*'    <div class="layui-inline">\n' +
+                    '      <label class="layui-form-label">验证手机</label>\n' +
+                    '      <div class="layui-input-inline">\n' +
+                    '        <input type="tel" name="phone" lay-verify="required|phone" autocomplete="off" class="layui-input">\n' +
+                    '      </div>\n' +
+                    '    </div>\n' +*/
+                    '    <div class="layui-inline">\n' +
+                    '      <label class="layui-form-label">电子邮箱</label>\n' +
+                    '      <div class="layui-input-inline">\n' +
+                    '        <input type="text" name="email" lay-verify="email" placeholder="请填写电子邮箱" autocomplete="off" class="layui-input">\n' +
+                    '      </div>\n' +
+                    '    </div>\n' +
+                    '  </div>' +
+                    '</div>';
+                    modal.confirm({
+                            type: 'fade',
+                            title: '填写邮箱信息',
+                            brief: str,
+                            top: 100,
+                            confirm:function(){
+                                var email=$(".layui-input-inline").find(".layui-input").val();
+                                var reg=/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+                                if(reg.test(email)){
+                                    mailSend(email);
+                                }else{
+                                    return layer.msg("填写邮箱有误");
+                                };
+                            },
+                            cancel:function(){
+
+                            }
+                        });
+                    $(".jl-modal-box.vertical-middle").css("width","400px");
+            }
+            //邮箱数据提交
+            var mailSend=function(email,isDownload){
+                var checkGood = $(".table-data-body").find(".jl-choose-active");
+                var sendList = {};
+                var list = [];
+                if(checkGood.length<1){
+                    layer.msg("请选择发送商品");
+                    return;
+                };
+                $.each(checkGood, function (index, el) {
+                    var dataObj=JSON.parse(decodeURIComponent($(this).data("obj")));
+                    var sendData=JSON.parse(decodeURIComponent($(this).parents("tr").data("obj")));
+                    var storeData={
+                        p_sign:sendData.p_sign?sendData.p_sign[0].value:"",
+                        cate:sendData.cate?sendData.cate[0].value:"",
+                        brand:sendData.brand?sendData.brand[0].value:"",
+                        package:sendData.package?sendData.package[0].value:"",
+                        p_num:sendData.pnum?sendData.pnum[0].value:"1",
+                    };
+                    dataObj.store= dataObj.store||0;
+                    dataObj.p_sign_list=dataObj.p_sign||"";
+                    dataObj.cate_list=dataObj.cate_name||"";
+                    dataObj.brand_list=dataObj.brand_name||"";
+                    dataObj.package_list=dataObj.package||"";
+                    dataObj.p_num_list=dataObj.min_open != 1 ? (dataObj.min * Math.ceil((sendData.pnum?sendData.pnum[0].value:dataObj.min)/dataObj.min)||1):(sendData.pnum?sendData.pnum[0].value:1);
+                    storeData.list=[dataObj];
+                    list.push(storeData);
+                });
+                sendList.data=list;
+                email&&(sendList.toMail=email);
+                if(isDownload)sendList.excel=1;
+                sendList=JSON.stringify(sendList);
+                $.ajax({
+                    url:"/Home/Bom/sendUserMail",
+                    data:{data:sendList},
+                    dataType:"json",
+                    type:"post",
+                    success:function(res){
+                        if(res.error==0){
+                            if(isDownload){
+                                var url = '/'+res.data.one;
+                                var a = document.createElement("a");
+                                a.href = url;
+                                a.download ="智能分析BOM表.xlsx";
+                                a.click();
+                            }else{
+                                layer.msg(res.msg);
+                            }
+                        }else{
+                            if(res.error ===300){
+                                login_shadow();
+                                return;
+                            }
+                            layer.msg(res.msg,{icon:5});
+                        };
+                    }
+                });
+            };
+            //条件搜索
+            var searchData=function(dataString,query){
+                $(".shopLength").text(0);
+                $(".shopTotal").text("￥0.00");
+                var datas=JSON.parse(dataString);
+                var returnData=$.extend(true,{},datas);
+               // console.log("returnData",returnData,datas);
+                var isEmpty=true;
+                var common_fn=function(data,type,ind){
+                    $.each(data[type],function(idd,vl){
+                        var sendObj=datas.sendData[ind];
+                        var p_num=vl.min_open != 1 ? (vl.min * Math.ceil((sendObj.pnum?sendObj.pnum[0].value:vl.min)/vl.min)||1):(sendObj.pnum?sendObj.pnum[0].value:1);
+                        if(query.min_open == vl.min_open){
+                            if(query.store>=1){
+                                (query.store>1&&(vl.store?vl.store:0)<p_num)&&(returnData.bom[ind][type].push(vl));
+                                (query.store==1&&(vl.store?vl.store:0)>p_num)&&(returnData.bom[ind][type].push(vl));
+                            }else{
+                                returnData.bom[ind][type].push(vl);
+                            }
+                        }
+                        if(query.store>=1 ){
+                            if(query.min_open>=0){
+                                if(query.min_open == vl.min_open){
+                                    (query.store>1&&(vl.store?vl.store:0)<p_num)&&(returnData.bom[ind][type].push(vl));
+                                    (query.store==1&&(vl.store?vl.store:0)>p_num)&&(returnData.bom[ind][type].push(vl));
+                                };
+                            }else{
+                                (query.store>1&&(vl.store?vl.store:0)<p_num)&&(returnData.bom[ind][type].push(vl));
+                                (query.store==1&&(vl.store?vl.store:0)>p_num)&&(returnData.bom[ind][type].push(vl));
+                            }
+                        }
+                    });
+                };
+                if(datas){
+                    $.each(datas.bom,function(ind,val){
+                        if(!$.isEmptyObject(query)){
+                            returnData.bom[ind].blur=[];
+                            returnData.bom[ind].complete=[];
+                            returnData.bom[ind].replace=[];
+                        }
+                        if(query.min_open>=0 || query.store>=0){
+                            if(val.blur.length>0){
+                                isEmpty=false;
+                                common_fn(val,"blur",ind);
+                            }
+                            if(val.complete.length>0){
+                                isEmpty=false;
+                                common_fn(val,"complete",ind);
+                            }
+                            if(val.replace.length>0){
+                                isEmpty=false;
+                                common_fn(val,"replace",ind);
+                            }
+                        };
+                    });
+                };
+               // console.log(returnData,datas);
+                return /*isEmpty?{bom:[]}:*/returnData;
+            }
+            //数据导出
+            function tableToexcel(){
+                $("#tableData").table2excel({
+                    //tableData为存放数据的table
+                    // 不被导出的表格行的CSS class类
+                    exclude: ".noExl",
+                    // 导出的Excel文档的名称
+                    name: "表格-" + new Date().getTime(),
+                    // Excel文件的名称
+                    filename: "表格-" + new Date().getTime() + ".xls",
+                    bootstrap: false
+                });
+
+            }
+            //table赋值
+            var assignmengt=function(NewbomData){
+                var num={blur:NewbomData.bom.length||"",completeNum:0,replaceNum:0,noNum:0};
+                $.each(NewbomData.bom,function(ind,val){
+                    if(val.complete.length>0){
+                        num.completeNum +=1;
+                    }
+                    if(val.replace.length>0){
+                        num.replaceNum +=1;
+                    }
+                    if(val.blur.length==0){
+                        num.noNum +=1;
+                    };});
+                $(".jl-match-title-name").text(NewbomData.name||"0");
+                $(".blurNum").text(NewbomData.bom.length||"0");
+                $(".comleteNum").text(num.completeNum||"0");
+                $(".replaceNum").text(num.replaceNum||"0");
+                $(".noNum").text(num.noNum||"0");
+            }
+            if(bomData){
+                assignmengt(bomData?JSON.parse(bomData):{});
+            };
+            //加载框
+            function layerLoad(txt){
+                iii = layer.open({
+                    type: 3,
+                    icon:2,
+                    content: '<div style="color:#fff;margin-left:120px;height:100px;line-height:100px"> '+txt+'</div>' ,//这里content是一个普通的String
+                    success:function(){
+                        $(".layui-layer-content.layui-layer-loading2").css({width: '300px',height: '100px','background-color': '#999','background-position':'74px center'});
+                    }
+                });
+               /* setTimeout(function(){
+                    layer.close(iii)
+                }, 800);
+                var Newbo*/
+            }
+            //批量修改
+            $(".bulkEdit").off("click").on("click",function(){
+                var $needNumber=$(".needNumber");
+                var $countNum=$(".countNum");
+                var $tr = $(".table-data-body").find("tr");
+                if($tr.find(".jl-choose-active").length<1){
+                    return layer.msg("请选择商品");
+                }
+                layer.open({
+                    title:["批量修改","text-align:center;background-color:#e84343;color:#fff"],
+                    area:["30%","30%"],
+                    btn:["确定","取消"],
+                    skin:"layer-self",
+                    btnAlign:"c",
+                    content:"<span style='margin-left:6%'>需求数量</span><input class='mendNum' type='number' style='text-indent:20px;margin-left:4%;height:35px;line-height:35px;width:30%;outline:none;border:1px solid #e8e8e8' placeholder='请输入需求数量'/><input class='setOrigin' type='button' style='margin-left:10%;height:35px;line-height:35px;width:30%;cursor:pointer;color:#fff;border:none;outline:none;background-color:#e84343' value='还原需求数量'/>",
+                    success:function(){
+                        $(".layui-layer-btn0").css({"background-color":"#e84343","border":"none"});
+                        $(".setOrigin").on("click",function(){
+                                $tr.each(function(ind,val){
+                                    var $this=$(this);
+                                    var isCheck=$(this).find(".jl-choose-active");
+                                    if(isCheck.length>0){
+                                        $this.find(".needNumber").text($this.find(".needNumber").data("origin"));
+                                        $this.find(".countNum").text($this.find(".countNum").data("origin"));
+                                    }
+                                });
+                            layer.closeAll();
+                        });
+                    },
+                    yes:function(){
+                        var pums = $(".mendNum").val();
+                        if( pums){
+                            $tr.each(function(ind,val){
+                                var $this=$(this);
+                                var obj = JSON.parse(decodeURIComponent($this.find(".jl-choose-circle").data("obj")));
+                                var isCheck=$(this).find(".jl-choose-active");
+                                ///console.log("isCheck",decodeURIComponent($this.find(".jl-choose-circle").data("obj")));
+                                if(isCheck.length>0){
+                                    $this.find(".needNumber").text(pums);
+                                    if(obj.p_sign){
+                                        $this.find(".countNum").text(obj.min_open != 1 ? obj.min * Math.ceil((pums?pums:obj.min)/obj.min):(pums?pums:1));
+                                    }else{
+                                        $this.find(".countNum").text(pums);
+                                    }
+                                }
+
+                            });
+                        };
+                        layer.closeAll();
+                    },
+                    btn2:function(){
+                        layer.closeAll();
+                    }
+                });
+            });
+            var login_shadow=function(){
+                layer.open({
+                    title:"用户登录",
+                    type:1,
+                    area:["360px"],
+                    content:window.login_page.login_html,
+                    success:function(){
+                        window.login_page.login_init();
+                    }
+
+                });
+            };
+            //加入购物车
+            $('.shopCart').on('click', function () {
+                var checkGood = $(".table-data-body").find(".jl-choose-active");
+                var goods = [];
+                var obj = {};
+                if(checkGood.length<1){
+                    layer.msg("请选择商品");
+                    return;
+                };
+                $.each(checkGood, function (index, el) {
+                    var dataObj=JSON.parse(decodeURIComponent($(this).data("obj")));
+                    obj = {
+                        "pid": dataObj.id,
+                        "num": $(this).parents("tr").find('.countNum').text().trim()
+                    };
+                    goods.push(obj);
+                });
+                //console.log(goods);
+                $.get("{:U('Home/Basket/againBuyBasket')}", {goods: goods}, function (res) {
+                    var data = $.parseJSON(res);
+                    if (data.error === 0) {
+                        modal.confirm({
+                            type: 'fade',
+                            title: '信息提示',
+                            brief: data.msg,
+                            top: 100,
+                            confirmText:"去购物车",
+                            cancelText:"留在本页",
+                            confirm:function(){
+                                location.href = "{:U('Home/Basket/basketDetail')}";
+                            },
+                            cancel:function(){
+
+                            }
+                        });
+                    } else {
+                        if(data.error ===300){
+                            login_shadow();
+                            return;
+                        }
+                        modal.confirm({
+                            type: 'fade',
+                            title: '系统繁忙',
+                            brief: '不好意思哦！'+data.msg+'，请稍后重试！',
+                            top: 100
+                        });
+                    }
+                });
+            });
+            var getModel=function(obj,sendData,index,Alldata,isComplete){
+                if(!obj){
+                    obj={p_sign:"",cate_name:"",brand_name:"",brand_name:"",parameter:"",store:"",package:"",store:"",p_sign:"",pack_unit:"",pnum:0};
+                };
+                var hideCss=Alldata.length<1?true:false;
+                var storeData={
+                    p_sign:sendData.p_sign?sendData.p_sign[0].value:"",
+                    cate:sendData.cate?sendData.cate[0].value:"",
+                    brand:sendData.brand?sendData.brand[0].value:"",
+                    package:sendData.package?sendData.package[0].value:"",
+                    pnum:sendData.pnum?sendData.pnum[0].value:"1",
+                    showSite:obj.show_site==1?"最新":(obj.show_site==2?"推荐":(obj.show_site==3?"热卖":"无")),
+                    store:obj.store?(obj.store>0?obj.store:0):0,
+                    isOpen:(obj.min_open==1?"是":"否"),
+                    min_open:obj.min_open != 1 ? (obj.min * Math.ceil((sendData.pnum?sendData.pnum[0].value:obj.min)/obj.min)||1):(sendData.pnum?sendData.pnum[0].value:1)
+                };
+                if(obj.id){ checkId[index]?checkId[index].push(obj.id):checkId[index]=[obj.id];} ;
+                var str='<tr data-obj="'+encodeURIComponent(JSON.stringify(sendData))+'" data-hide="'+hideCss+'" style="border-top:1px solid #ddd">\n' +
+                    '                                <td>' +
+                    '                                    <div class="jl-return-money choose"  myAttr="0"><i class="jl-choose-circle '+(isComplete?"jl-choose-active":"")+'" style="display:'+(hideCss?"none":"inline-block")+'" data-id="'+obj.id+'" data-obj="'+encodeURIComponent(JSON.stringify(obj))+'"></i> </div>\n' +
+                    '                                </td>' +
+                    '                                <td class="p_sign" >' +
+                    '                                    <div  style="padding:0 20px;position:relative">'+storeData.p_sign+'<img class="needMend commonClass" data-obj="'+encodeURIComponent(JSON.stringify(sendData))+'" data-index="'+index+'" style="width:15px;height:15px;position:absolute;right:2px;top:50%;transform:translate(0,-50%);cursor:pointer;display: none" src="/Public/Home/Public/img/list_modify_default02.png"/></div>' +
+                    '                                </td>' +
+                    '                                <td>' +
+                    '                                    <div class="" >'+storeData.cate+'</div>' +
+                    '                                </td>' +
+                    '                                <td>' +
+                    '                                    <div class="" >'+storeData.brand+' </div>' +
+                    '                                </td>' +
+                    '                                <td>\n' +
+                    '                                    <div  >'+storeData.package+'</div>\n' +
+                    '                                </td>\n' +
+                    '                                <td>\n' +
+                    '                                    <div class="number needNumber" data-origin="'+storeData.pnum+'">'+storeData.pnum+'</div>\n' +
+                    '                                </td>\n' +
+                    '                                <td>\n' +
+                    '                                    <div class="" style="position:relative"><div class="shop-detail"><p>型号：'+(obj.p_sign||"无")+'</p><p>封装：'+(obj.package||"无")+'</p><p>品牌：'+(obj.brand_name||"无")+'</p></div><span class="replaceOrder commonClass"  data-obj="'+encodeURIComponent(JSON.stringify(Alldata))+'" style="width:0;height:0;border:10px solid transparent;border-top-color:#e84343;position:absolute;top:50%;cursor:pointer;transform: translateY(-50%);right:5px;display:block;"></span></div>\n' +
+                    '                                </td>\n' +
+                    '                                <td>\n' +
+                    '                                    <div class="shop-package" >\n' +
+                    '                                        <p>最小包装数：'+(obj.min||0)+'</p>\n' +
+                    '                                        <p>库存：'+storeData.store+'</p>\n' +
+                    '                                        <p>是否可拆：'+storeData.isOpen+'</p>\n' +
+/*
+                    '                                        <p>类别：'+storeData.showSite+'</p>\n' +
+*/
+                    '                                    </div>\n' +
+                    '                                </td>\n' +
+                    '                               <td>\n' +
+                    '                                      <div class="number countNum" data-origin="'+storeData.min_open+'">'+storeData.min_open+' </div>\n' +
+                    '                                </td>\n' +
+                    '                            </tr>';
+                return str;
+            };
+            var iii=null;
+            var checkId={};
+            var trCheck_obj={};
+            var tableGetVule=function(bomData_self,dataType,notShadow){
+                $(".table-data-body").html("");
+                !notShadow&&layerLoad("数据解析中...");
+                trCheck_obj={};
+                var NewbomData = bomData_self?(typeof(bomData_self)=="object"? bomData_self:(JSON.parse(bomData_self))):{};
+                if($.isEmptyObject(NewbomData)){
+                    layer.close(iii);
+                    modal.confirm({
+                        title:'错误提示',
+                        brief:"没有数据",
+                        confirmText: '确定',
+                        top:100,
+                        confirm:function () {
+                            //location.href = '{:U("Home/User/favorite")}';
+                        }
+                    });return;}
+                var strs="";
+                var num={blur:NewbomData.bom.length||"",completeNum:0,replaceNum:0,noNum:0};
+                //更新匹配数量
+                assignmengt(NewbomData);
+                $.each(NewbomData.bom,function(ind,val){
+                    switch (dataType) {
+                        case 0:val.blur.length>=0&&(strs+=getModel(val.blur[0],NewbomData.sendData[ind],ind,val.blur));break;//所有匹配
+                        case 1:val.complete.length>0&&(strs+=getModel(val.complete[0],NewbomData.sendData[ind],ind,val.complete,true));break;//完全匹配
+                        case 2:val.replace.length>0&&(strs+=getModel(val.replace[0],NewbomData.sendData[ind],ind,val.replace));break;//推荐替代
+                        default:val.blur.length==0&&(strs+=getModel(null,NewbomData.sendData[ind],ind,val.blur));break;//没有匹配
+                    }
+                });
+                    $(".table-data-body").html(strs);
+                    if(dataType == 1){check_price(".table-data-body .choose");};
+                    chooseI('.table-data-body .choose');
+                    layer.close(iii);
+                    //table需求参数修改确认
+                    $(".mendbox-sure-cancel span").off("click").on("click",function(){
+                        var type=$(this).data("type");
+                        if(type=="sure"){
+                            var inputs=$(".mendbox").find("input");
+                            var obj={};
+                            var exchange_data={p_sign:"需求型号",brand:"需求品牌",cate:"需求功能分类",package:"需求封装",pnum:"需求数量"};
+                            var sendDatas=NewbomData.sendData;
+                            var index = tableCheck_tr.find(".needMend").data("index");
+                            inputs.each(function(){
+                                var $this=$(this);
+                                if(sendDatas[index][$this.attr("name")]){
+                                    sendDatas[index][$this.attr("name")][0].value = $this.val()||"";
+                                }else{
+                                    sendDatas[index][$this.attr("name")] = [{name:exchange_data[$this.attr("name")],value:$this.val()||""}];
+                                }
+                            });
+                            layerLoad("数据解析中...");
+                            $.ajax({
+                                url:"{:U('Home/Bom/bomQuery')}",
+                                type:'post',
+                                dataType:"json",
+                                data:{data:sendDatas},
+                                success:function(e){
+                                    layer.close(iii);
+                                   // debugger;
+                                    console.log(sendDatas,e);
+                                    var list= e.data;
+                                    if(e.error==0){
+                                        //window.sessionStorage.removeItem("bomData");
+                                        $(".table-data-body").html("");
+                                        if(list.bom.length<1){
+                                            layer.msg("没有匹配到任何数据");
+                                            return;
+                                        };
+                                        var bomOld=$.extend(true,{},(typeof(bomData_self) =="string"?JSON.parse(bomData_self):bomData_self));
+                                        bomOld.bom=list.bom;
+                                        bomOld.sendData=sendDatas;
+                                        //window.sessionStorage.setItem("bomData",JSON.stringify(bomOld));
+                                        origin_bomData = bomData =JSON.stringify(bomOld);
+                                        return tableGetVule(JSON.stringify(bomOld),Number(commonData.checked_data),true);
+                                       /* $.each(list.bom,function(ind,val){
+                                            newStr+=getModel(val.blur[0],sendDatas[ind],ind,val.blur)
+                                        });
+                                        $(".table-data-body").html(newStr);
+                                        setTimeout(function(){
+                                            bomData = JSON.stringify(bomOld);
+                                            assignmengt(list);
+                                            chooseI('.table-data-body .choose');
+                                        },10);*/
+                                    }else{
+                                        modal.confirm({
+                                            title:'错误提示',
+                                            brief:list.msg,
+                                            confirmText: '确定',
+                                            top:100,
+                                            confirm:function () {
+                                                //location.href = '{:U("Home/User/favorite")}';
+                                            }
+                                        });
+                                    }
+                                        shadowInit();
+                                }
+                            });
+                        }else{
+                           // $(".mendbox").hide(400);
+                        }
+                        $(".mendbox").hide(400);
+                    });
+                    //弹框
+                var getShadowModel=function(obj,index,idArray){
+                    idArray = idArray||[];
+                    var strs='<tr>\n' +
+                        '                                 <td>\n' +
+                        '                                     <div class="jl-return-money choose" style="" myId="'+obj.id+'" data-obj="'+encodeURIComponent(JSON.stringify(obj))+'" data-code="'+index+'"><i class="jl-choose-circle '+($.inArray(obj.id,idArray)>-1?"jl-choose-active":"")+'"></i> </div>\n' +
+                        '                                 </td>\n' +
+                        '                                 <td>\n' +
+                        '                                     <div class="" >'+obj.p_sign+' </div>\n' +
+                        '                                 </td>\n' +
+                        '                                 <td>\n' +
+                        '                                     <div class="" >'+obj.package+' </div>\n' +
+                        '                                 </td>\n' +
+                        '                                 <td>\n' +
+                        '                                     <div class="" >'+obj.cate_name+' </div>\n' +
+                        '                                 </td>\n' +
+                        '                                 <td>\n' +
+                        '                                     <div class="" >'+obj.brand_name+' </div>\n' +
+                        '                                 </td>\n' +
+                        '                                 <td>\n' +
+                        '                                     <div class="" style="width:15vw">'+obj.parameter+' </div>\n' +
+                        '                                 </td>\n' +
+                        '                             </tr>';
+                    return strs
+                }
+                var classIndex=0;
+                var tableCheck_tr={};
+                function shadowInit(){
+                    //修改table需求参数
+                    $(".needMend").on("click",function(){
+                        var $this=$(this);
+                        var $mendbox =$(".mendbox");
+                        var objs=JSON.parse(decodeURIComponent($this.data("obj")));
+                        var inputs=$mendbox.find("input");
+                        var index =$this.data("index");
+                        var lengths = $this.data("length")||1;
+                        tableCheck_tr =$this.parents("tr");
+                        $mendbox.css("top",(index*104+97+"px"));
+                        $mendbox.css({"height":(lengths*104+"px"),"padding-top":(lengths*104/2-72+"px")});
+                        inputs.each(function(ind,val){
+                            var $this=$(this);
+                            if(objs[$this.attr("name")]){
+                                $this.val(objs[$this.attr("name")][0].value||"");
+                            }else{
+                                if($this.attr("name") == "pnum"){
+                                    $this.val("1");
+                                }
+                            }
+                        });
+                        $(".mendbox").show(100);
+                    });
+                    //推荐商品弹框
+                    $(".replaceOrder").click(function(){
+                        layerLoad("数据加载中...");
+                        activeId=0;
+                        trCheck_obj={};
+                        $(".container-02").show(400);
+                        trCheck_obj=$(this).parents("tr");
+                        var $this=$(this);
+                        var objs=JSON.parse(decodeURIComponent($this.data("obj")));
+                        var str="";
+                        activeId=trCheck_obj.find(".needMend").data("index");
+                        console.log(checkId,activeId);
+                        $.each(objs,function(ind,val){
+                            str+=getShadowModel(val,ind,checkId[activeId]);
+                        });
+                        $(".table-data-shadow").html(str);
+                        layer.close(iii);
+                        chooseI(".table-body .choose");
+                    });
+                    //弹框关闭
+                    $(".closeShadow").click(function(){
+                        $(".container-02").hide(400);
+                    });
+                    var timer=null;
+                    timer = setTimeout(function(){
+                        var initTime=new Date(),nowTime=null;
+                        $("tr").on({"mouseenter":function(e){
+                                clearTimeout(timer);
+                                var data_str=$(this).find(".jl-choose-circle").data("obj");
+                                if(!data_str){
+                                    return;
+                                };
+                                nowTime =(new Date());
+                                if(nowTime - initTime <1000){ initTime = nowTime;return;};
+                                $(this).find(".commonClass").show(100);
+                                var tips=[4,"#000"],tipText="请认准推荐型号";
+                                var obj=JSON.parse(decodeURIComponent(data_str));
+                                if(!obj.p_sign){
+                                    tips=[4,"#e84343"];
+                                    tipText="型号可能不正确";
+                                }
+                                layer.tips(tipText,this,{tips:tips});
+                            },"mouseleave":function(e){
+                                layer.closeAll();
+                                clearTimeout(timer);
+                                nowTime =(new Date());
+                                if(nowTime - initTime <1000){ initTime =nowTime;return;};
+                                $(this).find(".commonClass").hide(100);
+                            }});
+                    },100);
+                };
+                shadowInit();
+                chooseI('.jl-one-init');
+                function chooseI(className){
+                    $(className).off("click").on('click',function(){
+                        $(this).siblings().children('.jl-choose-circle').removeClass('jl-choose-active');
+                        if($(this).find("i").hasClass("jl-choose-active")){
+                            $(this).children('.jl-choose-circle').removeClass('jl-choose-active');
+                        }else{
+                            $(this).children('.jl-choose-circle').addClass('jl-choose-active');
+                        }
+                        //购物车结算
+                        if(className ==".table-data-body .choose"){
+                            check_price(className);
+                        };
+                        //是否可拆，分类搜索
+                        if(className==".jl-one-init"){
+                           // var query={};
+                            var isCheck = $(this).find(".jl-choose-active").length>0;
+                            if(isCheck){
+                                commonData.query[$(this).data("type")] = $(this).data("value");
+                            }else{
+                                delete commonData.query[$(this).data("type")];
+                            };
+                            var list = searchData(origin_bomData,commonData.query);
+                            //console.log("search",commonData,list);
+                            var newStr="";
+                            if(list.bom<1){
+                                return layer.msg("没有可匹配数据",{icon:5});
+                            };
+                            layerLoad("数据解析中...");
+                            bomData = JSON.stringify(list);
+                            tableGetVule(bomData,Number(commonData.checked_data)||0);
+                            /*$.each(list.bom,function(ind,val){
+
+                                newStr+=getModel(val.blur[0],list.sendData[ind],ind,val.blur)
+                            });
+                            $(".table-data-body").html(newStr);
+                            setTimeout(function(){
+                                assignmengt(list);
+                                shadowInit();
+                                chooseI('.table-data-body .choose');
+                            },10);*/
+                        };
+                    });
+                }
+                //弹框确认，取消
+                var activeId=0;
+                $(".footer").find("span").off("click").on("click",function(){
+                    var type=$(this).data("type");
+                    if(type=="sure"){
+                        //推荐商品选择
+                        $(".layui-input-block").html("<input type=\"checkbox\" class=\"layui-input-block-input\" name=\"allCheck\" lay-skin=\"primary\" lay-filter=\"filters\" title=\"全选\" />");
+                        form.render('checkbox',"filters");
+                        checkId[activeId]=[];
+                        var CheckI_obj= $(".container-02").find(".jl-choose-active");
+                        var array=[];
+                        var stres='';
+                        var sendData = JSON.parse(decodeURIComponent(trCheck_obj.data("obj")));
+                        var lengths =CheckI_obj.length;
+                        var index = trCheck_obj.find(".needMend").data("index");
+                        var Alldata = JSON.parse(decodeURIComponent(trCheck_obj.find(".replaceOrder").data("obj")));
+                        var hideCss = Alldata.length<1?true:false;
+                        var revClass="remove"+index +(classIndex++);
+                        CheckI_obj.each(function(ind,val){
+                            var $this=$(this);
+                            var obj = JSON.parse(decodeURIComponent($this.parent().data("obj")));
+                            var storeData={
+                                p_sign:sendData.p_sign?sendData.p_sign[0].value:"",
+                                cate:sendData.cate?sendData.cate[0].value:"",
+                                brand:sendData.brand?sendData.brand[0].value:"",
+                                package:sendData.package?sendData.package[0].value:"",
+                                pnum:sendData.pnum?sendData.pnum[0].value:"1",
+                                showSite:obj.show_site==1?"最新":(obj.show_site==2?"推荐":(obj.show_site==3?"热卖":"无")),
+                                store:obj.store?(obj.store>0?obj.store:0):0,
+                                isOpen:(obj.min_open==1?"是":"否"),
+                                min_open:obj.min_open != 1 ? obj.min * Math.ceil((sendData.pnum?sendData.pnum[0].value:obj.min)/obj.min):(sendData.pnum?sendData.pnum[0].value:1)
+                            };
+                            checkId[activeId].push(obj.id);
+                            if(ind<1){
+                                stres+='<tr class="'+revClass+'" data-obj="'+encodeURIComponent(JSON.stringify(sendData))+'" data-hide="'+hideCss+'" style="border-top: 1px solid #ddd">\n' +
+                                    '                                <td>' +
+                                    '                                    <div class="jl-return-money choose" style="display:'+(hideCss?"none":"inline-block")+'" myAttr="0"><i class="jl-choose-circle '+(commonData.checked_data == 1?"jl-choose-active":"")+'" data-id="'+obj.id+'" data-obj="'+encodeURIComponent(JSON.stringify(obj))+'"></i> </div>\n' +
+                                    '                                </td>' +
+                                    '                                <td class="p_sign" rowspan="'+lengths+'" >' +
+                                    '                                    <div  style="padding:0 20px;position:relative">'+storeData.p_sign+'<img class="needMend commonClass" data-obj="'+encodeURIComponent(JSON.stringify(sendData))+'" data-index="'+index+'" data-length="'+lengths+'" style="width:15px;height:15px;position:absolute;right:2px;top:50%;transform:translate(0,-50%);cursor:pointer;display: none" src="https://www.allchips.com/static/bom/images/list_modify_default.png?6fc3f6f5"/></div>' +
+                                    '                                </td>' +
+                                    '                                <td rowspan="'+lengths+'">' +
+                                    '                                    <div class="" >'+storeData.cate+'</div>' +
+                                    '                                </td>' +
+                                    '                                <td rowspan="'+lengths+'">' +
+                                    '                                    <div class="" >'+storeData.brand+' </div>' +
+                                    '                                </td>' +
+                                    '                                <td rowspan="'+lengths+'">\n' +
+                                    '                                    <div  >'+storeData.package+'</div>\n' +
+                                    '                                </td>\n' +
+                                    '                                <td>\n' +
+                                    '                                    <div class="number needNumber" rowspan="'+lengths+'" data-origin="'+storeData.pnum+'">'+storeData.pnum+'</div>\n' +
+                                    '                                </td>\n' +
+                                    '                                <td>\n' +
+                                    '                                    <div class="" style="position:relative"><div class="shop-detail"><p>型号：'+(obj.p_sign||"无")+'</p><p>封装：'+(obj.package||"无")+'</p><p>品牌：'+(obj.brand_name||"无")+'</p></div><span class="replaceOrder commonClass dataObj" data-obj="'+encodeURIComponent(JSON.stringify(Alldata))+'" style="width:0;height:0;border:10px solid transparent;border-top-color:#e84343;position:absolute;top:50%;cursor:pointer;transform: translateY(-50%);right:5px;display:block;"></span></div>\n' +
+                                    '                                </td>\n' +
+                                    '                                <td >\n' +
+                                    '                                    <div class="shop-package" >\n' +
+                                    '                                        <p>最小包装数：'+obj.min+'</p>\n' +
+                                    '                                        <p>库存：'+storeData.store+'</p>\n' +
+                                    '                                        <p>是否可拆：'+storeData.isOpen+'</p>\n' +                                     '                                       ' +
+/*
+                                    '                                        <p>类别：'+storeData.showSite+'</p>\n' +
+*/
+                                    '                                    </div>\n' +
+                                    '                                </td>\n' +
+                                    '                               <td >\n' +
+                                    '                                      <div class="number countNum" data-origin="'+storeData.min_open+'">'+storeData.min_open+' </div>\n' +
+                                    '                                </td>\n' +
+                                    '                            </tr>';
+                              }else{
+                                stres+='<tr class="'+revClass+'" data-obj="'+encodeURIComponent(JSON.stringify(sendData))+'" data-hide="'+hideCss+'" style="border-top: 1px solid #ddd">\n' +
+                                    '                                <td>' +
+                                    '                                    <div class="jl-return-money choose" style="display:'+(hideCss?"none":"inline-block")+'" myAttr="0"><i class="jl-choose-circle '+(commonData.checked_data == 1?"jl-choose-active":"")+'" data-id="'+obj.id+'" data-obj="'+encodeURIComponent(JSON.stringify(obj))+'"></i> </div>\n' +
+                                    '                                </td>' +
+                                    /*'                                <td class="p_sign" >' +
+                                    '                                    <div  style="padding:0 20px;position:relative">'+storeData.p_sign+'<img class="needMend commonClass" data-obj="'+encodeURIComponent(JSON.stringify(sendData))+'" data-index="'+index+'" style="width:15px;height:15px;position:absolute;right:2px;top:16%;cursor:pointer;display: none" src="https://www.allchips.com/static/bom/images/list_modify_default.png?6fc3f6f5"/></div>' +
+                                    '                                </td>' +
+                                    '                                <td>' +
+                                    '                                    <div class="" >'+storeData.cate+'</div>' +
+                                    '                                </td>' +
+                                    '                                <td>' +
+                                    '                                    <div class="" >'+storeData.brand+' </div>' +
+                                    '                                </td>' +
+                                    '                                <td>\n' +
+                                    '                                    <div  >'+storeData.package+'</div>\n' +
+                                    '                                </td>\n' +*/
+                                    '                                <td>\n' +
+                                    '                                    <div class="number needNumber" data-origin="'+storeData.pnum+'">'+storeData.pnum+'</div>\n' +
+                                    '                                </td>\n' +
+                                    '                                <td>\n' +
+                                    '                                    <div class="dataObj" style="position:relative" ><div class="shop-detail"><p>型号：'+(obj.p_sign||"无")+'</p><p>封装：'+(obj.package||"无")+'</p><p>品牌：'+(obj.brand_name||"无")+'</p></div></div>\n' +
+                                    '                                </td>\n' +
+                                     '                                <td>\n' +
+                                     '                                    <div class="shop-package" >\n' +
+                                     '                                        <p>最小包装数：'+obj.min+'</p>\n' +
+                                     '                                        <p>库存：'+storeData.store+'</p>\n' +
+                                     '                                        <p>是否可拆：'+storeData.isOpen+'</p>\n' +
+/*
+                                     '                                        <p>类别：'+storeData.showSite+'</p>\n' +
+*/
+                                     '                                    </div>\n' +
+                                     '                                </td>\n' +
+                                     '                               <td>\n' +
+                                     '                                      <div class="number countNum" data-origin="'+storeData.min_open+'">'+storeData.min_open+' </div>\n' +
+                                     '                                </td>\n' +
+                                    '                            </tr>';
+                            }
+                        });
+                        stres!=""&&(trCheck_obj.before(stres).hide(100));
+                        var revClsName=trCheck_obj[0].className;
+                        setTimeout(function(){
+                            console.log("checkId",checkId);
+                            shadowInit();
+                            chooseI('.table-data-body .choose');
+                            if(stres!=""){
+                                if(revClsName){
+                                    $("."+revClsName).remove();
+                                }else{
+                                    trCheck_obj.remove();
+                                }
+                            }else{
+                                trCheck_obj.find(".shop-detail").html('<p>型号：无</p><p>封装：无</p><p>品牌：无</p>');
+                                trCheck_obj.find(".shop-package").html(
+                                    ' <p>最小包装数：0</p>\n' +
+                                    '                                        <p>库存：0</p>\n' +
+                                    '                                        <p>是否可拆：否</p>'
+                                );
+                            }
+                        },10);
+                    }else{
+                        // $(".container-02").hide(400);
+                    }
+                    $(".container-02").hide(400);
+                });
+            };
+            tableGetVule(bomData,0);
+            //全部--匹配-未匹配
+            var commonData={checked_data:"0",query:{}};
+            $(".setChild").on("click",function(){
+                if($(this).hasClass("search"))return;
+                if(!$(this).hasClass("active"))$(this).addClass("active").siblings().removeClass('active');
+                $(".shopLength").text(0);
+                $(".shopTotal").text("￥0.00");
+                commonData.checked_data=$(this).data("type");
+                //console.log("data",searchData(origin_bomData,commonData));
+                tableGetVule(searchData(origin_bomData,commonData.query),Number(commonData.checked_data));
+            });
+        });
+    </script>
+</block>

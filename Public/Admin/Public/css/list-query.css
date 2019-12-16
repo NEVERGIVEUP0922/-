@@ -1,0 +1,33 @@
+.list-query-container{
+    margin-bottom: 0;
+    padding-bottom: 4px;
+    padding-top: 4px;
+}
+.list-query-form{
+
+}
+.list-query-form>div{
+    margin-bottom: 2px;
+    height: 32px;
+}
+.list-query-form div:last-child{
+    margin-bottom: 0;
+}
+.list-query-form .layui-form-label{
+    font-size: 12px;
+    padding: 6px 15px;
+}
+.list-query-form .layui-input-block{
+    min-height: 12px;
+}
+.list-query-form .layui-input,
+.list-query-form .layui-select,
+.list-query-form .layui-textarea{
+    height: 32px;
+}
+.list-query-form .layui-form-select dl{
+    top: 32px;
+}
+.list-query-form .layui-form-switch{
+    margin-top: 4px;
+}

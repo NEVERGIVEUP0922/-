@@ -1,0 +1,227 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-center" />
+
+<block name="title">待付款</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/myOrder.css">
+</block>
+
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <!-- 标题 -->
+    <ul class="jl-order-title">
+        <li class="jl-goods">商品</li>
+        <li class="jl-name">名称</li>
+        <li class="jl-price">单价</li>
+        <li class="jl-count">数量</li>
+        <li class="jl-goods-operation">商品操作</li>
+        <li class="jl-subtotal">小计/元</li>
+        <li class="jl-state">交易状态</li>
+        <li class="jl-operation">交易操作</li>
+    </ul>
+
+    <!-- 订单详情 -->
+    <notempty name="orderList">
+        <volist name="orderList" id="order">
+            <p class="js-tishi">
+                <i class="jl-mandatory"></i>
+                未支付的订单可能随时会存在库存不足！
+            </p>
+            <table class="jl-product-detail">
+                <tr class="jl-table-head">
+                    <th colspan="3">
+                        {$order.create_at}<span>订单编号：<b class="jl-order-sn">{$order.order_sn}</b></span>
+                        <if condition="($order.pay_name eq '账期支付')">
+                            <span class="js-pay">账期支付： <b>¥<?php echo sprintf("%.2f",$order['pay_account']['money']);?></b></span>
+                        </if>
+                    </th>
+                    <?php $g_count = count($order['goods']); ?>
+                </tr>
+                <volist name="order.goods" id="good">
+                    <tr data-id="{$good.p_id}">
+                        <td>
+                            <ul class="jl-detail-content jl-cle">
+                                <li class="jl-goods">
+                                    <notempty name="good.cover_image">
+                                        <img src="{$good.cover_image}" alt="{$good.name}">
+                                        <else />
+                                        <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                                    </notempty>
+                                </li>
+                                <li class="jl-name">{$good.p_name}</li>
+                                <li class="jl-price">￥{$good.p_price}</li>
+                                <li class="jl-count">{$good.p_num}</li>
+                                <li class="jl-goods-operation"><a href="#">无</a></li>
+                                <li class="jl-subtotal">￥{$good.p_subtotal}</li>
+                            </ul>
+                        </td>
+                        <if condition="$i eq 1 ">
+                            <td rowspan="{$g_count}">
+                                <div class="jl-state">
+                                    <p>待付款</p><p><a href="{:U('Home/Order/detail',['order_sn'=>$order['order_sn']])}">订单详情</a></p>
+                                </div>
+                            </td>
+                            <td rowspan="{$g_count}">
+                                <p class="jl-operation">
+                                    <a href="javascript:;" class="jl-pay-money">立即支付</a>
+                                    <a href="javascript:;" class="jl-cancel">取消订单</a>
+                                    <a href="javascript:;" class="jl-again">再次购买</a>
+                                </p>
+                            </td>
+                        </if>
+                    </tr>
+                </volist>
+            </table>
+        </volist>
+        <else />
+        <div class="jl-empty">
+            <img src="__PUBLIC__/Home/Public/img/empty.png" alt="">
+            <h4>亲爱的客官，空空如也啊！</h4>
+        </div>
+    </notempty>
+
+
+    <!-- 分页 -->
+    {$page}
+    <!--<div id="jl-page" class="jl-cle">-->
+        <!--<ul>-->
+            <!--<li class="jl-pre jl-switch"><a href="#">&lt;上一页</a></li>-->
+            <!--<li class="jl-cur"><a href="#">1</a></li>-->
+            <!--<li><a href="#">2</a></li>-->
+            <!--<li><a href="#">3</a></li>-->
+            <!--<li><a href="#">4</a></li>-->
+            <!--<li class="jl-more">···</li>-->
+            <!--<li class="jl-next"><a href="#">上一页&gt;</a></li>-->
+        <!--</ul>-->
+        <!--<div class="jl-jump">-->
+            <!--<span>共<b>{$p_num}</b>页</span>-->
+            <!--到第-->
+            <!--<input type="text" value="1">-->
+            <!--页-->
+            <!--<button>确定</button>-->
+        <!--</div>-->
+    <!--</div>-->
+
+</block>
+
+
+
+<block name="js">
+
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+                require(['jl-modal'],function (modal) {
+                    modal.option({
+                        left:-77
+                    });
+                    //取消订单
+                    $('.jl-cancel').on('click',function () {
+                        var $that=$(this);
+                        var $table=$that.parents('.jl-product-detail');
+                        var order_sn=$table.find('.jl-order-sn').html();
+                        modal.confirm({
+                            title:'取消订单',
+                            brief:'您确定要取消吗？',
+                            top:100,
+                            confirm:function () {
+                                $.post("{:U('Home/Order/cancleOrder')}",{order_sn:order_sn}, function (res) {
+                                    console.log(res);
+                                    if(res.status===0){
+                                        location.reload();
+                                    }else{
+                                        modal.confirm({
+                                            title:'系统繁忙',
+                                            brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                            top:100
+                                        })
+                                    }
+                                });
+                            }
+                        });
+
+                    });
+
+                    //再次购买
+                    $('.jl-again').on('click',function(){
+                        var $td=$(this).parents('.jl-product-detail').find('tr').not('.jl-table-head');
+                        var goods=[];
+                        var obj={};
+                        $.each($td,function(index,el){
+                            obj={
+                                "pid":$(el).attr('data-id'),
+                                "num":$(el).find('.jl-count').html()
+                            };
+                            goods.push(obj);
+                        });
+                        $.get("{:U('Home/Basket/againBuyBasket')}",{goods:goods},function (res) {
+                            var data= $.parseJSON(res);
+                            if(data.error===0){
+                                location.href="{:U('Home/Basket/basketDetail')}";
+                            }else{
+                                modal.confirm({
+                                    type:'fade',
+                                    title:'系统繁忙',
+                                    brief:'不好意思哦！系统繁忙，请稍后重试！',
+                                    top:100
+                                });
+                            }
+                        });
+                    });
+
+                    //立即支付
+                    $('.jl-pay-money').on('click',function(){
+                        var $that=$(this);
+                        var order_sn=$that.parents('tr').siblings('.jl-table-head').find('.jl-order-sn').html();
+                        $.ajax({
+                            type:'POST',
+                            url:"{:U('Home/Order/checkStore')}",
+                            data:{"order_sn":order_sn},
+                            success:function(res){
+                                var data=res.content;
+                                if(res.status===0){
+                                    var tr=$that.parents('.jl-product-detail').find('tr').not('.jl-table-head');
+                                    var $res=0;
+                                    $.each(tr,function(index,el){
+                                        var pid=$(el).attr("data-id");
+                                        var store=$(el).find('.jl-count').html();
+                                        var $store=data[pid];
+                                        if($store<store){
+                                            modal.confirm({
+                                                title:'支付失败',
+                                                brief:'不好意思哦！你购买的商品库存不足，请重新下单',
+                                                top:100
+                                            });
+                                            $res++;
+                                            return;
+                                        }
+                                    });
+                                    if($res<=0){
+                                        window.location.href="{:U('Home/Order/userPayPlatform')}?order_sn="+order_sn;
+                                    }
+                                }
+
+                            }
+                        });
+                    });
+
+                });
+
+            })
+        })
+    </script>
+
+</block>

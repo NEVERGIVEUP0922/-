@@ -1,0 +1,130 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page navbar order" wx:if="{{show}}" style="padding:0;min-height:100vh;background-color:#f8f8f8">
+  <view class="contain" wx:if="{{list.length != 0}}" wx:key="*this">
+    <block wx:for="{{list}}" wx:for-index="idd" wx:key="">
+      <view class="fui-list-group noclick" style="border-bottom:10px solid #efeff4">
+        <view hover-class="none"  url="/pages/order/detail/index?id={{item.id}}">
+          <view class="fui-list-group-title">
+            <view class="order-num">订单号：
+              <text>{{item.order_sn}}</text>
+            </view>
+            <view class="statuscss">{{item.statusstr}}<text style="color:#f60" wx:if="{{item.ps}}">(付款延迟!)</text></view>
+          </view>
+          <navigator hover-class="none"  url="/pages/order/detail/index?id={{item.order_sn}}">
+            <block wx:for="{{item.order_goods}}" wx:for-index="idx" wx:key="self" wx:for-item="val">
+              <view class="fui-list goods-info">
+                <view class="fui-list-media">
+                  <image src="{{val.thumb}}" class="round goods_img" style="width:140rpx;height:140rpx;border:1rpx solid #efeff4"></image>
+                </view>
+                <view class="fui-list-inner">
+                  <view class="text text-left" style="font-size:32rpx;font-weight:600;">{{val.p_name}}</view>
+                  <view class="subtitle text-left">单价：￥{{val.p_price_true}}</view>
+                  <view class="subtitle text-left">数量：{{val.p_num}}个</view>
+                </view>
+                <view class="num" style="position:absolute;right:10rpx;bottom:30rpx">
+                  <view class="text-right" >
+                    <text>￥{{val.total}}</text>
+                  </view>
+                </view>
+              </view>
+            </block>
+          </navigator>
+          <view class="fui-list list-padding" >
+            <text class="fui-list-inner text-right totle" >
+              <text>共</text>
+              <text class="text-danger">{{item.order_goods.length}}</text>
+              <text>个商品 实付</text>
+              <text class="text-danger">
+                <text>￥</text>
+                <text>{{item.total}}</text>
+              </text>
+            </text>
+            <!-- <view class="morehandle" bindtap="moreHandle" data-self="{{idd}}">更多操作 <text class="{{isTurn == idd ? 'changeTurn' : ''}}">{{buttonText}}</text></view> -->
+          </view>
+        </view>
+        <view class="fui-list list-padding" wx:if="{{buttonStatus == idd}}">
+          <view class="fui-list-inner text-right">
+            <block >
+              <navigator  wx:if="{{item['pay_status'] == 0 || item['pay_status'] == 1 }}" class="btn btn-default btn-default-o" url="/pages/order/pay/index?id={{item.order_sn}}">
+                立即支付
+              </navigator>
+              <view data-type="agianBuy" bindtap="handle" class="btn btn-default btn-default-o" data-data="{{item.order_goods}}">
+                再次购买
+              </view>
+              <!-- <navigator class="btn btn-danger btn-default-o" url="/pages/order/refund/index?id={{item.order_sn}}" wx:if="{{item}}">
+                  退货/退款
+              </navigator>  -->
+              <!-- <view data-type="difference"  bindtap="handle" class="btn btn-default btn-default-o" data-order_sn="{{item.order_sn}}">
+                       返差额
+                  </view> -->
+              <block wx:if="{{!item.order_user}}">
+                <block wx:if="{{item.knot >= 0}}">
+                   <view data-type="difference " wx:if="{{item.order_has_pay > 88 && item.pay_type != 2 && item['knot'] == 2 && (item.check_status == 10000 || item.check_status == 5)}}" bindtap="handle" class="btn btn-default btn-default-o" data-orderid="{{item.order_sn}}">
+                       返差额
+                  </view>
+                  <view data-type="knot" wx:if="{{item['display_kont'] > 0 && (item.knot == 0 || item.knot == 3) && ( item['total'] == 0 || item['order_status'] != 0 ) && item['order_type'] != 1}}" bindtap="handle" class="btn btn-default btn-default-o" data-orderid="{{item.order_sn}}">
+                       取消出货
+                   </view>
+                </block>
+                <view class="btn btn-default btn-default-o" wx:if="{{item['pay_status'] == 0 && item['ship_status'] == 0}}">              
+                  <view bindtap="cancel" range="{{cancel}}" value="{{cancelindex}}" data-order_sn="{{item.order_sn}}">
+                      取消订单
+                  </view>
+                </view>
+                <!-- <navigator class="btn btn-default btn-default-o" url="/pages/order/comment/index?id={{item.id}}" wx:if="{{item.cancomment2}}">
+                  追加评价
+                </navigator> -->
+                <navigator wx:if="{{item['order_status'] == 3}}" class="btn btn-default btn-default-o" url="/pages/order/comment/index?id={{item.order_sn}}" >
+                  立刻评价
+                </navigator>
+                 <!-- <view bindtap="finish" class="btn btn-default btn-default-o" data-orderid="{{item.id}}" data-is_receipt="{{item['is_receipt']}}" wx:if="{{item['is_receipt'] <=2}}">
+                  确认收货
+                </view> -->
+               <!-- <navigator class="btn btn-default" url="/pages/order/refund/index" wx:if="{{item.canrefund}}">
+                  {{item.refundtext}}
+                </navigator>
+                <navigator class="btn btn-default" url="/pages/order/express/index?id={{item.id}}" wx:if="{{item.hasexpress}}">
+                  查看物流
+                </navigator> -->
+              </block>
+            </block>
+            <block wx:if="{{(item.ship_status ==4 || item.ship_status <=0 && item.pay_status>0 ) && item.pay_type==1 && item.total >0}}">
+              <block wx:if="{{item.is_retreat <=0}}">
+                <navigator class="btn btn-danger btn-default-o" url="/pages/order/refund/index?id={{item.order_sn}}" wx:if="{{item}}">
+                    退货/退款
+                </navigator> 
+              </block>
+              <block wx:elif="{{item.is_retreat>0}}">
+                <navigator class="btn btn-danger btn-default-o" url="/pages/order/refundList/index?id={{item.order_sn}}" wx:if="{{item}}">
+                    退货/退款
+                </navigator> 
+              </block>
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view style="background-color:#f8f8f8">
+      <view class="fui-loading empty " style="color:#999;margin:0 auto;padding:1em 0" wx:if="{{loaded && list.length > 0}}">
+        <view class="text" style="width:auto">没有更多了</view>
+      </view>
+    </view>
+  </view>
+   <view class="fui-loading" wx:if="{{loading}}">
+    <view class="icon"></view>
+    <view class="text">正在加载...</view>
+  </view>
+  <view class="center" style="margin-top:90rpx;" wx:if="{{list.length == 0 && empty}}">
+    <view class="empty">
+      <image class="light" src="/static/images/icon/lights-128.png"></image>
+      <view class="text-cancel">暂时没有任何订单</view>
+      <navigator open-type="switchTab" url="/pages/index/index" class="btn btn-default-o">
+        到处逛逛
+      </navigator>
+    </view>
+  </view>
+  <navigator hover-class="none" open-type="switchTab" url="/pages/member/index/index" class="fui-dot">
+    <image src="/static/images/icon-white/people.png"></image>
+  </navigator>
+  <include src="/pages/order/public/verify.wxml" />
+</view>

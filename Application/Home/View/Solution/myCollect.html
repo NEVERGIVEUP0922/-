@@ -1,0 +1,282 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout-sol-center" />
+
+<block name="title">方案中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		.projectContent{
+			min-height: 600px;
+		}
+		.myCollect_color{
+			color:#e84343;
+		}
+	</style>
+</block>
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main"><!-- 主要内容 -->
+	<!--面包屑导航系统-->
+	<!--{$breadcrum}-->
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--项目管理中心具体内容-->
+		<div class="projectContent">
+			<if condition="$res eq null">
+				<!--<if condition="$res eq null">-->
+				<div id="jl-purchase-fault">
+					<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+					<p class="jl-fault">还没有任何内容哦!</p>
+					<a href="{:U('Home/Solution/provider')}" class="jl-browse">返回方案中心</a>
+				</div>
+			<else/>
+				<foreach name="res" item="vo">
+					<if condition="$vo.sol_type eq 1"><!--供应方案-->
+						<!--分割-->
+						<div class="mysol mysol2 mysol3"><!--供应方案-->
+							<i class="p_or_d" data-p_or_d="1"></i>
+							<div class="mysol_children1_div">
+								<div class="div_img_0">
+									<div class="div_img_1">
+										<notempty name="vo.conver_image">
+											<div class="div_img_1"><img src="/Uploads/{$vo.conver_image}" alt=""></div>
+											<else />
+											<div class="div_img_1"><img src="__PUBLIC__/Home/Public/img/logo.png" alt=""></div>
+										</notempty>
+									</div>
+									<div class="word-gy" style="height:20px;line-height:20px;margin-left:40px;">供应方案</div>
+								</div>
+								<div class="div_ul_0">
+									<ul id="browse_ul_a">
+										<li>
+											<div class="project_sol_info redword" style="max-width:140px;display: inline;">
+												{$vo.pro_name}
+											</div>
+											<b class="mysol-delete" data-sol_id="{$vo.sol_id}" data-sol_sn="{$vo.sol_sn}" data-sol_type="{$vo.sol_type}" data-sol_id="{$vo.sol_id}" data-pub_status="{$vo.publish_status}"></b>
+											<if condition="$vo['jl_self'] eq 1">
+												<div class="detail-ziying">
+													<div class="detail-ziying-s">自营</div>
+												</div>
+											</if>
+										</li>
+										<li>
+											<div class="project_sol_name height-line">方案编号:</div>
+											<div class="project_sol_info" style="width:140px;">{$vo.pro_sn}</div>
+										</li>
+										<li>
+											<div class="project_sol_name height-line">方案类型:</div>
+											<div class="project_sol_info" style="width:140px;">{$vo.types}</div>
+										</li>
+										<li>
+											<div class="project_sol_name height-line">发&nbsp;布&nbsp;者&nbsp;:</div>
+											<div class="project_sol_info" style="width:140px;">{$vo.nick_name}</div>
+										</li>
+										<li>
+											<div class="project_sol_name height-line">发布时间:</div>
+											<div class="project_sol_info" style="width:130px;">{$vo.create_time}</div>
+										</li>
+									</ul>
+								</div>
+								<div class="clear"></div>
+							</div>
+							<div class="clear"></div>
+							<div class="div_desc_a0">
+								<div class="project_sol_name div_desc_a1_a">方案简要描述:</div>
+								<!--<div class="desc-hidden1">{$vo.synopsis}</div>-->
+								<div class="div_desc_a1_b" style="color:#222">{$vo.synopsis}</div>
+							</div>
+							<div class="clear"></div>
+							<div class="div_desc_b0">
+								<div class="project_sol_name div_desc_b1_a">方案详细描述:</div>
+								<!--<div class="div_desc_b1_b">{$vo.pro_desc}</div>-->
+								<div style="text-align: left;">
+									<a href="javascript:;" class="checkmore" data-method="describe2" data-pro_desc="{$vo.pro_desc}">>>>点击查看详情</a>
+								</div>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<!--分割-->
+					<elseif condition="$vo.sol_type eq 2"/><!--需求方案-->
+						<div class="mysol mysol2 mysol3">
+							<i class="save-data" data-desir_id="{$vo.id}" data-desir_sn="{$vo.desir_sn}" data-check_status="{$vo.check_status}" data-publish_status="{$vo.publish_status}" data-draft="{$vo.draft}"></i>
+							<div class="desired-base">
+								<li>
+									<div class="project_sol_info" style="width:225px;margin:0 0 0 5px;color:#e84343;">{$vo.desir_name}</div>
+									<b class="mysol-delete" data-sol_id="{$vo.sol_id}" data-sol_sn="{$vo.sol_sn}" data-sol_type="{$vo.sol_type}" data-sol_id="{$vo.sol_id}" data-pub_status="{$vo.publish_status}"></b>
+								</li>
+								<li>
+									<div class="project_sol_name" style="width:60px;">方案编号:</div>
+									<div class="project_sol_info" style="width:130px;margin:0 0 0 5px;">{$vo.desir_sn}</div>
+									<div class="project_sol_name" style="width:60px;">发&nbsp;布&nbsp;者:&nbsp;</div>
+									<div class="project_sol_info" style="width:80px;">{$vo.nick_name}</div>
+								</li>
+								<li>
+									<div class="project_sol_name" style="width:60px;">方案类型:</div>
+									<div class="project_sol_info" style="width:130px;margin:0 0 0 5px;">{$vo.types}</div>
+									<div class="project_sol_name" style="width:60px;">交付时间:</div>
+									<div class="project_sol_info" style="width:80px;">{$vo.create_time}</div>
+								</li>
+								<li style="margin-bottom:37px;">
+									<div class="project_sol_name" style="width:60px;">预&#12288;&#12288;算:</div>
+									<div class="project_sol_info" style="width:130px;margin:0 0 0 5px;">{$vo.budget}</div>
+									<div class="project_sol_name" style="width:60px;">收藏时间:</div>
+									<div class="project_sol_info" style="width:80px;">{$vo.create_time}</div>
+								</li>
+							</div>
+							<div ></div>
+							<div class="desired-desc" style="border-top:1px solid #ddd;padding-top:25px;">
+									<div class="project_sol_name" style="width:60px;">方案描述:</div>
+									<div class="project_sol_info" style="width:300px;;margin: 0 0 0 5px;font-size: 13px;" id="desir_desc">
+										{$vo.desir_desc}
+									</div>
+							</div>
+							<div style="text-align:right;">
+								<a href="javascript:;" class="checkmore" data-method="describe" style="height:40px;line-height: 40px;">>>>点击查看详情</a>
+							</div>
+							<!--分割线-->
+						</div>
+					</if>
+				</foreach>
+			</if>
+		</div>
+		<div class="clear" ></div>
+		{$page}
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js', 'layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','layer'], function ($, modal, pikaday, jlTool) {
+				var jlTool=layui.jlTool;
+
+				//查看更多
+                $(".checkmore").on('click',function(event){
+                    event.stopPropagation();
+                    var _type = $(this).parents('.mysol').find('.mysol-delete').data('sol_type');
+					if(_type==1){/*供应*/
+                        var _descri2 = $(this).data('pro_desc');
+                        var othis    = $(this), method = othis.data('method');
+                        active[method] ? active[method](_descri2) : '';
+					}else if(_type==2){/*需求*/
+						var te = $(this).parents('.mysol').find('#desir_desc')
+						var _descri = te.html().replace(/n/g,"<p>");
+//							_descri = _descri.replace(/n/g,"<p>");/*windows*/
+						var othis   = $(this), method = othis.data('method');
+						active[method] ? active[method](_descri) : '';
+					}
+                });
+
+                //弹层相关
+                var active = {
+                    describe: function( texts){
+                        var descri = texts;
+                        layer.open({
+                            type: 1
+                            ,title:false// "方案描述"
+                            ,closeBtn: false
+                            ,area:['400px','500px']
+                            ,shade:0.3
+                            ,shadeClose:true
+                            ,id: 'LAY_layuipro'
+//                     	,btn:'关闭'
+                            ,btnAlign: 'r'
+                            ,moveType: 1
+                            ,content: "<div style='text-indent: 25px;box-sizing: border-box;width:100%;height:100%;line-height:25px;padding:10px;text-indent:25px;letter-spacing: 2px;word-break: break-all;word-wrap: break-word;color:#222'>"+descri+"</div>"
+                            ,success: function(layero){
+                                var btn = layero.find('.layui-layer-btn');
+                                btn.find('.layui-layer-btn0').attr({
+                                    href: 'http://www.layui.com/'
+                                    ,target: '_blank'
+                                });
+                            }
+                        });
+                    }
+                    ,describe2: function( text){
+                        var descri = text;
+                        console.log(descri)
+                        var url = descri;
+                        layer.open({
+                            type: 2
+                            , title: false
+                            , closeBtn: 2
+                            , area: ["60%", '80%']
+                            , shade: 0.5
+                            , id: 'LAY_layuipro1'
+                            , btn: ['关闭页面']
+                            , content: url
+                        });
+                    }
+                };
+
+
+                //查看方案
+                $(".mysol").on('click',function(){
+                    {}
+                    var data = $(this).find('b').data();
+                    var url = "";
+                    if(data.sol_type==1&&data.pub_status==1){
+                        url ="{:U('Home/Solution/proDetail')}"+"?"+"id="+data.sol_id;
+                    }else if(data.sol_type==2&&data.pub_status==2){
+                        url ="{:U('Home/Solution/desirDetail')}"+"?"+"id="+data.sol_id;
+                    }else{
+                        console.log(data);
+                        return;
+					}
+                    window.location=url;
+                });
+				//删除收藏
+                $(".mysol-delete").on('click',function(event){
+                    event.stopPropagation();
+					var data = $(this).data();
+					var b = $(this);
+					modal.confirm({
+						title:'移除收藏',
+						brief:'您确定要从收藏夹移除该方案吗?',
+						top:100,
+						isCenter:true,
+						confirm:function(){
+						    $.ajax({
+								type:"POST",
+								dataType:"json",
+								url:"/Home/Solution/solCollectDelete",
+								data:data,
+								success:function($res){
+                                    if($res.status==999) {
+                                        window.location.href = '/Home/Account/login';
+                                        return;
+                                    }
+								    if($res.status==1000||$res.status==1011){
+								        $(b).parents('.mysol').remove();
+									}
+									var temp = $('.projectContent').children().length;/*判断是否还有内容,没有就显示空页面*/
+								    if(!temp){
+								        var backups_div =$('#jl-purchase-fault').removeAttr('hidden');
+								        $('.projectContent').append(backups_div);
+									}
+								},
+								error:function($res){
+								    alert('请求失败');
+								}
+							});
+						}
+					});
+				});
+
+
+            });
+        });
+	</script>
+</block>

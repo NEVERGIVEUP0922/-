@@ -1,0 +1,194 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">订单列表</a>
+            </span>
+        </blockquote>
+
+        <div class="layui-collapse" lay-accordion>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">订单同步失败列表</h2>
+                <div class="layui-colla-content layui-show">
+                    <div class="layui-tab-item layui-show">
+                        <button class="layui-btn layui-btn-xs" lay-filter="orderMoreCurrSync">批量同步</button>
+                        <table lay-filter="data-table-orderList" class="data-table-orderList">
+                            <script type="text/html" id="data-table-handle-tpl">
+                                <button class="layui-btn layui-btn-sm"  lay-event="orderDetail">订单详情</button>
+                                {{#  if(d.s_status !== 3){ }}
+                                <button class="layui-btn layui-btn-sm" lay-event="orderCurrSync">立即同步</button>
+                                {{#  } }}
+                                <button class="layui-btn layui-btn-sm" lay-event="cancleOrderSync">取消同步</button>
+                            </script>
+                        </table>
+                        <div id="data-table-orderList-page"></div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">退款订单同步失败列表</h2>
+                <div class="layui-colla-content">
+                    <button class="layui-btn layui-btn-xs" lay-filter="retreatMoreCurrSync">批量同步</button>
+                    <table lay-filter="data-table-retreatList" class="data-table-retreatList">
+                        <script type="text/html" id="data-retreat-tpl">
+                            <button class="layui-btn layui-btn-sm" lay-event="retreatDetail">订单详情</button>
+                            <button class="layui-btn layui-btn-sm" lay-event="retreatCurrSync">立即同步</button>
+                            <button class="layui-btn layui-btn-sm" lay-event="cancleOrderSync">取消同步</button>
+                        </script>
+                    </table>
+                    <div id="data-table-retreatList-page"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form'], function(){
+            var layer = layui.layer,
+                table = layui.table,
+                laypage = layui.laypage,
+                jlTool = layui.jlTool,
+                element = layui.element,
+                form = layui.form;
+            var orderList_data = {$orderFailList|json_encode};
+            var retreatList_data = {$retreatFailList|json_encode};
+            function Each(arr)
+            {
+                $.each(arr, function(index,value){
+                    value.s_status = parseInt(value.sync_status);
+                    switch( parseInt(value.sync_status) ){
+                        case 0:
+                            value.sync_status = '未同步';
+                            break;
+                        case 1:
+                            value.sync_status = '同步成功';
+                            break;
+                        case 2:
+                            value.sync_status = '同步失败';
+                            break;
+                        case 3:
+                            value.sync_status = '订单删除/取消';
+                            break;
+                        case 4:
+                            value.sync_status = '换型号处理中';
+                            break;
+                        case 5:
+                            value.sync_status = '换型号成功';
+                            break;
+                        case 6:
+                            value.sync_status = '换型号失败';
+                            break;
+                    }
+                });
+            }
+            Each(orderList_data);
+            Each( retreatList_data );
+            var orderList = table.render({
+                elem: '.data-table-orderList',
+                id : 'test',
+                data: orderList_data,
+                page: true,
+                count: orderList_data.length,
+                cols: [[ //表头
+                    {type:'checkbox'},
+                    {field: 'order_sn', title: '订单编号', width:150}
+                    ,{field: 'user_name', title: '客户名称', width:150}
+                    ,{field: 'company_name', title: '公司名称', width:200}
+                    ,{field: 'femplno', title: '业务员编码', width:150}
+                    ,{field: 'fullname', title: '业务员', width:250}
+                    ,{field: 'sync_status', title: '同步状态', width:150}
+                    ,{field: 'fail_desc', title: '同步失败原因'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right', minWidth:250,toolbar: '#data-table-handle-tpl'}
+                ]],
+            });
+
+            //工具按钮
+            table.on('tool(data-table-orderList)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                var tr = obj.tr;
+                switch( layEvent ){
+                    case 'orderDetail'://订单详情
+                        var query = {
+                            where:{
+                                order_sn:{
+                                    key:'order_sn',
+                                    value:source.order_sn
+                                }
+                            },
+                            show:'orderDetail'
+                        };
+
+                        query = jlTool.urlEncode(query);
+                        jlTool.sendIframeMsg('go',{
+                            title:'订单详情',
+                            url:'/Admin/Order/orderList?'+query,
+                            icon:''
+                        });
+                        break;
+                    case 'orderCurrSync': //立即同步
+                        var str = '';
+                        if( source.s_status === 0 ){
+                            str = '是否确认同步';
+                        }else{
+                            str = '是否已确认检查同步失败原因!并处理完成';
+                        }
+                        layer.confirm(str,{title:'提示',icon:3},function(){
+                            var load = layer.load(3, {time: 10*1000});
+                            $.post('/Admin/Sync/orderFailSyncStore',{order_sn:source.order_sn},function(data){
+                                layer.close(load);
+                                if( data.status !== 0 ){
+                                    layer.msg( data.content, {icon:2,time:3000} );
+                                }else{
+                                    layer.msg( data.content, {icon:1,time:2000} ,function(){
+                                        location.reload();
+                                    });
+                                }
+                            });
+                        });
+                        return false;
+                        break;
+                    case 'cancleOrderSync':
+                        var str = '是否取消同步该订单';
+                        layer.confirm(str,{title:'提示',icon:3},function(){
+                            var load = layer.load(3, {time: 10*1000});
+                            $.post('/Admin/Sync/cancleSyncOrder',{order_sn:source.order_sn},function(data){
+                                layer.close(load);
+                                if( data.status !== 0 ){
+                                    layer.msg( data.content, {icon:2,time:3000} );
+                                }else{
+                                    layer.msg( data.content, {icon:1,time:2000} ,function(){
+                                        location.reload();
+                                    });
+                                }
+                            });
+                        });
+                        break;
+                }
+            });
+
+            var retreatList = table.render({
+                elem: '.data-table-retreatList',
+                id : 'test2',
+                data: retreatList_data,
+                page: false,
+                // limit: 1,
+                // cellMinWidth: 160,
+                cols: [[ //表头
+                    {type:'checkbox'},
+                    {field: 're_sn', title: '退款编号'}
+                    ,{field: 'sync_status', title: '同步状态'}
+                    ,{field: 'fail_desc', title: '失败说明'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right', minWidth:250,toolbar: '#data-retreat-tpl'}
+                ]]
+            });
+        });
+    </script>
+</block>

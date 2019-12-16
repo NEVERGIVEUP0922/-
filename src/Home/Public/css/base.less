@@ -1,0 +1,686 @@
+@import "init.less";
+
+body,h1,h2,h3,h4,h5,h6,dl,dt,dd,ul,ol,li,th,td,p,blockquote,pre,form,fieldset,legend,input,button,textarea,hr{margin:0;padding:0;}
+body,button,input,select,textarea{
+  font-size:@font-size; color:@medium-grey; font-family:"Microsoft YaHei",arial, verdana, sans-serif; }
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
+li{list-style:none;}
+b{ font-weight: normal;}
+i{ font-style: normal; }
+s{ text-decoration: none; }
+fieldset,img{border:0;}
+table{border-collapse:collapse;border-spacing:0;}
+q:before,q:after{content:'';}
+button,input,select,textarea{font-size:100%;  outline:none;}
+legend{color:#000;}
+hr{border:none;height:1px;}
+a{text-decoration:none;color:@medium-grey;}
+a:hover{color:@color !important;}
+button{  cursor: pointer;}
+.clearFix{*zoom:1;}.clearFix:after{content: ".";display: block;height: 0;clear: both;visibility: hidden;}
+.jl-cle:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.jl-clear{
+  clear: both;
+}
+.jl-head-content,#float-box,#jl-search,.jl-banner-content,#jl-hot-product,
+.jl-new-product,.jl-factory,.jl-market,.jl-brand,.jl-footer-content,.jl-brand-url,
+#jl-detail,#jl-specification,#jl-manual,.lj-slide-box
+{width:1200px;  margin: 0 auto;}
+input{
+  color:@dark-grey;
+  line-height: 1.5;
+}
+
+::-webkit-input-placeholder{
+  color:@light-gray;
+}
+:-moz-placeholder{
+  color:@light-gray;
+}
+::-moz-placeholder{
+  color:@light-gray;
+}
+:-ms-input-placeholder{
+  color:@light-gray;
+}
+
+
+/* 顶部 */
+.js-return-home{
+  margin-right: 20px;
+  i{
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    background: url("../../Public/img/icon.png") no-repeat;
+    background-size: contain;
+    margin-right: 5px;
+    position: relative;
+    top: 1px;
+  }
+}
+#jl-head{
+  position: relative;
+  z-index:999;
+  background:@bg-color;
+  height:35px;
+  .font12;
+  line-height: 35px;
+  border: 1px solid #e7e7e7;
+  a{
+    .font12;
+  }
+  a:hover{
+    color:@color ;
+  }
+  .jl-head-left{
+    float: left;
+  }
+  .js-login{
+    margin:0 27px;
+  }
+  .jl-head-right{
+    float: right;
+  }
+  .jl-favorites{
+    margin-left: 20px;
+  }
+  .jl-a-nav{
+    >b{
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background:url("../../Public/img/sprite.png") no-repeat;
+      position: relative;
+      top: 1px;
+    }
+  }
+  .jl-a-nav:hover>b{
+    background-position: -12px 0;
+  }
+  .jl-user-name{
+    margin-left: 27px;
+  }
+}
+
+#js-submit{
+  display: none;
+}
+
+/* 搜索悬浮框 */
+.js-search-nav{
+  display: none;
+  width: 100%;
+  height: 50px;
+  position: fixed;
+  top:0;
+  background:#fff;
+  z-index: 999;
+  .jl-main{
+    width: 1200px;
+    height: 48px;
+    margin: 0 auto;
+  }
+  .jl-logo-float{
+    float: left;
+    width:195px;
+    height: 28px;
+    background: url("../../Public/img/logo-sm.png") no-repeat;
+    margin: 10px 0;
+  }
+  .jl-search{
+    float: left;
+    height: 34px;
+    margin-left: 156px;
+    margin-top: 7px;
+    background: @bg-color;
+    position: relative;
+    >input{
+      float: left;
+      width: 422px;
+      height: 34px;
+      background:@bg-color;
+      padding-left: 15px;
+      border:none;
+      outline: none;
+    }
+    >.jl-search-button,
+    >.jl-submit-float{
+      float: left;
+      cursor: pointer;
+      position: relative;
+      width:58px;
+      border:none;
+      border-left:10px solid @bg-color;
+      border-top:17px solid @color;
+      border-bottom:17px solid @color;
+      >b{
+        position: absolute;
+        top: -9px;
+        left:15px;
+        width: 18px;
+        height:19px;
+        background:url("../../Public/img/search.png") no-repeat;
+      }
+    }
+    >button{
+      position: relative;
+      width:58px;
+      border:none;
+      border-left:10px solid @bg-color;
+      border-top:17px solid @color;
+      border-bottom:17px solid @color;
+      >b{
+        position: absolute;
+        top: -9px;
+        left:15px;
+        width: 18px;
+        height:19px;
+        background:url("../../Public/img/search.png") no-repeat;
+      }
+    }
+  }
+  .js-search-float{
+    top: 33px;
+  }
+
+  .line{
+    border-bottom: 2px solid @color;
+    box-shadow: 0px 2px 5px #b0b0b0;
+  }
+}
+
+/* 底部 */
+#jl-footer{
+  background: #fff;
+  a{
+    font-size: 12px;
+  }
+}
+.jl-service{
+  padding:42px 0 38px 20px;
+  border-bottom:@border02;
+  overflow: hidden;
+  li{
+    float: left;
+    width:240px;
+    margin-right:73px;
+    >b{
+      float: left;
+      width: 52px;
+      height: 52px;
+      text-align: center;
+      line-height: 52px;
+      border-radius:50%;
+      border: 2px solid @medium-grey;
+      font-size: 30px;
+      color:@medium-grey;
+    }
+    >div{
+      float: left;
+      margin-left: 16px;
+      margin-top: 5px;
+      h4{
+        color:@medium-grey;
+        font-size: @big-size;
+      }
+      p{
+        color:@grey;
+        font-size:@title-size;
+      }
+    }
+  }
+  .jl-service-last{
+    margin-right: 0;
+  }
+}
+.jl-guide{
+  padding:38px 0 38px 38px;
+  border-bottom: @border02;
+  overflow: hidden;
+  >li{
+    float: left;
+    width: 130px;
+    margin-right:76px;
+    >ul>li{
+      height:20px;
+      margin-bottom:6px;
+      a{
+        color:@grey;
+      }
+      h3{
+        font-size: @title-size;
+        color:@medium-grey;
+        margin-bottom: 14px;
+      }
+    }
+  }
+  >li.jl-li-last{
+    margin-right: 0;
+  }
+}
+
+.jl-foot{
+  padding-top: 35px;
+  text-align: center;
+  span,b,p{
+    .font12(@medium-grey);
+  }
+}
+
+.jl-address{
+  >b{
+    margin: 0 30px;
+  }
+}
+.jl-copy{
+  margin-top: 12px;
+}
+.jl-pay{
+  width: 522px;
+  margin: 10px auto 30px;
+  li{
+    float: left;
+    margin: 5px;
+    a{
+      display: block;
+      width: 75px;
+      height: 38px;
+      background: url("../../Public/img/logos.png") no-repeat -3px 0;
+    }
+    .jl-icon02{
+      width: 82px;
+      background-position-x: -82px;
+    }
+    .jl-icon03{
+      width: 129px;
+      background-position-x: -166px;
+    }
+    .jl-icon06{
+      width: 34px;
+      background-position: -6px -43px;
+    }
+    .jl-icon07{
+      width: 60px;
+      background-position: -58px -43px;
+    }
+    .jl-icon08{
+      width: 82px;
+      background-position: -121px -43px;
+    }
+    .jl-icon09{
+      width: 47px;
+      height: 51px;
+      background-position: -219px -43px;
+    }
+  }
+}
+
+
+/* 分页 */
+#jl-page{
+  //width: 752px;
+  margin:50px auto 0;
+  text-align: center;
+  .jl-box{
+    display: inline-block;
+   select.pageSize{
+     border-color:#ddd;
+     display: initial;
+     height:38px;
+     padding: 0px 10px;
+     border-radius: 2px;
+     cursor: pointer;
+     margin: 2px 10px;
+     option{ box-sizing: content-box;}
+   }
+  }
+  ul{
+    float: left;
+  }
+  li{
+    float: left;
+    margin: 0 3px;
+    width: 38px;
+    height: 38px;
+    display: inline-block;
+    border:@border02;
+    text-align: center;
+    line-height: 38px;
+    background: #f9f9f9;
+    a{
+      display: block;
+      color:@dark-grey;
+    }
+  }
+  li.jl-cur{
+    border:none;
+    background: none;
+    a{
+      color:@color;
+    }
+  }
+  .jl-pre,.jl-next{
+    width: 88px;
+  }
+  .jl-switch{
+    background: #fff;
+    a{
+      color:@light-gray;
+    }
+  }
+  .jl-more{
+    border: none;
+    background: none;
+  }
+}
+
+.jl-jump{
+  height: 40px;
+  line-height: 40px;
+  color:@grey;
+  float: left;
+  span{
+    margin-left: 24px;
+    margin-right: 15px;
+    b{
+      color:@dark-grey;
+    }
+  }
+  input{
+    width: 40px;
+    height: 40px;
+    padding: 0 5px;
+    border:@border02;
+    text-align: center;
+    box-sizing: border-box;
+    margin:0 4px;
+  }
+  button{
+    width: 53px;
+    height: 38px;
+    border:@border02;
+    color:@medium-grey;
+    background: #f9f9f9;
+    margin-left: 15px;
+    cursor: pointer;
+  }
+}
+//分割线
+.jl-line{
+  border-top: 1px solid #dadada;
+  margin-top: 80px;
+}
+//下拉框
+.jl-top-arr,.jl-bottom-arr{
+  position: absolute;
+  right: 59px;
+  width:0;
+  height:0;
+  border: 4px solid transparent;
+}
+.jl-bottom-arr{
+  top: 12px;
+  border-bottom-color: @dark-grey;
+}
+.jl-top-arr{
+  border-top-color: @dark-grey;
+  top: 22px;
+}
+
+//错误提示
+.js-false{
+  input,.jl-y-select-title,textarea{
+    border-color: @color!important;
+  }
+  .jl-false-note{
+    position: relative;
+    right: 61px;
+    display: inline-block;
+    z-index: 2;
+    width: 15px;
+    height: 14px;
+    background: url("../../Public/img/sprite.png") no-repeat -104px -151px;
+  }
+}
+
+
+
+//小星星
+.jl-mandatory{
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: url("../../Public/img/sprite.png") no-repeat 0 -244px;
+  position: relative;
+  top: -1px;
+}
+
+//蓝色圈圈
+.jl-choose-circle{
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border:@border02;
+  border-radius:50%;
+  margin-right: 10px;
+  position: relative;
+  top: 3px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.jl-choose-active{
+  border:5px solid @blue;
+}
+
+//关闭
+.js-close{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: url("../../Public/img/sprite.png") no-repeat -129px -114px;
+  cursor: pointer;
+}
+
+//选择框
+.js-chose{
+  cursor: pointer;
+  b,i{
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border:@border02;
+    border-radius:3px;
+    position: relative;
+    top: 1px;
+    margin-right: 15px;
+    background: #fff;
+  }
+}
+.jl-chose-cur{
+  b,i{
+    background:#00bff0 url("../../Public/img/tick.png") no-repeat center center;
+    background-size:90%;
+    border-color: #00bff0;
+  }
+}
+.jl-chose-active{
+  i,b{
+    background:#fff url("../../Public/img/sprite.png") no-repeat -159px -28px;
+    border-color: @color;
+  }
+}
+
+.js-cart-num{
+  font-size: 12px;
+  font-style: normal;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: @color;
+  border-radius:50%;
+  color:#fff;
+  line-height:20px;
+}
+
+/* 侧边栏 */
+
+#jl-aside{
+  position: fixed;
+  z-index: 200;
+  bottom:50%;
+  transform: translate(0,50%);
+  right:0;
+  transition: all 1s;
+  padding-left:16px;
+  >aside{
+    display:none;
+    color:#e84343;
+    position:absolute;
+    left:0;
+    bottom:50%;
+    transform: translate(0,50%);
+    width: 14px;
+    cursor: pointer;
+   /* font-size: 40px;*/
+    letter-spacing: 40px; /* arbitrary large letter-spacing for safety */
+    background:#fff;
+  }
+  @media screen and (max-width: 1440px){
+    >aside{
+      display:block;
+    }
+  }
+  >ul{
+    >li{
+      width: 60px;
+      height: 60px;
+      margin-bottom: 1px;
+    }
+    .jl-aside-btn{
+      position: relative;
+      width: 60px;
+      height: 60px;
+      display: block;
+      background: url("../../Public/img/sprite.png") no-repeat -197px -114px;
+    }
+    .js-link{
+      background-position-x:-267px;
+    }
+    .js-person1{
+      background-position-x:-337px;
+    }
+    .js-person2{
+      background-position-x:-617px;
+    }
+    .js-cart{
+      background-position-x:-407px;
+    }
+    .js-back{
+      background-position-x:-477px;
+    }
+    .js-back{
+      background-position-x:-477px;
+    }
+  }
+  .js-scroll-top a{
+    background-position-x:-547px;
+    //display: none;
+  }
+  .js-cart-num{
+    background: #fff;
+    position: absolute;
+    text-align: center;
+    top: 3px;
+    right: 3px;
+    border: 1px solid @green;
+    color:@green;
+  }
+  .jl-cs-container{
+
+  }
+}
+@media screen and (max-width: 1440px){
+  #jl-aside {
+    transform: translate(60px,50%);
+  }
+}
+.jl-trigger-cs-detail{
+  position: relative;
+  &:hover{
+    color: #666;
+  }
+  .jl-cs-detail{
+    display: none;
+    position: absolute;
+    top:0;
+    right: 100%;
+    background-color: white;
+    border: 1px solid #ddd;
+  }
+  &:hover{
+    .jl-cs-detail{
+      display: block;
+    }
+  }
+}
+.jl-qr-container{
+  padding: 10px;
+  .jl-qr-title{
+    text-align: center;
+  }
+  .jl-qr-img{
+    width: 200px;
+    height: 200px;
+    display: block;
+  }
+}
+.jl-cs-sales-list{
+  width: 214px;
+}
+.jl-cs-sales-list>li{
+  padding:8px 10px;
+  line-height: 20px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: -1px;
+  *zoom:1;
+  &:after{  content: ".";display: block;height: 0;clear: both;visibility: hidden;  }
+  &:hover{
+    color: #e84343;
+  }
+  .jl-cs-qq,.jl-cs-wx{
+    width: 20px;
+    height: 20px;
+    float: left;
+    cursor: pointer;
+  }
+  .jl-cs-qq{
+    margin:0 8px;
+  }
+  .jl-cs-wx{
+    margin-left: 8px;
+  }
+  .jl-cs-wx-container{
+    display: inline-block;
+    position: relative;
+    float: left;
+    &:hover{
+      .jl-cs-qr{
+        display: block;
+      }
+    }
+    .jl-cs-qr{
+      display: none;
+      position: absolute;
+      bottom: 28px;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      border: 1px solid #ddd;
+    }
+  }
+
+  >span{
+    float: left;
+  }
+}

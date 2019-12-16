@@ -1,0 +1,156 @@
+<!-- 公共头部123123 -->
+<style>
+    body{ min-width:1440px !important;}
+</style>
+<?php $is_login = is_login()   ?>
+<div id="jl-head" style="height:30px">
+    <div class="jl-head-content" style="overflow:hidden">
+        <div class="jl-head-left">
+            <a href="{:U('Home/Default/index')}" class="js-return-home"><i></i>返回首页</a>
+            <span>Hi，欢迎来到玖隆芯城</span>
+            <if condition="$is_login gt 0 ">
+                <a class="jl-user-name" href="{:U('Home/User/index')}">
+                    <if condition="$_SESSION['userInfo']['user_type'] eq 1">
+                        <notempty name="_SESSION['userInfo']['nick_name']">
+                            {$_SESSION['userInfo']['nick_name']}
+                            <else/>
+                            {$_SESSION['userInfo']['company_name']}
+                        </notempty>
+                    <else/>
+                        <notempty name="_SESSION['userInfo']['company_name']">
+                            {$_SESSION['userInfo']['company_name']}
+                            <else/>
+                            {$_SESSION['userInfo']['nick_name']}
+                        </notempty>
+                    </if></a>
+                <a class="js-login"  href="{:U('Home/Account/Logout')}">退出</a>
+            <elseif condition="$is_login eq 0"/>
+                <a class="js-login" href="{:U('Home/Account/login')}">登录</a>
+                <a class="js-register" href="{:U('Home/Account/register')}">免费注册</a>
+            </if>
+        </div>
+        <div class="jl-head-right">
+            <if condition="$is_login gt 0 ">
+                <!--<a href="#">消息通知</a>-->
+                <a href="{:U('Home/Order/myOrder')}" class="js-search-cart" style="margin-right:10px">
+                    我的订单
+                </a>
+                <a href="{:U('Home/Basket/basketDetail')}" class="js-search-cart">
+                    我的购物车
+                </a>
+                <a class="jl-favorites" style="margin: 0 20px 0 10px" href="{:U('Home/User/favorite')}">
+                    收藏夹
+                </a>
+                <else />
+                <a href="{:U('Home/Account/login')}" class="js-search-cart">
+                    我的订单
+                </a>
+                <a href="{:U('Home/Account/login')}" class="js-search-cart">
+                    我的购物车
+                </a>
+                <a class="jl-favorites" href="{:U('Home/Account/login')}">
+                    收藏夹
+                </a>
+            </if>
+
+            <!--<a class="jl-a-nav" href="#">-->
+                <!--<b></b>-->
+                <!--网站导航-->
+            <!--</a>-->
+            服务时间：9:00-18:30
+        </div>
+    </div>
+        <!--通告-->
+        <!--<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="jquery" src="/Public/Common/module/jquery/1.12.4/jquery.min.js?v=118"></script>
+        <script>
+            var  $translateLeft = $(".translateLeft");
+            var timer2,timer3;
+            function getReward(){
+            $translateLeft.html("");
+            clearInterval(timer2);
+                $.post("/Home/default/infoCode",function(res,error){
+                    //console.log(res);
+                        if(res.length>0){
+                            var str="";
+                            for(var i=0;i<res.length;i++){
+                               str += ' <span style="margin:0 2%;color:#e84343">'+res[i]+'</span>';
+                            };
+                        }
+                    $translateLeft.html(str);
+                    getUpdate();
+                    timer2 = setInterval(function(){ getReward();},60000);
+                    },"json")
+            }
+            function getUpdate(){
+                clearInterval(timer3);
+                var $width = $(".translateLeft").width();
+                //console.log($width);
+                $translateLeft.animate({"margin-left":"-"+($width *2)+"px"},20000,"linear",function(){
+                    $(this).css("margin-left",0);
+                    clearTimeout(onceTimer);
+                });
+                timer3 = setInterval(function(){
+                    $translateLeft.animate({"margin-left":"-"+$width*2+"px"},20000,"linear",function(){
+                        $(this).css("margin-left",0);
+                    });
+                },20000) ;
+            };
+            var onceTimer =  setTimeout(function(){ getReward();clearTimeout(onceTimer);},1000);
+        </script>
+        <div style="background-color:#fff;width:100%">
+            <div style="width:1200px;margin:0 auto;overflow:hidden">
+                <span style="float:left;margin-right:1%">通告</span>
+                <div  style="float:left;width:80%;overflow:hidden;height:30px;">
+                    <div class="translateLeft" style="">
+                        &lt;!&ndash;<volist name="bannerList" id="item">
+                            <span style="margin:0 2%;color:#e84343">{$item}</span>
+                        </volist>&ndash;&gt;
+                    </div>
+                </div>
+            </div>
+       </div>-->
+
+</div>
+<form id="js-submit" action="{:U('Home/Product/search')}" method="post"
+<?php if(strpos($_SERVER['REQUEST_URI'],'User')){ echo 'target="_blank"'; } ?>
+>
+    头部
+    <input type="text" name="search" value="">
+    按分类搜
+    <input type="text" name="search_type">
+    结果里
+    <input type="text" name="search_inner">
+    分类里
+    <input type="text" name="cate_id">
+    是否库存
+    <input type="text" name="store">
+    <br>
+    销量
+    <input type="text" name="sell_sort">
+    品牌
+    <input type="text" name="brand_id">
+    价格
+    <input type="text" name="price">
+    库存
+    <input type="text" name="store_sort">
+    电流
+    <input type="text" name="current">
+    输入电压
+    <input type="text" name="voltage_input">
+    输出电压
+    <input type="text" name="voltage_output">
+    封装
+    <input type="text" name="package">
+    体积
+    <input type="text" name="volume">
+    属性5
+    <input type="text" name="custom">
+    属性6
+    <input type="text" name="custom1">
+    属性7
+    <input type="text" name="custom2">
+    属性ID
+    <input type="text" name="attr_id">
+
+    <input class="js-s1ubmit-btn" type="submit" value="submit">
+</form>

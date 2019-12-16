@@ -1,0 +1,44 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-l"><a href="javascript:;">联系我们</a></li>
+    </ul>
+
+    <!-- 账期支付 -->
+    <ul class="jl-question">
+        <li>
+            <h4>深圳市天玖隆科技有限公司</h4>
+            <h4>联系人：张白玉 女士 （销售部 经理）</h4>
+        </li>
+        <li>
+            <h4>电&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;话：86 0755 33002000</h4>
+            <h4>移动电话： 18902476377</h4>
+            <h4>传&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;真：86 0755 23816129-702</h4>
+            <h4>地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址：中国 广东 深圳市福田区高科德12921（西门6号门正门口）南山科技园南区高新南一道013号赋安科技大厦三层</h4>
+            <h4>邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编：518000</h4>
+        </li>
+        <li>
+            <img src="__PUBLIC__/Home/Public/img/help/img20.png" alt="">
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            });
+        });
+    </script>
+</block>

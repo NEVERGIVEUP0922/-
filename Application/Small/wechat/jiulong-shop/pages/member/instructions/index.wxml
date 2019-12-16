@@ -1,0 +1,7 @@
+<loading hidden="{{show}}">正在加载</loading>
+<view class="page navbar" wx:if="{{show}}" style="background-color:#EFEFF4;height:100vh;">
+  <view style="background-color:#fff;margin:20rpx auto;padding:15rpx 20rpx">
+      <view style="text-align:center;font-size:30rpx;font-size:600;">使用说明</view>
+      <view style="text-indent:40rpx;font-size:28rpx;line-height:60rpx;color:#666;letter-spacing:5rpx">已注册用户，通用于<text>玖隆芯城小程序</text>和<text>玖隆芯城网页版www.longicmall.com</text>，可以任何一处登陆，订单信息和基础信息双向同步实时更新。玖隆芯城网页版后台功能更强大，如有需要可登陆<text>www.longicmall.com</text>查看</view>
+    </view>
+</view>

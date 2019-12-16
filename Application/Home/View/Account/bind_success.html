@@ -1,0 +1,44 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-user-center"/>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/logo-header.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/register.css">
+</block>
+<block name="user-nav">绑定成功</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-reg-wrap">
+
+        <div class="jl-reg-msg">
+            <div class="jl-success-box">
+                <img src='__PUBLIC__/Home/Public/img/success.png' alt="密码修改成功" class="jl-success-logo">
+                <h2 class="jl-success-tit">恭喜你哦，绑定成功啦！</h2>
+                <p class="jl-success-time"><span class="jl-time"></span>秒后返回首页</p>
+                <a href="{:U('Home/Default/index')}">
+                    <input type="button" class="jl-reg-put jl-success-submit" id="js-success-btn" value="返回首页">
+                </a>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery'], function ($) {
+                var time = 6;
+                var count = function () {
+                    time--;
+                    $('.jl-time').text(time);
+                    if (time <= 0) {
+                        location.href = "{:U('Home/Default/index')}";
+                    }
+                };
+                count();
+                setInterval(count, 1000);
+            })
+        })
+    </script>
+</block>

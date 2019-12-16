@@ -1,0 +1,238 @@
+<loading hidden="{{show}}">正在加载</loading>
+<import src="/pages/common/diyform_view.wxml" />
+<view class="page navbar" wx:if="{{show}}">
+ <block wx:if='{{order.order.ship_status >0 && order.retreat_type!=0&&(order.handle_status==4||order.handle_status==5||order.handle_status==6)}}'>
+    <view style="border-top:20rpx solid #f8f8f8;padding:25rpx">物流信息</view>
+    <view class="fui-list bg">
+    <view class=""> 
+        <image class="round image-88" src="/static/images/icon-white/translating.png"></image>
+    </view>
+    <view class="fui-list-inner" wx:if='{{order.handle_status ==4 }}'>
+      <view class="row">
+        <view class="">已发货</view>
+      </view>
+      <view class="order-price">包裹已在路上，请耐心等待
+      </view>
+    </view>
+    <view class="fui-list-inner" wx:if='{{order.handle_status ==5 || order.handle_status ==6 }}'>
+      <view class="row">
+        <view class="">已收货</view>
+      </view>
+    </view>
+    <view class="fui-list-inner" wx:else></view>
+    </view>
+  </block>
+    <view class="fui-list-group">
+      <block wx:if="{{order.order.ship_status >0 && order.retreat_type!=0&&(order.handle_status==4||order.handle_status==5||order.handle_status==6)}}">
+        <view class="fui-list-group-title"><text>配送信息 <!--: {{order.ship}}--></text><text bindtap="moremuch" style="position:absolute;right:20rpx;color:#009688">{{ismore?'收起':'查看更多'}}</text></view>
+        <view class="fui-list-group-title" style="display:block;line-height:53rpx;min-height:106rpx;height:auto;padding:5rpx 0;" wx:if="{{ismore && Express}}">
+         <view class="fui-list-group-title" wx:if="{{order.re_delivery_num}}"> 快递公司: {{order.kd_name}}</view>
+          <view class="fui-list-group-title" wx:if="{{order.re_delivery_num}}"> 货运单号: {{order.re_delivery_num}}</view>
+          <block wx:for="{{Express}}" wx:for-item="value" wx:key="*this" wx:for-index="ind">
+            <view style="border-top:{{ind==0?'none':'10rpx solid #f8f8f8'}};padding:0 20rpx;">
+              <view class="" style="position:relative">物流轨迹 : <view wx:if="{{!value.hy}}">暂无物流信息</view>
+                <text bindtap="moremuch_child" data-index="{{ind}}" style="position:absolute;right:20rpx;color:#009688;top:50%;transform:translateY(-50%)" wx:if="{{value.hy}}">{{ismore_child == ind?'收起':'查看更多'}}</text>
+              </view>
+              <view wx:if="{{ismore_child == ind }}">
+                <block wx:for="{{value.hy}}" wx:for-item="val" wx:key="*this">
+                <view style="margin-left:10rpx;border-top:6rpx solid #efeff4">
+                  <view style="color:#35A030;font-size:32rpx;">{{val.AcceptStation}}</view>
+                  <view class="shop">{{val.AcceptTime}}</view>
+                </view>
+              </block>
+              </view>
+            </view>
+          </block>
+        </view>
+        <view class="fui-list-group-title" style="display:block;line-height:53rpx;min-height:106rpx;height:auto" wx:if="{{!Express}}">暂无物流信息       </view>
+      </block>
+      <block wx:if="{{(order.handle_status==2||order.handle_status==4||order.handle_status==5||order.handle_status==6)}}">
+        <view class="fui-list-group" wx:if="{{address.consignee}}" style="margin:0;border-top:20rpx solid #efeff4;">
+          <view class="fui-list" >
+            <view class="fui-list-media" style="color:#353535;font-size:28rpx">
+              收货人信息
+            </view>
+          </view>
+          <navigator class="fui-list" hover-class="none">
+            <view class="fui-list-inner">
+              <view class="" style="margin:1% 0;font-size:32rpx" >{{address.consignee}} {{address.mobile}}</view>
+              <view class="text">{{address.allAddrss }}</view>
+            </view>
+          </navigator>
+        </view>
+      </block>
+      <view class="fui-list-group" wx:if="{{address.re_delivery_desc}}" style="margin:0;border-top:20rpx solid #efeff4;">
+        <view class="fui-list" >
+          <view class="fui-list-media" style="color:#353535;font-size:28rpx">
+            退款说明
+          </view>
+        </view>
+        <navigator class="fui-list" hover-class="none">
+          <view class="fui-list-inner">
+            <view class="" style="margin:1% 0;font-size:32rpx" >{{order.re_delivery_desc}}</view>
+          </view>
+        </navigator>
+      </view>
+      <view style="border-top:20rpx solid #f8f8f8;padding:25rpx">商品信息</view>
+      <block wx:for="{{goods}}">
+        <view  class="fui-list goods-item" >
+          <view class="fui-list-media">
+            <image src="{{item.thumb}}" class="round goods_img" style="width:140rpx;height:140rpx"></image>
+          </view>
+          <view class="fui-list-inner jl-shop">
+            <view class="text">{{item.good.p_name}}</view>
+            <view class="text-right" style="margin:2.4% 0">单价：￥{{item.good.p_price_show}}</view>
+            <view class="text-right">
+              <!-- <text>退货数量：{{item.p_num}}个</text> <text style="float:right;color:#DF433e">￥{{item.total}}</text> -->
+                 <text>退货数量：{{item.p_num}}个</text>
+            </view>
+          </view>
+        </view>
+      </block>
+      <view class="fui-list list-padding" >
+        <text class="fui-list-inner text-right totle" >
+          <text>共</text>
+          <text class="text-danger">{{goods.length}}</text>
+          <text>个商品 总退款</text>
+          <text class="text-danger" style="display:inline-block">
+                  <text style="text-decoration:line-through;color:#888;display:block" wx:if="{{order.Alltotall_true != order.Alltotall}}">{{order.Alltotall}}</text>
+                  <text>￥</text>
+                  <text>{{order.Alltotall_true}}</text>
+                </text>
+        </text>
+      </view>
+    </view>
+  
+    <view class="fui-cell-group {{toggleStore ? 'toggleSend-group' : ''}}" wx:if="{{stores}}">
+      
+      <view class="send-code">
+        <block wx:for="{{stores}}">
+          <view class="fui-list noclick">
+            <view class="fui-list-media">
+              <image src="/static/images/icon/shop.png" class="fui-list-icon"></image>
+            </view>
+            <view class="fui-list-inner store-inner">
+              <view class="title">
+                <text class="storename">{{item.storename}}</text>
+              </view>
+              <view class="text">
+                <text class="realname">{{item.realname}}</text>
+                <text class="mobile">{{item.mobile}}</text>
+              </view>
+              <view class="text">
+                <text class="address">{{item.address}}</text>
+              </view>
+            </view>
+            <view class="fui-list-angle ">
+              <image class="image-48" bindtap="phone" data-phone="{{item.mobile}}" src="/static/images/icon/tel.png"></image>
+              <navigator hover-class="none" url="/pages/order/store/map?id={{item.id}}">
+                <image class="image-48" src="/static/images/icon/location.png"></image>
+              </navigator>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+
+  <view class="fui-cell-group" style="margin:0;border-top:20rpx solid #f8f8f8" wx:if="{{order.knot>0 || order.is_retreat>0}}">
+    <view class="fui-list-media fui-list" bindtap="retreat_knot_show" style="color:#009688;font-size:28rpx">
+        查看退换货/结单详情
+    </view>
+    <view class="order-info" wx:if="{{retreat_knot_show}}">
+      <view class="fui-cell-label weui-flex">
+        <text class="fui-cell-label weui-flex__item" style="flex:2;-webkit-flex:2;text-align:left">商品型号</text>
+        <text class="fui-cell-label weui-flex__item">退货数量</text>
+        <text class="fui-cell-label weui-flex__item">结单数量</text>
+      </view>
+      <block wx:for="{{goods}}" wx:key="">
+        <view class="fui-cell-label weui-flex">
+          <text class="fui-cell-label weui-flex__item" style="flex:2;-webkit-flex:2;text-align:left">{{item.p_name}}</text>
+          <text class="fui-cell-label weui-flex__item">{{item.has_retreat_num}}</text>
+          <text class="fui-cell-label weui-flex__item">{{item.knot_num}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="fui-cell-group" style="margin:0;border-top:20rpx solid #f8f8f8">
+    <view class="order-info">
+      <view class="fui-cell-label">订单编号：
+        <text class="fui-cell-label">{{order.order_sn}}</text>
+      </view>
+      <view class="fui-cell-label">退款编号：
+        <text class="fui-cell-label">{{order.re_sn}}</text>
+      </view>
+      <view class="fui-cell-label">退换货方式：
+        <text class="fui-cell-label">{{order.retreat_type ==1?'仅退货':(order.retreat_type ==2?'退换货':'仅退款')}}</text>
+      </view>
+      <view class="fui-cell-label">是否开票：
+        <text class="fui-cell-label">{{order.order.is_invoice>0?'是':'否'}}</text>
+      </view>
+      <view class="fui-cell-label">订单状态：
+        <text class="fui-cell-label">{{order.order_states}}</text>
+      </view>
+      <view class="fui-cell-label">支付方式:
+        <text class="fui-cell-label"> {{order.pay_type}}</text>
+      </view>
+      <view class="fui-cell-label" wx:if="{{order.retreat_status}}">退换货处理状态:
+        <text class="fui-cell-label"> {{order.retreat_status}}</text>
+      </view>
+      <view class="fui-cell-label" wx:if="{{order.order_type>0}}">定金支付状态:
+        <text class="fui-cell-label"> {{order.deposits_pay_status>0?'已支付':'未支付'}}</text>
+      </view>
+      <view class="fui-cell-label" wx:if="{{order.deposits_pay_type>0}}">定金金额:
+        <text class="fui-cell-label"> {{order.total_deposits}}</text>
+      </view>
+      <view class="fui-cell-label" wx:if="{{order.retreat_money>0}}">退款金额:
+        <text class="fui-cell-label"> {{order.retreat_money}}</text>
+      </view>
+      <view class="fui-cell-label">申请时间：
+        <text class="fui-cell-label">{{order.update_time}}</text>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{order.diyformfields.length > 0}}">
+    <template is="diyform" data="{{diyform:order}}"></template>
+  </view>
+  <view class="operate">
+    <navigator open-type="redirect" url="/pages/order/index" class="btn btn-default">
+      我的订单
+    </navigator>
+    <navigator open-type="switchTab" url="/pages/index/index" class="btn btn-default">
+      返回首页
+    </navigator>
+  </view>
+  <view class="fui-footer" style="display:none">
+    <view class="btn btn-default btn-default-o" wx:if="{{order.cancancel}}">
+      <picker bindchange="cancel" range="{{cancel}}" value="{{cancelindex}}">
+        取消订单
+      </picker>
+    </view>
+    <navigator class="btn btn-danger" url="/pages/order/pay/index?id={{order.id}}" wx:if="{{order.canpay}}">
+      支付订单
+    </navigator>
+    <view bindtap="code" class="btn btn-default btn-default-o pull-left" data-orderid="{{order.id}}" wx:if="{{order.canverify}}">{{order.dispatchtype == 1 ? '我要取货' : '我要使用'}}</view>
+    <view data-type="1" bindtap="delete" class="btn btn-default btn-default-o" wx:if="{{order.candelete}}">删除订单</view>
+    <navigator class="btn btn-default btn-default-o" url="/pages/order/comment/index?id={{order.id}}" wx:if="{{order.cancomment2}}">
+      追加评价
+    </navigator>
+    <navigator class="btn btn-default btn-default-o" url="/pages/order/comment/index?id={{order.id}}" wx:if="{{order.cancomment}}">
+      评价
+    </navigator>
+    <view bindtap="finish" class="btn btn-default btn-default-o" wx:if="{{order.cancomplete}}">确认收货</view>
+    <navigator class="btn btn-default" url="/pages/order/refund/index?id={{order.id}}" wx:if="{{order.canrefund}}">
+      {{order.refundtext}}
+    </navigator>
+    <view bindtap="refundcancel" class="btn btn-default-o btn-cancel" wx:if="{{order.cancancelrefund}}">取消申请</view>
+    <block wx:if="{{order.canrestore}}">
+      <view data-type="2" bindtap="delete" class="btn btn-default btn-default-o" data-orderid="{{order.id}}">
+        彻底删除订单
+      </view>
+      <view data-type="0" bindtap="delete" class="btn btn-default btn-default-o" data-orderid="{{order.id}}">
+        恢复订单
+      </view>
+    </block>
+  </view>
+  <include src="/pages/order/public/verify.wxml" />
+</view>

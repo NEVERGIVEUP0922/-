@@ -1,0 +1,45 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-l"><a href="javascript:;">快递配送</a></li>
+    </ul>
+
+    <!-- 账期支付 -->
+    <ul class="jl-question">
+        <li>
+            <h4>玖隆芯城快递发货均可送到指定的香港/国内地址，默认发货快递：优速、速尔，如有特殊要求可发顺丰，发货时间：周一至周五17:30之前，周六14:30之前，如要查看物流状态，请到（个人中心）/企业中心进行查看。<a href="{:U('Home/Order/myOrder')}">去查看</a></h4>
+        </li>
+        <li class="jl-online">
+            <h4>国内交货运费</h4>
+            <p>1. 每笔订单的商品总金额≥1000元时，免收基本运费。</p>
+            <p>2. 若商品总金额<1000元时，需到付或收取运费（广东省地区10元，其他省市15元，顺丰22元）。</p>
+            <p>3. 如部分体积较大或超重的器件(如风扇、线缆、接插件、模块等)，则需要用户根据实际情况补缴相应的国内运费。</p>
+        </li>
+        <li class="jl-online">
+            <h4>香港交货运费</h4>
+            <p>1. 玖隆芯城支持发货到香港指定地址，每笔订单的商品总金额≥2000美金，免收单次运费。</p>
+            <p>2. 1.商品总金额<2000美金，需收取15美金运费。</p>
+            <p>3. 部分体积较大或超重的器件(如风扇、线缆、接插件、模块等)，则需要用户根据实际情况补缴相应的运费。</p>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

@@ -1,0 +1,29 @@
+<div class="jl-retreat-right">
+    <h4>确认订单信息</h4>
+    <div class="jl-order-center">
+        <p><b>订单编号：</b>{$data.order_sn}</p>
+        <p><b>订单总价：</b>￥{$data.total}</p>
+        <p><b>已&nbsp;&nbsp;支&nbsp;&nbsp;付：</b>￥{$hytt1}</p>
+        <p><b>定金总额：</b>￥{$data.total_deposits}</p>
+    </div>
+    <notempty name="data.retreat">
+        <div class="jl-order-bottom">
+            <p><b>退款金额：</b>￥{$data.retreat.retreat_money}</p>
+            <p><b>要&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;求：</b>
+
+                <if condition="$data['retreat']['retreat_type'] eq 2">
+                    退款退货
+                    <elseif condition="$data['retreat']['retreat_type'] eq 1"/>
+                    仅退货
+                    <else />
+                    仅退款
+                </if>
+            </p>
+            <if condition="($data.retreat.retreat_type neq 1) ">
+                <p><b>退款路线：</b><if condition="($data.retreat.cargo_status eq 1) ">退回玖隆钱包<else />原路退回</if></p>
+            </if>
+            <p><b>货物状态：</b><if condition="($data.ship_status gt 2) ">已收到货<else />未收到货</if></p>
+            <p><b>说&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明：</b>{$data.retreat.retreat_desc}</p>
+        </div>
+    </notempty>
+</div>

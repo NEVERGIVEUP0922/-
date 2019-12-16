@@ -1,0 +1,228 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+
+<extend name="Layout:layout" />
+
+<block name="title">方案中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		/*面包屑导航css*/
+		.jl-brand-url{
+			overflow: hidden;
+		}
+		.jl-brand-url{
+			height:40px;
+			line-height: 40px;
+		}
+		#jl-brand>ul>li{
+			float: left;
+			margin-right: 10px;
+		}
+		/*页面布局css*/
+		/*列表css*/
+		#jl-project{
+			box-sizing: border-box;
+			border-bottom:1px solid #ddd;
+			margin:auto;
+			margin-top:10px;
+			padding-bottom:60px;
+			width:1200px;
+		}
+		.projectList{
+			width:200px;
+			float:left;
+		}
+		.projectList>ul>li{
+			padding-left:30px;
+			border:1px solid #ddd;
+			border-top:0px;
+			/*height:25px;*/
+			line-height:24px;
+		}
+
+		/*内容css*/
+		.projectContent{
+			width:940px;
+			margin-bottom:60px;
+			padding-bottom:24px;
+			border:1px solid #ddd;
+			float:right;
+		}
+		.mysol{
+			float:left;
+			margin:24px 0 0 24px;
+			padding:5px;
+			width:430px;
+			height:800px;
+			border:1px solid #ddd;
+		}
+		.mysol:hover{
+			background:#eee;
+			/*box-sizing: border-box;*/
+			box-shadow:0 0 8px #ddd;
+		}
+		table{
+		}
+		tr{
+			width:100%;
+			word-break:break-all;
+		}
+		td{
+			border:1px solid #ddd;
+			height:30px;
+			line-height:30px;
+			padding:5px 0px 5px 10px;
+			color:#777;
+		}
+		#myProvider-img{
+			margin:5px 5px 5px 5px;
+			width:100px;
+		}
+		.textAlign-top{
+			vertical-align:top;
+			text-align: left;
+		}
+		.ziying{
+			background:#e84343;
+			width:30px;
+			margin:4px 8px 4px 8px;
+			padding:2px 15px 2px 15px;
+			color:#fff;
+			font-size:15px;
+		}
+		/*清除浮动*/
+		.clear{
+			clear:both;
+		}
+	</style>
+</block>
+
+<block name="main"><!-- 主要内容 -->
+	<!--面包屑导航系统-->
+	<div id="jl-brand">
+		<ul class="jl-brand-url">
+			<li><a href="{:U('Home/Default/index')}">首页</a></li>
+			<li>></li>
+			<li><a href="#">方案中心</a></li>
+			<li>></li>
+			<li><a href="{:U('Home/Solution/project')}">项目管理中心</a></li>
+			<li>></li>
+			<li><a href="{:U('Home/Solution/myProvider')}">我的供应方案</a></li>
+		</ul>
+	</div>
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--项目管理中心列表-->
+		<div class="projectList">
+			<ul>
+				<li style="border-top:1px solid #ddd;background:#eee;">项目管理中心</li>
+				<li>发布方案</li>
+				<li style="padding-left:60px;"><a href="">发布供应方案</a></li>
+				<li style="padding-left:60px;"><a href="">发布需求方案</a></li>
+				<li>我的方案</li>
+				<li style="padding-left:60px;"><a href="">我的供应方案</a></li>
+				<li style="padding-left:60px;"><a href="">我的需求方案</a></li>
+				<li>参与的方案</li>
+				<li style="padding-left:60px;"><a href="">看过的方案</a></li>
+				<li style="padding-left:60px;"><a href="">收藏的方案</a></li>
+				<li style="padding-left:60px;"><a href="">接洽的方案</a></li>
+				<li><a href="">会员中心</a></li>
+			</ul>
+		</div>
+		<!--项目管理中心具体内容-->
+		<div class="projectContent">
+			<if condition="$res eq null">
+				<!--<if condition="$res eq null">-->
+				<div id="jl-purchase-fault">
+					<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+					<p class="jl-fault">还没有任何内容哦!</p>
+					<a href="{:U('Home/Default/index')}" class="jl-browse">返回首页</a>
+				</div>
+				<else/>
+				<foreach name="res" item="vo">
+					<div class="mysol">
+						<table>
+							<tr>
+								<td colspan="3" rowspan="4" style="with:40%;">
+									<div id="myProvider-img"><img src="__PUBLIC__/Home/Public/img/logo.png" alt="图片丢失" style="width:100%;"></div>
+								</td>
+								<td colspan="3"><span>{$vo.pro_name}</span></td>
+							</tr>
+							<tr>
+								<td>方案编号:</td>
+								<td>{$vo.pro_sn}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>方案类型:</td>
+								<td>{$vo.types}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="text-align: right">发布者:</td>
+								<td>
+									<a class="jl-user-name" href="{:U('Home/User/index')}">
+										<if condition="$_SESSION['userInfo']['user_type'] eq 1">
+											<notempty name="_SESSION['userInfo']['nick_name']">
+												{$_SESSION['userInfo']['nick_name']}
+												<else/>
+												{$_SESSION['userInfo']['company_name']}
+											</notempty>
+											<else/>
+											<notempty name="_SESSION['userInfo']['company_name']">
+												{$_SESSION['userInfo']['company_name']}
+												<else/>
+												{$_SESSION['userInfo']['nick_name']}
+											</notempty>
+										</if></a>
+								</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td colspan="3" style="text-align: center"><span data-type="1">供应方案</span></td>
+								<td>发布时间:</td>
+								<td colspan="2">{$vo.pubtime}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="textAlign-top">方案简要描述:</td>
+								<!--<td colspan="4">{$vo.synopsis}</td>-->
+								<td colspan="4">今年，王宏建的女儿刚刚考入中学。她喜欢拿手机看短视频，从做完作业直至睡觉前，手机一直不离手。以前，爷爷的唠叨对她没有多大作用。这一次，父亲的归来让她倍感压力。<!--她所在的中学地处城乡接合部，学校管理非常严格，明令禁止在校使用手机，开学没多久就有两个同学因为在课堂上玩手机而被老师当场没收在当地，一名17岁农村少年沉迷手机直播软件，以不吃不喝等方式威胁父母为其充值，短短两个月，就花掉了两万多元-->。</td>
+
+							</tr>
+							<tr>
+								<td colspan="2" class="textAlign-top">方案详细描述:</td>
+								<!--<td colspan="4">{$vo.pro_desc};</td>-->
+								<td colspan="4">今年，王宏建的女儿刚刚考入中学。她喜欢拿手机看短视频，从做完作业直至睡觉前，手机一直不离手。以前，爷爷的唠叨对她没有多大作用。这一次，父亲的归来让她倍感压力。她所在的中学地处城乡接合部，学校管理非常严格，明令禁止在校使用手机，开学没多久就有两个同学因为在课堂上玩手机而被老师当场没收在当地，一名17岁农村少年沉迷手机直播软件，以不吃不喝等方式威胁父母为其充值，短短两个月，<!--就花掉了两万多元。这让王宏建下定决心将孩子与手机完全隔绝：“要是现在还不管，可就刹不住车了。”没收手机之后，“暂时有点成效”，儿女们与王宏建的交流多了起来，学习时间也明显增加。但是要一直隔绝孩子与网络的接触吗？王建宏摇了摇头手机、接触互联网，既不合理，也不现实。”东北师范大学中国农村教育发展研究所特聘教授李涛表示，智能手机是人们获取信息的有效渠道，借助移动互联网，原本横亘在农村与城市之间的“数字鸿沟”正在消弭，而网络游戏对青少年有着天然的吸引力，一些优质的益智类游戏也承担着促进孩子社会化的正向功能-->。</td>
+							</tr>
+							<tr>
+								<td colspan="6" style="text-align:right;"><a href="#" style="color: dodgerblue;">查看更多>>></a></td>
+							</tr>
+							<tr>
+								<td colspan="6"><div class="ziying">自营</div></td>
+							</tr>
+						</table>
+					</div>
+				</foreach>
+			</if>
+		</div>
+		<div class="clear" ></div>
+	</div>
+
+
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','webuploader'], function ($, modal, pikaday, jlTool,WebUploader) {
+
+
+            });
+        });
+	</script>
+</block>

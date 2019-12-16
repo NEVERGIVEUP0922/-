@@ -1,0 +1,50 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">发票说明</a></li>
+    </ul>
+    <div class="jl-invoices">
+        <h4>增值税专用发票</h4>
+        <ul>
+            <li>
+                <h5>1、如需开具“增值税专用发票”，请在提交订单时选择"增值税专用发票"，否则系统默认不开发票。</h5>
+            </li>
+            <li>
+                <h5>2、为确保"增值税专用发票"顺利开具，请在提交订单时认真核对开票信息，并在个人中心/企业中心—增值税专票设置中填写资料。</h5>
+            </li>
+            <li class="jl-indent">
+                <h5>3、请您详细填写公司名称、地址电话、税号、开户银行和帐号、发票邮寄地址等。</h5>
+                <p>•  公司名称必须为工商注册登记名称。</p>
+                <p>•  公司的地址和电话是您开票信息上的地址和电话。</p>
+                <p>•  税务登记号为《税务登记证》的编号，三证合一后一般为18位，请仔细核对后输入。</p>
+                <p>•  开户银行名称与银行帐号两者必填，缺一不可。</p>
+            </li>
+            <li>
+                <h5>4、发票将在订单商品到货后，另行快递寄送。</h5>
+            </li>
+            <li>
+                <h5>5、如用户提交的信息有误，造成发票无法认证抵扣，玖隆芯城恕不退换。</h5>
+            </li>
+        </ul>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

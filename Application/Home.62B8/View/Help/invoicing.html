@@ -1,0 +1,42 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-r"><a href="javascript:;">开票需知</a></li>
+    </ul>
+    <ul class="jl-question">
+        <li>
+            <h4>玖隆芯城可以开两种类型的增值税发票：增值税专用发票，可以抵扣；普通发票，不能抵扣：</h4>
+        </li>
+        <li class="jl-indent">
+            <h4>具体说明：</h4>
+            <p>1）开票时间：每月20日至28日统一开出</p>
+            <p>2）开票规则：开具开票日期之前所有已发货的订单累计总金额对应发票（累计超过20000元才可开具发票），每月每个客户只开一次发票，当月已开票后产生的开票需求顺延累计到下月统一开票。</p>
+            <p>3）发票运费：单独寄出，运费我司付</p>
+            <p>4）其余事项：开票累计总货款金额在20000元以下的，本月暂不开出（自动累计到次月超20000元再开出，建议您预计半年内不跨年发票累计不超过20000元时，在下单时选择普通发票，另需提前开出可联系我司对应业务员，运费需到付）</p>
+            <p style="color:#e84343">注意：玖隆芯城将在每月开票时间内统一开具发票并单独寄出（即订单不能长时间无限制积累再开票）</p>
+        </li>
+        <li>
+            <h4>具体说明：如果有特殊的开票方式（分开开票），请务必在订单中备注。</h4>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

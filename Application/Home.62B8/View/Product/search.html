@@ -1,0 +1,1182 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout" />
+<block name="title">搜索</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Product/css/search.css">
+    <style>
+        .search-hot{
+            width:1200px;
+            margin:0% auto;
+            padding:0 0 0 5%;
+            border:1px solid #ddd;
+            box-sizing: border-box;
+            position: relative;
+            /*display:none;*/
+            height:73px;
+            overflow:hidden;
+        }
+        .search-hot ul li{
+            width:100%;
+            text-indent:12px;
+            padding: 2px 0px 2px 0px;
+            cursor:pointer;
+            display:block;
+        }
+        .search-hot ul li:hover{
+            color:#e84343
+        }
+        .select-resize{
+            position:absolute;
+            left:2%;
+            top:30%;
+            border:none;
+            cursor: pointer;
+            background-color:#fff;
+            word-break: break-word;
+            width:10px;
+        }
+        .select-resize:hover{
+            color:#e84343
+        }
+        .jl-search-container{
+            white-space: nowrap;
+            overflow-x:scroll;
+            overflow-y:hidden;
+            padding:0% 0%
+        }
+        .containers{
+            padding:10px 0%;
+            min-height:40px;
+            white-space: nowrap;
+            overflow-x: scroll;
+            overflow-y: hidden;
+        }
+        .containers>div{
+            margin-right:10px;
+            min-width:80px;
+            padding:10px 0;
+            background-color:#efeff4;
+            position:relative;
+            text-align:center;
+            white-space: nowrap;
+            display: inline-block
+        }
+        .containers>div>span{
+            width:10px;
+            height:10px;
+            text-align:center;
+            line-height:10px;
+            position:absolute;
+            right:1px;
+            top:1px;
+            background-color:#fff;
+            padding:2px;
+            cursor:pointer;
+        }
+        .jl-search-container>div{
+           /* float:left;*/
+            vertical-align: top;
+        }
+        .jl-search-container .left-inputs{
+            overflow:hidden;
+            padding:10px 0;
+        }
+        .search-select{
+            padding:10px 0%;
+            overflow:hidden;
+        }
+        .search-select button{
+            padding:6px 6px;
+            margin-right:10px;
+            color:#fff;
+            background-color:#009688;
+            border:none;
+            outline:none;
+        }
+        .search-hot.animate{
+            height: auto !important;
+            transition-property: height;
+            transition-duration: .8s;
+            transition-delay: 0s;
+            transition-timing-function: ease-in-out;
+        }
+        .jl-checked-li.checked-aready{
+            background-color:rgb(95, 184, 120);
+            color:#fff;
+        }
+        .containers::-webkit-scrollbar{
+            display:none
+        }
+    </style>
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="search-hot animate" >
+        <div  class="select-resize">收起</div>
+        <div class="jl-search-container">
+            <div style="overflow:hidden;margin:0 0.5%;float:left;width:9vw;">
+                <div class="search-left" style="">
+                    <div style="padding:20px 0 10px;color:#000;font-weight: 600">品牌</div>
+                </div>
+                <div class="search-input" >
+                    <div style="color:#9f9797">
+                        <input type="tel" style="width:45.5%;height:30px;border:1px solid #ddd;text-indent: 20px;" class="bindCheck" data-type="brand"/>—<input style="width:45.5%;height:30px;border:1px solid #ddd;text-indent: 20px;" class="bindCheck" data-type="brand"/>
+                    </div>
+                </div>
+                <div class="search-center">
+                    <ul class="search-center-ul" style="width:100%;overflow-y:scroll;border:1px solid #ddd;border-top:none;">
+                        <li class="jl-checked-li" data-type="brand" data-id="1"><p myAttr="2"></i>贝利</p></li>
+                        <li class="jl-checked-li" data-type="brand" data-id="2"><p myAttr="2">电池电充</p></li>
+                        <li class="jl-checked-li" data-type="brand" data-id="3"><p myAttr="2">博威</p></li>
+                        <li  class="jl-checked-li" data-type="brand" data-id="4"><p myAttr="2">BCD</p></li>
+                        <li class="jl-checked-li"><p myAttr="2">电池电充</p></li>
+                        <li class="jl-checked-li"><p myAttr="2">博威</p></li>
+                        <li class="jl-checked-li"><p myAttr="2">BCD</p></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="overflow:hidden;margin:0 0.5%;float:left;min-width:9vw;">
+                <div class="search-left" style="">
+                    <div style="padding:20px 0 10px;color:#000;font-weight: 600;visibility: hidden">品牌</div>
+                </div>
+                <div class="search-input" style="overflow:hidden;min-width:22vw">
+                    <div style="float:left;margin-right:1%;line-height:32px;">
+                        电流
+                    </div>
+                    <div style="color:#9f9797;float:left;width:10vw;margin-right:1%;">
+                        <input type="tel" style="width:45.5%;height:30px;border:1px solid #ddd;text-indent: 20px;" class="bindCheck" data-type="brand"/>—<input style="width:45.5%;height:30px;border:1px solid #ddd;text-indent: 20px;" class="bindCheck" data-type="brand"/>
+                    </div>
+                    <div style="float:left;margin-left:1%;line-height:32px;" > 推荐区间/值：<span style="color:#323">300-50000</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="containers"></div>
+        <div class="search-select"><button data-type="clear" style="background-color:#fff;color:#555;border:1px solid #C9C9C9">清除筛选</button><button data-type="submit">应用筛选</button></div>
+    </div>
+    <div id="jl-result">
+        <div class="jl-brand clearFix">
+            <p class="jl-brands">全部结果 >
+                <!--<span>{$request[search]}</span>-->
+            </p>
+            <p class="jl-count">共
+                <empty name="count">
+                    <span>0</span> 条结果
+                    <else />
+                    <span>{$count}</span> 条结果
+                </empty>
+            </p>
+        </div>
+    </div>
+    <div class="jl-list-fixed-header">
+        <!--<div class="jl-in-width jl-banner-container">
+            <div class="jl-banner">
+                <img src="__PUBLIC__/Home/Product/img/banner.jpg" alt="">
+            </div>
+        </div>-->
+        <div class="jl-in-width jl-banner-container" style="margin:0 auto">
+            <div class="jl-title">
+                <ul class="jl-sort">
+                    <?php $default=$request['sell_sort']+$request['store_sort']+$request['price']; ?>
+                    <if condition="$default eq 0 "><li class="jl-defa jl-cur">默认<b></b></li>
+                        <else /> <li class="jl-defa">默认<b></b></li>
+                    </if>
+                    <if condition="$request[sell_sort] eq 12 "><li class="jl-sales jl-cur">销量<b></b></li>
+                        <else /> <li class="jl-sales">销量<b></b></li>
+                    </if>
+                    <if condition="$request[store_sort] eq 12 "><li class="jl-news jl-cur">库存<b></b></li>
+                        <else /> <li class="jl-news">库存<b></b></li>
+                    </if>
+                    <if condition="$request[price] eq 21 "> <li class="jl-bd-last jl-price-sort jl-cur rise">价格<s></s><i></i></li>
+                        <elseif condition="$request[price] eq 12 "/><li class="jl-bd-last jl-price-sort jl-cur desc">价格<s></s><i></i></li>
+                        <else /> <li class="jl-bd-last jl-price-sort">价格<s></s><i></i></li>
+                    </if>
+                </ul>
+                <div class="jl-title-right">
+                    <if condition="$request[store] eq 1 ">
+                        <a href="javascript:;" class="checkbox js-chose jl-chose-active">
+                            <i></i>有库存
+                        </a>
+                        <else />
+                        <a href="javascript:;" class="checkbox js-chose">
+                            <i></i>有库存
+                        </a>
+                    </if>
+                    <div class="jl-result-search">
+                        <input class="jl-result-search-input" type="text" placeholder="在结果中搜索" value="{$request.search_inner}">
+                        <input class="jl-result-submit" type="submit" value="确定">
+                    </div>
+                </div>
+            </div>
+            <ul class="jl-classify-title jl-cle">
+                <li class="jl-sort-product">商品</li>
+                <li class="jl-sort-brand">名称</li>
+                <li class="jl-sort-name">详情</li>
+                <li class="jl-price-range">单价区间（元）<span style="color: #e84343;">含税</span></li>
+                <!--<li class="jl-goods-category">商品分类</li>-->
+                <li class="jl-sort-package">数量（PCS）</li>
+                <li class="jl-sort-inventory">库存（PCS）</li>
+                <li class="jl-sort-operation">操作</li>
+            </ul>
+        </div>
+        <div class="jl-recommend-product jl-in-width" style="overflow:hidden;border:1px solid #ddd;margin:10px auto 0">
+            <div style="color:#f60;float:left;width:7%;padding:1% 0 1% 1% ;font-size:16px">玖隆推荐 : </div>
+            <notempty name="request['search']">
+                <div style="float:left;width:91%;padding:1% 1% 1% 0;overflow:hidden;max-height:39px;">
+                    <notempty name="searchTopData.search_top">
+                        <volist name="searchTopData.search_top" id="item">
+                            <!-- <a href="{:U('product/search')}?searchTop={$item}" style="padding:1% 2% 1% 0;color:#323">{$item}</a>-->
+                            <a  style="padding:1% 2% 1% 0;color:#323;height:20px">{$item}</a>
+                        </volist>
+                        <else/>
+                    </notempty>
+                    <!--<a href="{:U('product/search')}?search_type=hot_pSign&search={$searchTopData.p_sign}" style="padding:1% 2% 1% 0;color:#323">{$searchTopData.p_sign}</a>-->
+                    <foreach name="searchTopData.p_sign" item="vo"><a  style="padding:1% 2% 1% 0;color:#323">{$vo}</a></foreach>
+                </div>
+                <else/>
+                <notempty name="request['cate_id']">
+                    <div style="float:left;width:91%;padding:1% 1% 1% 0;overflow:hidden;max-height:45px;">
+                        <notempty name="searchTopData.search_top">
+                            <volist name="searchTopData.search_top" id="item">
+                                <!-- <a href="{:U('product/search')}?searchTop={$item}" style="padding:1% 2% 1% 0;color:#323">{$item}</a>-->
+                                <a  style="padding:1% 2% 1% 0;color:#323;height:20px">{$item}</a>
+                            </volist>
+                            <else/>
+                        </notempty>
+                        <!--<a href="{:U('product/search')}?search_type=hot_pSign&search={$searchTopData.p_sign}" style="padding:1% 2% 1% 0;color:#323">{$searchTopData.p_sign}</a>-->
+                        <foreach name="searchTopData.p_sign" item="vo"><a  style="padding:1% 2% 1% 0;color:#323">{$vo}</a></foreach>
+                    </div>
+                    <else/>
+
+                </notempty>
+            </notempty>
+        </div>
+    </div>
+    <div id="jl-product">
+        <div class="jl-has-product">
+            <ul class="jl-classify jl-cle">
+                <php> $appointQQ = (count($qqList['list'])==1) ? $qqList['list']['0']['qq'] : false;$virtualStoreNum=0;  </php>
+                <volist name="search_data" id="vo">
+                    <assign name="list_key" value="$key" />
+                    <li class="jl-search-list" data-id="{$vo.p_sign}" data-pid="{$list_key}" >
+                        <div class="jl-sort-product">
+                            <notempty name="vo.cover_image">
+                                <img src="{$vo.cover_image}" alt="">
+                                <else />
+                                <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                            </notempty>
+                            <br>
+                            <span class="js-access" style="color: #e84343;line-height: 26px"></span>
+                        </div>
+                        <div class="jl-sort-brand">
+                            <?php $show_site_name='';if($vo['show_site'] == 1){ $show_site_name = '最新' ;}elseif( $vo['show_site'] == 2){ $show_site_name = '推荐';}elseif( $vo['show_site'] == 3){ $show_site_name = '特卖';}; ?>
+                            <p class="jl-p_sign" style="font-weight: bold;cursor: pointer;overflow: hidden"><a style="float:left;color:#4E7FF8">{$vo.p_sign}</a>
+                                <notempty name="vo.pdf">
+                                    <i class="js-pdf" style="float:left;background-position-x: -21px"></i>
+                                    <else/>
+                                    <i class="js-pdf" style="float:left"></i>
+                                </notempty>
+                                <notempty name="show_site_name"><span style="float:left;margin-left:1%;font-size:12px;color:#DB4991;padding:1% 1%;text-indent:5px;background:url('__PUBLIC__/Home/Public/img/out_frame.png') center center /100% no-repeat">{$show_site_name}</span></notempty>
+                            </p>
+                            <p>{$vo.parameter}</p>
+                            <p style="color: #e84343">{$vo['note_isshow']==1 ? $vo['note']:''}</p>
+                        </div>
+                        <div class="jl-sort-name">
+                            <s> <a class="jl-brandChange" style="color:#4E7FF8;cursor: pointer" data-id="1">品牌：<span>{$vo.brand_name}</span></a></s>
+<!--<!--href="{:U('Home/Default/brand')}"
+                            <div class="jl-goods-category jl-sidebar"><a style="color:#4E7FF8;cursor: pointer" data-id="{$vo.cate_id}">分类：{$vo.cate_name}</a></div>
+-->
+                            <s class="jl-goods-category jl-sidebar" style="padding:0;text-align:left;width:auto;cursor:pointer"> <a data-id="{$vo.cate_id}" style="color:#4E7FF8;">分类：{$vo.cate_name}</a></s>
+                            <s>封装：{$vo.package}</s>
+                            <p style="">
+                                <notempty name="vo.pack_unit">
+                                    {$vo.pack_unit}装 一{$vo.pack_unit}{$vo.min}{$vo.unit}
+                                </notempty>
+                            </p>
+                            <s>交期：
+                                <notempty name="vo.delivery">
+                                    {$vo.delivery}天<span style="color: #e84343;">(库存不足时)</span>
+                                </notempty>
+                            </s>
+                            <!--<i class="js-pdf"></i>-->
+                        </div>
+                        <div class="jl-price-range">
+                            <if condition="$vo['price_section']['error'] eq 1">
+                                <div style="height:0;margin-bottom: 0"></div>1
+                                <else />
+                                <volist name="vo['price_section']" id="sub" offset="0" length='4' key="j">
+                                    <if condition="($vo['min_open'] eq 1) OR ($sub.start egt $vo['min'])">
+                                        <if condition="$sub['end'] eq 0">
+                                            <div style="overflow: inherit">
+                                                <if condition="$j gt 1">
+                                                    <span style="border-radius:2px;font-weight: bolder;border: 1px solid #e84343;float: left;padding:1px 8px 1px 0"><span class="jl-price-left" style="text-overflow: ellipsis"
+                                                    >{$sub.start}以上</span><span  style="margin: 0 4px;">:</span><span class="jl-price-split">{$sub.price}</span></span>
+                                                    <else/>
+                                                    <span ><span class="jl-price-left" style="text-overflow: ellipsis">{$sub.start}以上</span><span  style="margin: 0 4px;">:</span><span class="jl-price-split" >{$sub.price}</span></span>
+                                                </if>
+                                                    <if condition="$vo['is_inquiry_table'] eq 1">
+                                                    <a target="_self"
+                                                       href="{:U('Home/Product/productReport',['p_id'=>$vo['id']])}"
+                                                       class="jl-min-enquiry" style="padding:0 2px;margin-left: 10px;">立即询价</a>
+                                                    <else />
+                                                    <if condition="$appointQQ">
+                                                        <a target="_self" data-index="{$list_key}"
+                                                           href="http://wpa.qq.com/msgrd?v=3&uin={$appointQQ}&site=联系客服&menu=yes" class="jl-min-enquiry jl-clipboard-btn" style="padding:0 2px;margin-left: 10px;">立即询价</a>
+                                                        <else />
+                                                        <notempty name="vo.customer_service">
+                                                            <div class="jl-price-inquiry-box">
+                                                                <a target="_self" href="javascript:" class="jl-min-enquiry" style="padding:0 2px;margin-left: 10px;">立即询价</a>
+                                                                <ul class="jl-price-qq-list-box jl-cs-sales-list" style="left:9px">
+                                                                    <php>
+                                                                        foreach ($vo['customer_service'] as $service) {
+                                                                    </php>
+                                                                    <li>
+                                                                        <span>{$service.nickname}</span>
+                                                                        <a href="http://wpa.qq.com/msgrd?v=3&amp;uin={$service.qq}&amp;site=在线客服&amp;menu=yes"
+                                                                           target="_blank" data-index="{$list_key}" class="jl-clipboard-btn">
+                                                                            <img class="jl-cs-qq" src="/Public/Home/Index/img/qq.png" alt="">
+                                                                        </a>
+                                                                        <span>{$service.mobile}</span>
+                                                                        <div class="jl-cs-wx-container">
+                                                                            <img class="jl-cs-wx" src="/Public/Home/Index/img/qrcode.png" alt="">
+                                                                            <img class="jl-cs-qr" src="{$service.wechat}" alt="">
+                                                                        </div>
+                                                                    </li>
+                                                                    <php>}</php>
+                                                                </ul>
+                                                            </div>
+                                                        </notempty>
+                                                    </if>
+                                                </if>
+                                            </div>
+                                            <else />
+                                            <div><span class="jl-price-left" style="text-overflow:ellipsis">{$sub.start}-{$sub['end']-1} </span><span  style="margin: 0 4px;">:</span><span class="jl-price-split" style="font-weight: 300">{$sub.price}</span></div>
+                                        </if>
+                                    </if>
+                                </volist>
+                            </if>
+                        </div>
+                        <div class="jl-sort-package">
+                            <button class="jl-minus">-</button>
+                            <input type="text" class="js-product-num" value="<?php if(empty($vo['min'])){echo 1;}else{ echo $vo['min']; }?>">
+                            <button class="jl-add">+</button>
+                            <br>
+                            <p class="jl-product-subtotal">小计：￥<span class="js-subtotal">0.00</span></p>
+                        </div>
+                        <div class="jl-sort-inventory"> <?php if($list_key > 0 && $vo.fitemno == $search_data[$list_key - 1].fitemno){ ++$virtualStoreNum;}else{ $virtualStoreNum = 0;};echo $vo['store']- $virtualStoreNum>0?($vo['store'] - $virtualStoreNum):0; ?> </div>
+                        <div class="jl-sort-operation">
+                            <a data-id="{$vo.minorder}" href="javascript:;" class="jl-addTo-cart">加入购物车</a>
+                            <!--<a class="jl-enquiry jl-clipboard-btn" target="_blank" data-index="{$list_key}"-->
+                               <!--href="http://wpa.qq.com/msgrd?v=3&uin={$appointQQ?$appointQQ:$vo.customer_service.qq}&site=在线客服&menu=yes">立即询价</a>-->
+
+                            <if condition="$vo['is_inquiry_table'] eq 1">
+                                <a target="_self"
+                                   href="{:U('Home/Product/productReport',['p_id'=>$vo['id']])}"
+                                   class="l-enquiry jl-clipboard-btn" style="padding:0 2px;">立即询价</a>
+                                <else />
+                                <if condition="$appointQQ">
+                                    <a target="_self" data-index="{$list_key}"
+                                       href="http://wpa.qq.com/msgrd?v=3&uin={$appointQQ}&site=联系客服&menu=yes" class="jl-enquiry jl-clipboard-btn" style="padding:0 2px;">立即询价</a>
+                                    <else />
+                                    <notempty name="vo.customer_service">
+                                        <div class="jl-price-inquiry-box">
+                                            <a target="_self" href="javascript:" class="jl-enquiry jl-clipboard-btn" style="padding:0 2px;;">立即询价</a>
+                                            <ul class="jl-price-qq-list-box jl-cs-sales-list">
+                                                <php>
+                                                    foreach ($vo['customer_service'] as $service) {
+                                                </php>
+                                                <li>
+                                                    <span>{$service.nickname}</span>
+                                                    <a href="http://wpa.qq.com/msgrd?v=3&amp;uin={$service.qq}&amp;site=在线客服&amp;menu=yes"
+                                                       target="_blank" data-index="{$list_key}" class="jl-clipboard-btn">
+                                                        <img class="jl-cs-qq" src="/Public/Home/Index/img/qq.png" alt="">
+                                                    </a>
+                                                    <span>{$service.mobile}</span>
+                                                    <div class="jl-cs-wx-container">
+                                                        <img class="jl-cs-wx" src="/Public/Home/Index/img/qrcode.png" alt="">
+                                                        <img class="jl-cs-qr" src="{$service.wechat}" alt="">
+                                                    </div>
+                                                </li>
+                                                <php>}</php>
+                                            </ul>
+                                        </div>
+                                    </notempty>
+                                </if>
+                            </if>
+
+
+                        </div>
+                    </li>
+                </volist>
+            </ul>
+        </div>
+        <div class="jl-no-product">
+            <img src="__PUBLIC__/Home/Public/img/no-product.png" alt="">
+            <p>对不起哦，没有找到你搜索的内容！</p>
+        </div>
+    </div>
+    {$page}
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function(){
+            require(['jquery','jl-tool','clipboardjs'],function($,jlTool,Clipboard){
+                var basket_data = {$search_data|json_encode};
+                var search_top = {$searchTopData|json_encode};
+                var request ={$request|json_encode};
+                // console.log(request,basket_data,search_top);
+                new Clipboard('.jl-clipboard-btn', {
+                    text: function(trigger) {
+                        var $trigger = $(trigger);
+                        var index = $trigger.data('index');
+                        var data = basket_data[index];
+                        var string = (
+                            '型号：'+data.p_sign+'；'+
+                            '封装：'+ data.package + '；'+
+                            '品牌：'+ data.brand_name + '；'+
+                            '交期：'+ data.delivery + '；'
+                        );
+                        if(data.price_section&&$.isArray(data.price_section)){
+                            string += '\n区间价格：\n';
+                            $.each(data.price_section,function (index,value) {
+                                string += '起：'+value.start+',止：'+value.end+',价格：'+value.price+'；\n'
+                            })
+                        }
+                        return string;
+                    }
+                });
+                //qq询价
+                var timer1,timer2;
+                $(".jl-price-inquiry-box").on({"mouseenter":function(){
+                        clearTimeout(timer1);
+                        timer1=setTimeout(function(){
+                            $(this).find(".jl-cs-sales-list").show(100);
+                        });
+                    },"mouseleave":function(){
+                        clearTimeout(timer2);
+                        timer2=setTimeout(function(){
+                            $(this).find(".jl-cs-sales-list").hide(100);
+                        });
+                    }})
+                /**多条件搜索**/
+                //多向筛选
+                var data = {$ret|json_encode};
+                var search_data = {$search_data|json_encode};
+                var change_name ={$changeName|json_encode};
+                var changeName={
+                    /*voltage_input:"输入电压1",voltage_input_type:"2",voltage_output:"输出电压2",voltage_output_type:"2",current:"电流",current_type:"2",volume:"体积3",volume_type:"1"*/
+                };
+                if(change_name){
+                    changeName=change_name;
+                }
+                //console.log(data,search_data,change_name);
+                if(!search_data){
+                    $(".jl-search-container").hide(100);
+                }
+                //console.log(data);
+                var dataObj={brand_id:{},cate_id:{},current:' ',volume:' ',voltage_input:' ',voltage_output:' ',custom:' ',custom1:' ',custom2:' ',package:{}};
+                $.each(changeName,function(ind,val){
+                    if(dataObj[ind]){
+                        if( changeName[ind+"_type"]>1){
+                            dataObj[ind]=' ';
+                        }else{
+                            dataObj[ind]=(typeof dataObj[ind] ==="object" ? dataObj[ind]:{});
+                        }
+                    }
+                });
+                $.each(dataObj,function(key,val){
+                    if(request[key] && typeof(val) =="string"){
+                        dataObj[key]= request[key];
+                    }
+                });
+                var getInit=function(){
+                        $(".jl-checked-li").on("click",function(){
+                            checkLi(this,false);
+                        });
+                        function checkLi(self){
+                            var $this = $(self);
+                            var id=$this.data("id");
+                            var types = $this.data("type");
+                            if(types =="brand" || types =="cate"){
+                                types = types+"_id";
+                            }
+                            var texts=$this.text();
+                            if(typeof dataObj[types] !="object"){
+
+                            }else{
+                                if(dataObj[types][id]){
+                                    $this.css({"color":"#777","background-color":"#fff"});
+                                    delete dataObj[types][id];
+                                }else{
+                                    $this.css({"color":"#fff","background-color":"#5FB878"});
+                                    dataObj[types][id] = texts;
+                                }
+                            };
+                            var htmls="";
+                            for(var obj in dataObj){
+                                if( typeof dataObj[obj] !="object")continue;
+                                $.each(dataObj[obj],function(ind,val){
+                                    htmls += '<div class="check-div" data-id="'+ind+'" data-type="'+obj+'"><i style="display:inline-block;margin:0 10px;">'+val+'</i><span>x</span></div>';
+                                });
+                            }
+                            $(".containers").html(htmls);
+                            if($this.hasClass("refresh_new")){
+                                refers();
+                                return;
+                            };
+                            deleteInit();
+                        };
+                        //删去
+                        function deleteInit(){
+                            $(".containers").on("click","span",function(){
+                                var $this = $(this);
+                                var id=$this.parent(".check-div").data("id");
+                                var types = $this.parent(".check-div").data("type");
+                                delete dataObj[types][id];
+                                $this.parent().remove();
+                                $(".search-center-ul").find("li[data-id = "+id+"]").css({"color":"#777","background-color":"#fff"})
+                                refers();
+                            });
+                        };
+                        deleteInit();
+                        //跳转
+                    var refers = function(){
+                        //console.log(dataObj,request);
+                        if(!change_name){
+                            var other_obj={brand_id:{},cate_id:{},package:{}};
+                            $.each(other_obj,function(ind,val){
+                                if(dataObj[ind]){
+                                    other_obj[ind]=dataObj[ind]
+                                }
+                            });
+                            dataObj = other_obj;
+                        };
+                            $('#js-submit input').val("");
+                            var types =$(this).data("type");
+                        //    var lis = $(this).parents(".confirm-cancel").siblings("li").find(".jl-choose-active").parents("li");
+                            var $brand_type=$('#js-submit input[name=search_type]');
+                            var $search=$('#js-submit input[name=search]');
+                            var input_key=$('.jl-key-word').val().trim();
+                                for(var obj in dataObj){
+                                    var $input="";
+                                    var $input_type=obj;
+                                    if(obj == "brand_id" || obj == "cate_id" || obj == "package" ||changeName[obj+"_type"] <2){
+                                        $.each(dataObj[obj],function(ind,val){
+                                            if(val+''){
+                                                $input+=ind+",";
+                                            }
+                                        });
+                                        if($input.indexOf(",") == $input.length - 1 ){
+                                            $input = $input.substr(0,$input.length - 1);
+                                        }
+                                    }else{
+                                        dataObj[obj] = dataObj[obj]?dataObj[obj]:request[obj];
+                                        $input=dataObj[obj];
+                                    }
+                                    $('#js-submit input[name='+$input_type+']').val($input|| "");
+                                };
+                            $search.val(input_key?input_key:request.search);
+                            change_name && ($('#js-submit input[name="attr_id"]').val(changeName.id));
+                            $brand_type.val(request.search_type||"hot_function");
+                            $('#js-submit').trigger('submit');
+                        }
+                        //搜索确认----清除
+                    $(".search-select").on("click","button",function(){
+                            var $this=$(this);
+                            var types =$this.data("type");
+                            if(types == "clear"){
+                                //取消
+                                dataObj={};
+                                $(".containers").empty();
+                                $(".search-center-ul").find("li").css({"color":"#777","background-color":"#fff"});
+                                $('#js-submit input').val("");
+                                $('#js-submit input[name=search]').val(request.search);
+                                $('#js-submit input[name=search_type]').val(request.search_type);
+                                $('#js-submit').trigger('submit');
+                            }else{
+                                //确认
+                                refers();
+                            }
+                        });
+                        //展开--收起
+                        $(".select-resize").on("click",function(){
+                            var $this=$(this);
+                            var texts="";
+                            if( $this.text() =="展开"){
+                                texts ="收起";
+                                $(".search-hot").addClass("animate");
+                                $(".search-input-write").show(100);
+                            }else{
+                                texts ="展开";
+                                $(".search-input-write").hide(100);
+                                $(".search-hot").removeClass("animate");
+                            };
+                            $this.text(texts);
+
+                        });
+                     //搜索赋值
+                     var timers=null;
+                     $(".getValue").off("input").on("input",function (){
+                        //console.log(dataObj);return;
+                        var self=this;
+                        clearTimeout(timers);
+                        timers =  setTimeout(function(){
+                            var type = $(self).data("type");
+                            var value =$(self).val();
+                            var position = $(self).data("position");
+                            var anotherObj = {};
+                            if(type == "brand" || type == "cate" || type == "package"){
+                                var htmls="";
+
+                                $.each(data[type],function(ind,val){
+                                    var clickClass="";
+                                    if(type==="package" ||type==="cate"||type==="brand"){
+                                        clickClass="refresh_new";
+                                    };
+                                    if(val.indexOf(value)>-1){
+                                        htmls += '<li class="jl-checked-li '+clickClass+'" data-type="'+type+'" data-id="'+ind+'" style="color: rgb(119, 119, 119); background-color: rgb(255, 255, 255);"><p myattr="2">'+val+'</p></li>';
+                                    };
+                                });
+                                $(self).parents(".search-input").next(".search-center").find("ul").html(htmls);
+                                getInit();
+                            }else{
+                                var selfValue = dataObj[type]?dataObj[type].split(","):[];
+                                if(position == "start"){
+                                    selfValue[0] =value;
+                                }else{
+                                    selfValue[1] =value;
+                                }
+
+                                dataObj[type] = selfValue.join(",");
+                               // console.log(dataObj);
+                            }
+                        },200)
+                        });
+
+                }
+                var searchData= {
+                    search:request.search||"",
+                    current:request.current ? (request.current[0]+","+request.current[1]):"",
+                    input:request.input ? (request.input[0]+","+request.input[1]):"",
+                    output:request.output ? (request.output[0]+","+request.output[1]):"",
+                    brand_id:request.brand_id||"",
+                    cate_id:request.cate_id||"",
+                    package:request.package||""
+                };
+                //getInit(searchData);
+                //获取搜索条件
+                //console.log(request);
+                var getModel=function(objs,keys,dataType,nameArray){
+                    var lis="";
+                    var newKeys ="";
+                    if(keys == "brand" || keys =="cate"){
+                        newKeys = keys+"_id";
+                    }else{
+                        newKeys = keys;
+                    }
+                    var requestData = request[newKeys]?(typeof request[newKeys] =="object" ? request[newKeys]:request[newKeys].split(",")):[];
+                    var inputs ='';
+                    if(typeof objs == "object" && dataType<2){
+                        inputs ='<input style="width:98%;height:30px;border:1px solid #ddd;text-indent: 20px;"  class="getValue" data-type="'+keys+'"/>'
+                        $.each( objs,function(key,values){
+                            var isChecked=false;
+                            if(requestData.length>0){
+                                isChecked=$.inArray(key+'',requestData)>-1;
+                                if(isChecked){
+                                    if($.isEmptyObject(dataObj))dataObj={brand_id:{},cate_id:{},voltage_current:" ",volume:' ',input:" ",voltage_output:" ",package:{}}
+                                    dataObj[newKeys][key]=objs[key];
+                                    $(".containers").append('<div class="check-div" data-id="'+key+'" data-type="'+newKeys+'"><span style="padding:0 10px;padding: 0px 17px; background-color: #efefef; position: static;">'+objs[key]+'</span><span>x</span></div>') ;
+
+                                };
+                            }
+                            var clickClass="";
+                            if(keys==="package" ||keys==="cate"||keys==="brand"){
+                                clickClass="refresh_new";
+                            };
+                            lis+='<li class="jl-checked-li '+clickClass+(isChecked?" checked-aready":"")+'" data-type="'+keys+'" data-id="'+key+'">'+objs[key]+'</li>';
+                        });
+                    }else{
+                        if(dataType>1){
+                            var datas=objs?objs.split(","):[];
+                            if(datas.length>0 && datas[0]!=datas[1])
+                                lis = '<div style="display:inline-block;padding-right:4%;line-height:32px;" > 推荐区间/值：<span style="color:#323">'+datas[0]+'-'+datas[1]+'</span></div>';
+                        }
+                    }
+                    var model ='<div style="overflow:hidden;margin:0 0.5%;display:inline-block;position:relative;width:9vw">\n' +
+                        '                <div class="search-left" style="">\n' +
+                        '                    <div style="padding:10px 0 10px;color:#000;font-weight: 600">'+nameArray[keys]+'</div>\n' +
+                        '                </div>\n' +
+                        '                <div class="search-input" >\n' +
+                        '                    <div style="color:#9f9797">\n' +
+                                                    inputs +
+                        '                    </div>\n' +
+                        '                </div>\n' +
+                        '                <div class="search-center">\n' +
+                        '                    <ul class="search-center-ul" style="height:200px;width:100%;overflow-x:hidden;overflow-y:scroll;border:1px solid #ddd;border-top:none;">\n' +
+                                              lis +
+                        '                    </ul>\n' +
+                        '                </div>\n' +
+                        '            </div>' ;
+                    if(typeof objs == "object" && dataType<2){
+                        model=model;
+                    }else{
+                        if(dataType>1){
+                            model="<div class='left-inputs'>" +
+                                /*"<div class=\"search-left\" style=\"\">\n" +
+                                "                    <div style=\"padding:20px 0 10px;color:#000;font-weight: 600;visibility: hidden\">'+nameArray[keys]+'</div>\n" +
+                                "                </div>\n" +*/
+                                "                <div class=\"search-input\" style=\"overflow:hidden;min-width:12vw\">\n" +
+                                "                    <div style=\"font-weight:600;line-height:32px;\">\n" +
+                                nameArray[keys]+
+                                "                    </div>\n" +
+                                "                    <div style=\"color:#9f9797;;\">\n" +
+                                "                        <input type=\"tel\" style=\"width:5vw;height:30px;border:1px solid #ddd;text-indent: 20px;\" class=\"getValue\" data-type='"+keys+"' data-position=\"start\" value='"+(requestData[0]||"")+"'/>—<input style=\"width:5vw;height:30px;border:1px solid #ddd;text-indent: 20px;\" class=\"getValue\" data-type='"+keys+"' data-position=\"end\" value='"+(requestData[1]||"")+"'/> "+lis+
+                                "                    </div>\n" +
+                                "                </div></div>";
+                        }
+                    };
+                    return model;
+                };
+
+                var searches="" ;
+                    $.each(searchData,function(ind,val){
+                        if(val !=""){
+                            searches = ind;
+                            return false;
+                        };
+                    });
+                    var $search_hot=$(".jl-search-container");
+                    if(typeof data =="object" ){
+                        //$search_hot.html("");
+                        var str="",littleStr="",littleStr_02="";
+                        var nameArray={brand:"商品品牌",cate:"商品分类",current:"电流",cate:"商品分类",voltage_input:"输入电压",voltage_output:"输出电压",package:"封装",volume:"体积",custom:"属性5",custom1:"属性6",custom2:"属性7"};
+
+                        if( change_name)
+                        {
+                            $.each(changeName,function(ind,val){
+                            if(val&&nameArray[ind]){
+                                nameArray[ind]=val;
+                            }
+                        });
+                        }
+                        var doubleValue=0;
+                        for(var key in data){
+                            var data_type=changeName[key+"_type"]?changeName[key+"_type"]:"1";
+                            if(data[key] instanceof Array && data_type<2){
+                                if(data[key].length>0) {
+                                    str+=getModel(data[key],key,data_type,nameArray);
+                                }
+                            }else{
+                                if(data[key] instanceof Object && data_type<2){
+                                    str+=getModel(data[key],key,data_type,nameArray);
+                                }else{
+                                    if(data[key] !="," && data_type>1 && change_name) {
+                                        doubleValue++;
+                                        if(doubleValue<4){
+                                            littleStr+=getModel(data[key],key,data_type,nameArray);
+                                        }else{
+                                            littleStr_02+=getModel(data[key],key,data_type,nameArray);
+                                        }
+                                    };
+                                }
+
+                            }
+
+                        };
+                        str+=' <div class="search-input-write" style="overflow:hidden;margin:0 0.5%;display:inline-block;position:relative;min-width:12vw;">'+littleStr+'</div>'
+                        if(doubleValue>3){
+                            str+=' <div class="search-input-write" style="overflow:hidden;margin:0 0.5%;display:inline-block;position:relative;min-width:12vw;">'+littleStr_02+'</div>'
+                        }
+                        $search_hot.html(str);
+                        getInit();
+                    }else{
+
+                    }
+               // console.log('nameArray',nameArray,dataObj);
+                //品牌跳转
+                $(".jl-brandChange").on("click",function(){
+                    //搜索
+                    var $brand_id=$('#js-submit input[name=brand_id]');
+                    var $brand_type=$('#js-submit input[name=search_type]');
+                    var $brand_search=$('#js-submit input[name=search]');
+                    var $input=$(this).attr('data-id');
+                        $brand_type.val("hot_brand");
+                        $brand_id.val($input);
+                        $brand_search.val($(this).find("span").text());
+                        $('#js-submit').trigger('submit');
+
+                });
+                //搜索框分类，封装....
+              $("a.chooseMore").click(function(){
+                  $(this).parent().parent().hide(10).next().show(10);
+              });
+                $("input.cancel_more").click(function(){
+                    $(this).parent().parent().parent().hide(10).prev().show(10);
+
+                })
+                //字符串转对象
+                function getobj(str){
+                    var obj={}
+                    var arrs = str.split("?")[1].split("&");
+                    arrs.forEach(function(key,value){
+                           obj[key.split("=")[0]] = key.split("=")[1]
+                    })
+                    return obj;
+                }
+                //页面条数转
+                var selfurl=window.location;
+                $(".pageSize").val(request["pageSize"]?decodeURIComponent(request["pageSize"]) : "10");
+                $(".pageSize").change(function(){
+                    var nums=parseInt($(this).val());
+                    if(selfurl.search){
+                        location.href=location.href.split("pageSize")[0]+(location.href.split("pageSize")[1] ? "":"&")+("pageSize="+nums);
+                    }else{
+                        location.href=location.href.split("pageSize")[0]+"&pageSize="+nums;
+                    }
+
+                });
+
+                //固定列表表头
+                var $window = $(window);
+                var $fixed_content = $('.jl-list-fixed-header').clone().addClass('jl-list-fixed-clone').hide();
+                $('body').append($fixed_content);
+                $window.scroll(function(event){
+                    var height=$window.scrollTop();
+                    if(height>=200){
+                        $fixed_content.fadeIn()
+                    }
+                    else{
+                        $fixed_content.fadeOut()
+                    }
+                });
+                require(['jl-modal','jl-price'],function (modal,jlPrice) {
+                    var $lis=$('.jl-classify>li');
+                    $.each($lis, function (index) {
+                        var $this = $(this);
+                        var num = $this.find('.js-product-num').val();
+                        var cur = jlPrice.get_section_price(num, basket_data[index]['price_section']);
+                        var total = (cur * num).toFixed(2);
+                        $this.find('.js-subtotal').html(total);
+                        //匹配替代料号
+                        var search = $('.jl-key-word').val();
+                        if (search) {
+                            var fitemno_access = basket_data[index]['fitemno_access'];
+                            var option = fitemno_access.split('{}');
+                            $.each(option, function (index, value) {
+                                if (value && (value.toLowerCase()===search.toLowerCase())) {
+                                    $this.find('.js-access').text('替代'+value);
+                                    return false
+                                }
+                            })
+                        }
+                    });
+                    //数量调整
+                    $('.js-product-num').on('change',function () {
+                        //保留上一个值，做提交判断
+                        var num = parseInt($(this).val());
+                        num = num ? Math.abs(num) :1;
+                        var index = $(this).parents('.jl-search-list').attr('data-pid');
+                        $(this).val(num);
+                        var cur = jlPrice.get_section_price(num,basket_data[index]['price_section']);
+                        var total=(cur*num).toFixed(2);
+                        $(this).parents('.jl-sort-package').find('.js-subtotal').html(total);
+                    });
+                    $('.jl-minus').on('click',function () {
+                        var $input = $(this).siblings('.js-product-num');
+                        var num=null;
+                        if($input.val()>1){
+                            num = parseInt($input.val())-1;
+                        }else{
+                            num=1;
+                        }
+                        if(num!==0){
+                            $input.val(num);
+                            var index = $(this).parents('.jl-search-list').attr('data-pid');
+                            var cur = jlPrice.get_section_price(num,basket_data[index]['price_section']);
+                            var total=(cur*num).toFixed(2);
+                            $(this).parents('.jl-sort-package').find('.js-subtotal').html(total);
+                        }
+
+                    });
+                    $('.jl-add').on('click',function () {
+                        var $input = $(this).siblings('.js-product-num');
+                        var num = parseInt($input.val())+1;
+                        var index = $(this).parents('.jl-search-list').attr('data-pid');
+                        $input.val(num);
+                        var cur = jlPrice.get_section_price(num,basket_data[index]['price_section']);
+                        var total=(cur*num).toFixed(2);
+                        $(this).parents('.jl-sort-package').find('.js-subtotal').html(total);
+                    });
+                    //加入购物车
+                    $('.jl-addTo-cart').on('click',function(){
+                        var $name=$(this).parent().siblings('.jl-sort-brand').html();
+                        var index = $(this).parents('.jl-search-list').attr('data-pid');
+                        var $price=$(this).parent().siblings('.jl-price-range').text();
+                        var minOrder=$(this).attr("data-id");
+                        var number=parseInt(basket_data[index].basket_goods_num);
+                        var pid = basket_data[index].id;
+                        number=number?number:0;
+                        var count=$(this).parents('.jl-sort-operation').siblings('.jl-sort-package').children('.js-product-num').val();
+                        number+=parseInt(count);
+                        if(!$price){
+                            modal.alert({
+                                title:'加入购物车失败',
+                                brief:'价格出错，请联系客服',
+                                top:100
+                            });
+                            return
+                        }
+                        if(count<minOrder){
+                            modal.confirm({
+                                type:'fade',
+                                title:'加入购物车失败',
+                                brief:$name+'不能小于最小起订量'+minOrder+'个',
+                                top:100
+                            });
+                            return
+                        }
+                        var pdata={"pid":pid,"num":number};
+                        $.ajax({
+                            type:'POST',
+                            url:"{:U('Home/Basket/basketaddproduct')}",
+                            data:pdata,
+                            success:function(res){
+                                var data= $.parseJSON(res);
+                                if(data.error===0){
+                                    _uba.push( ['addTraceEvent',{"name":'shop_add_Cart',"data":pdata}, 'unload' ] );
+                                    modal.confirm({
+                                        type:'fade',
+                                        confirmText: '去购物车',
+                                        cancelText: '再逛逛',
+                                        title:'加入购物车',
+                                        brief:'已成功加入购物车',
+                                        confirm:function () {
+                                            location.href="{:U('Home/Basket/basketDetail')}";
+                                        }
+                                    });
+                                }else{
+                                    modal.confirm({
+                                        type:'fade',
+                                        title:'加入购物车失败',
+                                        brief:res.msg || '不好意思哦！系统繁忙，请稍后重试！'
+                                    });
+                                }
+                            }
+                        });
+                    });
+                    $('.jl-sort-product,.js-pdf,.jl-p_sign').on('click',function(){
+                        var id=$(this).parents('.jl-search-list').data('id');
+                        if(id){
+                            window.open("{:U('Home/Product/detail')}?sign="+encodeURIComponent(id));
+                        }
+                    });
+                });
+                //导航
+                var $id=request.cate_id;
+                var brand_id=request.brand_id;
+                var $span=$('.jl-brands');
+                var html=null;
+                if(request.search){
+                    var search_inner=null;
+                    if(request.search_inner){
+                        search_inner=" &gt; <span>"+request.search_inner+"</span>";
+                        html="全部结果 &gt; "+request.search+search_inner;
+                        $span.html(html);
+                    }
+                    else{
+                        html="全部结果 &gt; <span>"+request.search+"</span>";
+                        $span.html(html);
+                    }
+                }
+                else{
+                    if($id){
+                        $.ajax({
+                            type:'GET',
+                            url:'{:U("Home/Product/ajaxGetCategoryName")}',
+                            data:{cate_id:$id},
+                            success:function(res){
+                                var cate_groy=null;
+                                if(res.status===0){
+                                    cate_groy=res.content;
+                                }
+                                else{
+                                    cate_groy= '';
+                                }
+                                var search_inner=request.search_inner;
+                                if(search_inner){
+                                    search_inner=" &gt; <span>"+search_inner+"</span>";
+                                    html="全部结果 &gt; "+cate_groy+search_inner;
+                                }
+                                else{
+                                    html="全部结果 &gt; <span>"+cate_groy+"</span>";
+                                }
+                                $span.html(html);
+                            }
+                        });
+                    }
+                    else if(brand_id){
+                        $.ajax({
+                            type:'POST',
+                            url:'{:U("Home/Home/getBrandName")}',
+                            data:{brand_id:brand_id},
+                            success:function(res){
+                                var $brand_id=null;
+                                if(res.status===0){
+                                    $brand_id=res.content;
+                                }
+                                else{
+                                    $brand_id= '';
+                                }
+                                var search_inner=request.search_inner;
+                                if(search_inner){
+                                    search_inner=" &gt; <span>"+search_inner+"</span>";
+                                    html="全部结果 &gt; "+$brand_id+search_inner;
+                                }
+                                else{
+                                    html="全部结果 &gt; <span>"+$brand_id+"</span>";
+                                }
+                                $span.html(html);
+                            }
+                        });
+                    }
+                    else{
+                        html="全部结果 &gt; <span>"+request.search_inner+"</span>";
+                        $span.html(html);
+                    }
+                }
+                //搜索
+                var $search=$('#js-submit input[name=search]');
+                var $search_type=$('#js-submit input[name=search_type]');
+                var $cate_id=$('#js-submit input[name=cate_id]');
+                var $brand_id=$('#js-submit input[name=brand_id]');
+                var $search_inner=$('#js-submit input[name=search_inner]');
+                var $store=$('#js-submit input[name=store]');
+                var $sell_num=$('#js-submit input[name=sell_sort]');
+                var $price=$('#js-submit input[name=price]');
+                var $time=$('#js-submit input[name=store_sort]');
+                var $current=$('#js-submit input[name=current]');
+                var $input_U=$('#js-submit input[name=input]');
+                var $output=$('#js-submit input[name=output]');
+                var $package=$('#js-submit input[name=package]');
+                var $volume_length=$('#js-submit input[name=volume]');
+                //在结果中搜索
+                var setValue=function(){
+                    $search_type.val(request.search_type);
+                    $search.val(request.search);
+                    $cate_id.val(request.cate_id);
+                    $brand_id.val(request.brand_id);
+                    $store.val(request.store);
+                    $search_inner.val(request.search_inner);
+                    $sell_num.val(request.sell_sort);
+                    $price.val(request.price);
+                    $time.val(request.store_sort);
+                    $current.val(request.current);
+                    $input_U.val(request.input);
+                    $output.val(request.output);
+                    $package.val(request.package);
+                    $volume_length.val(request.volume);
+                }
+                $('.jl-result-submit').on('click',function(){
+                    var input_result=$('.jl-result-search-input').val();
+                    setValue();
+                    $search_inner.val(input_result);
+                    $('#js-submit').trigger('submit');
+                });
+                $('.jl-result-search-input').focus(function(){
+                    $(document).keydown(function(event){
+                        if(event.keyCode===13){
+                            $('.jl-result-submit').trigger('click');
+                        }
+                    });
+                });
+                //默认
+                $('.jl-defa').on('click',function(){
+                    $(this).addClass('jl-cur');
+                    setValue();
+                    $sell_num.val(0);
+                    $price.val(0);
+                    $time.val(0);
+                    $('#js-submit').trigger('submit');
+                });
+               //销量
+                $('.jl-sales').on('click',function(){
+                    $(this).toggleClass('jl-cur');
+                    var $sales=null;
+                    if($(this).hasClass('jl-cur')){
+                        $sales=12;
+                        request.price=0;
+                        request.store_sort=0;
+                    }
+                    else{
+                        $sales=21;
+                    }
+                    setValue();
+                    $price.val(0);
+                    $time.val(0);
+                    $sell_num.val($sales);
+                    $('#js-submit').trigger('submit');
+                });
+                //库存排序
+                $('.jl-news').on('click',function(){
+                    $(this).toggleClass('jl-cur');
+                    var $news=null;
+                    if($(this).hasClass('jl-cur')){
+                        $news=12;
+                        request.price=0;
+                        request.sell_sort=0;
+                    }
+                    else{
+                        $news=21;
+                    }
+                    setValue();
+                    $sell_num.val(0);
+                    $price.val(0);
+                    $time.val($news);
+                    $('#js-submit').trigger('submit');
+                });
+                //价格
+                $('.jl-price-sort').on('click',function(){
+                    $(this).addClass('jl-cur');
+                    var $pri=null;
+                    if($(this).hasClass('rise')){
+                        $pri=12;
+                        request.store_sort=0;
+                        request.sell_sort=0;
+                    }
+                    else if($(this).hasClass('desc')){
+                        $pri=21;
+                        request.store_sort=0;
+                        request.sell_sort=0;
+                    }
+                    else{
+                        $pri=12;
+                    }
+                    setValue();
+                    $sell_num.val(0);
+                    $time.val(0);
+                    $price.val($pri);
+                    $('#js-submit').trigger('submit');
+                });
+
+                //库存
+                $('.checkbox').on('click',function(){
+                    $(this).toggleClass('jl-chose-active');
+                    var $kc=null;
+                    if($(this).hasClass('jl-chose-active')){
+                        $kc=1;
+                    }
+                    else{
+                        $kc=0;
+                    }
+                    setValue();
+                    $store.val($kc);
+                    $('#js-submit').trigger('submit');
+                })
+            });
+        });
+    </script>
+</block>

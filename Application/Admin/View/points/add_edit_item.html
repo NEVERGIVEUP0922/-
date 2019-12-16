@@ -1,0 +1,169 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/select2/4.0.5/css/select2.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="/Public/Admin/Product/css/productListAction.css?v=118"/>
+</block>
+<block name="content">
+    <style>
+        .layui-form .layui-form-label{ width:100px}
+        .layui-form .layui-input-block{ margin-left:150px;width:40vw}
+    </style>
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">{$request?'编辑':'新增'}积分项目</a>
+            </span>
+           <!-- <button class="layui-btn" lay-submit lay-filter="bargain" style="margin-left: 16px;padding:0 14px;height:30px;line-height:30px">提交</button>-->
+<!--
+            <button style="margin-left: 16px;" class="add-btn layui-btn action-add layui-btn-sm">添加行</button>
+-->
+        </blockquote>
+        <form class="layui-form layui-form-form" id="forms" action="" enctype="multipart/form-data">
+            <div class="layui-form-container" style="margin-top:20px">
+                <div class="layui-form-item layui-required">
+                    <label class="layui-form-label">项目名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="item_name" placeholder="请选择商品" autocomplete="off"
+                               class="layui-input jl-select-product" value="{$add_edit_item.item_name}" >
+                        <input type="hidden" name="item_name_check" placeholder="请选择商品" autocomplete="off"
+                               class="layui-input jl-select-product" value="" >
+                    </div>
+                    <div class="is_tax" style="color:#dd514c"></div>
+                </div>
+               <!-- <div class="layui-form-item layui-required">
+                    <label class="layui-form-label">选择积分规则</label>
+                    <div class="layui-input-block">
+                        <select name="integral_rule_id" lay-filter="aihao" class="jl-integral_rule_id">
+
+                        </select>
+                    </div>
+                </div>-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">项目描述</label>
+                    <div class="layui-input-block">
+                    <textarea type="text" name="item_describe" placeholder="请输入项目描述" autocomplete="off"
+                              class="layui-textarea check-empty-textarea" >{$add_edit_item.item_describe}</textarea>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="bargain">提交</button>
+                    </div>
+                </div>
+            </div>
+          <!--  <table id="addTable-table" lay-filter="addTable">
+                <script type="text/html" id="handle-tpl">
+                   &lt;!&ndash; <div class="oneBargin">
+                        <span lay-event="delete" class="layui-btn layui-btn-danger layui-btn-sm">删除</span>
+                        <span lay-event="add" class="layui-btn  layui-btn-sm">添加</span>
+                    </div>&ndash;&gt;
+                </script>
+            </table>-->
+        </form>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['table','layer', 'jlTool','laydate','element','form','selectProduct','selectCustomer','actionTpl'], function () {
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var actionTpl = layui.actionTpl;
+            var form = layui.form;
+            var table = layui.table;
+            var selectProduct = layui.selectProduct;
+            var laydate = layui.laydate;
+            var single_data = {$add_edit_item|json_encode};
+            var integral_rule = {$integral_rule|json_encode};
+            var request = {$request|json_encode};
+            var demo = {
+                'id':'', 'integral_name':'','type':'10000', 'scale':'',status:'', 'scale_step':'', 'num':'', 'min_amount':'',
+                'max_amount':'', 'cell_code':'','cate_all':'',note:'','product_id':'','start_time':'','end_time':''
+            };
+            var str='<option value="" style="color:#c2c2c2">请选择积分规则</option>';
+            if(integral_rule.length>0){
+                $.each(integral_rule,function(ind,val){
+                    if(single_data.integral_rule_id ==val.id){
+                        str+='<option value="'+val.id+'" selected>'+val.integral_name+'</option>';
+                    }else{
+                        str+='<option value="'+val.id+'">'+val.integral_name+'</option>';
+                    }
+                });
+                $('.jl-integral_rule_id').append(str);
+                form.render('select');
+            };
+            if(request.id){
+                $('.jl-select-product').attr('readonly','true');
+            }else{
+                //检查项目名字是否可用
+                $(".jl-select-product").on("blur",function(){
+                    var _this=this;
+                    if(!this.value){
+                        layer.msg('项目名称不能为空',{icon:5,time:1500});
+                        $(_this).css('border','1px solid #e84343').next().val('reject');
+                        return;
+                    };
+                    $.ajax({
+                        url:'/Admin/Integral/checkItem_name',
+                        type:'post',
+                        data:{item_name:this.value},
+                        dataType:'json',
+                        success:function(res){
+                            if(res.error ===0){
+                                layer.msg(res.msg,{icon:6,time:1500});
+                                $(_this).css('border','1px solid #e6e6e6').next().val('');
+                            }else{
+                                layer.msg(res.msg,{icon:5,time:1500});
+                                $(_this).css('border','1px solid #e84343').next().val('reject');
+                            }
+                        }
+                    });
+                });
+            };
+            //获取数据
+            form.on('submit(bargain)', function(data){
+                if(!data.field['item_name']){ layer.msg('项目名称和积分规则必须填写');return;};
+                if(data.field['item_name_check']){ layer.msg('项目名称被占用');return;}
+                if(single_data.id){
+                    data.field=$.extend(single_data,data.field,);
+                };
+                $.post('/Admin/Integral/add_edit_item',data.field,function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        jlTool.sendIframeMsg('refresh','integralItemList');
+                        layer.msg(res.msg,{icon:6,time:1500},function(){
+                            jlTool.sendIframeMsg('go',{
+                                title:'积分项目列表',
+                                url:'/Admin/Integral/integralItemList',
+                                icon:''
+                            });
+                        });
+                    }
+                    else {
+                        var text="";
+                        if(res.failed){
+                            $.each(res.failed,function(index,item){
+                                text+=item.msg+";<br/>";
+                            });
+                        }else{
+                            text=res.msg
+                        };
+                        layer.open({
+                            content:text,
+                            type:0,
+                            btn:["确定"],
+                            yes:function(){
+                                layer.closeAll();
+                            }
+                        });
+                    }
+                });
+                return false;
+            });
+        });
+
+    </script>
+</block>

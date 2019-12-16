@@ -1,0 +1,48 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-help" />
+<block name="title">帮助中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Help/css/index.css">
+</block>
+<block name="nav-title">帮助中心</block>
+<!-- 主要内容 -->
+<block name="main">
+    <ul class="jl-titles">
+        <li class="jl-active jl-l"><a href="javascript:;">货到付款</a></li>
+    </ul>
+
+    <!-- 账期支付 -->
+    <ul class="jl-question">
+        <li>
+            <h4>1、玖隆芯城在全国大部分城市中开通了货到付款服务。查看您是否享受该服务</h4>
+        </li>
+        <li class="jl-indent">
+            <h4>2、您可选择现金、POS机刷卡、支票的方式支付货款：</h4>
+            <p>• POS机刷卡：目前仅支持带有银联标识的银行卡，信用卡POS机刷卡消费赠送积分以各银行为准，具体信息请致电发卡行确认。若您下单时在订单中填写POS机刷卡，支付时也可换成现金支付。</p>
+            <p>• 支票支付：需要您将支票内容填写完整且需要款到账后方可送货，目前仅北京、上海两地客户可使用此服务，其余区域暂不支持支票支付。支票支付详情查询请点击此处</p>
+            <p>• 其中，京东快递配送时可支持现金、POS机刷卡、支票支付（仅限北京、上海两个地区）。（具体支付方式您可与为您送货时的配送员联系咨询）</p>
+        </li>
+        <li>
+            <h4>3、京东自营商品配送费：运费信息详情见：配送费收取标准查询</h4>
+        </li>
+        <li>
+            <h4>4、第三方卖家商品配送费：以卖家在商品信息页公示的运费信息为准。</h4>
+        </li>
+        <li>
+            <h4>注意：如果一个ID帐号在一个月内有过1次以上或一年内累计3次以上（不含本数），因非京东原因拒收京东配送的商品，京东将从相应的ID帐户里按每单扣除500个京豆做为运费补偿；即一个用户一个月内，如果拒收次数超过一次，第一次拒收的订单不扣除京豆，第二次及以上拒收的订单，每单扣除500京豆；一个用户一年内，如果拒收次数超过三次，前三次拒收的订单不扣除京豆，第四次及以上拒收的订单，每单扣除500京豆。时间计算方法为：成功提交订单后向前推算30天为一个月，成功提交订单后向前推算365天为一年，不以自然月和自然年计算。</h4>
+        </li>
+    </ul>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery'], function($) {
+
+            })
+        });
+    </script>
+</block>

@@ -1,0 +1,407 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .data-table-screen .layui-input,
+        .data-table-screen .layui-select,
+        .data-table-screen .layui-textarea{
+            height: 30px;
+        }
+        .data-table-screen>div{
+            margin-bottom: 10px;
+        }
+        .data-table-screen-title{
+            display: inline-block;
+            width: 100px;
+        }
+    </style>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">退货退款订单列表</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="padding-bottom: 5px">
+            <form class="data-table-screen layui-row layui-form layui-input-inline" action="" lay-filter="screen-form">
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6 ">
+                    <span class="data-table-screen-title">订单编号：</span>
+                    <div class="layui-input-inline">
+                        <input name="order_sn" value="{$request['order_sn']}" class="layui-input list-clear-input" type="text">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">退款单号：</span>
+                    <div class="layui-input-inline">
+                        <input name="re_sn" value="{$request['re_sn']}" class="layui-input list-clear-input" type="text">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">客户：</span>
+                    <div class="layui-input-inline">
+                        <input name="fcustname" value="{$request['fcustname']}" class="layui-input list-clear-input jl-select-customer" type="hidden">
+                        <input name="fcustname_name" value="{$request['fcustname_name']}" class="layui-input list-clear-input jl-select-customer layui-form-label-pinyin-customer" type="text">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">业务员：</span>
+                    <div class="layui-input-inline">
+                        <input name="sys_user" value="{$request['sys_user']}" class="layui-input list-clear-input jl-select-user" type="hidden">
+                        <input name="sys_user_name" value="{$request['sys_user_name']}" class="layui-input list-clear-input jl-select-user layui-form-label-pinyin-admin" type="text">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">产品负责人：</span>
+                    <div class="layui-input-inline">
+                        <input name="person_liable_name" value="{$request['person_liable_name']}" class="layui-input list-clear-input jl-select-pm layui-form-label-pinyin-vm" type="text">
+                        <input name="person_liable" value="{$request['person_liable']}" class="layui-input list-clear-input jl-select-pm" type="hidden">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <button class="screen—btn layui-btn layui-btn-sm" lay-submit lay-filter="screen" style="width: 100px">
+                        筛选
+                    </button>
+                    <span class="clear-btn layui-btn layui-btn-sm layui-btn-primary" style="width: 100px">清空</span>
+                </div>
+            </form>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="handle_status">
+                {{#  if(d.handle_status == '退款新单' || d.handle_status == '退货新单'){ }}
+                <span style="color: #5FB878">{{ d.handle_status }}</span>
+                {{#  } else if( d.handle_status == '已驳回,待协商' ) { }}
+                <span style="color: #FF5722">{{ d.handle_status }}</span>
+                {{#  } else if( d.handle_status == '已收货,待手动完成退款' ) { }}
+                <span style="color: #FF5722">{{ d.handle_status }}</span>
+                {{#  } else if( d.handle_status == '退款已完成' ) { }}
+                <span style="color: #01AAED">{{ d.handle_status }}</span>
+                {{#  } else{ }}
+                {{ d.handle_status }}
+                {{#  } }}
+            </script>
+            <script type="text/html" id="data-table-handle-tpl">
+                <button class="layui-btn layui-btn-sm" lay-event="detail">详细</button>
+                {{#  if(d.handle_status == '退款新单,待处理' || d.handle_status == '退货新单,待处理' || d.handle_status == '部分VM审核'){ }}
+                    <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="agree">审核</button>
+                    <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="reject">驳回</button>
+                {{#  } else{ }}
+                    <button class="layui-btn layui-btn-sm" lay-event="log">日志</button>
+                {{#  } }}
+                {{#  if(d.handle_status == '买家退货物品运输中'){ }}
+                    <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="delivery">收货</button>
+                {{#  } }}
+                {{#  if(d.handle_status == '已收货,待手动完成退款' || (d.handle_status == '已批准' && d.retreat_type == '仅退款' ) ){ }}
+                    <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="commit">退款</button>
+                {{#  } }}
+
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','selectCustomer','selectPm','selectUser'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var selectCustomer = layui.selectCustomer;
+            var selectPm = layui.selectPm;
+            var selectUser = layui.selectUser;
+            var list_data = {$retreatList|json_encode};
+            initInput({"admin":"","customer":"","vm":""});
+            /*selectCustomer.initInput(false,false,'nick_name');
+            selectPm.initInput(false,false,'femplname');
+            selectUser.initInput(false,false,'femplname');*/
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Retreat/index?'+query
+            };
+            //检索按钮
+            $('.search-btn').on('click',function () {
+                queryTable({
+                    user_name:$('input[name="user_name"]').val(),
+                });
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            });
+            var handle_status_cn = [
+                '退货新单,待处理',
+                '退款新单,待处理',
+                '已批准,等待客户发货中',
+                '已驳回,待协商',
+                '买家退货物品运输中',
+                '已收货,待手动完成退款',
+                '退款已完成',
+                '申请已撤销',
+                '部分VM审核'
+            ];
+            function eachReplace() {
+                $.each(list_data.list,function (index,value) {
+                    // value.retreat_type = parseInt(value.retreat_type) == 1? '退货退款':'仅退款';
+                    // value.cargo_status = parseInt(value.cargo_status) == 1 ?'已收货':'未收货';
+                    if(parseInt(value.retreat_type)== 0){
+                        value.retreat_type="仅退款";
+                    }
+                    if(parseInt(value.retreat_type)== 1){
+                        value.retreat_type="退货";
+                    }
+                    if(parseInt(value.retreat_type)== 2){
+                        value.retreat_type="退货退款";
+                    }
+
+                    if(parseInt(value.cargo_status)== 0){
+                        value.cargo_status="不退款";
+                    }
+                    if(parseInt(value.cargo_status)== 1){
+                        value.cargo_status="玖隆钱包";
+                    }
+                    if(parseInt(value.cargo_status)== 2){
+                        value.cargo_status="原路";
+                    }
+                    switch( parseInt(value.handle_status) ){
+                        case 1:
+                            if( value.retreat_type == 1 ){
+                                value.handle_status = handle_status_cn[0];
+                            }else{
+                                value.handle_status = handle_status_cn[1];
+                            }
+                            break;
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                        case 8:
+                            value.handle_status = handle_status_cn[value.handle_status];
+                            break;
+                    }
+                });
+            }
+            eachReplace();
+            var Ins = table.render({
+                elem: '.data-table',
+                id : 'test',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-290',
+                cols: [[ //表头
+                    // {type:'checkbox'}
+                    {field: 're_sn', title: '退款编号',minWidth:200}
+                    ,{field: 'order_sn', title: '订单编号'}
+                    ,{field: 'user_name', title: '客户名',templet:function (d) {
+                        return d.userInfo&&d.userInfo.nick_name
+                    }}
+                    ,{field: 'fcustname', title: 'ERP客户名称'}
+                    ,{field: 'sys_name', title: '所属业务员'}
+                    ,{field: 'vm', title: '产品VM'}
+                    ,{field: 'retreat_money', title: '退款金额'}
+                    ,{field: 'retreat_desc', title: '会员退款说明'}
+                    ,{field: 'retreat_type', title: '退款方式'}
+                    ,{field: 'cargo_status', title: '退款路线'}
+                    ,{field: 'handle_status', title: '退款处理状态', templet:'#handle_status'}
+                    ,{field: 'pay_type', title: '订单付款方式记录', style:'color:#FF5722',minWidth:250}
+                    ,{field: 'create_time', title: '申请时间'}
+                    ,{field: 'update_time', title: '最后处理时间'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right', minWidth:250,toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                var tr = obj.tr;
+                switch( layEvent ){
+                    case 'detail': //申请详情
+                        var load = layer.load(3, {time: 10*1000});
+                        $.post('/Admin/Retreat/getDetail',{re_sn:source.re_sn},function(data){
+                            layer.close(load);
+                            layer.open({
+                                title:'查看退款订单详细',
+                                area:['80%','80%'],
+                                closeBtn:1,
+                                content:data.html,
+                            });
+                            form.render();
+                        });
+                        break;
+                    case 'agree': //批准申请
+                        var load = layer.load(3, {time: 10*1000});
+                        // if(parseInt(source.retreat_type) === 1){
+                        //     layer.open({
+                        //         title:'选择收货地址',
+                        //         area:['1400px','700px'],
+                        //         closeBtn:1,
+                        //         content:'123',
+                        //     });
+                        // }
+                        $.post('/Admin/Retreat/agreeRetreat',{re_sn:source.re_sn},function(data){
+                            layer.close(load);
+                            if( typeof(data) === typeof('123') ) {
+                                data  = JSON.parse( data );
+                            }
+                            if( data.error === 1 ){
+                                layer.alert( data.msg,{icon:2,time:3000},function(){
+                                    location.reload();
+                                } );
+                            }
+                            if( data.status === 0  ){
+                                layer.msg( source.re_sn+' 操作成功',{icon:1,time:3000},function(){
+                                   location.reload();
+                                } );
+                            }else{
+                                layer.alert( data.content,{icon:2,time:3000},function(){
+                                    location.reload();
+                                }  );
+                            }
+//                            location.reload()
+                        });
+
+                        break;
+                    case 'reject': //批准驳回
+                        layer.prompt({
+                            formType: 2,
+                            value: '请输入驳回原因',
+                            title: '驳回原因',
+                            area: ['400px', '250px'] //自定义文本域宽高
+                        }, function(value, index, elem){
+                            if( value === '' || value === '请输入驳回原因' ){
+                                layer.msg('请输入驳回原因',{icon:2,anim:6});
+                            }else{
+                                layer.close( index );
+                                var load = layer.load();
+                                $.post('/Admin/Retreat/rejectRetreat',{re_sn:source.re_sn,action_desc:value},function(data){
+                                    layer.close(load);
+                                    if( data.status == 0  ){
+                                        layer.msg( source.re_sn+' 退款申请已驳回',{icon:1,time:3000}, function(){
+                                            location.reload();
+                                        });
+                                    }else{
+                                        layer.alert( data.content || data.msg );
+                                    }
+                                });
+                            }
+
+                        });
+                        // form.render();
+                        break;
+                    case 'delivery':
+                        layer.confirm('是否确认收货', {icon: 3, title:'提示'},function(){
+                            var load = layer.load(3, {time: 10*1000});
+                            $.post('/Admin/Retreat/agreeRetreatDelivery',{re_sn:source.re_sn},function(data){
+                                layer.close(load);
+                                if( data.status == 0  ){
+                                    layer.msg( source.re_sn+'收货成功!请手动完成相应退款操作',{icon:1,time:3000}, function(){
+                                        location.reload(true);
+                                    });
+                                }else{
+                                    layer.alert( data.msg );
+                                }
+                            });
+                        });
+                        break;
+                    case 'commit':
+                        layer.confirm('请确认是否已完成退款?', {icon: 3, title:'提示'},function(){
+                            var load = layer.load(3, {time: 10*1000});
+                            $.post('/Admin/Retreat/commitRetreat',{re_sn:source.re_sn},function(data){
+                                layer.close(load);
+                                if( data.status === 0  ){
+                                    layer.msg( source.re_sn+' 操作成功!',{icon:1,time:3000}, function(){
+                                        location.reload();
+                                    });
+                                }else{
+                                    layer.alert( data.content );
+                                }
+                            });
+                        });
+                        break;
+                    case 'log':
+                        var str = '<table class="layui-table"><tr><td>操作人</td><td>操作内容</td><td>操作备注</td><td>操作时间</td></tr>';
+                        var action = {
+                            0:'创建申请',
+                            1:'批准申请',
+                            2:'驳回申请',
+                            3:'客户修改申请',
+                            4:'客户发货',
+                            5:'确认收货',
+                            6:'退款完成',
+                            7:'退款撤销',
+                            8:'部分VM审核',
+                        };
+
+                        for( var i=0; i < source.logs.length; i++){
+                            var l = source['logs'][i];
+                            str +='<tr><td>';
+                            if( l.user_type == 0 ){
+                             str += l.user_name;
+                            }else{
+                                str += l.handle_name;
+                            }
+                             str +='</td><td>'+action[l['action_type']]+'</td><td>';
+                            if( l.user_type == 0 ){
+                                str += source.retreat_desc;
+                            }else{
+                                str += l.action_desc;
+                            }
+                            str +='</td><td>'+ l.create_time +'</td></tr>';
+                        }
+                        str += '</table>';
+                        layer.open({
+                            title: '退款订单操作纪录',
+                            closeBtn: 1,
+                            shadeClose: true,
+                            area:['800px', '300px'],
+                            content:str,
+                        });
+                        form.render();
+                        break;
+                }
+            });
+
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+//            form.on('submit(screen)', function(data){
+//                var res = {};
+//                queryTable($.extend({},{
+//                    is_online:request.is_online?request.is_online:null,
+//                    is_del:request.is_del?request.is_del:null,
+//                    cate_id:request.cate_id,
+//                    pageSize:request.pageSize,
+//                    page:1
+//                },res));
+//                return false;
+//            });
+            //清空
+            $('.clear-btn').on('click',function () {
+                $('.list-clear-input').val('');
+                $('.list-clear-checkbox').prop('checked',false);
+                form.render('checkbox', 'screen-form');
+            });
+
+        });
+    </script>
+</block>

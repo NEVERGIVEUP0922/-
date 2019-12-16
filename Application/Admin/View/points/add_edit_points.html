@@ -1,0 +1,599 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/select2/4.0.5/css/select2.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+    <link rel="stylesheet" href="/Public/Admin/Product/css/productListAction.css?v=118"/>
+</block>
+<block name="content">
+    <div>
+
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">{$request?'编辑':'新增'}积分规则</a>
+            </span>
+            <button class="layui-btn" lay-submit lay-filter="bargain" style="margin-left: 16px;padding:0 14px;height:30px;line-height:30px">提交</button>
+<!--
+            <button style="margin-left: 16px;" class="add-btn layui-btn action-add layui-btn-sm">添加行</button>
+-->
+        </blockquote>
+        <form class="layui-form layui-form-form" id="forms" action="" enctype="multipart/form-data">
+
+            <table id="addTable-table" lay-filter="addTable">
+                <script type="text/html" id="handle-tpl">
+                   <!-- <div class="oneBargin">
+                        <span lay-event="delete" class="layui-btn layui-btn-danger layui-btn-sm">删除</span>
+                        <span lay-event="add" class="layui-btn  layui-btn-sm">添加</span>
+                    </div>-->
+                </script>
+            </table>
+        </form>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['table','layer', 'jlTool','laydate','element','form','selectProduct','selectCustomer','actionTpl'], function () {
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var actionTpl = layui.actionTpl;
+            var form = layui.form;
+            var table = layui.table;
+            var selectProduct = layui.selectProduct;
+            var laydate = layui.laydate;
+            var single_data = {$integralList|json_encode};
+            var categoryTree = {$categoryTree|json_encode};
+            var request = {$request|json_encode};
+            var integralItem = {$integralItem | json_encode};
+            var demo = {
+                'id':'', 'integral_name':'','type':'10000', 'scale':'',status:'', 'scale_step':'', 'num':'', 'min_amount':'',
+                'max_amount':'', 'cell_code':'','p_signs':'','cate_all':'',note:'','product_id':'','start_time':'','end_time':''
+            };
+            var tableIns,cols;
+            //console.log(categoryTree,single_data);
+            categoryTree=categoryTree.data;
+            var initTable = function () {
+                //console.log(single_data);
+                single_data = $.isArray(single_data)?single_data:[single_data];
+                var data =  request.order_sn||request.id ? single_data:[demo];
+                cols = [
+                     {field: 'integral_name',align:'center',tplType:'input_two', title: '规则名称',templet:function(d){
+                             return actionTpl.checkInput('integral_name',d,false);
+                         }}
+                    , {field: 'type', title: '规则类型',width: 150,tplType:'select',align:'center',templet:function(d){
+                            var this_type=[{title:'请选择类型',value:''},
+                                {group:true,title:'基础规则(商品)',option:[{title:'单笔',value:'1'},{title:'月度',value:'21'},{title:'年度',value:'41'}]},
+                                {group:true,title:'特殊规则',option:[{title:'商品',value:'101'},{title:'登录',value:'111'},{title:'供应方案',value:'112'},{title:'需求方案',value:'113'}]}
+                                /*,
+                                {group:true,title:'其他',option:[{title:'订单退款',value:'203'},{title:'积分提取去个人钱包',value:'205'}] }*/
+                            ]
+                            return (actionTpl.select_type('type',this_type,d));
+                        }}
+                    , {field: 'scale',width: 120,align:'center',tplType:'input', title: '兑换比例(%)',templet:function(d){
+                            return actionTpl.input('scale',d);
+                        }}
+                    , {field: 'num',align:'center', title: '固定积分数',tplType:'input',templet:function(d){
+                            return actionTpl.input('num',d);
+                        }}
+                    , {field: 'min_amount',align:'center', title: '最少销售额',tplType:'input',templet:function(d){
+                            return actionTpl.input('min_amount',d);
+                        }}
+                    , {field: 'max_amount',align:'center', title: '最大销售额',tplType:'input',templet:function(d){
+                            return actionTpl.input('max_amount',d);
+                        }}
+                    , {field: 'cate_all',align:'center', title: '绑定分类',tplType:'cate',templet:function(d){
+                            return '<span type="text"  class="layui-btn layui-btn-sm  jl-control-cate_all"  style="background:'+(d.cateList?(d.cateList[0]?"#009688":"#c2c2c2"):"#c2c2c2")+'" data-data="'+(d.cateList?(d.cateList[0]?encodeURIComponent(JSON.stringify(d.cateList)):""):"")+'">查看详情</span><input value="'+(d.cate_all||"")+'" type="hidden" class="layui-input layui-input-cate_all"  />';
+                        }}
+                    , {field: 'p_signs',align:'center', title: '绑定商品',tplType:'product',templet:function(d){
+                        console.log(d);
+                            return '<span type="text" class="layui-btn layui-btn-sm  jl-control-p_signs"  style="background:'+(d.productList?(d.productList[0]?"#009688":"#c2c2c2"):"#c2c2c2")+'" data-data="'+(d.productList?(d.productList[0]?encodeURIComponent(JSON.stringify(d.productList)):""):"")+'">查看详情</span><input value="'+(d.p_signs||"")+'" type="hidden" class="layui-input layui-input-p_signs"  />';
+                        }
+                     }
+                    /*, {field: 'cell_code',align:'center', title: '绑定项目',tplType:'product',templet:function(d){
+                            var optionHtml = '<option value="" ></option>';
+                            $.each(integralItem,function (index,value) {
+                                if(value.id ===d['cell_code']){
+                                    optionHtml+= '<option value="'+value.id+'" selected>'+value.item_name+'</option>';
+                                }else{
+                                    optionHtml+= '<option value="'+value.id+'">'+value.item_name+'</option>';
+                                }
+                            });
+                            return (
+                                '<div class="layui-form">' +
+                                '<div class="layui-form-item">\n' +
+                                '    <div class="layui-inline">\n' +
+                                '      <div class="layui-input-inline" style="width:116px;text-align:left">\n' +
+                                '        <select name="quiz" class="jl-control-cell_code">\n' +
+                                optionHtml+
+                                '        </select>\n' +
+                                '      </div>\n' +
+                                '    </div>'+
+                                '</div>'
+                            )
+                        }
+                    }*/
+                    , {field: 'start_time',align:'center', width: 200,tplType:'time', title: '规则开始时间',templet:function(d){
+                            return '<input type="text" class="layui-input jl-control-start_time" value="'+d.start_time+'" readonly id="start_time">';
+                        }}
+                    , {field: 'end_time', align:'center',width: 200,tplType:'time',title: '规则结束时间',templet:function(d){
+                        return '<input type="text" class="layui-input jl-control-end_time" value="'+d.end_time+'" readonly id="end_time">';
+                        }}
+                    , {field: 'note',align:'center', title: '备注',tplType:'input',templet:function(d){
+                            return actionTpl.input('note',d);
+                        }}
+                    ,{field: 'handle', title: '操作',toolbar:'#handle-tpl',fixed: 'right',width:130},
+                ];
+                if(request.id){
+                    cols.unshift({field: 'status', align:'center',tplType:'status',title: '规则状态',templet:function(d){
+                            var status={1:'启用',11:'停用',0:'申请',21:'审核通过',31:'审核拒绝'};
+                            return '<div class="jl-control-status" data-id="'+d.status+'">'+status[d['status']]+'</div>';
+                        }});
+                    cols.unshift({field: 'id', title: 'ID', fixed: 'left',tplType:'div',align:'center', width: 60,templet:function(d){
+                            return '<div class="jl-control-id">'+d.id+'</div>';
+                        }});
+                }
+                tableIns = table.render({
+                    elem: '#addTable-table',
+                    height:'full-120',
+                    data:data,
+                    page: false,
+                    cellMinWidth:160,
+                    cols: [cols],
+                    limit:50,
+                    done:function(){
+                        $(".layui-form tr td").find("div.layui-table-cell").css({'line-height':'40px','height':'40px'});
+                        $(".layui-table-cell").css("overflow","visible");
+                        //检查积分名字是否可用
+                       /* $(".jl-control-integral_name").on("blur",function(){
+                            var _this=this;
+                            if(request.id){
+                                return;
+                            }
+                            $.ajax({
+                                url:'/Admin/Integral/checkIntegral_name',
+                                type:'post',
+                                data:{integral_name:this.value},
+                                dataType:'json',
+                                success:function(res){
+                                    if(res.error ===0){
+                                        layer.msg(res.msg,{icon:6,time:1500});
+                                        $(_this).css('border','1px solid #e6e6e6').next().val('');
+                                    }else{
+                                        layer.msg(res.msg,{icon:5,time:1500});
+                                        $(_this).css('border','1px solid #e84343').next().val('reject');
+                                    }
+                                }
+                            });
+                        });*/
+                        //搜索输入拼音首字母自动补全
+                        var response_data=[];
+                        $( ".layui-form-label-pinyin-customer" ).autocomplete({
+                            source: "/Admin/Customer/companyPinyinSearch?disable20=disable20",
+                            minLength: 2,
+                            classes: {
+                                "ui-menu": "highlight"
+                            },
+                            close:function(event,ui){
+
+
+                            },
+                            select:function(event,ui){
+                                var $this = $( ".layui-form-label-pinyin-customer" );
+                                var value = ui.item.value;
+                                var id=JSON.parse($("#autoComplete_index_data").val());
+                                var index = response_data.indexOf(value);
+                                $this.siblings("input").val(id[index]);
+                                setTimeout(function(){ response_data = [];},0)
+
+                            },
+                            response:function( event, data ) {
+                                response_data = [];
+                                $.each(data.content,function(item,value){
+                                    response_data.push(value.value);
+                                });
+                            }
+                        });
+                        //查看绑定商品
+                        $('.jl-control-p_signs').on('click',function(){
+                            product_cate(this,true);
+                        });
+                        //查看绑定分类
+                        $('.jl-control-cate_all').on('click',function(){
+                            product_cate(this,false);
+                        });
+                        var product_cate=function(self,isProduct){
+                            var that=self;
+                            var shop_name= $(that).data("data")?JSON.parse(decodeURIComponent($(that).data("data"))):[] ;
+                            var strs="";
+                            $.each(shop_name,function(index,item){ strs+='<div ><span style="display:inline-block;margin:5px 0;border:1px solid #ddd;cursor:pointer;padding:5px 10px;width: 76%">'+(item.p_sign||item.cate_name)+'</span> <i class="iconfont-jl icon-jl-delete_fill erp-delete" style="cursor:pointer;color:red;display:inline-block;padding:5px"></i></div>';}) ;
+                            var html=""+strs+"<div class=\"jl-control-p_signs_cate price-section-add\" style='padding-top:4px;border:1px solid #e6e6e6'> <i class=\"iconfont-jl icon-jl-addition_fill\"></i> </div>";
+                            var shopArrays=[],cateArrays=[];
+                            layer.open({
+                                title:isProduct?'添加商品':'添加分类',
+                                type: 0,
+                                area:"20vw",
+                                content: html,
+                                maxHeight:500,
+                                shadeClose:true,
+                                btn:["确定"],
+                                success: function(){
+                                    if(isProduct){
+                                        selectProduct.initInput('.jl-control-p_signs_cate',function (data) {
+                                            var shopArray=$.extend(true,[],data),
+                                                shop_text='';
+                                                shopArrays=[];
+                                                shopArrays = shop_name.concat(shopArray);
+                                                //去重
+                                                var uniqueArray=function(array){
+                                                    var obj={};
+                                                    var returnData=[];
+                                                    $.each(array,function(ind,val){
+                                                        if(!obj[val.id]){
+                                                            obj[val.id]=val.id;
+                                                            returnData.push(val);
+                                                            if(shop_text){
+                                                                shop_text+=','+val.id;
+                                                            }else{
+                                                                shop_text+=val.id+'';
+                                                            }
+                                                        }
+                                                    });
+                                                    return returnData;
+                                                };
+                                            shopArrays =uniqueArray(shopArrays);
+                                            shopArrays = shopArrays.length > 0 ? shopArrays : shopArray;
+                                            $(that).data("data",encodeURIComponent(JSON.stringify(shopArrays)));
+                                            $(that).siblings("input").val(shop_text);
+                                            $(that).css("background-color","#009688");
+                                        },false,true,{checkBox:true});
+                                    }else{
+                                        $(".jl-control-p_signs_cate").off("click").on("click",function(){
+                                            layer.closeAll();
+                                            goCate(self,function(obj){
+                                                var cateArray=[],
+                                                    cate_text='';
+                                                cateArrays=[];
+                                                cateArray.push(obj);
+                                                cateArrays = shop_name.concat(cateArray);
+                                                    //去重
+                                                var uniqueArray=function(array){
+                                                    var obj={};
+                                                    var returnData=[];
+                                                        $.each(array,function(ind,val){
+                                                            if(!obj[val.id]){
+                                                                obj[val.id]=val.id;
+                                                                returnData.push(val);
+                                                                if(cate_text){
+                                                                    cate_text+=','+val.id;
+                                                                }else{
+                                                                    cate_text+=val.id+'';
+                                                                }
+                                                            }
+                                                        });
+                                                        return returnData;
+                                                    };
+                                                cateArrays =uniqueArray(cateArrays);
+                                                cateArrays = cateArrays.length > 0 ? cateArrays : cateArray;
+                                                $(that).data("data",encodeURIComponent(JSON.stringify(cateArrays)));
+                                                $(that).siblings("input").val(cate_text);
+                                                $(that).css("background-color","#009688");
+                                            });
+                                        })
+                                    };
+                                    $(".erp-delete").on("click",function(){
+                                        var shop_data=$(that).data("data")?JSON.parse(decodeURIComponent($(that).data("data"))):[];
+                                        var shop_text= $(that).siblings("input").val().split(",");
+                                        var _this=this;
+                                        //console.log("erp_data",erp_data,$(this).prev().text());
+                                        var index=-1;
+                                        $.each(shop_data,function(ind,val){
+                                            if(val.p_sign == $(_this).prev().text()||val.cate_name == $(_this).prev().text()){
+                                                index=ind;
+                                                return true;
+                                            }
+                                        });
+                                        $(this).parent().remove();
+                                        shop_data.splice(index,1);
+                                        shop_text.splice(index,1);
+                                        $(that).data("data",encodeURIComponent(JSON.stringify(shop_data)));
+                                        $(that).siblings("input").val(shop_text.join(","));
+                                    });
+                                },
+                                yes:function (index, layero) {
+                                    var text=$(that).siblings("input").val();
+                                    if(!text){$(that).css("background-color","#c2c2c2");}else{
+                                        $(that).css("background-color","#009688");
+                                    }
+                                    layer.closeAll();
+                                }
+                            });
+                        };
+                        //时间时期初始化
+                        var getDate_local=function(type,this_time,isEnd){
+                            var getDate=function(time){
+                                if(!Number(time)){
+                                    layer.msg('时间格式错误');return;
+                                };
+                                var data=new Date(time);
+                                var month=data.getMonth()+1;
+                                return (data.getFullYear()+'-'+(month>10?month:('0'+month))+'-'+(data.getDate()>10?data.getDate():('0'+data.getDate())))+' 00:00:00';
+                            }
+                            //if($.inArray(type,['21','41'])>-1 ){
+                                    var start_time=new Date(this_time);
+                                    var data_time=0;
+                                    var now_time=new Date();
+                                    if(isEnd){
+                                        data_time =start_time;//type==='21'?(start_time-(30*24*3600*1000)):(start_time-(365*24*3600*1000));
+                                        if(start_time-(now_time - now_time.getHours()*3600000 - now_time.getMinutes()*60000 - now_time.getSeconds()*1000 - now_time.getMilliseconds())<0){
+                                            layer.msg('积分规则的开始或者结束时间必须大于当前时间',{icon:5});
+                                            return 1;
+                                        };
+                                    }else{
+                                        data_time =type==='21'?(start_time-(-30*24*3600*1000)):(start_time-(-365*24*3600*1000));
+                                        if(start_time-(now_time - now_time.getHours()*3600000 - now_time.getMinutes()*60000 - now_time.getSeconds()*1000 - now_time.getMilliseconds())<0){
+                                            layer.msg('积分规则的开始或者结束时间必须大于当前时间',{icon:5});
+                                            return 1;
+                                        }
+                                    }
+                                    if(type==='21'){
+                                        return getDate(data_time);
+                                    }else{
+                                        return getDate(data_time);
+                                    };
+                           /* }else{
+                                return '';
+                            }*/
+                        };
+                        laydate.render({
+                            elem: '#start_time'
+                            ,value: ''
+                            ,type: 'datetime'
+                            ,change:function(value, date){ //监听日期被切换
+                               console.log(value,date,this);
+                            },
+                            done: function(value, date, endDate){
+                               // console.log(value,date,this,this.elem.selector);
+                                if(value){
+                                    $(this.elem).val(value/*.split(" ")[0]+" 00:00:00"*/);
+                                    var types= $(this.elem).parents('tr').find('.jl-control-type').val().trim()
+                                    var times=getDate_local(types,value);
+                                    if(times){
+                                        var this_date=this.elem;
+                                        setTimeout(function(){
+                                            times===1&&$(this_date).val('');
+                                        },100);
+                                        //times!==1&&$("#end_time").val(times);
+                                    };
+                                }else{
+                                    $(this.elem).val('');
+                                };
+                            }
+                        });
+                        laydate.render({
+                            elem: '#end_time'
+                           // ,position: 'static'
+                            ,type: 'datetime'
+                            ,done:function(value, date){ //监听日期被切换
+                                //console.log(value,date);
+                                if(value){
+                                    var types= $(this.elem).parents('tr').find('.jl-control-type').val().trim();
+                                    var times=getDate_local(types,value,'endTime');
+                                    if(times){
+                                        //times!==1&&$("#start_time").val(times);
+                                    }/*else{
+                                        $("#start_time").val('');
+                                    }*/;
+                                    $(this.elem).val(value/*.split(" ")[0]+" 00:00:00"*/);
+                                    var this_date=this.elem;
+                                    setTimeout(function(){
+                                        times===1&&$(this_date).val('');
+                                    },100);
+                                }else{
+                                    $(this.elem).val('');
+                                }
+                            }
+                        });
+                    }
+                });
+                //删除按钮
+                table.on('tool(addTable)', function(obj){
+                    if(obj.event === 'delete'){ //删除
+                        layer.confirm('删除只是放弃编辑这一行，不会影响数据', function(index){
+                            obj.tr.remove();
+                            layer.close(index);
+                        });
+                    }
+                    //添加同一客户
+                    if(obj.event === 'add'){
+                        var tr = obj.tr;
+                        var value = {};
+                        value.index_num = $(tr[0]).data("index");
+                        value.user_name = $(tr[1]).find("td[data-field = uid]").find("input[name = uidtitle]").val();
+                        value.uid = $(tr[1]).find("td[data-field = uid]").find("input[name = uid]").val();
+                        addRow(undefined,false,false,value);
+                    }
+                });
+            };
+            initTable();
+            //添加一行
+            $(".add-btn").off("click").on("click",function(){
+                addRow();
+            })
+            var addRow = function (value,elems,keys,addSame) {
+                var data = value ? getData(value["p_sign"]):getData();
+                var cloneDemo=JSON.parse(JSON.stringify(demo));
+                if(value){
+                    if(keys==0 && data){
+                        elems.val(value.fitemno);
+                        elems.parent().parent().siblings("[data-field=fstcb]").find("div").text(value.fstcb)
+                        elems.data('id',value.id);
+                        return;
+                    };
+                    cloneDemo['fitemno'] = value.fitemno;cloneDemo['fstcb'] = value.fstcb};
+                if(addSame){
+                    cloneDemo['customer_name'] = addSame.user_name;
+                    cloneDemo['uid'] = addSame.uid;
+                    data.splice(Number(addSame.index_num) + 1,0,cloneDemo);
+                }else{
+                    data.push(cloneDemo);
+                };
+                tableIns.reload({
+                    data:data
+                });
+                // initTable();
+            };
+            //选择分类
+            $('.select-category').click(function () {
+                goCate(this,false);
+            });
+            //分类
+            function goCate(_this,fn){
+                var $this = $(_this);
+                var selected;
+                layer.open({
+                    title:'选择分类',
+                    type: 0,
+                    tipsMore:true,
+                    area:"360px",
+                    content: (
+                        '<div class="jstree-div" style="max-height:500px"></div>'
+                    ),
+                    success: function(){
+                        var reduceTree = (function reduce(value) {
+                            if(value&&$.isArray(value)){
+                                $.each(value,function (i,v) {
+                                    v['text'] = v.cate_name;
+                                    if(v.children){
+                                        reduce(v.children)
+                                    }
+                                })
+                            }
+                        })(categoryTree.category);
+                        $('.jstree-div').jstree({
+                            'core': {
+                                'data': [{
+                                    "text": "商品分类",
+                                    "state": {"opened": true},
+                                    "children": categoryTree.category
+                                }]
+                            }
+                        }).on("changed.jstree", function (e, data) {
+                            if ((data.action==='select_node')&&data.selected.length) {
+                                var category = data.instance.get_node(data.selected[0]);
+                                selected = category.children.length===0 ? category : false
+                            }
+                        });
+                    },
+                    yes:function (index, layero) {
+                        if(selected){
+                            if(fn){
+                                var rerutnDate={
+                                    id:selected.id,
+                                    cate_name:selected.text
+                                };
+                                fn(rerutnDate);
+                            };
+                            layer.close(index);
+                        }
+                        else {
+                            layer.tips('必须选择并且是最底层分类', '.layui-layer-btn0');
+                        }
+                    }
+                });
+            }
+            //获取数据
+            var getData = function (exestPsign) {
+                var array = [];
+                $('.layui-table-main').find('tr').each(function (index) {
+                    var $tr = $(this);
+                    var single = {};
+                    var $nextTr = $tr.parents('.layui-table-main').siblings('.layui-table-fixed-l').find(".layui-table-body").find('tr').eq(index);
+                    $.each(cols,function (index,value) {
+                      if(value.tplType==='input'||value.tplType==='time'){
+                          single[value['field']] = $tr.find('.jl-control-'+value['field']).val().trim()||"";
+                        }
+                      else if(value.tplType==='input_two'){
+                          single[value['field']] = $tr.find('.jl-control-'+value['field']).val().trim()||"";
+                          single[value['field']+'_check'] = $tr.find('.jl-control-'+value['field']+'-check').val()||"";
+                      }
+                        else if(value.tplType==='select'){
+                          single[value['field']] = $tr.find('.jl-control-'+value['field']).val().trim()||"";
+                        }else if(value.tplType==='status'){
+                            single[value['field']] = $tr.find('.jl-control-'+value['field']).data('id');
+                        }else if(value.tplType==='cate'||value.tplType==='product'){
+                          single[value['field']] = $tr.find('.jl-control-'+value['field']).next().val().trim()||"";
+                      }else if(value.tplType==='div'){
+
+                          Number(single_data[0]['status'])!==11&&(single[value['field']] = $nextTr.find('.jl-control-'+value['field']).text().trim()||"");
+                      }
+                    });
+                    if(array)array.push(single);
+                });
+                // console.log("array",array);
+                return array
+            };
+            form.on('submit(bargain)', function(data){
+                var datas = getData();
+                var prive_on=false;
+                var num_scale=false;
+                var changeModel = false;
+                var isName=true;
+                $.each(datas,function(index,item){
+                    var type_arr=['1' ,'21' ,'41' ,'101'];
+                    item.cate_id=item.cate_all;
+                    item.p_id=item.p_signs;
+                    if(item.integral_name_check){
+                        isName =false;
+                        return false;
+                    };
+                    if(single_data){
+                        $.inArray(item.status,['0','31'])>-1&&(item.id=single_data.id);
+                    };
+                    if(!item.integral_name ||!item.start_time  || !item.type||(item.end_time&&new Date(item.end_time) -new Date(item.start_time) <0)){ changeModel = true;return false};
+                    if(($.inArray(item.type,type_arr)>-1 && !item.scale)||(!$.inArray(item.type,type_arr)<0 && !item.num) ||item.num<0||item.scale<0){ num_scale = true ;return false;};
+                    if(item.max_amount && item.min_amount && item.max_amount - item.min_amount<0||item.min_amount<0||item.max_amount<0){
+                        prive_on=true;
+                    }
+                });
+                if(!isName){ layer.msg('积分名字不可用');return;};
+                if(prive_on){ layer.msg('填写的最大销售额必须大于最小的小销售额,且不能为负数');return;}
+                if(num_scale){ layer.msg('商品的积分规则需要填写兑换比例，其他项目需要填写积分数,且不能为负数');return;}
+                if(changeModel){ layer.msg('规则类型，规则开始时间必须填写，且结束时间必须大于开始时间');return;}
+                $.post('/Admin/Integral/storeIntegral',datas[0],function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        jlTool.sendIframeMsg('refresh','integralRuleList');
+                        layer.msg(res.msg,{icon:6},function(){
+                            jlTool.sendIframeMsg('go',{
+                                title:'价格详情',
+                                url:'/Admin/Integral/integralRuleList?id='+res.id,
+                                icon:''
+                            });
+                        });
+                    }
+                    else {
+                        var text="";
+                        if(res.failed){
+                            $.each(res.failed,function(index,item){
+                                text+=item.msg+";<br/>";
+                            });
+                        }else{
+                            text=res.msg
+                        };
+                        layer.open({
+                            content:text,
+                            type:0,
+                            btn:["确定"],
+                            yes:function(){
+                                layer.closeAll();
+                            }
+                        });
+                    }
+                });
+                return false;
+            });
+        });
+
+    </script>
+</block>

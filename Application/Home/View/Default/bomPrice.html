@@ -1,0 +1,313 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout" />
+
+<block name="title">BOM报价</block>
+<block name="keywords">Bom表，精准匹配，模糊匹配，表格上传，在线录入</block>
+<block name="description">Bom表导入execl商品，或者在线录入</block>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/select_option/select.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/BomPrice.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+	<div id="jl-purchase-fault">
+		<div >你的位置&gt;首页&gt;BOM报价</div>
+		<strong class="jl-match-title">匹配种类</strong>
+		<div class="jl-match-exact">
+			<div class="jl-match-exact-child">
+				<div>
+					精准匹配
+					<span>
+						（标准格式）
+					</span>
+				</div>
+			</div>
+			<div class="jl-match-exact-child">
+				<div>
+					<span>仅支持word,XLSX表格，文件小于20M</span>
+				</div>
+			</div>
+			<div class="jl-match-exact-child">
+				<input class="jl-download-excel" type="button" value="下载标准表格"/>
+				<input class="jl-upload-excel jl-commom-css" data-type="standard" type="button" value="上传"/>
+				<input class="jl-upload-excel jl-commom-css" data-type="standard" style="display:none;opacity:0;position:absolute;right:0" type="file" value="上传"/>
+			</div>
+		</div>
+		<div class="jl-match-exact">
+			<div class="jl-match-exact-child">
+				<div>
+					模糊匹配
+					<span>
+						（自定义格式）
+					</span>
+				</div>
+			</div>
+			<div class="jl-match-exact-child">
+				<div>
+					<span>仅支持word,XLSX表格，文件小于20M</span>
+				</div>
+			</div>
+			<div class="jl-match-exact-child">
+				<input class="jl-upload-excel jl-commom-css" data-type="blur" type="button" value="上传"/>
+				<input class="jl-upload-excel jl-commom-css" data-type="blur" style="display:none;opacity:0;position:absolute;right:0" type="file" value="上传"/>
+			</div>
+		</div>
+		<div class="jl-match-exact">
+			<div class="jl-match-exact-child">
+				<div>
+					创建BOM
+					<span>
+						（标准格式）
+					</span>
+				</div>
+			</div>
+			<div class="jl-match-exact-child">
+				<div>
+					<span>仅支持word,XLSX表格，文件小于20M</span>
+				</div>
+			</div>
+			<div class="jl-match-exact-child">
+				<input class="jl-online-excel jl-commom-css" type="button" onclick="$('.bom-online-write').show(400);" value="在线录入"/>
+			</div>
+		</div>
+	</div>
+	<div class="bom-online-write" style="display:none">
+		<div class="center-content" >
+			<div class="setHeader" style="padding:10px 0;background-color:#e84343;text-align:center;position:relative;color:#fff">
+				在线录入<span class="closeShadow" style="cursor:pointer;position:absolute;top:50%;right:10px;transform: translateY(-50%);color:#fff" onclick="$('.bom-online-write').hide(400);">X</span>
+			</div>
+			<div class="header-write">
+				<div class="layui-inline" style="width:100%">
+					<form id="main_demo">
+						<label class="layui-form-label">方案类型</label>
+						<select id="edu" name="caseId">
+							<option value="">请选择</option>
+							<foreach name="caseType" item="vo">
+								<option value="{$vo.id}">{$vo.types}</option>
+							</foreach>
+						</select>
+						<div style="margin-top:1%">
+							<label class="layui-form-label">方案形态</label>
+							<input class="jl-body-case" style="width:200px" name="caseType" placeholder="请输入方案形态" />
+							<span style="color:#e84343;margin-left:2%">列如如:移动电源、蓝牙音箱、手机、MID等等</span>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div style="width:962px;margin:2% auto;border:1px solid #bbb;">
+				<div class="bodyHeader" style="overflow:hidden;">
+					<table cellspacing="0" cellpadding="0">
+						<thead class="table-cell">
+							<th><div >需求型号</div></th>
+							<th ><div >需求功能分类</div></th>
+							<th><div>需求封装</div></th>
+							<th><div >需求品牌</div></th>
+							<th><div class="number">需求数量</div></th>
+						</thead>
+					</table>
+				</div>
+				<form class="table-body">
+					<table>
+						<tbody class="table-cell table-data-shadow">
+						<tr class="table-data-tr">
+							<td>
+								<div class="" ><input class="jl-body-case" name="p_sign" placeholder="请输入型号" /> </div>
+							</td>
+							<td>
+								<div class="" ><input class="jl-body-case" name="cate" placeholder="请输入商品分类" /> </div>
+							</td>
+							<td>
+								<div class="" ><input class="jl-body-case" name="package" placeholder="请输入商品封装" /></div>
+							</td>
+							<td>
+								<div class="" ><input class="jl-body-case" name="brand" placeholder="请输入品牌" /> </div>
+							</td>
+							<td>
+								<div class="" ><input class="jl-body-case" name="pnum" placeholder="请输入商品数量" /> </div>
+							</td>
+						</tr>
+						<tr class="last-tr-css"><td colspan="3"><div data-type="delete">删去最后一行</div></td><td colspan="2"><div data-type="add">添加一行</div></td></tr>
+						</tbody>
+					</table>
+				</form>
+			</div>
+			<div class="footer">
+				<span data-type="cancel">取消</span>
+				<span data-type="sure" style="background-color:#e84343;color:#fff">确定</span>
+			</div>
+		</div>
+	</div>
+	<div class="jl-line"></div>
+</block>
+<block name="js">
+	<script>
+        require(['jquery','__PUBLIC__/Common/module/select_option/select.js','jl-modal','bomUp'], function () {
+            var jlModal=require('jl-modal');
+            var form = layui.form;
+            var types={$caseType|json_encode}||[];
+            var bomup=require("bomUp");
+            console.log(types)
+            $(function() {
+                selectlist($('select')[0], {
+
+                    zIndex: 10,
+
+                    width: 200,
+
+                    height: 40
+
+                });
+                //bom上传
+                $(".jl-upload-excel").on("click", function () {
+                    var _this = this;
+                    var optios='<option value="">请选择</option>';
+                    if(types.length>0){
+                        $.each(types,function(ind,val){
+                            optios+='<option value="'+val.id+'">'+val.types+'</option>\n'
+                        });
+					}
+                    var str = '<form class="layui-form">' +
+							'<div class="layui-form-item" >\n' +
+							'    <label class="layui-form-label">方案类型</label>\n' +
+							'    <div class="layui-input-block" style="width:178px">\n' +
+							'      <select name="interest" lay-filter="aihao" name="project_type">\n' +
+                        			optios +
+							'      </select>\n' +
+							'    </div>\n' +
+							'  </div>' +
+							'<div style="margin-top:1%;overflow:hidden">\n' +
+							'<label class="layui-form-label">方案形态</label>\n' +
+							'<input class="jl-body-case" name="project_cate" style="float:left;height: 35px;line-height: 35px;text-indent: 20px;width: 178px;border-radius: 2px;border: 1px solid #e3e3e3;outline: none;" placeholder="请输入方案形态" />\n' +
+							'<span style="color:#e84343;margin:2% 0 0 2%;float:left">列如如:移动电源、蓝牙音箱、手机、MID等等</span>\n' +
+							'</div>\n' +
+                        '</form>';
+                    jlModal.confirm({
+                        title: "基础信息录入",
+                        brief: str,
+                        width: "34vw",
+                        height: "auto",
+                        isCenter: true,
+                        confirm: function () {
+                            var data=$(".layui-form").serializeArray();
+                            var isPass=true;
+                            data.map(function(val,ind){
+                                if(!val.value){
+                                    return (isPass=false,layer.msg("所有选项不能为空"));
+								}
+							});
+                            if(!isPass)return;
+                            $(_this).next().click();
+                            jlModal.close();
+                        }
+                    });
+                    form.render();
+                });
+                var bom_searchData = [];
+                $(".jl-commom-css").on('change', function () {
+                    bomup({self: this, searchData: bom_searchData});
+                });
+            });
+            //添加一行
+			var htmls='<tr class="table-data-tr">\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '\t\t\t\t\t\t\t\t<div class="" ><input class="jl-body-case" name="p_sign" placeholder="请输入型号" /> </div>\n' +
+                '\t\t\t\t\t\t\t</td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '\t\t\t\t\t\t\t\t<div class="" ><input class="jl-body-case" name="cate" placeholder="请输入商品分类" /> </div>\n' +
+                '\t\t\t\t\t\t\t</td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '\t\t\t\t\t\t\t\t<div class="" ><input class="jl-body-case" name="package" placeholder="请输入商品封装" /></div>\n' +
+                '\t\t\t\t\t\t\t</td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '\t\t\t\t\t\t\t\t<div class="" ><input class="jl-body-case" name="brand" placeholder="请输入品牌" /> </div>\n' +
+                '\t\t\t\t\t\t\t</td>\n' +
+                '\t\t\t\t\t\t\t<td>\n' +
+                '\t\t\t\t\t\t\t\t<div class="" ><input class="jl-body-case" name="pnum" placeholder="请输入商品数量" /> </div>\n' +
+                '\t\t\t\t\t\t\t</td>\n' +
+                '\t\t\t\t\t\t</tr>';
+			$(".last-tr-css").on("click","div",function(){
+					var $this=$(this);
+					var $parentTr=$this.parents(".last-tr-css");
+					var types = $this.data("type");
+					if(types ==="add"){
+                        $parentTr.before(htmls);
+					}else{
+                        $parentTr.prev(".table-data-tr").remove();
+					}
+			});
+			//确认-取消
+			$(".footer span").click(function(){
+				var $this=$(this);
+				var types =$this.data("type");
+				if(types === "sure"){
+				    var formData=$(".table-body").serializeArray()||[];
+				    var caseData=$("#main_demo").serializeArray()||[];
+				    var sendData=[];
+				    var obj={};
+                    var defaultData={p_sign: [{name:"需求型号",value:""}], package: [{name:"需求封装",value:""}], brand: [{name:"需求品牌",value:""}], cate: [{name:"需求功能分类",value:""}],pnum:[{name:"需求数量",value:""}]};
+				    if(formData.length>0){
+				        var isPass=true;
+                        $.each(formData,function(ind,val){
+                            if(val.name=="pnum"&&!val.value){
+                                obj[val.name]=[{name:defaultData[val.name][0].name,value:"1"}];
+							}else{
+                                obj[val.name]=[{name:defaultData[val.name][0].name,value:val.value}];
+							}
+                            if(!val.value && val.name=='p_sign'){
+                                isPass=false;
+								return true;
+							}
+							if(ind%5===4){
+                                sendData.push(obj);
+                                obj={};
+							};
+						});
+                        if(!isPass){
+                            return layer.msg("所有数据不能为空",{icon:5});
+						};
+					}else{
+				        layer.msg("填写数据异常");
+					};
+				    if(caseData.length>1){
+				        var isCaseEmpty=false;
+				        $.each(caseData,function(ind,val){
+				            if(val.value){
+                                obj[val.name]=val.value;
+							}else{
+                                isCaseEmpty=true;
+				                layer.msg('方案信息不能空');
+				                return false;
+							};
+						});
+				        if(isCaseEmpty){
+				            return;
+						}
+					}else{
+				        layer.msg("方案信息录入异常");
+				        return;
+					};
+                    bomup({importExcel:true,importExcelData:[[sendData,"在线录入"],true,true]});
+				}else{
+				    $(".bom-online-write").hide(400);
+				}
+			})
+            // $(".jl-download-excel").on("click",function Click(){
+            //     window.location.href="/Uploads/bomsample.xlsx";
+            // });
+            $(".jl-download-excel").on("click",function(){
+                var a = document.createElement("a");
+                a.href = "/Uploads/bomsample.xlsx";
+                a.download ="智能分析BOM表标准模板.xlsx";
+                a.click();
+              // window.location.href="{:U('Home/Default/bomPrice?action=match')}";
+            });
+
+
+
+		});
+
+	</script>
+
+</block>

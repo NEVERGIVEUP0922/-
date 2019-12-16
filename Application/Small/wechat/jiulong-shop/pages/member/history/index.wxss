@@ -1,0 +1,31 @@
+.fui-list-inner .subtitle {
+  font-size: 26rpx;
+}
+.fui-list-media .round{
+  width:200rpx;
+  height:200rpx;
+}
+.fui-list-inner .row .subtitle{
+  font-weight:600;
+  font-size:32rpx;
+}
+.index_detail .text{
+  height:70rpx;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  display:-webkit-box;
+}
+.fui-list-group-titles{
+  padding:5rpx 20rpx;
+  font-size:28rpx;
+  color:#333;
+  height:72rpx;
+  line-height:72rpx;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-align-items:center;
+  align-items:center;
+  position:relative;
+}

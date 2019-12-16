@@ -1,0 +1,577 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout-cart" />
+
+<block name="title">搜索</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Cart/css/cartOrder.css">
+</block>
+
+<block name="nav-title">购物车</block>
+
+<!-- 主要内容 -->
+<block name="main">
+
+    <ul id="jl-cart-progress" class="jl-cle">
+        <li class="jl-old">
+            <p>
+                <span class="jl-serial">1</span>
+                我的购物车
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-cur">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">2</span>
+                确认订单信息
+            </p>
+            <i class="jl-arr"></i>
+        </li>
+        <li class="jl-progress-last">
+            <i class="jl-arr-white"></i>
+            <p>
+                <span class="jl-serial">3</span>
+                成功提交订单
+            </p>
+        </li>
+    </ul>
+
+    <!-- 收货信息 -->
+    <div id="jl-cart-order">
+        <!-- 收货人 -->
+        <div class="jl-consignee">
+            <h4 class="jl-cartOrder-title">收货人信息</h4>
+            <!-- 没有收货人信息 -->
+            <div class="jl-no-consignee">
+                <div class="jl-add-consignee"></div>
+            </div>
+            <!-- 有收货人 -->
+            <ul class="jl-has-consignee">
+                <li>
+                    <p class="jl-consignee-title jl-cur">韩运清<i></i></p>
+                    <span class="jl-consignee-name">韩运清</span>
+                    <span class="jl-consignee-addr">广东深圳 南山粤海高新南一道13号 赋安科技大厦A座 3楼 301室</span>
+                    <span class="jl-consignee-phone">180****9025 </span>
+                </li>
+                <li class="jl-has-last">
+                    <p class="jl-consignee-title">韩运清<i></i></p>
+                    <span class="jl-consignee-name">韩运清</span>
+                    <span class="jl-consignee-addr">广东深圳 南山粤海高新南一道13号 赋安科技大厦A座 3楼 301室</span>
+                    <span class="jl-consignee-phone">180****9025 </span>
+                </li>
+            </ul>
+
+            <a href="#" class="jl-add-consignee">新增收货人信息</a>
+        </div>
+
+        <!-- 送货方式 -->
+        <div class="jl-shipping-method">
+            <h4 class="jl-cartOrder-title">送货方式</h4>
+            <ul class="jl-shipping-way jl-cle">
+                <li class="jl-cur"><a href="#">快递<i></i></a></li>
+                <li><a href="#">同城自提<i></i></a></li>
+                <li><a href="#">玖隆配送<i></i></a></li>
+                <li><a href="#">物流<i></i></a></li>
+            </ul>
+            <ul class="jl-shipping-content jl-cle">
+                <li class="jl-cur">不限快递公司<i></i></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><img src="__PUBLIC__/Home/Public/img/cart/courier01.png" alt=""></li>
+                <li><a href="#" class="jl-add-more">更多快递公司</a></li>
+            </ul>
+        </div>
+
+        <!-- 选择发票 -->
+        <div class="jl-invoice">
+            <h4 class="jl-cartOrder-title">选择发票</h4>
+            <ul class="jl-invoice-class jl-cle">
+                <li><a href="#">增值税专票<i></i></a></li>
+                <li><a href="#">增值税普票<i></i></a></li>
+                <li class="jl-cur"><a href="#">不开发票<i></i></a></li>
+            </ul>
+
+            <!-- 增值税专票 -->
+            <ul class="jl-special-invoice">
+                <li class="jl-cur">
+                    <div class="jl-ordinary-top">
+                        <p class="jl-ordinary-title">发票抬头:</p>
+                        <p class="jl-ordinary-name">深圳市天玖隆科技有限公司</p>
+                    </div>
+
+                    <div class="jl-special-phone">
+                        <p class="jl-ordinary-title">地址、电话:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">广东深圳 南山粤海高新南一道13号 赋安科技大厦A座 3楼 301室</span>
+                            <span class="jl-ordinary-telephone">0755-82754881</span>
+                        </p>
+                    </div>
+
+                    <div class="jl-special-number">
+                        <p class="jl-ordinary-title">税务登记号:</p>
+                        <p class="jl-ordinary-name">91443000661033408H</p>
+                    </div>
+
+                    <div class="jl-special-bank">
+                        <p class="jl-ordinary-title">开户行、账号:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">广发银行深圳华强支行</span>
+                            <span class="jl-ordinary-telephone">1020035160100006058</span>
+                        </p>
+                    </div>
+
+                    <div class="jl-ordinary-bottom">
+                        <p class="jl-ordinary-title">收票人信息:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">韩运清</span>
+                            <span class="jl-ordinary-news">广东深圳 南山粤海高新南一道13号 赋安科技大厦A座 3楼 301室</span>
+                            <span class="jl-ordinary-phone">180****9025 </span>
+                        </p>
+                    </div>
+                    <i></i>
+                </li>
+                <li>
+                    <div class="jl-ordinary-top">
+                        <p class="jl-ordinary-title">发票抬头:</p>
+                        <p class="jl-ordinary-name">深圳市天玖隆科技有限公司</p>
+                    </div>
+
+                    <div class="jl-special-phone">
+                        <p class="jl-ordinary-title">地址、电话:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">广东深圳 南山粤海高新南一道13号 赋安科技大厦A座 3楼 301室</span>
+                            <span class="jl-ordinary-telephone">0755-82754881</span>
+                        </p>
+                    </div>
+
+                    <div class="jl-special-number">
+                        <p class="jl-ordinary-title">税务登记号:</p>
+                        <p class="jl-ordinary-name">91443000661033408H</p>
+                    </div>
+
+                    <div class="jl-special-bank">
+                        <p class="jl-ordinary-title">开户行、账号:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">广发银行深圳华强支行</span>
+                            <span class="jl-ordinary-telephone">1020035160100006058</span>
+                        </p>
+                    </div>
+
+                    <div class="jl-ordinary-bottom">
+                        <p class="jl-ordinary-title">收票人信息:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">韩运清</span>
+                            <span class="jl-ordinary-news">广东深圳 南山粤海高新南一道13号 赋安科技大厦A座 3楼 301室</span>
+                            <span class="jl-ordinary-phone">180****9025 </span>
+                        </p>
+                    </div>
+                    <i></i>
+                </li>
+            </ul>
+
+            <!-- 增值税普票 -->
+            <ul class="jl-ordinary-invoice">
+                <li class="jl-cur">
+                    <div class="jl-ordinary-top">
+                        <p class="jl-ordinary-title">发票抬头:</p>
+                        <p class="jl-ordinary-name">韩运清</p>
+                    </div>
+                    <div class="jl-ordinary-bottom">
+                        <p class="jl-ordinary-title">收票人信息:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">韩运清</span>
+                            <span class="jl-ordinary-news">广东深圳 南山粤海高新南一道13号 赋安科技大厦A座 3楼 301室</span>
+                            <span class="jl-ordinary-phone">180****9025 </span>
+                        </p>
+                    </div>
+                    <i></i>
+                </li>
+                <li>
+                    <div class="jl-ordinary-top">
+                        <p class="jl-ordinary-title">发票抬头:</p>
+                        <p class="jl-ordinary-name">韩运清</p>
+                    </div>
+                    <div class="jl-ordinary-bottom">
+                        <p class="jl-ordinary-title">收票人信息:</p>
+                        <p class="jl-ordinary-addr">
+                            <span class="jl-ordinary-name">韩运清</span>
+                            <span class="jl-ordinary-news">广东深圳 南山粤海高新南一道13号 赋安科技大厦A座 3楼 301室</span>
+                            <span class="jl-ordinary-phone">180****9025 </span>
+                        </p>
+                    </div>
+                    <i></i>
+                </li>
+            </ul>
+
+            <!-- 不开发票 -->
+            <div class="jl-no-invoice">
+                <div class="jl-add-consignee"></div>
+            </div>
+
+            <a href="#" class="jl-add-consignee">新增收票人信息</a>
+        </div>
+
+        <!-- 备注 -->
+        <div class="jl-note">
+            <h4 class="jl-cartOrder-title">备注</h4>
+            <textarea name="" class="jl-note-main" placeholder="请你输入备注内容....."></textarea>
+            <span class="jl-remark">0/100</span>
+        </div>
+
+        <!-- 支付方式 -->
+        <div class="jl-pay-way">
+            <h4 class="jl-cartOrder-title">支付方式</h4>
+            <ul class="jl-pay-class jl-cle">
+                <li><a href="#">货到付款<i></i></a></li>
+                <li class="jl-cur"><a href="#">在线支付<i></i></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 订单信息 -->
+    <div id="jl-order-news">
+        <!-- 确认订单 -->
+        <div class="jl-confirm-order">
+            <h4 class="jl-cartOrder-title">确认订单信息</h4>
+            <dl class="jl-goods-detail">
+                <dt class="jl-cle">
+                    <p class="jl-confirm-goods">商品</p>
+                    <p class="jl-confirm-brand">品牌</p>
+                    <p class="jl-confirm-detail">详情</p>
+                    <p class="jl-confirm-price">单价/元</p>
+                    <p class="jl-confirm-count">数量</p>
+                    <p class="jl-confirm-subtotal">小计/元</p>
+                </dt>
+                <dd class="jl-cle">
+                    <p class="jl-confirm-goods">
+                        <img src="__PUBLIC__/Home/Public/img/cart/cart01.png" alt="">
+                    </p>
+                    <p class="jl-confirm-brand">MURATA</p>
+                    <p class="jl-confirm-detail">
+                        <s>封装：5000</s>
+                        <s>批号：TOP-1</s>
+                        <s>交期：3-5个工作日</s>
+                    </p>
+                    <p class="jl-confirm-price">￥0.25</p>
+                    <p class="jl-confirm-count">10000</p>
+                    <p class="jl-confirm-subtotal">2500</p>
+                </dd>
+            </dl>
+        </div>
+
+        <!-- 付款详情 -->
+        <div class="jl-pay-goods">
+            <p>
+                <b>￥2500.00</b>
+                <span>1件商品，总商品金额</span>
+            </p>
+            <p>
+                <s>￥750.00</s>
+                <span>支付定金<i>（最低支付金额的30%）</i></span>
+            </p>
+            <p>
+                <s>￥26.00</s>
+                <span>运费</span>
+            </p>
+        </div>
+
+        <div class="jl-pay-payment">
+            <p>
+                <s>￥150.00</s>
+                <span>原账期余额</span>
+            </p>
+            <p>
+                <s>￥150.00</s>
+                <span><i class="jl-select jl-active"></i>账期支付</span>
+            </p>
+            <p>
+                <b>￥0.00</b>
+                <b>账期余额</b>
+            </p>
+        </div>
+
+        <div class="jl-pay-result">
+            <p class="jl-p-first">
+                <s class="jl-total">￥2526.00</s>
+                <span>应付金额</span>
+            </p>
+            <p>
+                <b>￥0.00</b>
+                <span>应付账期</span>
+            </p>
+            <p>
+                <s>2017-9-30</s>
+                <span>应付日期</span>
+            </p>
+            <p class="jl-addr">
+                <span>收货人：韩运清 180****9025 </span>
+                <span>广东深圳 南山粤海高新南一道13号 赋安科技大厦A座 3楼 301室</span>
+            </p>
+        </div>
+
+        <div class="jl-submit-btn jl-cle">
+            <button class="jl-submit-orders jl-active">提交订单</button>
+        </div>
+    </div>
+
+    <div class="jl-line"></div>
+
+
+
+    <!-- 弹窗 -->
+    <!-- 收货人弹窗 -->
+    <div class="js-popup-consignee">
+        <div class="jl-bg"></div>
+        <div class="jl-consignee-main">
+            <div class="jl-title">新增收货人信息<span class="jl-close"></span></div>
+            <ul class="jl-popup-content">
+                <li>
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">收货人</span>
+                        <input type="text" placeholder="请输入收货人">
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">手机号码</span>
+                        <input type="text" placeholder="请输入手机号码">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">所在地址</span>
+
+                        <ol class="jl-select-btn">
+                            <li>
+                                请选择
+                                <i class="jl-select-up"></i>
+                                <i class="jl-select-down"></i>
+                            </li>
+                            <li>
+                                请选择
+                                <i class="jl-select-up"></i>
+                                <i class="jl-select-down"></i>
+                            </li>
+                            <li>
+                                请选择
+                                <i class="jl-select-up"></i>
+                                <i class="jl-select-down"></i>
+                            </li>
+                        </ol>
+                    </p>
+                </li>
+                <li>
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">详细地址</span>
+                        <input type="text" placeholder="请输入详细地址">
+                    </p>
+                </li>
+                <li>
+                    <button class="jl-popup-submit">保存收货人信息</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 增值税普票弹窗 -->
+    <div class="js-popup-ordinary">
+        <div class="jl-bg"></div>
+        <div class="jl-consignee-main">
+            <div class="jl-title">新增收票人信息<span class="jl-close"></span></div>
+            <ul class="jl-popup-content">
+                <li>
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">发票抬头</span>
+                        <input type="text" placeholder="请输入发票抬头">
+                    </p>
+                </li>
+                <li>
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">收货人</span>
+                        <input type="text" placeholder="请输入收货人">
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">手机号码</span>
+                        <input type="text" placeholder="请输入手机号码">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">所在地址</span>
+
+                    <ol class="jl-select-btn">
+                        <li>
+                            请选择
+                            <i class="jl-select-up"></i>
+                            <i class="jl-select-down"></i>
+                        </li>
+                        <li>
+                            请选择
+                            <i class="jl-select-up"></i>
+                            <i class="jl-select-down"></i>
+                        </li>
+                        <li>
+                            请选择
+                            <i class="jl-select-up"></i>
+                            <i class="jl-select-down"></i>
+                        </li>
+                    </ol>
+                    </p>
+                </li>
+                <li>
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">详细地址</span>
+                        <input type="text" placeholder="请输入详细地址">
+                    </p>
+                </li>
+                <li>
+                    <button class="jl-popup-submit">保存收票人信息</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 增值税专票弹窗 -->
+    <div class="js-popup-special">
+        <div class="jl-bg"></div>
+        <div class="jl-consignee-main">
+            <div class="jl-title">新增收票人信息<span class="jl-close"></span></div>
+            <ul class="jl-popup-content">
+                <li>
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">发票抬头</span>
+                        <input type="text" placeholder="请输入发票抬头">
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">电话号码</span>
+                        <input type="text" placeholder="请输入电话号码">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">注册地址</span>
+
+                    <ol class="jl-select-btn">
+                        <li>
+                            请选择
+                            <i class="jl-select-up"></i>
+                            <i class="jl-select-down"></i>
+                        </li>
+                        <li>
+                            请选择
+                            <i class="jl-select-up"></i>
+                            <i class="jl-select-down"></i>
+                        </li>
+                        <li>
+                            请选择
+                            <i class="jl-select-up"></i>
+                            <i class="jl-select-down"></i>
+                        </li>
+                    </ol>
+                    </p>
+                </li>
+                <li>
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">详细地址</span>
+                        <input type="text" placeholder="请输入详细地址">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">税务登记号</span>
+                        <input type="text" placeholder="请输入税务登记">
+                    </p>
+                </li>
+                <li>
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">开户银行</span>
+                        <input type="text" placeholder="请输入开户银行">
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">银行账号</span>
+                        <input type="text" placeholder="请输入银行账号">
+                    </p>
+                </li>
+                <li>
+                    <p class="jl-first">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">收票人</span>
+                        <input type="text" placeholder="请输入收票人">
+                    </p>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">手机号码</span>
+                        <input type="text" placeholder="请输入手机号码">
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">所在地址</span>
+
+                    <ol class="jl-select-btn">
+                        <li>
+                            请选择
+                            <i class="jl-select-up"></i>
+                            <i class="jl-select-down"></i>
+                        </li>
+                        <li>
+                            请选择
+                            <i class="jl-select-up"></i>
+                            <i class="jl-select-down"></i>
+                        </li>
+                        <li>
+                            请选择
+                            <i class="jl-select-up"></i>
+                            <i class="jl-select-down"></i>
+                        </li>
+                    </ol>
+                    </p>
+                </li>
+                <li>
+                    <p class="jl-block">
+                        <i class="jl-mandatory"></i>
+                        <span class="jl-name">详细地址</span>
+                        <input type="text" placeholder="请输入详细地址">
+                    </p>
+                </li>
+                <li>
+                    <button class="jl-popup-submit">保存收票人信息</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</block>
+
+<block name="js">
+</block>

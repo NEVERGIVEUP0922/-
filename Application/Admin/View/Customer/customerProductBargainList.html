@@ -1,0 +1,265 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .data-table-screen .layui-input,
+        .data-table-screen .layui-select,
+        .data-table-screen .layui-textarea{
+            height: 30px;
+        }
+        .data-table-screen>div{
+            margin-bottom: 10px;
+        }
+        .data-table-screen-title{
+            display: inline-block;
+        }
+    </style>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">价格管理</a>
+            </span>
+            <button style="margin-left: 16px;margin-bottom: 4px" class="add-btn layui-btn layui-btn-sm">添加新管理规则</button>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="padding-bottom: 5px">
+            <form class="data-table-screen layui-row layui-form layui-input-inline" action="" lay-filter="screen-form">
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6 ">
+                    <span class="data-table-screen-title">客户：</span>
+                    <div class="layui-input-inline">
+                        <input name="uid_name" value="{$request['uid_name']}" placeholder="请选择客户" class="layui-input jl-select-customers layui-form-label-pinyin-customer" type="text">
+                        <input name="uid" value="{$request['uid']}" placeholder="请选择客户" class="layui-input jl-select-customers " type="hidden">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">商品型号：</span>
+                    <div class="layui-input-inline">
+                        <input name="p_id" value="{$request['p_id']}" placeholder="请选择商品型号" class="layui-input jl-select-products " type="hidden">
+                        <input name="p_sign" value="{$request['p_sign']}" placeholder="请选择商品型号" class="layui-input jl-select-products layui-form-label-pinyin-product" type="text">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="data-table-screen-title">业务员：</span>
+                    <div class="layui-input-inline">
+                        <input name="sys_uid" value="{$request['sys_uid']}" placeholder="请选择业务员" class="layui-input jl-select-users" type="hidden">
+                        <input name="sys_uid_name" value="{$request['sys_uid_name']}" placeholder="请选择业务员" class="layui-input jl-select-users layui-form-label-pinyin-admin" type="text">
+                    </div>
+                </div>
+                <div class="layui-col-xs12 layui-col-sm6 layui-col-md6">
+                    <span class="layui-btn-sm layui-btn" lay-submit lay-filter="screen" style="width: 100px">
+                        筛选
+                    </span>
+                    <span class="clear-btn layui-btn-sm layui-btn layui-btn-primary" style="width: 100px">清空</span>
+                </div>
+            </form>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+        </table>
+    </div>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','laypage','commonTpl','selectCustomer','selectUser',
+            'selectProduct'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var commonTpl = layui.commonTpl;
+            var selectCustomer = layui.selectCustomer;
+            var selectUser = layui.selectUser;
+            var selectProduct = layui.selectProduct;
+            selectCustomer.initInput(false,false,false);
+            selectUser.initInput(false,false,'fullname');
+           /* selectProduct.initInput(false,false,'id');*/
+            selectProduct.initInput(false,false,'p_sign',true);
+            var list_data = {$list|json_encode};
+
+            var request_={$request|json_encode};
+            var url__="{:U(Admin/Customer/customerProductBargainList)}"+'?';
+            if(request_){
+                for(var i in request_){
+                    if(request_[i]){
+                        url__+='&'+i+'='+ request_[i];
+                    }
+                }
+            }
+            table.render({
+                elem: '.data-table',
+                data: list_data?list_data.list:[],
+                page: true,
+                url:url__,
+                limit: list_data?list_data.pageSize:10,
+                limits:[10,20,30,40,50],
+                cellMinWidth: 160,
+                height:'full-190',
+                cols: [[
+                    {field: 'id', title: 'ID', fixed: 'left',width:100}
+                    ,{field: 'sale_name', title:'业务员'}
+                    ,{field: 'admin_name', title:'录入人'}
+                    ,{field: 'customer_name', title: '客户',width:200,templet:function(b){
+                        return '<div>'+b.customer_nick_name+'('+b.customer_name+')'+'</div>';
+                    }}
+                    ,{field: 'is_pass', title:'是否可执行',width:100,align:'center',templet:function(d){
+                        if(d.is_pass=='否'){
+                            return "<b style='color:red'>"+d.is_pass+"</b>";
+                        }else{
+                            return "<span>"+d.is_pass+"</span>";
+                        }
+                    }}
+                    ,{field: 'fitemno', title: 'ERP型号'}
+                    ,{field: 'p_sign', title: '商城型号'}
+                    ,{field: 'discount_price', title: '优惠价未税'}
+                    ,{field: 'discount_price_tax', title: '优惠价含税'}
+                    ,{field: 'is_change_sign', title: '是否换型号开票',templet:function (d) {
+                        return commonTpl.oneZero(d.is_invoice_change)
+                    }}
+                    ,{field: 'discount_price_invoice_change', title: '换型号开票的优惠价'}
+                    ,{field: 'return_price', title: '返点单价'}
+                    ,{field: 'min_buy', title: '数量限制'}
+                    ,{field: 'update_time',width:200, title:'操作时间'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right',templet:function(d){
+                        var retrun_str='';
+                        retrun_str +='<div class="data-table-handle-box" data-id="{{ d.id }}">';
+                        if(d.is_pass =='否') retrun_str +='<span lay-event="check">审核</span> ';
+                        retrun_str +='<span lay-event="edit">修改</span>';
+                        retrun_str +='<span lay-event="del">删除</span>';
+                        return retrun_str+'</div>';
+                    }}
+                ]]
+            });
+
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'edit'){
+                    jlTool.sendIframeMsg('go',{
+                        title:'价格详情',
+                        url:'/Admin/Customer/oneBargain?id='+source.id,
+                        icon:''
+                    });
+                }
+                else if(layEvent === 'del'){
+                    layer.confirm('确定要删除吗？',function (index) {
+                        layer.close(index);
+                        $.post('/Admin/Customer/oneBargainDelete',{uid:source.uid,p_id:source.p_id},function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                obj.del();
+                            }
+                        })
+                    })
+                }
+                else if(layEvent === 'check'){
+                    layer.confirm('通过',function (index) {
+                        layer.close(index);
+                        var data={
+                            check_id:source.id
+                        };
+                        $.post('/Admin/Customer/oneBargain',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.open({
+                                    content:'审核成功',
+                                    btn:[
+                                        '确定'
+                                    ],
+                                    yes:function(){
+                                        location.reload();
+                                    }
+                                });
+                            }else{
+                                alert(res.msg);
+                            }
+                        })
+                    })
+                }
+            });
+            $('.add-btn').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'价格详情',
+                    url:'/Admin/Customer/oneBargain',
+                    icon:''
+                });
+            });
+            //筛选
+            form.on('submit(screen)', function(data){
+                queryTable(data.field);
+                return false;
+            });
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Customer/customerProductBargainList?'+query
+            };
+            $('.clear-btn').on('click',function () {
+                queryTable()
+            })
+        })
+        //搜索输入拼音首字母自动补全
+        var response_data=[];
+        $( ".layui-form-label-pinyin-customer" ).autocomplete({
+            source: "/Admin/Customer/companyPinyinSearch?disable20=disable20",
+            minLength: 2,
+            close:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-customer" );
+                var value = $this.val();
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+        $( ".layui-form-label-pinyin-product" ).autocomplete({
+            source: "/Admin/Product/productList?autoComplete=autoComplete",
+            minLength: 2,
+            close:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-product" );
+                var value = $this.val();
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+        $( ".layui-form-label-pinyin-admin" ).autocomplete({
+            source: "/Admin/Customer/adminPinyinSearch",
+            minLength: 2,
+            close:function(event,ui){
+                var $this = $( ".layui-form-label-pinyin-admin" );
+                var value = $this.val();
+                var id=JSON.parse($("#autoComplete_index_data").val());
+                var index = response_data.indexOf(value);
+                $this.siblings("input").val(id[index]);
+                setTimeout(function(){ response_data = [];},0)
+
+            },
+            response:function( event, data ) {
+                response_data = [];
+                $.each(data.content,function(item,value){
+                    response_data.push(value.value);
+                });
+            }
+        });
+
+
+    </script>
+</block>

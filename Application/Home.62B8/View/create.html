@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div style="text-align: center;margin-top:200px">
+    Hi, {$nick} 欢迎来到玖隆芯城，完成绑定后可以使用 {$type}账号 一键登录哦~<br>
+    绑定已有账号<br>
+        <form id="bind" action="{:U('Home/Account/create',['type'=>1])}" method="post">
+            用户名 :<input name="user_name" type="text"><br>
+            密  码 :<input name="user_pass" type="password"><br>
+            <input type="submit" value="立即绑定">
+        </form><br><br><br>
+        创建新账号<br>
+        <form id="create" action="{:U('Home/Account/create',['type'=>2])}" method="post">
+            用户名 :<input name="user_name" type="text"><br>
+            密  码 :<input name="user_pass" type="password"><br>
+            确认密码 :<input name="re_pass" type="password"><br>
+            手机号码 :<input name="user_mobile" type="text"><br>
+            <input type="submit" value="立即注册">
+        </form><br><br><br>
+    </div>
+</body>
+</html>

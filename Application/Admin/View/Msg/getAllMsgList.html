@@ -1,0 +1,128 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">消息列表</a>
+            </span>
+        </blockquote>
+        <table lay-filter="data-table" class="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" style="width: 100%">
+                    {{#  if(d.status==0){ }}
+                    <span lay-event="read">标记已读</span>
+                    {{#  } }}
+                    <span lay-event="detail">查看详情</span>
+                    <span lay-event="delete">删除</span>
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var list_data = {$msgList|json_encode};
+            var request = {$request|json_encode};
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Msg/getAllMsgList?'+query
+            };
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.limit,
+                cellMinWidth: 160,
+                height:'full-140',
+                cols: [[ //表头
+                    {field: 'msg_id', title: '编号', fixed: 'left',width: 100}
+                    ,{field: 'create_time', title: '消息时间'}
+                    ,{field: 'status', title: '消息状态',templet:function (d) {
+                        switch (d.status){
+                            case 0:
+                                return '未读';
+                            case 1:
+                                return '已读';
+                        }
+                    }}
+                    ,{field: 'msg_title', title: '消息标题'}
+                    ,{field: 'msg_type', title: '消息类型'}
+                    ,{field: 'recive', title: '接收人',templet:function (d) {
+                        var recive = [];
+                        $.each(d.recive,function (index,value) {
+                            recive.push(value.name)
+                        });
+                        return recive.join(',')
+                    }}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right',width: 180, toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'read'){
+                    $.post('/Admin/Msg/setMsgReaded', {msg_id: source.msg_id}, function (res) {
+                        if (res.error === 0) {
+                            layer.msg('操作成功');
+                            setTimeout(function () {
+                                window.location.reload()
+                            }, 500)
+                        } else {
+                            layer.msg(res.msg)
+                        }
+                    })
+                }
+                else if(layEvent === 'delete'){
+                    $.post('/Admin/Msg/setMsgDel', {msg_id: source.msg_id}, function (res) {
+                        if (res.error === 0) {
+                            layer.msg('操作成功');
+                            setTimeout(function () {
+                                window.location.reload()
+                            }, 500)
+                        } else {
+                            layer.msg(res.msg)
+                        }
+                    })
+                }
+                else if(layEvent === 'detail'){
+                    $.get('/Admin/Msg/getMsgContent', {msg_id: source.msg_id}, function (res) {
+                        if (res.error === 0) {
+                            var s = res.data.msg_content.split('{}');
+                            layer.alert(s.join('<br>'))
+                        } else {
+                            layer.msg(res.msg)
+                        }
+                    })
+                }
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.limit,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},{
+                            limit:obj.limit,
+                            page:String(obj.limit)===String(list_data.limit) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+        })
+    </script>
+</block>

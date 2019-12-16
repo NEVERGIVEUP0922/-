@@ -1,0 +1,22 @@
+.select-modal-container{
+    display: none;
+}
+.layui-layer-content .select-modal-container{
+    display: block;
+}
+.select-modal-box{
+
+}
+.select-modal-box .layui-table-view{
+    margin:0;
+}
+.select-modal-box .layui-laypage{
+    margin-bottom: 0;
+}
+.select-search-container{
+    margin-bottom: 6px
+}
+.modal-search-input{
+    display: inline-block;
+    width: auto
+}

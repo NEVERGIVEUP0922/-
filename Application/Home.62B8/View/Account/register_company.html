@@ -1,0 +1,738 @@
+<!-- 前台首页模板文件  -->
+<extend name="Layout:layout-user-center" />
+<block name="title">企业注册</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/index.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/logo-header.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Index/css/register.css">
+</block>
+<block name="user-nav">欢迎注册</block>
+<!-- 主要内容 -->
+<block name="main">
+    <div class="jl-reg-wrap">
+        <h3 class="jl-reg-tit">
+            <a href="{:U('Home/Account/login')}">我已经注册，马上登录></a>
+        </h3>
+        <div class="jl-reg-msg">
+            <div class="jl-reg-p-tit">
+                <i class="jl-c-tit"></i>
+                <span class="jl-reg-user">企业用户注册</span>
+            </div>
+            <div class="jl-reg-c">
+                <form method="post">
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">用户名</label>
+                        <input type="text" class="jl-c-long js-next-input" name="user_name" id="js-c-user-name" placeholder="请输入用户名">
+                        <b class="jl-c-em"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font">支持中文、字母、数字、“-”“_”的组合，2-20个字符</span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">登录密码</label>
+                        <input type="password" class="jl-c-long js-next-input" name="user_pass" id="js-c-paw" placeholder="请输入密码">
+                        <b class="jl-c-em"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">确认密码</label>
+                        <input type="password" class="jl-c-long js-next-input" name="user_pass" id="js-c-affirm" placeholder="确认密码">
+                        <b class="jl-c-em"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">公司名称</label>
+                        <input type="text" class="jl-c-long js-next-input" name="company_name" id="js-c-company-name" placeholder="请输入公司名称">
+                        <b class="jl-c-em"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font">支持中文、字母、数字、“-”“_”的组合，4-20个字符</span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">公司所在地</label>
+                        <input type="text" class="jl-c-hidden js-next-input" name="company_area"  placeholder="">
+                        <div class="jl-c-address jl-y-select js-select-first" tabindex="1">
+                            <div class="jl-y-select-title jl-c-bor">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box jl-list-bor"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-second" tabindex="2">
+                            <div class="jl-y-select-title jl-c-bor">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box jl-list-bor"></ul>
+                        </div>
+                        <div class="jl-c-address jl-y-select js-select-third jl-c-right" tabindex="3">
+                            <div class="jl-y-select-title jl-c-bor">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box jl-list-bor"></ul>
+                        </div>
+                        <b class="jl-c-em jl-c-em-i"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">公司地址</label>
+                        <input type="text" class="jl-c-long js-next-input" name="company_address" id="js-c-address" placeholder="请输入公司地址">
+                        <b class="jl-c-em"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">公司人数</label>
+                        <input type="text" class="jl-c-hidden js-next-input" name="company_people_num" placeholder="">
+                        <div class="jl-c-address jl-y-select js-company-num">
+                            <div class="jl-y-select-title jl-c-bor">
+                                <span class="jl-c-c text-ellipsis">请选择</span>
+                                <b class="jl-top-tri"></b>
+                                <b class="jl-bottom-tri"></b>
+                            </div>
+                            <ul class="lj-option-box js-company-list jl-list-bor">
+                                <li data-id="1">少于50人</li>
+                                <li data-id="2">50-150人</li>
+                                <li data-id="3">150-500人</li>
+                                <li data-id="4">500-1000人</li>
+                                <li data-id="5">1000-5000人</li>
+                                <li data-id="6">5000-10000人</li>
+                                <li data-id="7">10000人以上</li>
+                            </ul>
+                        </div>
+                        <b class="jl-c-em jl-c-em-i"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">联系人姓名</label>
+                        <input type="text" class="jl-c-long js-next-input" name="company_user_name" id="js-c-contact-name"  placeholder="请输入联系人姓名">
+                        <b class="jl-c-em"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">联系人职务</label>
+                        <input type="text" class="jl-c-long js-next-input" name="company_sector" id="js-c-sector" placeholder="请输入联系人职务">
+                        <b class="jl-c-em"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">手机号码</label>
+                        <input type="text" class="jl-c-long js-next-input" name="user_mobile" id="js-c-mobile" placeholder="请输入手机号码">
+                        <b class="jl-c-em"></b>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <input type="text" class="js-next-input jl-c-hidden">
+                        <label class="jl-c-left">手机验证码</label>
+                        <input type="text" class="jl-c-mid js-next-input" name="mobile_code" id="js-c-code" placeholder="请输入验证码">
+                        <button class="jl-c-pcode" id="js-c-mcode" type="button">获取短信验证码</button>
+                        <b class="jl-c-em jl-c-em-b"></b>
+                        <span class="jl-nor-tips jl-reg-tips">
+                           <i class="jl-code-bg"></i>
+                            验证码已发送
+                        </span>
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <div class="jl-c-de">
+                        <label class="jl-c-left">联系人邮箱</label>
+                        <input type="text" class="jl-c-long js-next-input js-submit-input" name="user_email" id="js-c-email" placeholder="请输入联系人邮箱">
+                        <div class="jl-check-txt">
+                            <i class="jl-ale-bg"></i>
+                            <span class="jl-ale-font"></span>
+                        </div>
+                    </div>
+                    <p style="padding-left:90px;color:#e84343">带<i>*</i>为必填项</p>
+                    <div class="jl-form-agree jl-agree-mar">
+                        <span href="#" class="jl-check" id="jl-checkbox"></span>
+                        <span>阅读并同意</span><a href="javascript:;">《玖隆芯城服务协议》</a>
+                    </div>
+                    <input type="button" class="jl-reg-put jl-agree-mar js-c-register-submit" value="注 册">
+                </form>
+                <div class="jl-reg-switch jl-agree-mar">
+                    <a href="{:U('Home/Account/register',['type'=>1])}" >
+                        <b class="jl-bg-r jl-bg-c"></b>
+                        <span>个人用户注册></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 用户协议 -->
+    <div id="jl-protocol">
+        <div class="jl-background"></div>
+        <div class="js-protocol">
+            <div class="js-protocol-title">玖隆芯城服务协议<span class="js-close"></span></div>
+            <div class="js-protocol-main">
+                <div class="js-js-protocol-content">
+                    <h2>玖隆芯城服务协议</h2>
+                    <p>
+                        本协议详述您在http://www.longicmall.com（"玖隆芯城网站"）使用我们的服务所须遵守的条款和条件。如您有任何疑问，请及时联系我们。 您注册成为玖隆芯城用户前，必须仔细阅读本用户协议和隐私声明，一旦您注册成为了玖隆芯城用户即表示您已经阅读、同意并接受本用户协议和隐私声明中所含的所有条款和条件。如果我们对本声明进行了任何变更，我们会在玖隆芯城网站页面上发布有关变更事项的通知，所有协议内容在发布之日后自动生效。如您不同意该修订，您必须终止您与玖隆芯城的用户关系。
+                    </p>
+                    <h3>一、用户注册：</h3>
+                    <h4>1. 用户资格：</h4>
+                    <p>玖隆芯城用户必须是适用法律下能够签订具有法律约束力的合同的公司或个人。如您不合资格，请不要使用我们的服务。您的玖隆芯城帐户不得向其他方转让或出售。玖隆芯城保留根据其意愿中止或终止您的帐户的权利。</p>
+                    <h4>2. 资料填写：</h4>
+                    <p>为确保交易的正常进行，用户向玖隆芯城供真实、有效的个人资料，如个人资料有任何变动，必须及时通知玖隆芯城更新。 玖隆芯城用户同意接收来自玖隆芯城或者玖隆芯城合作伙伴发出的邮件、信息。</p>
+
+                    <h3>二、 隐私：</h3>
+                    <p>玖隆芯城设有适用于所有用户并纳入用户协议的隐私声明。您应当在注册时阅读并接受隐私声明以使用玖隆芯城网站，且您在作为玖隆芯城用户期间将继续受其规定（及玖隆芯城对隐私声明作出的任何修订）的约束。 </p>
+                    <h4>（1）个人数据资料,真实姓名、地址、电子邮箱和联系电话等用户信息。在未经您同意之前，玖隆芯城不会将您的资料用于其它目的。 </h4>
+                    <h4>（2）使用非个人信息。玖隆芯城将通过您的IP地址来收集非个人化的信息，包括您的浏览器性质、操作系统种类、给您提供接入服务的ISP的域名等，以优化在您计算机屏幕上显示的页面。通过收集上述信息，我们亦进行客流量统计，从而改进网站的管理和服务。 </h4>
+                    <h4>（3）个人数据安全。玖隆芯城采用安全性的服务器使用控制设备保护保护您的个人数据。</h4>
+                    <h4>（4）个人数据披露和限制利用。当国家机构依照法定程序要求玖隆芯城披露个人资料时，玖隆芯城将根据执法单位的要求或为公共安全目的提供个人资料。在此情况下披露的任何内容，玖隆芯城不承担任何责任。玖隆芯城在符合下列条件时，对个人资料进行必要范围以外利用：已取得您的同意；相应的法律及程序要求本站提供用户的个人资料。 </h4>
+
+                    <h3>三、交易：</h3>
+                    <h4>用户在玖隆芯城进行物品购买时必须遵守以下条款：</h4>
+                    <h4>1. 您应就您使用玖隆芯城的服务及对物品购买遵守所有适用的中国法律、法规、条例和地方性法律要求。您还必须确保您遵守本用户协议和隐私声明及纳入上述文件的所有其它条款和规则的所有规定。 </h4>
+                    <h4>2. 如您在玖隆芯城购买物品，您有义务完成与玖隆芯城的交易，但法律或本用户协议禁止的交易除外。通过对一项物品的下订单，您同意受该物品描述所含的出售条件的约束，只要该等出售条件不违反本协议或不是非法的。</h4>
+                    <h4>3．玖隆芯城网站上的广告，价目表和声明并不构成要约。玖隆芯城有权在发现了玖隆芯城网站上显现的产品及订单的明显错误或缺货的情况下，单方面撤回该信息。玖隆芯城保留对产品订购的数量的限制权。在下订单的同时，您也同时承认了您已经达到购买这些产品的法定年龄，并将对您在订单中提供的所有信息的真实性负责。</h4>
+                    <h4>4．产品价格和可获性都在网站上指明。这类信息将随时更改且不发任何通知。送货费将另外结算，费用根据您选择的送货方式的不同而异。如果发生了意外情况，在确认了您的订单后，由于供应商提价，税额变化引起的价格变化，或是由于网站的错误等造成价格变化，玖隆芯城会通过email或电话，在玖隆芯城没有取消订单的情况下，让您决定是否取消订单。</h4>
+
+                    <h3>四、物品质量与售后服务：</h3>
+                    <h4>1.详见售后服务</h4>
+                    <h4>2. 物品的质量</h4>
+                    <p>有国家标准或专业标准的，按国家标准或专业标准执行；无前述标准的，按生产厂的企业标准执行；无生产厂企业标准的，由用户与玖隆芯城协商确定。如果物品质量不符合标准，用户可以要求换货或退货。</p>
+
+                    <h3>五、网站安全：</h3>
+                    <h4>您同意，未经玖隆芯城明示书面准许，您不会为了任何目的使用任何机器人、蜘蛛软件、刷屏软件或其他自动方式进入网站。此外，您同意您将不会：</h4>
+                    <h4>1. 进行任何对玖隆芯城网站造成或可能造成（按玖隆芯城自行酌情确定）不合理或不合比例的重大负荷的行为；</h4>
+                    <h4>2. 未经玖隆芯城事先明示书面准许，对网站的任何内容（除您的个人信息以外）制作拷贝、进行复制、修改、制作衍生作品、分发或公开展示；</h4>
+                    <h4>3. 干扰或试图干扰网站的正常工作或网站上进行的任何活动；</h4>
+                    <h4>4. 在网站中使用违反适用的法律法规下可能视为被禁止或可能被禁止的任何内容；</h4>
+                    <h4>5. 对网站使用包含可能破坏、改变、删除、不利影响、秘密截取、未经授权而接触或征用任何系统、数据或个人资料的任何病毒、特洛依木马、蠕虫、定时炸弹、删除蝇、复活节彩蛋、间谍软件或其他电脑程序。 </h4>
+
+                    <h3>六、知识产权声明：</h3>
+                    <h4>玖隆芯城所提供的网络服务的相关著作权、专利权、商标、商业秘密及其它任何所有权或权利，均属玖隆芯城所有。非经玖隆芯城的同意，任何人或用户均不得擅自下载、复制、传输、改编、编辑，否则应负所有法律责任。玖隆芯城拥有向用户提供网络服务过程中所产生并储存于玖隆芯城服务器中的任何数据信息的所有权。</h4>
+
+                    <h3>七、免责声明：</h3>
+                    <h4>玖隆芯城有义务在技术上确保网站的正常运行，尽力避免服务中断或将中断时间限制在最短时间内，保证用户网上交易活动的顺利进行。但如因不可抗力或其他玖隆芯城无法控制的原因使玖隆芯城网站崩溃或无法正常使用导致网上交易无法完成或丢失有关的信息、记录等，玖隆芯城不承担责任；任何用户向玖隆芯城提供错误、不完整、不实信息等造成不能正常使用玖隆芯城服务或遭受任何其他损失，概与玖隆芯城无关</h4>
+
+                    <h3>八、其它：</h3>
+                    <h4>本协议在所有方面均受中华人民共和国法律管辖。本网站所有用户均不可撤销地受玖隆芯城持有人所在地的法院及上级法院的管辖。本协议的规定是可分割的，如本协议任何规定被裁定为无效或不可执行，该规定可被删除而其余条款应予以执行。</h4>
+                </div>
+            </div>
+            <div class="js-protocol-footer">
+                <button class="js-protocol-btn">同意并继续</button>
+            </div>
+        </div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'], function() {
+            require(['jquery','jl-modal'], function($,modal) {
+                require(['Account/js/address_select']);
+                require(['Account/js/common_register']);
+                //用户协议
+                $('.jl-form-agree a').on('click',function(){
+                    $('#jl-protocol').show();
+                });
+                //关闭
+                $('.js-close').on('click',function(){
+                    $('#jl-protocol').hide();
+                });
+                $('.js-protocol-btn').on('click',function () {
+                    $('#jl-protocol').hide();
+                    $('#jl-checkbox').addClass('jl-check-active');
+                });
+                var inputTipsCompany = function (text,type,input,tips) {
+                    var $input_tips = tips ? $(tips) : $(input).parent().find('>div');
+                    $input_tips.show();
+                    if(type!==1){
+                        $input_tips.addClass('jl-reg-nor-active');
+                    }
+                    else {
+                        $input_tips.removeClass('jl-reg-nor-active');
+                    }
+                    $input_tips.children('.jl-ale-font').html(text);
+                };
+                var $c_user = $('#js-c-user-name');//用户名
+                var $c_company_name = $('#js-c-company-name');//公司名称
+                var $c_address = $('#js-c-address');//公司地址
+                var $c_contact_name = $('#js-c-contact-name');//联系人姓名
+                var $c_sector = $('#js-c-sector');//所在
+                var $c_mobile = $('#js-c-mobile');//手机号码
+                var $c_paw=$('#js-c-paw');//设置密码
+                var $c_email = $('#js-c-email');//联系人邮箱
+                var $c_area = $('input[name="company_area"]');//公司所在地
+                var $c_people_num = $('input[name="company_people_num"]');//公司人数
+                //用户名
+                // var res_user =/^(?!\d)(?!_)(?!.*?_$)(?!.*?\-$)[a-zA-Z0-9_\u4e00-\u9fa5]{4,20}$/;
+                var  userName = function (input){
+                    if ($(input).val()=='') {
+                        inputTipsCompany('用户名不能为空', 2, input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().find('>div').hide();
+                        return false
+                    }
+                };
+                //用户名
+                $c_user.focus(function () {
+                    inputTipsCompany('支持中文、字母、数字、“-”“_”的组合，2-20个字符',1,this);
+//                    focusNextInput(this);
+                    $(this).off('focus');
+                });
+                $c_user.keydown(function () {
+                    inputTipsCompany('支持中文、字母、数字、“-”“_”的组合，2-20个字符',1,this);
+                });
+                $c_user.blur(function () {
+                    var user_name = $c_user.val();
+                    var that = this;
+                    if( user_name ){
+                        $.post(
+                            "{:U('Home/Account/ajaxCheckUserName')}",
+                            {user_name :user_name},
+                            function (res) {
+                                if(res.status===0){
+                                    $($c_user).parent().find('>div').hide();
+                                }
+                                else{
+                                    inputTipsCompany(res.content,2,that);
+                                }
+                            }
+                        )
+                    }
+                    else{
+                        inputTipsCompany('请输入用户名', 2, $c_user);
+                    }
+                });
+                //公司名称   中文字母和数字
+                var res_company = /^[a-zA-Z0-9\u4e00-\u9fa5]{2,20}$/;
+                var companyName = function (input) {
+                    if ($(input).val()===''){
+                        inputTipsCompany('公司名不能为空',2,input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().find('>div').hide();
+                        return false;
+                    }
+                };
+                $c_company_name.focus(function () {
+                    inputTipsCompany('请输入正确的公司名称',1,this);
+                    $(this).off('focus');
+                });
+                $c_company_name.keydown(function () {
+                    inputTipsCompany('请输入正确的公司名称',1,this);
+                });
+                $c_company_name.blur(function () {
+                    companyName(this);
+                });
+                //公司所在地
+                var whereCom= function (sel) {
+                    if($(sel).val()===''){
+                        inputTipsCompany('请选择公司所在地',2,sel);
+                        return true;
+                    }
+                    else {
+                        $(sel).siblings('.jl-check-txt').hide();
+                        return false;
+                    }
+                };
+                $c_area.change(function () {
+                    whereCom($c_area);
+                });
+                //公司地址
+                var addressCom =function (input) {
+                    if ($(input).val()===''){
+                        inputTipsCompany('公司地址不能为空',2,input);
+                        return true;
+                    }
+                    else if(!res_company.test($(input).val())){
+                        inputTipsCompany('请输入正确的地址',2,input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().find('>div').hide();
+                        return false;
+                    }
+                };
+                $c_address.focus(function () {
+                    inputTipsCompany('请输入正确的公司地址',1,this);
+                    $(this).off('focus');
+                });
+                $c_address.keydown(function () {
+                    inputTipsCompany('请输入正确的公司地址',1,this);
+                });
+                $c_address.blur(function () {
+                    addressCom(this);
+                });
+                //公司人数
+                var numberPeople= function (sel) {
+                    if($(sel).val()===''){
+                        inputTipsCompany('请选择公司所在地',2,sel);
+                        return true;
+                    }
+                    else {
+                        $(sel).siblings('.jl-check-txt').hide();
+                        return false;
+                    }
+                };
+                $c_people_num.change(function () {
+                    numberPeople($c_people_num);
+                });
+                //联系人姓名
+                var contactName = function (input) {
+                    if ($(input).val()===''){
+                        inputTipsCompany('联系人姓名不能为空',2,input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().find('>div').hide();
+                        return false;
+                    }
+                };
+                $c_contact_name.focus(function () {
+                    inputTipsCompany('请输入正确的联系人姓名',1,this);
+                    $(this).off('focus');
+                });
+                $c_contact_name.keydown(function () {
+                    inputTipsCompany('请输入正确的联系人姓名',1,this);
+                });
+                $c_contact_name.blur(function () {
+                    contactName(this);
+                });
+                //所在部门
+                var sectorCom =  function (input) {
+                    if ($(input).val()===''){
+                        inputTipsCompany('部门名称不能为空',2,input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().find('>div').hide();
+                        return false;
+                    }
+                };
+                $c_sector.focus(function () {
+                    inputTipsCompany('请输入正确的职务名称',1,this);
+                    $(this).off('focus');
+                });
+                $c_sector.keydown(function () {
+                    inputTipsCompany('请输入正确的职务名称',1,this);
+                });
+                $c_sector.blur(function () {
+                    sectorCom(this);
+                });
+                //手机号验证
+                //  var reg_mobile = /^1(3|4|5|7|8)\d{9}$/;
+                var mobilePhone = function (input) {
+                    if ($(input).val()===''){
+                        inputTipsCompany('手机号不能为空',2,input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().find('>div').hide();
+                        return false;
+                    }
+                };
+                $c_mobile.focus(function () {
+                    inputTipsCompany('请输入正确的手机号码',1,this);
+                    $(this).off('focus');
+                });
+                $c_mobile.keydown(function () {
+                    inputTipsCompany('请输入正确的手机号码',1,this);
+                });
+                //发送手机号是否已认证
+                var isChecked = false;
+                $c_mobile.blur(function () {
+                    var user_mobile  = $c_mobile.val();
+                    var that = this;
+                    if( user_mobile ){
+                        $.post(
+                            "{:U('Home/Account/ajaxCheckMobile')}",
+                            { user_mobile:user_mobile,user_type:2 },
+                            function (res) {
+                                if(res.status===0){
+                                    $($c_mobile).parent().find('>div').hide();
+                                    isChecked = true;
+                                }
+                                else{
+                                    inputTipsCompany(res.content,2,that);
+                                    isChecked = false;
+                                }
+                            }
+                        )
+                    }
+                    else{
+                        inputTipsCompany('请输入手机号码',2,$c_mobile);
+                    }
+                });
+                //设置密码
+                var reg_password =/^[a-zA-Z]+[\w]{5,20}/;
+                var setPassWord = function (input) {
+                    if ($(input).val()===''){
+                        inputTipsCompany('密码不能为空',2,input);
+                        return true;
+                    }
+                    else if(!reg_password.test($(input).val())){
+                       inputTipsCompany('请输入由字母、数字、下划线组成的6-20位密码,',2,input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().find('>div').hide();
+                        return false;
+                    }
+                };
+                $c_paw.focus(function () {
+                    inputTipsCompany('请输入由字母、数字、下划线组成的6-20位密码',1,this);
+                    $(this).off('focus');
+                });
+                $c_paw.keydown(function () {
+                    inputTipsCompany('请输入由字母、数字、下划线组成的6-20位密码',1,this);
+                });
+                $c_paw.blur(function () {
+                    setPassWord(this);
+                });
+                var $c_affirm= $('#js-c-affirm');
+                //确认密码
+                $c_affirm.focus(function () {
+                    inputTipsCompany('请再次输入密码',1,this);
+                });
+                $c_affirm.blur(function () {
+                    if($c_affirm.val()===''){
+                        inputTipsCompany('请输入确认密码',2,this);
+                    }
+                    else if($c_affirm.val() !== $c_paw.val() ){
+                        inputTipsCompany('两次密码输入不一致',2,this);
+                    }
+                    else {
+                        $(this).parent().find('>div').hide();
+                    }
+                });
+                //邮箱
+                var reg_email = /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/ ;
+                var emailCheck= function (input) {
+                    if($(input).val()===''){
+                        $(input).parent().find('>div').hide();
+                    }
+                    else if(!reg_email.test($(input).val())){
+                        inputTipsCompany('请输入正确的邮箱',2,input);
+                        return true;
+                    }
+                    else {
+                        $(input).parent().find('>div').hide();
+                        return false;
+                    }
+                };
+                $c_email.focus(function () {
+                    inputTipsCompany('请输入正确的邮箱',1,this);
+                    $(this).off('focus');
+                });
+                $c_email.keydown(function () {
+                    inputTipsCompany('请输入正确的邮箱',1,this);
+                });
+                $c_email.blur(function () {
+                    emailCheck($c_email);
+                });
+                $('#js-c-code').focus(function () {
+                   if($('#js-c-mobile').val()===''){
+                       inputTipsCompany('请输入正确的手机号',2,$('#js-c-mobile'));
+                   }
+                });
+                //发送手机验证码
+                var timer;
+                var num_number= 60;
+                var $btn_code=$('#js-c-mcode');
+                $btn_code.click(function () {
+                    var $disabled = $btn_code.attr("disabled");
+                    if($disabled){
+                        return false;
+                    }
+                    //在post还没回来，验证不过去
+                    //处理方法：sendSms接口验证手机号
+                    if(!isChecked){
+                        $c_mobile.focus();
+                        inputTipsCompany('请输入手机号码',2,$c_mobile);
+                        return false;
+                    }
+                    var mobile = $c_mobile.val();
+                    $.post(
+                        "{:U('Home/Account/sendSms')}",
+                        { mobile:mobile },
+                        function (res) {
+                            if(res.status===0){
+                                $('.jl-nor-tips').css('display','block');
+                                sendCode();
+                                timer=setInterval(sendCode,1000);
+                            }
+                            else {
+                                modal.alert({
+                                    title:'发送验证码失败',
+                                    brief:res.content
+                                })
+                            }
+                        }
+                    );
+                });
+                function sendCode() {
+                    if(num_number===0){
+                        $btn_code.html('重新发送验证码');
+                        num_number=60;
+                        clearInterval(timer);
+                        $btn_code.attr('disabled',false);
+                        $('.jl-nor-tips').css('display','none');
+                    }
+                    else {
+                        $btn_code.css('color','#777');
+                        $btn_code.attr('disabled','disabled');
+                        $btn_code.html(num_number+'秒后重新发送');
+                        num_number--;
+                    }
+                }
+                //输入的手机验证码正确与否请求
+                $('#js-c-code').blur(function () {
+                    var that = this;
+                    if($(that).val()===''){
+                        inputTipsCompany('验证码不能为空',2,$(that));
+                    }
+                    else {
+                        var mobile_code = $(that).val();
+                        $.post(
+                            "{:U('Home/Account/checkSms')}",
+                            {mobile_code:mobile_code},
+                            function (res) {
+                                if(res.status===0){
+                                    $(that).parent().find('>div').hide();
+                                }
+                                else {
+                                    inputTipsCompany('验证码错误',2,$(that));
+                                }
+                            }
+                        )
+                    }
+                });
+                $('.js-company-list.lj-option-box').on('click','li',function () {
+                    var $this = $(this);
+                    var id = $this.data('id');
+                    $this.addClass('jl-active-li').siblings().removeClass('lj-active-li');
+                    $('input[name="company_people_num"]').val(id).change();
+                    $('.js-company-num').removeClass('jl-y-select-active')
+                        .children('.jl-y-select-title').children('.jl-c-c').text($this.text());
+                });
+                //提交
+                $('.js-c-register-submit').on('click',function () {
+                    var isPass = true;
+                    var $name_tips = $c_user.parent().find('>div');
+                    if($name_tips.hasClass('jl-reg-nor-active')){
+                        isPass = false;
+                    }
+                    else {
+                        if (userName($c_user[0])) {
+                            inputTipsCompany('请输入正确的用户名',2,$c_user);
+                            isPass = false
+                        }
+                    }
+                    if($c_paw.val()===''){
+                        inputTipsCompany('请输入密码',2,$c_paw);
+                        isPass = false
+                    }
+                    if(companyName($c_company_name[0])){
+                        inputTipsCompany('请输入正确的公司名称',2,$c_company_name);
+                        isPass = false
+                    }
+                    if(whereCom($c_area[0])){
+                        inputTipsCompany('请选择的公司所在地',2,$c_area);
+                        isPass = false
+                    }
+                    if(addressCom($c_address[0])){
+                        inputTipsCompany('请输入正确的公司详细地址',2,$c_address);
+                        isPass = false
+                    }
+                    if(numberPeople($c_people_num[0])){
+                        inputTipsCompany('请选择的公司人数',2,$c_people_num);
+                        isPass = false
+                    }
+                    if(contactName($c_contact_name[0])){
+                        inputTipsCompany('请输入正确的联系人姓名',2,$c_contact_name);
+                        isPass = false
+                    }
+                    if(sectorCom($c_sector[0])){
+                        inputTipsCompany('请输入正确的联系人职务',2,$c_sector);
+                        isPass = false
+                    }
+
+                    var $mobile_tips = $c_mobile.parent().find('>div');
+                    if($mobile_tips.hasClass('jl-reg-nor-active')){
+                        isPass = false;
+                    }
+                    else {
+                        if (mobilePhone($c_mobile[0])) {
+                            isPass = false
+                        }
+                    }
+                    //验证码不能为空
+                    if($('#js-c-code').val()===''){
+                        inputTipsCompany('验证码不能为空',2,$('#js-c-code'));
+                        isPass = false
+                    }
+                    if(!$('#jl-checkbox').hasClass('jl-check-active')){
+                        isPass = false
+                    }
+                    if(!isPass){
+                        return false
+                    }
+                    var data ={
+                        user_name:$c_user.val(),
+                        company_name:$c_company_name.val(),
+                        company_area:$c_area.val(),
+                        company_address:$c_address.val(),
+                        company_people_num : $c_people_num.val(),
+                        company_user_name:$c_contact_name.val(),
+                        company_user_sector:$c_sector.val(),
+                        user_mobile:$c_mobile.val(),
+                        mobile_code:$('#js-c-code').val(),
+                        user_pass:$c_paw.val(),
+                        user_email:$c_email.val()
+                    };
+                    $.post("{:U('Home/Account/doRegister',['type'=>2])}",data,function (res) {
+                        if(res.status===0){
+                            window.location.href="{:U('Home/Account/register_success')}";
+                        }
+                        else{
+                            modal.alert({
+                                title:'注册失败',
+                                brief:res.content
+                            })
+                        }
+                    })
+                })
+            });
+        })
+    </script>
+</block>

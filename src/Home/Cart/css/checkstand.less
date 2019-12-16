@@ -1,0 +1,349 @@
+@import "../../Public/css/init.less";
+
+
+.jl-search-content{
+  display: none;
+}
+.jl-payment-details{
+  display: block;
+}
+
+#jl-checkstand{
+  width: 1200px;
+  margin: 0 auto 15px;
+}
+
+
+.jl-selected{
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border:1px solid @grey;
+  border-radius: 50%;
+}
+
+/* 收银台主页面 */
+.jl-checkstand-main{
+  padding-top: 30px;
+  min-height: 478px;
+  border:@border01;
+  box-shadow: 0 0 8px @light-gray;
+  padding-bottom: 170px;
+  color:@dark-grey;
+}
+
+.jl-way-left{
+  float: left;
+  .jl-selected,.jl-bank-icon,b,s{
+    float: left;
+  }
+  b{
+    font-size:@title-size ;
+    font-weight: bold;
+    width: 120px;
+  }
+}
+.jl-way-right{
+  display: none;
+  float: right;
+  b{
+    .font18(@color);
+    font-weight: bold;
+    margin: 0 5px;
+    position: relative;
+    top: 1px;
+  }
+}
+.jl-checkstand-way{
+  padding: 0 25px 0;
+  li{
+    cursor: pointer;
+    height: 60px;
+    line-height:58px;
+    box-sizing: border-box;
+    border-bottom:@border02;
+    padding-left: 20px;
+    padding-right: 45px;
+  }
+  .jl-cur{
+    border:2px solid @yellow;
+    .jl-selected{
+      border: 5px solid #00bff0;
+    }
+    .jl-way-right{
+      display: block;
+    }
+  }
+}
+
+.jl-selected,.jl-bank-icon{
+  position: relative;
+  top: 20px;
+  box-sizing: border-box;
+}
+.jl-bank-icon{
+  top: 18px;
+  width: 36px;
+  display: inline-block;
+  margin-left:25px;
+  line-height: 1;
+  img{
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.jl-more-way{
+  margin-left: 92px;
+  margin-top: 20px;
+}
+.jl-more-bank,.jl-add-bank{
+  float: left;
+  width: 148px;
+  height: 38px;
+  border:@border02;
+  background: #fff;
+  font-size:@minor-size ;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.jl-payment{
+  width: 180px;
+  height: 40px;
+  background: @color;
+  border: none;
+  .font18(#fff);
+  margin-left: 92px;
+  margin-top: 50px;
+  cursor: pointer;
+}
+
+/* 微信支付 */
+.jl-weixin-pay{
+  min-height: 650px;
+  border:@border01;
+  box-shadow: 0 0 8px @light-gray;
+  padding: 57px 0 0 92px;
+  h4{
+    .font18(@dark-grey);
+  }
+}
+.jl-weixin-content{
+  padding: 12px 0 0 147px;
+  margin-bottom: 20px;
+}
+.jl-weixin-left,.jl-weixin-right{
+  float: left;
+}
+.jl-weixin-left{
+  margin-top: 20px;
+  margin-right: 98px;
+  width: 302px;
+  img{
+    border:@border02;
+    float: left;
+  }
+}
+.jl-prompting{
+  float: left;
+  width: 302px;
+  height: 60px;
+  background: #f76b6b;
+  margin-top: 20px;
+}
+.jl-prompting-left,.jl-prompting-right{
+  float: left;
+}
+.jl-prompting-left{
+  width: 42px;
+  height: 42px;
+  background: url("../../Public/img/sprite.png") no-repeat 0 -354px;
+  margin-left: 42px;
+  margin-top: 9px;
+}
+.jl-prompting-right{
+  font-size: 15px;
+  color:#fff;
+  margin-top: 10px;
+  margin-left: 16px;
+}
+.jl-link{
+  position: relative;
+  top:2px;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background: url("../../Public/img/sprite.png") no-repeat -44px -294px;
+  margin-right: 10px;
+}
+
+.jl-link-checkstand{
+  font-size: 15px;
+  color:@green;
+}
+.jl-link-checkstand:hover{
+  color:@green;
+}
+
+/* 弹窗 */
+.jl-add-popup{
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.jl-bg{
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  opacity: .8;
+  filter:alpha(opacity=80);
+}
+.jl-add-main{
+  position: absolute;
+  top: 352px;
+  left: 50%;
+  margin-left: -400px;
+  width: 800px;
+  box-sizing: border-box;
+  border: 10px solid rgba(0,0,0,.2);
+  background: #fff;
+}
+.jl-title{
+  height:32px;
+  background: @color;
+  color:#fff;
+  padding-top: 8px;
+  padding-left: 20px;
+  li{
+    cursor: pointer;
+    float: left;
+    width: 90px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+  }
+  li.jl-cur{
+    color:@dark-grey;
+    background: #fff;
+  }
+}
+
+.jl-card-number{
+  padding: 20px 40px 0 36px;
+  span,input{
+    float: left;
+    line-height: 38px;
+  }
+  input{
+    border:@border02;
+    margin-left: 22px;
+    width: 600px;
+    height: 38px;
+    padding-left: 20px;
+  }
+}
+
+.jl-close{
+  cursor: pointer;
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  width: 14px;
+  height: 14px;
+  background:url("../../Public/img/sprite.png") no-repeat 0 -180px;
+}
+
+.jl-next{
+  display: block;
+  width: 180px;
+  height: 40px;
+  background: @grey;
+  border: none;
+  margin: 20px auto;
+  .font18(#fff);
+  &.jl-cur{
+    background: @color;
+  }
+}
+
+//微信支付
+.jl-pay-item{
+  padding-bottom: 82px;
+}
+.jl-pay-box{
+  width: 1014px;
+  margin: 15px 92px 0;
+}
+.jl-pay-title{
+  height: 44px;
+  .font18(@dark-grey);
+  line-height: 44px;
+}
+.jl-pay-wechat{
+  overflow: hidden;
+  padding: 0 0 21px 147px;
+}
+.jl-wechat-images{
+  float: left;
+  margin-top: 21px;
+  margin-right: 124px;
+}
+.jl-wechat-scan{
+  width: 302px;
+}
+.jl-wechat-img{
+  width: 298px;
+  height: 298px;
+  margin: 0 1px;
+  border: @border02;
+  img{
+    width: 100%;
+  }
+}
+.jl-pay-btn{
+  width: 302px;
+  height: 44px;
+  padding: 8px 0;
+  margin: 22px 0 9px 0;
+  background-color: #f76b6b;
+  .jl-scan-img{
+    float: left;
+    margin: 0 17px 0 62px;
+    display: block;
+    width: 42px;
+    height: 42px;
+    background: url("../../Public/img/cart/scan.png") no-repeat 0 0;
+  }
+  p{
+    .font16(#fff);
+    line-height: 23px;
+  };
+}
+.jl-pay-mobile{
+  float: left;
+  img{
+    width: 100%;
+  }
+}
+.jl-pay-share{
+  display: block;
+  width: 100%;
+  height: 15px;
+  cursor: pointer;
+  b{
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background: url("../../Public/img/sprite.png") no-repeat -44px -294px;
+    margin-right: 12px;
+  }
+  span{
+    font-size: 15px;
+    color: @green;
+  }
+}

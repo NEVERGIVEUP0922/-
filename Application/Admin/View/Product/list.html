@@ -1,0 +1,68 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+</block>
+<block name="content">
+    <div>
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">品牌列表</a>
+            </span>
+        </blockquote>
+
+        <table lay-filter="data-table" class="data-table">
+
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var list_data = {$brandList|json_encode};
+            console.log(list_data);
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Product/brandList?'+query
+            };
+            table.render({
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-338',
+                cols: [[ //表头
+                    {field: 'id', title: 'ID', fixed: 'left'}
+                    ,{field: 'brand_name', title: '名称'}
+                    ,{field: 'logo', title: 'logo'}
+                    ,{field: 'is_hot', title: '是否热卖'}
+                    ,{field: 'first', title: '排序'}
+                    ,{field: 'create_time', title: '创建时间'}
+                    ,{field: 'update_time', title:'更新时间'}
+                ]]
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend({},{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+        })
+    </script>
+</block>

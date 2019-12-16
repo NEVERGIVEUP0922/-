@@ -1,0 +1,109 @@
+<extend name="Layout:layout-tab" />
+<block name="css">
+</block>
+<block name="content">
+    <div class="panel_box row">
+        <div class="panel col">
+            <a href="javascript:" data-url="page/message/message.html">
+                <div class="panel_icon">
+                    <i class="iconfont-jl icon-jl-mes"></i>
+                </div>
+                <div class="panel_word newMessage">
+                    <span>5</span>
+                    <cite>新消息</cite>
+                </div>
+            </a>
+        </div>
+        <div class="panel col">
+            <a href="javascript:" data-url="page/user/allUsers.html">
+                <div class="panel_icon" style="background-color:#FF5722;">
+                    <i class="iconfont-jl icon-jl-activity"></i>
+                </div>
+                <div class="panel_word userAll">
+                    <span>200</span>
+                    <cite>新增订单</cite>
+                </div>
+            </a>
+        </div>
+        <div class="panel col">
+            <a href="javascript:" data-url="page/user/allUsers.html">
+                <div class="panel_icon" style="background-color:#009688;">
+                    <i class="iconfont-jl icon-jl-users"></i>
+                </div>
+                <div class="panel_word userAll">
+                    <span>50</span>
+                    <cite>用户总数</cite>
+                </div>
+            </a>
+        </div>
+        <div class="panel col">
+            <a href="javascript:" data-url="page/img/images.html">
+                <div class="panel_icon" style="background-color:#5FB878;">
+                    <i class="iconfont-jl icon-jl-waiting"></i>
+                </div>
+                <div class="panel_word imgAll">
+                    <span>20</span>
+                    <cite>待发货订单</cite>
+                </div>
+            </a>
+        </div>
+        <div class="panel col">
+            <a href="javascript:" data-url="page/news/newsList.html">
+                <div class="panel_icon" style="background-color:#F7B824;">
+                    <i class="iconfont-jl icon-jl-shoukuan"></i>
+                </div>
+                <div class="panel_word waitNews">
+                    <span>35</span>
+                    <cite>待收款订单</cite>
+                </div>
+            </a>
+        </div>
+        <div class="panel col max_panel">
+            <a href="javascript:" data-url="page/news/newsList.html">
+                <div class="panel_icon" style="background-color:#2F4056;">
+                    <i class="iconfont-jl icon-jl-help"></i>
+                </div>
+                <div class="panel_word allNews">
+                    <span>5</span>
+                    <em>待处理需求</em>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="sysNotice col">
+            <blockquote class="layui-elem-quote title">更新日志</blockquote>
+            <div class="layui-elem-quote layui-quote-nm">
+                <h3>1、商品管理列表开发中</h3>
+            </div>
+        </div>
+        <div class="sysNotice col">
+            <blockquote class="layui-elem-quote title">系统基本参数</blockquote>
+            <table class="layui-table">
+                <tbody>
+                <tr>
+                    <td>网站首页</td>
+                    <td class="homePage"></td>
+                </tr>
+                <tr>
+                    <td>服务器环境</td>
+                    <td class="server"></td>
+                </tr>
+                <tr>
+                    <td>数据库版本</td>
+                    <td class="dataBase"></td>
+                </tr>
+                <tr>
+                    <td>最大上传限制</td>
+                    <td class="maxUpload"></td>
+                </tr>
+                <tr>
+                    <td>当前用户权限</td>
+                    <td class="userRights"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</block>
+<block name="js"></block>

@@ -1,0 +1,102 @@
+<!-- 前台搜索模板文件  -->
+<extend name="Layout:layout" />
+<block name="title">商品详情页</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Product/css/detail.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <style>
+        .containers{
+            width:1200px;margin:1% auto;text-align: center
+        }
+        .containers>p{
+            font-family:'苹方 粗体',sans-serif;
+            text-align:left;
+        }
+        .lefts{
+            overflow:hidden;
+            width:100%;
+        }
+        .lefts>div{
+            font-family:'苹方 粗体',sans-serif;
+            float:left;
+            width:40%;
+            text-align:left;
+            margin:0 5%;
+            font-size:18px;
+            color:#000;
+            overflow:hidden;
+        }
+    </style>
+    <div style="width:1200px;margin:0 auto;">
+        <!--<h1 style="">
+            <p style="padding:2% 0 1%;font-size:30px;font-weight: bold;color:#323;text-align:center">{$textInfo.text_titile}</p>
+            <p style="padding:1% 0;font-weight: normal;color:#8e8888;border-bottom:1px solid #ddd;">{$textInfo.update_time}</p>
+        </h1>-->
+        <div class="container" style="margin:1% auto;width:80%;">
+
+        </div>
+        <!--<div style="text-align: left;border-top:1px dashed #323">
+            <p style="font-weight: 600">&gt;特别推荐</p>
+            <volist name="texts" id="val">
+                <p><a href="#" style="color:#004276">{$val.text_titile} - - - - - - - - - {$val.update_time}</a></p>
+            </volist>
+
+        </div>-->
+    </div>
+
+    <!--<div style="width:1200px;margin:0 auto;text-align: center">
+        <if condition="$request.banner eq 123">
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail03.jpg" style="width:80%;"/>
+            <elseif condition="$request.banner eq 456"/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail02.jpg" style="width:80%;"/>
+            <elseif condition="$request.banner eq first"/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail_first_charge.jpg" style="width:80%;"/>
+            &lt;!&ndash;<div style="text-align:center;width:1200px;margin:0 auto;font-size:30px">
+                <a href="/Uploads/Pdf/2018-02-01/first_charge.pdf" class="media"></a>
+            </div>&ndash;&gt;
+            <elseif condition="$request.banner eq 'yinpin'"/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail_yinpin.jpg" style="width:80%;"/>
+            <elseif condition="$request.banner eq 'liang'"/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail_liang.jpg" style="width:80%;"/>
+            <else/>
+            <img src="__PUBLIC__/Home/Index/img/bannerDetail01.jpg" style="width:80%;"/>
+        </if>
+    </div>-->
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js'],function() {
+            require(['jquery','pdfmeta','pdfmetadata'], function ($) {
+                //pdf
+                /* $.fn.media.defaults.silverlight.isWindowless= "true";
+                 setTimeout(function(){$('.media').media( { width: 1200, height: 900, autoplay: true,caption:false } );},1000);*/
+                require(['Module/echo/1.7.3/echo.min'], function (echo) {
+                   /* console.log({$texts|json_encode});
+                    console.log({$textInfo|json_encode});*/
+                    var textInfo = {$textInfo|json_encode};
+                    console.log(textInfo);
+                    function getHtml(describe){
+                        var reg=/(<p>)+|[\u2E80-\u9FFF]+/g;///^<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)$/g;
+                        var returndata;
+                        var returnObj=describe;
+                        if(!describe){return describe};
+                        if(!reg.test(describe+"")){
+                            returndata=decodeURIComponent(describe+'');
+                            return arguments.callee(returndata);
+                        }else{
+                            return returnObj;
+                        };
+                    }
+                    $(".container").html(getHtml(textInfo.text));
+
+                });
+            });
+        });
+
+    </script>
+</block>

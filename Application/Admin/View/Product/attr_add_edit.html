@@ -1,0 +1,315 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/pikaday/1.6.1/css/pikaday.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+</block>
+<block name="content">
+    <div style="position:relative">
+        <div class="">
+            <div id="data-from-page" ></div>
+        </div>
+    </div>
+    <style>
+        .layui-table-header .layui-table-cell{ height:54px;line-height:54px}
+        .layui-table-header th[data-field = order_type]>div{ line-height:28px}
+        .layui-table-header th[data-field = deposits_pay_type]>div{ line-height:28px}
+        .layui-table-header th[data-field = already_paid]>div{ line-height:28px}
+        .layui-table-header th[data-field = invoice_status]>div{ line-height:28px}
+        .layui-btn-cate-container .layui-btn-bind{ margin-top:2%;}
+
+    </style>
+</block>
+<block name="js">
+    <script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+    <script>
+        layui.use(['table', 'layer', 'laypage', 'jlTool', 'element', 'form','orderConfig','commonTpl','selectCustomer',
+            'selectUser','pikadayOption','actionTpl','laydate'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var laydate = layui.laydate;
+            var form = layui.form;
+            var actionTpl =layui.actionTpl;
+            var categoryTree = {$categoryTree|json_encode};
+            var request = {$request | json_encode};
+            var photoAdvert = {$photoAdvert| json_encode};
+            //console.log(photoAdvert)
+            var data=[];
+            var data=window.location.search.split("=")[1];
+            var getCate_all=function(cateAll){
+                var str='',str_02='';
+                var lengths=0;
+                var new_cate_all =cateAll? ( typeof cateAll ==='object'?cateAll:[]):[];
+                    $.each(new_cate_all,function(ind,val){
+                        if(lengths>=2)str_02+='<span class="layui-btn layui-btn-bind" style="height: 30px;line-height: 30px;margin:0 4px 4px 0">'+val+'<i class="tab-controller-close iconfont-jl icon-jl-close" data-id="'+ind+'"></i></span>';
+                        if(lengths<2){
+                            str+='<span class="layui-btn layui-btn-bind" style="height: 30px;line-height: 30px;margin:0 4px 4px 0">'+val+'<i class="tab-controller-close iconfont-jl icon-jl-close" data-id="'+ind+'"></i></span>'
+                        }else if(lengths ==2){
+                            str+='<span class="layui-btn layui-btn-bind jl-ellipes" style="height: 30px;line-height: 30px;margin:0 4px 4px 0">...</span>';
+                        };
+                        lengths++;
+                    });
+                return '<span class="cate_all_01">'+str+'</span><span class="cate_all_02" style="display:none">'+str_02+'</span>';
+            }
+            //console.log(window.location,categoryTree);
+            openPopout(/*data?JSON.parse(decodeURIComponent(data)):{}*/photoAdvert?photoAdvert:[]);
+            function openPopout(obj){
+                var option='';
+                var data=[{data:{name:"属性1",key:"current",value:""},type:{name:"属性1类型",key:"current_type",arr:[{key:"current_type",value:"1",name:"固定值",isChecked:true},{key:"current_type",value:"2",name:"范围值",isChecked:false}]}},
+                    {data:{name:"属性2",key:"voltage_input",value:""},type:{name:"属性2类型",key:"voltage_input_type",arr:[{key:"voltage_input_type",value:"1",name:"固定值",isChecked:true},{key:"voltage_input_type",value:"2",name:"范围值",isChecked:false}]}},
+                    {data:{name:"属性3",key:"voltage_output",value:""},type:{name:"属性3类型",key:"voltage_output_type",arr:[{key:"voltage_output_type",value:"1",name:"固定值",isChecked:true},{key:"voltage_output_type",value:"2",name:"范围值",isChecked:false}]}},
+                    {data:{name:"属性4",key:"volume",value:""},type:{name:"属性4类型",key:"volume_type",arr:[{key:"volume_type",value:"1",name:"固定值",isChecked:true},{key:"volume_type",value:"2",name:"范围值",isChecked:false}]}},
+                    {data:{name:"属性5",key:"custom",value:""},type:{name:"属性5类型",key:"custom_type",arr:[{key:"custom_type",value:"1",name:"固定值",isChecked:true},{key:"custom_type",value:"2",name:"范围值",isChecked:false}]}},
+                    {data:{name:"属性6",key:"custom1",value:""},type:{name:"属性6类型",key:"custom1_type",arr:[{key:"custom1_type",value:"1",name:"固定值",isChecked:true},{key:"custom1_type",value:"2",name:"范围值",isChecked:false}]}},
+                    {data:{name:"属性7",key:"custom2",value:""},type:{name:"属性7类型",key:"custom2_type",arr:[{key:"custom2_type",value:"1",name:"固定值",isChecked:true},{key:"custom2_type",value:"2",name:"范围值",isChecked:false}]}}
+                    ];
+                option+=actionTpl.input_input({name:"属性总称",key:"attr_name",value:obj.attr_name?obj.attr_name:""});
+                data.forEach(function(val,ind){
+                    if(!$.isEmptyObject(obj)){
+                        val.data.value=obj[val.data.key];
+                        val.type.value=obj[val.data.key+"_value"];
+                        val.type.arr.map(function(vl,dd){
+                            if(Number(vl.value) == Number(obj[vl.key])){
+                                vl.isChecked=true;
+                            }else{
+                                vl.isChecked=false;
+                            }
+                        });
+                    }
+                    option+=actionTpl.input_input(val.data);
+                    option+=actionTpl.input_radio(val.type,true);
+                });
+               /* var str='',str_02='';
+                var lengths=0;*/
+                var Cate_html;
+                if(obj.cate_all){
+                    var new_cate_all =obj.cate_all? (JSON.parse(decodeURIComponent(obj.cate_all)) instanceof Array?{}:JSON.parse(decodeURIComponent(obj.cate_all))):{};
+                     Cate_html=getCate_all(new_cate_all)||"";
+                    /*var new_cate_all =obj.cate_all? (JSON.parse(decodeURIComponent(obj.cate_all)) instanceof Array?{}:JSON.parse(decodeURIComponent(obj.cate_all))):{};
+                    $.each(new_cate_all,function(ind,val){
+                        if(lengths>=0){
+                            str+='<span class="layui-btn layui-btn-bind" style="height: 30px;line-height: 30px;margin-left:1%">'+val+'<i class="tab-controller-close iconfont-jl icon-jl-close" data-id="'+ind+'"></i></span>'
+                        }else if(lengths ==-2){
+                            str+='<span class="layui-btn layui-btn-bind jl-ellipes" style="height: 30px;line-height: 30px;margin-left:1%px">...</span>';
+                        };
+                        lengths++;
+                    });*/
+                }else{
+                    Cate_html="";
+                }
+                option+='<div class="layui-form-item" pane="">\n' +
+                    '    <label class="layui-form-label">绑定分类</label>\n' +
+                    '    <div class="layui-input-block">\n' +
+                    '      <div class="layui-btn-groups">\n' +
+                    '        <span class="layui-btn layui-btn-bind jl-cate-id" style="height: 30px;line-height: 30px;margin-left:0% !important;">添加<input type="hidden" name="cate_id" value="'+(obj.cate_id||"")+'"/><input type="hidden" name="cate_all" value="'+(obj.cate_all||"")+'"/></span>' +
+                    '         <div class="layui-btn-cate-container" style="margin-top:2%">'+Cate_html+'</div>\n' +
+                    '      </div>\n' +
+                    '    </div>\n' +
+                    '  </div> ' +
+                    '<div class="layui-form-item" style="text-align:center">\n' +
+                    '      <button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="attr_submit">立即提交</button>\n' +
+                    '  </div>';
+                var str='<form class="layui-form" action="">\n' +
+                    option+
+                    '</form>';
+                $("#data-from-page").html(str);
+                delete_init();
+                setTimeout(function(){
+                    $("#data-from-page .layui-unselect.layui-form-radio").find("div").css("font-size","14px");
+                },10);
+                form.render();
+
+                form.on('radio(input_check)',function(obj){
+                   //console.log('obj',obj);
+                    $(obj.elem).parents('.layui-form-item').next(".value-input-change").toggle(400);
+                });
+                //监听提交
+                form.on('submit(attr_submit)', function(data){
+                    //发送数据
+                    var isPass=false,sendData={};
+                    sendData=$.extend(true,{},data.field);
+                    $.each(sendData,function(key,val){
+                        if(key.indexOf("type")==-1 && key.indexOf("name")==-1&& val){
+                            isPass=true;
+                        }
+                        if(key.indexOf("_value")>-1 && val){
+                            var reg=new RegExp('；','g')
+                            sendData[key]=val.replace(reg,';');
+                        }
+                    });
+                    if(!sendData.attr_name){ return(layer.msg("属性总称必须填写哟"));};
+                    if(!isPass){return(layer.msg("至少填写一个属性"));};
+                    if(obj){
+                        sendData.id=obj.id;
+                    }
+                    if(obj){
+                        sendData.id=obj.id;
+                    }
+                    $.ajax({
+                        url:"/Admin/Product/addAttribute",
+                        type:"post",
+                        data:sendData,
+                        dataType:"json",
+                        success:function(res){
+                            if(res.error == 0){
+                                layer.closeAll();
+                                //console.log(window);
+                                layer.msg(res.msg,{icon:6,time:800},function(){
+                                    jlTool.sendIframeMsg("refresh",["/Admin/Product/addAttribute"]);
+                                    window.parent.queryTable();
+                                    //window.parent.closeIframe();
+                                });
+                            }else{
+                                layer.msg(res.msg,{icon:5});
+                            }
+                        }
+                    });
+                    return false;
+                });
+                goCate();
+            }
+            //分类
+             function goCate(){
+                //console.log(categoryTree);
+                 categoryTree=categoryTree.data;
+                 //添加
+                $(".jl-cate-id").off("click").on("click",function(){
+                    var $this = $(this);
+                    var id = $this.data('id');
+                    var selected=[];
+                    layer.open({
+                        title:'选择分类',
+                        type: 0,
+                        tipsMore:true,
+                        area:["360px","60vh"],
+                        content: (
+                            '<div class="jstree-div"></div>'
+                        ),
+                        success: function(){
+                            var reduceTree = (function reduce(value) {
+                                if(value&&$.isArray(value)){
+                                    $.each(value,function (i,v) {
+                                        v['text'] = v.cate_name;
+                                        if(v.children){
+                                            reduce(v.children)
+                                        }
+                                    })
+                                }
+                            })(categoryTree.category);
+                            $('.jstree-div').jstree({
+                                'core': {
+                                    'data': [{
+                                        "text": "商品分类",
+                                        "state": {"opened": true},
+                                        "children": categoryTree.category
+                                    }],
+                                    "themes" : {
+                                        "theme" : "default" ,
+                                        "dots" : true,
+                                        "icons" : true
+                                    },
+                                },
+                                "checkbox" : {
+                                    "keep_selected_style" : false
+                                },
+                                ui : {
+                                    theme_name : "checkbox"
+                                },
+                                "plugins" :  ["checkbox"]
+                            }).on("changed.jstree", function (e, data) {
+                                selected=[];
+                                if (data.selected.length>0) {
+                                    //var category = data.instance.get_node(data.selected[0]);
+                                   // selected = category.children.length===0 ? category : false;
+                                    $.each(data.selected,function(ind,val){
+                                        var category = data.instance.get_node(val);
+                                        selected.push(category.children.length===0 ? category : false);
+                                    });
+                                }
+                            });
+                        },
+                        yes:function (index, layero) {
+                            if(selected){
+                                var cate_all= $this.find("input[name=cate_all]").val()? (JSON.parse(decodeURIComponent($this.find("input[name=cate_all]").val())) instanceof Array ? {}:JSON.parse(decodeURIComponent($this.find("input[name=cate_all]").val()))):{};
+                                var obj={};
+                                var cate_ids='';
+                                var nowId=$this.find("input[name=cate_id]").val()||"";
+                                $.each(selected,function(ind,val){
+                                    if(val){
+                                        obj[val.id]=val.text;
+                                        //防止id重复
+                                        if($.inArray(String(val.id),nowId.split(','))<0){
+                                            if(!cate_ids){
+                                                cate_ids=val.id;
+                                            } else{
+                                                cate_ids+=","+val.id;
+                                            }
+                                        };
+                                    }
+
+                                });
+
+                                var new_cate_all=$.extend(true,cate_all,obj);
+                                $this.find("input[name=cate_id]").val( (nowId?(nowId+","):"")+cate_ids);
+                                $this.find("input[name=cate_all]").val(encodeURIComponent(JSON.stringify(new_cate_all)));
+                               /* var str='';
+                                var lengths=0;
+                                $.each(new_cate_all,function(ind,val){
+                                    if(lengths>=0){
+                                        str+='<span class="layui-btn layui-btn-bind" style="height: 30px;margin-top:2%;line-height: 30px;margin-left:5px">'+val+'<i class="tab-controller-close iconfont-jl icon-jl-close" data-id="'+ind+'"></i></span>'
+                                    }else if(lengths ==-2){
+                                        str+='<span class="layui-btn layui-btn-bind jl-ellipes" style="height: 30px;margin-top:2%;line-height: 30px;margin-left:10px">...</span>';
+                                    };
+                                    lengths++;
+                                });*/
+                                $(".layui-btn-cate-container").html(getCate_all(new_cate_all));
+                                delete_init();
+                                layer.close(index);
+                            }
+                            else {
+                                layer.tips('必须选择并且是最底层分类', '.layui-layer-btn0');
+                            }
+                        }
+                    });
+                });
+            };
+            //删去
+             function delete_init(){
+                $(".layui-btn.layui-btn-bind").find("i").on("click",function(){
+                    var $this=$(this);
+                    var cate_all_02= $this.parents(".layui-btn-cate-container").prev().find("input[name=cate_all]").val()? JSON.parse(decodeURIComponent($this.parents(".layui-btn-cate-container").prev().find("input[name=cate_all]").val())):{};
+                    var id=$this.data("id");
+                    delete cate_all_02[id];
+                    var str_02='';
+                    var lengths_02=0;
+                    var input_value=""
+                    $.each(cate_all_02,function(ind,val){
+                        if(lengths_02>0){
+                            input_value+=","+ind;
+                        }else{
+                            input_value+=ind;
+                        }
+                        /*if(lengths_02>=0){
+                            str_02+='<span class="layui-btn layui-btn-bind" style="height: 30px;line-height: 30px;margin-left:5px">'+val+'<i class="tab-controller-close iconfont-jl icon-jl-close" data-id="'+ind+'"></i></span>'
+                        }else if(lengths_02 ==-2){
+                            str_02+='<span class="layui-btn layui-btn-bind jl-ellipes" style="height: 30px;line-height: 30px;margin-left:10px">...</span>';
+                        };*/
+                        lengths_02++;
+                    });
+                    $this.parents(".layui-btn-cate-container").prev().find("input[name=cate_all]").val(encodeURIComponent(JSON.stringify(cate_all_02)))
+                    $this.parents(".layui-btn-cate-container").prev().find("input[name=cate_id]").val(input_value);
+                    $this.parents(".layui-btn-bind").remove();
+                    //$(".layui-btn-cate-container").html(getCate_all(cate_all_02));
+                    //delete_init();
+                });
+                $(".jl-ellipes").off("click").on("click",function(){
+                    $(".cate_all_02").slideToggle(800);
+                })
+            };
+        });
+    </script>
+</block>

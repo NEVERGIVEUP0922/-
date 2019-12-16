@@ -1,0 +1,176 @@
+<!-- 前台搜索模板文件  -->
+
+<extend name="Layout:layout" />
+
+<block name="title">积分商城</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/User/css/retreatCargo.css">
+    <link rel="stylesheet" href="__PUBLIC__/Home/Points/css/pointsMall.css">
+</block>
+<!-- 主要内容 -->
+<block name="main">
+    <style>
+        .layui-form-item .layui-form-checkbox[lay-skin=primary]{
+            margin-top:0;
+        }
+    </style>
+    <div id="jl-purchase-fault" >
+        <div >你的位置&gt;首页&gt;积分商城</div>
+        <div class="jl-point-title">您的积分： <span class="jl-point-title-poins">{$points} </span> <!--<a class="jl-point-record" href="/Home/User/points?Bom=true">积分报表&gt;&gt;&gt;</a>--><a class="jl-point-record" href="/Home/Default/pointsMall?record=true">积分记录&gt;&gt;&gt;</a></div>
+        <div id="jl-hot-product" class="jl-cle">
+            <div class="jl-title">
+                <span class="jl-background"><span>兑换商品</span></span>
+            </div>
+
+            <ul class="jl-ul-box">
+                <?php $k = count($integral_goods) ?>
+                <volist name="integral_goods" id="h">
+                    <li class="{$i==$k?'jl-hot-li-last':''}" data-id="{$h.p_sign}">
+                        <div class="jl-img" style="display:table-cell;height:130px;padding-top:16px">
+                            <notempty name="h.reward_img">
+                                <img src="{$h['img'][0]}" style="width:184px;height:120px;vertical-align: middle" alt="">
+                                <else/>
+                                <img src="__PUBLIC__/Home/Public/img/load.jpg" alt="">
+                            </notempty>
+                        </div>
+                        <div class="jl-describe">
+                            <notempty name="h.goods_name">
+                                <p class="jl-p-describe" style="height:auto;font-weight:600">{$h.goods_name}</p>
+                            </notempty>
+                            <notempty name="h.goods_describe">
+                                <p class="jl-p-describe" style="height:40px">{$h.goods_describe}</p>
+                            </notempty>
+                        </div>
+                        <p style="overflow:hidden;margin:20px 0">
+                            <span>{$h.exchange_integral}积分</span>
+                            <if condition="$h.goods_left_num gt 0">
+                                <a href="javascript:;" class="jl-points-convert" data-id="{$h.id}">立即兑换</a>
+                                <else/>
+                                <a href="javascript:;" class="jl-points-convert_b" style="color:#c2c2c2;cursor:not-allowed">兑换完了</a>
+                            </if>
+                        </p>
+                    </li>
+                </volist>
+            </ul>
+        </div>
+    </div>
+    {$page}
+    <div class="jl-line"></div>
+</block>
+<block name="js">
+    <script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all','jquery'], function () {
+            require(['Home/Order/js/createOrder','jl-modal','jl-tool','login_page','jl-price'], function (order) {
+                var modal= require("jl-modal");
+                var jlTool=layui.jlTool;
+                var get = {$request | json_encode};
+                var integral_goods= {$integral_goods | json_encode};
+                var is_relogin= {$is_relogin|json_encode};
+                var isLogin= {$isLogin|json_encode};
+                var address_data= {$userOrderAddress|json_encode};
+                console.log(integral_goods);
+                if( is_relogin ){
+                    modal.confirm({
+                        title: '账号异常',
+                        brief: '您的账号在别处登录!若非本人操作!请尽快修改您的密码!',
+                    })
+                }
+                //积分兑换
+                $(".jl-points-convert").on("click",function(){
+                    var _this=this;
+                    $.ajax({
+                        url:'/Home/Default/checkLogin',
+                        type:'post',
+                        data:{},
+                        dataType:'json',
+                        success:function(res){
+                            if(res.error){
+                                modal.confirm({
+                                    title:"登录提示",
+                                    brief:"您还未登录玖隆芯城，请先登录",
+                                    isCenter:true,
+                                    confirm:function(res){
+                                        login_shadow();
+                                    },
+                                    cancel:function(){
+                                    }
+                                });
+
+                            }else{
+                                var str="<div class='js-popup-consignee'></div><div class=\"jl-consignee\" style='min-height: 10vh;'>\n" +
+                                    "                <ul class=\"jl-has-consignee js-address-list\"></ul>\n" +
+                                    "                <a href=\"#\" class=\"jl-add-consignee js-address-add\" style='top:10px'>新增收货人信息</a>\n" +
+                                    "            </div>";
+                                layer.open({
+                                    title:"选择收货地址",
+                                    content:str,
+                                    area:["680px"],
+                                    maxHeight:"",
+                                    skin: 'sample-class',
+                                    btn:["确定","取消"],
+                                    success :function(){
+                                        //收货人
+                                        order.address.init(address_data,"{:U('Home/Order/editUserOrderAddress')}");
+                                    },
+                                    yes:function(){
+                                        var check_id=$(".jl-consignee-title.jl-cur").data("id");
+                                        var check_code=$(".jl-consignee-title.jl-cur").data("code");
+                                        $.ajax({
+                                            url:'/Home/Default/pointsExchange',
+                                            type:'post',
+                                            data:{'reward_id':$(_this).data('id'),'user_id':isLogin,'address_code':check_code,'address_id':check_id},
+                                            dataType:'json',
+                                            success:function(res){
+                                                if(res.error === 0){
+                                                    layer.msg(res.msg,{icon:6,time:1500},function(){
+                                                        window.location.reload(true);
+                                                    });
+                                                }else{
+                                                    layer.msg(res.msg,{icon:5});
+                                                }
+                                            }
+                                        });
+
+                                    },
+                                    btn2:function(){
+
+                                    }
+                                });
+                                return;
+
+                            }
+                        }
+                    });
+
+                });
+                //分页赋值跳转
+                $(".pageSize").val(get.pageSize || 10).on("change",function(){
+                    var pageSize = $(this).val();
+                    get = $.extend(get,{"pageSize":pageSize});
+                    var url = "{:U('Home/default/pointsMall')}";
+                    url = (get) ? url + '?' + jlTool.urlEncode(get) : url;
+                    window.location = url;
+                });
+
+                var login_shadow=function(){
+                    layer.open({
+                        title:"用户登录",
+                        type:1,
+                        area:["360px"],
+                        content:window.login_page.login_html,
+                        success:function(){
+                            window.login_page.login_init('points');
+                        }
+
+                    });
+                };
+                window.login_fn=function(){
+                    window.location.reload(true);
+                }
+            });
+        });
+    </script>
+</block>

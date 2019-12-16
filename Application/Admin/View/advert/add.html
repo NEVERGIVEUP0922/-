@@ -1,0 +1,213 @@
+<extend name="Layout:layout-tab" />
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/css/form.css" media="all" />
+	<style>
+		.layui-input-inline{
+			width:50% !important;
+		}
+		.layui-form-mid{ float:none}
+		.layui-form-radio{
+			font-size:12px !important;
+		}
+	</style>
+</block>
+<block name="content">
+	<div class="layui-fluid">
+		<div class="layui-row">
+				<form class="layui-form jl-form" id="add" method="post">
+					<div class="layui-form-item">
+						<label class="layui-form-label">Banner图片</label>
+						<div class="layui-input-inline" style="width:40%">
+							<button type="button" class="layui-btn" id="upload">
+								<i class="iconfont-jl icon-jl-help"></i>上传图片
+							</button>
+							<input type="hidden" name="photo_url"/>
+							<img src=""  style="height:50px;" id="uploadImg">
+							<div class="layui-form-mid layui-word-aux">轮番图大小为745*400,顶部图大小为1200*100</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">跳转地址</label>
+						<div class="layui-input-inline" id="select_id">
+							<input type="text" name="jump_url" placeholder="默认不填为自动跳转首页" autocomplete="off" class="layui-input">
+							<div class="layui-form-mid layui-word-aux">请填写完整以http://开头的完整地址</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">图片排序</label>
+						<div class="layui-input-inline">
+							<input type="text" name="sort" required  lay-verify="required" placeholder="默认为0" autocomplete="off" class="layui-input" value="1">
+							<div class="layui-form-mid layui-word-aux">不参与排序默认为1,值越大，越靠前</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">广告位置</label>
+						<div class="layui-input-block" id="radios">
+
+						</div>
+					</div>
+
+					<!--<div class="layui-form-item">
+						<label class="layui-form-label">广告位置</label>
+						<div class="layui-input-block ">
+							<input type="radio" name="position"  value="0" title="轮播图" checked>
+							<input type="radio" name="position"  value="1" title="顶部" >
+						</div>
+					</div>-->
+					<div class="layui-form-item">
+						<label class="layui-form-label">显示状态</label>
+						<div class="layui-input-inline checked_01">
+							<input type="checkbox" name="status" lay-skin="switch" lay-filter="status"  lay-text="开|关"  value="0">
+						</div>
+						<div class="layui-input-inline checked_02" style="display:none">
+							<input type="checkbox" name="status" lay-skin="switch" lay-filter="status" checked="true" lay-text="开|关"  value="1">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn" lay-submit="submit" lay-filter="add">立即提交</button>
+							<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+</block>
+<block name="js">
+	<script>
+        layui.use(['layer','form','upload'],function(){
+            var form = layui.form,
+                upload = layui.upload,
+                layer = layui.layer;
+            //console.log({$advertText|json_encode});
+			var $advertText = {$advertText|json_encode};
+            var id = window.location.search.split("=")[1];
+            var getData = function(id){
+                $.ajax({
+					url:"infoPhoto",
+					data:{id:id},
+					type:"post",
+					dataType:"json",
+					success:function(res){
+					    console.log(res);
+					    if(res.status == 0){
+					        var data =res.msg;
+					        var inputs = $("#add").find("input");
+                            $('input[name=photo_url]').val(data.photo_url);
+                            $('#uploadImg').attr('src',data.photo_url);
+                            /*var options='';
+                            $.each($advertText,function(ind,val){
+                               if(data.jump_url == val.id){
+                                   options += '<option value="'+val.id+'" selected>'+val.text_titile+'</option>'
+							   }else{
+                                   options += '<option value="'+val.id+'">'+val.text_titile+'</option>';
+							   };
+                            });
+                            options='<select name="jump_url" lay-filter="aihao" >'+options+' </select>'
+                           // console.log(options);
+                            $("#select_id").html(options);
+                            form.render('select');*/
+                            var radios;
+                            if(data['position'] ==1){
+								radios='<input type="radio" name="position" value="1" title="轮播图" checked><input type="radio" name="position" value="2" title="顶部">'
+							}else{
+                                radios='<input type="radio" name="position" value="1" title="轮播图" ><input type="radio" name="position" value="2" title="顶部" checked>'
+                            };
+                            $("#radios").html(radios);
+                            form.render('radio');
+                            inputs.each(function(index,val){
+                               // console.log(val,val.name);
+                                $(val).val(data[val.name]);
+                                if(val.name =="status"){
+                                    if(data['status'] >0){
+                                        $(".checked_01").hide(10).remove();
+                                        $(".checked_02").show(10);
+									}else{
+                                        $(".checked_02").remove();
+									}
+								}
+							});
+						}else{
+					        layer.msg(res.msg);
+						}
+					}
+				})
+			};
+            if(id){getData(id);}else{
+                $(".checked_02").remove();
+                /*var options="";
+                $.each($advertText,function(ind,val){
+                    options += '<option value="'+val.id+'">'+val.text_titile+'</option>';
+                });
+                options='<select name="jump_url" lay-filter="aihao" >'+options+' </select>'
+                // console.log(options);
+                $("#select_id").html(options);
+                form.render('select');*/
+                var radios='<input type="radio" name="position" value="1" title="轮播图" checked=><input type="radio" name="position" value="2" title="顶部">'
+                $("#radios").html(radios);
+                form.render('radio');
+            };
+                upload.render({
+	                elem:'#upload' //绑定元素
+	                ,url: '/admin/excel/fileUpload'
+	                ,data: {path:'Banner'}
+                    ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+                        layer.load(); //上传loading
+                    }
+                    ,done: function(res, index, upload){
+	                    //console.log(res);
+                        $('input[name=photo_url]').val(res.data.path);
+                        $('#uploadImg').attr('src', res.data.path);
+                        layer.closeAll('loading'); //关闭loading
+                    }
+                });
+
+               //状态
+            form.on('switch(status)', function(data){
+				var status = this.checked ? 'true' : 'false';
+				if( status == 'true' ){
+				    $('input[name=status]').val(1);
+				}else{
+                    $('input[name=status]').val(0);
+				}
+            });
+
+            //提交
+            form.on('submit(add)', function(data){
+                if( data.field){
+                    var index = layer.load();
+                    delete data.field.file;
+                    if(id)data.field.id=id;
+                    //alert(JSON.stringify(data));
+                    data.field.status=data.field.status =="1"?"1":"0";
+                    $.ajax({
+						url: '/admin/advert/addPhoto',
+	                    type: 'POST',
+	                    data: data.field,
+	                    dataType:'json',
+	                    success: function(res){
+       					    if( res.status == 0 ){
+                                layer.close(index);
+                                layer.msg(id?"修改成功":'添加成功',{
+                                    icon: 6,
+                                    time: 500 //2秒关闭（如果不配置，默认是3秒）
+                                }, function(){
+                                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                    parent.layer.close(index);
+                                    parent.location.href='{:U("Admin/advert/photoAdevert")}';
+                                });
+						    }else{
+                                layer.close(index);
+                                layer.msg(id?"修改失败":'添加失败',{
+                                    icon: 2,
+                                    time: 500
+                                });
+						    }
+	                    }
+                    });
+                }
+                return false;
+            });
+        });
+	</script>
+</block>

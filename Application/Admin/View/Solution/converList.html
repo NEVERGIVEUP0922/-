@@ -1,0 +1,59 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/jquery/1.12.1_ui/jquery-ui.css">
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Solution/sol_public.css">
+	<style>
+		.sol_desc{
+			width:400px;height:300px;
+			text-space:4px;
+			text-indent:25px;
+			line-height:25px;
+		}
+	</style>
+</block>
+<block name="content">
+	<table lay-filter="data-table" class="data-table"></table>
+	<div id="data-table-page"></div>
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        layui.use(['table', 'layer', 'laypage'], function (){
+            var table = layui.table;
+            var res  = {$res|json_encode};
+            console.log(res);
+            table.render({
+                elem: '.data-table',
+                data: res?res:[],
+                page: false,
+                cellMinWidth: 120,
+                height:'full-220',
+				width:'1000',
+                cols: [[ //表头
+                    {field: 'desir_sn', width:145,title: '订单编号',fixed: 'left'}
+                    ,{field: 'price', title: '报价'}
+                    ,{field: 'need_id', title: '需求方案'}
+                    ,{field: 'nick_name', title: '提供方案'}
+                    ,{field: 'con_time', title: '交付日期'}
+                    ,{field: 'con_time', title: '交付日期'}
+                    ,{field: 'con_auth',width:90, title: '接洽状态',templet:function (d) {
+                        var h = { '0':'洽谈中', '1':'已接受', '2':'已拒绝' };
+                        return h[d.con_auth];
+                    }}
+                    ,{title: '洽谈内容',width:95,align:'center',templet: function(d){
+//                  var pro_desc = d.pro_desc.replace(/\n/g, "<p>");
+                        var con_idea = d.con_idea;
+                        return (
+                            '<div>' +
+                            '<p><button class="layui-btn layui-btn-sm" style="padding:0 8px">洽谈内容</button><span style="margin: 0 50px;"></span></p>' +
+                            '<div class="sol_desc">'+con_idea+'</div>' +
+                            '</div>'
+                        )
+                    }}
+                ]],
+            });
+        });
+	</script>
+</block>

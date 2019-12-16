@@ -1,0 +1,334 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+	<link rel="stylesheet" href="__PUBLIC__/Common/module/jstree/3.3.4/themes/default/style.min.css"/>
+	<link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+	<style>
+		.layui-form-label{
+			width:100px;
+		}
+		.layui-input-inline{
+			margin-left:15px;
+			width: 300px!important;
+		}
+		.textarea_css_layui{
+			width:500px;
+			float: left;
+			margin-left: 15px;
+			display: inline-block;
+		}
+		.word_number{
+			display: inline-block;
+			color:#777;
+			text-align: left;
+			width:200px;
+		}
+		.upload_div{
+			margin: 0 0 0 50px;
+		}
+		/*file+add*/
+		.layui-elem-field legend{
+			margin:0px;
+			padding:0px;
+		}
+		.layui-upload-list{
+			width:80%;
+			box-sizing: border-box;
+		}
+		.layui-upload-img{
+			display: inline-block!important;
+			width:10%;
+		}
+	</style>
+</block>
+<block name="content">
+	<div>
+		<blockquote class="layui-elem-quote">
+			<button class="layui-btn my-solList">自营方案</button>
+			<button class="layui-btn addProvider">上传方案</button>
+			<span >》》》上传供应方案</span>
+		</blockquote>
+		<form class="layui-form" action="" method="">
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">项目类型:</label>
+				<div class="layui-inline layui-input-inline" lay-filter="sol_types">
+					<select name="types" lay-filter="sol_types" lay-search="">
+						<option value="">请选择方案类型</option>
+						<foreach name="types" item="vo" key="k">
+							<if condition="$request['where']['types']['value'] eq $vo['id']">
+								<option value="{$vo.id}" selected>{$vo.types}</option>
+								<else />
+								<option value="{$vo.id}">{$vo.types}</option>
+							</if>
+						</foreach>
+					</select>
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">负责人:</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="text" name="sys_uid" placeholder="请选择负责人" autocomplete="off" class="layui-input sys_uid">
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">方案名称:</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="text" name="pro_name" placeholder="请输入主控型号" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">主控型号:</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="text" name="main_model" placeholder="请输入主控型号" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">主控品牌:</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="text" name="main_brand" placeholder="请输入品牌" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item layui-form-text layui-required">
+				<label class="layui-form-label">方案简述:</label>
+				<div class="layui-input-block textarea_css_layui">
+					<textarea class="layui-textarea " name="synopsis" lay-verify="" id="synopsis" placeholder="请输入简述"></textarea>
+				</div>
+				<div class="word_number">
+					<span class="empty_check yincang" id="desc_empty_check"></span>
+					可以输入<span id="enter_content"><!--还可以输入字--></span>个字!</div>
+				<div class="clear"></div>
+			</div>
+			<div class="layui-form-item layui-form-text layui-required">
+				<label class="layui-form-label">方案详细:</label>
+				<div class="layui-input-block textarea_css_layui">
+					<textarea class="layui-textarea" name="pro_desc" lay-verify="" id="pro_desc" placeholder="请输入简述"></textarea>
+				</div>
+				<div class="word_number">
+					<span class="empty_check yincang" id="desc_empty_check2"></span>
+					可以输入<span id="enter_content2"><!--还可以输入字--></span>个字!</div>
+				<div class="clear"></div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">提供pcba</label>
+				<div class="layui-input-block layui-input-inline">
+					<input type="radio" name="pcba" value="1" title="是" checked="">
+					<input type="radio" name="pcba" value="0" title="否">
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<label class="layui-form-label">pcba列表</label>
+				<div class="layui-input-block textarea_css_layui select_pcba_list">
+					<input type="text" name="pcba_list" placeholder="请填写pcba型号,用逗号隔开" autocomplete="off"
+						   class="layui-input jl-select-erp-user" value="" data-id="">
+				</div>
+			</div>
+			<!--文件上传-->
+			<div class="upload_div">
+				<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+					<legend>文件上传</legend>
+				</fieldset>
+				<!---->
+				<div class="layui-upload">
+					<button type="button" class="layui-btn" id="imgs_btn">多图片选择</button>
+					<button type="button" class="layui-btn" id="start_up">上传图片</button>
+					图片只能保存最新上传的<span style="color:red;">五张</span>,请酌情选择
+					<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
+						预览图：
+						<div class="layui-upload-list" id="imgs_view"></div>
+					</blockquote>
+				</div>
+			</div>
+			<div class="layui-form-item layui-required">
+				<div class="layui-input-block" style="margin-left:50px;">
+					<span class="layui-btn" lay-submit lay-filter="base_data">方案上传</span>
+					<span class="layui-btn" lay-submit lay-filter="draft_data">保存草稿</span>
+				</div>
+			</div>
+		</form>
+	</div>
+</block>
+<block name="js">
+	<script src="__PUBLIC__/Common/module/jstree/3.3.4/jstree.min.js"></script>
+	<script>
+        layui.use(['layer', 'jlTool','element','form','selectProduct','selectUser','upload'], function () {
+            var base_data= {};
+            var layer = layui.layer;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var selectProduct = layui.selectProduct;
+            var selectUser	  = layui.selectUser;
+            var form = layui.form;
+            var upload = layui.upload;
+            var pro_name = $("input[name='pro_name']");//方案名字
+            var synopsis = $("input[name='synopsis']");//简要描述
+            var pro_desc = $("input[name='pro_desc']");//详细描述
+            /*限制字数*/
+            pro_name.attr('maxlength',30);
+            pro_name.keyup(function(){
+                var name_val = synopsis.val();
+                if(String(name_val).length > 30){
+                    $(this).val(name_val.substring(0,30));
+                }
+            })
+            synopsis.attr('maxlength',200);
+            $("#enter_content").text(200);
+//            synopsis.keyup(function(){
+//                var syn_val = synopsis.val();
+//                var syn		= String(syn_val);
+//                if(syn.length > 200){
+//                    $(this).val(syn_val.substring(0,200));
+//                }
+//                console.log(syn.length);
+//                $("#enter_content").text( 200 - syn.length );
+//            });
+            pro_desc.attr('maxlength',2000);
+            $("#enter_content2").text(2000);
+//            pro_desc.keyup(function(){
+//                var desc_val = pro_desc.val();
+//                if(desc_val.length > 2000){
+//                    $(this).val(desc_val.substring(0,2000));
+//                }
+//                $("#enter_content2").text( 2000 - desc_val.length );
+//            });
+  			//选择pcbas型号
+            selectProduct.initInput('.select_pcba_list',function(data){
+                var xz_pcba =[];
+                $.each(data,function(index,value){
+                    xz_pcba[index] = value['fitemno'];
+				});
+				var xz_pcba2 = xz_pcba.join();
+				$("input[name='pcba_list']").val(xz_pcba2);
+
+            },false,'true',{checkBox:true});
+            //选择负责人
+            selectUser.initInput('.sys_uid',function(data){
+                $("input[name='sys_uid']").val(data.nickname);
+                base_data.sys_uid = data.uid;
+              console.log(data);
+			},false);
+            //数据提交
+            form.on('submit(base_data)',function(data){
+                  delete data.field.file;
+                  delete data.field.sys_uid;
+                  delete base_data.draft;
+//                  console.log(data.field);
+                $.each(data.field,function(index,value){
+                    if(index =='types'&&!value){
+                        layer.msg('方案类型不能为空!');return;
+
+                    }else if(index =='pcba_list'&&!value){
+                        layer.msg('pcba型号不能为空!');return;
+
+                    }else if((index!=='types'||index !='pcba_list')&&!value){
+                        var _this=$("input[name='"+index+"']");
+                        var alertMsg = String(_this.attr('placeholder')).substring(3);
+                        layer.msg(alertMsg+'不能为空!');return;
+
+                    }else{
+                    	base_data[index] = value;
+                    }
+                })
+//                    console.log(base_data);
+				if(!base_data.imgs){
+                    layer.msg('图片不能为空!');return;
+				}
+                $.post('/Admin/Solution/addProvider',base_data,function(rez){
+//                    console.log(rez);
+                    if(rez.status==1000){
+//                        base_data.id = rez.data;
+                        layer.msg('数据保存成功',{time:500}, function(){
+                            window.location.reload()}
+						);
+                    }else{
+                        layer.msg('保存失败');
+                    }
+                });
+            });
+            //保存
+            form.on('submit(draft_data)',function(data){
+                delete data.field.file;
+                delete data.field.sys_uid;
+                base_data.draft = 1;
+				//console.log(data.field);
+                $.each(data.field,function(index,value){
+                    if(value){
+                        base_data[index] = value;
+                    }
+                })
+                 //console.log(base_data);
+                if(!base_data.imgs){
+                    delete base_data.imgs
+                }
+                $.post('/Admin/Solution/addProvider',base_data,function(rez){
+//                    console.log(rez);
+                    if(rez.status==1000){
+//                        base_data.id = rez.data;
+                        layer.msg('数据保存成功',{time:500}, function(){
+//                            window.location.reload();
+                        });
+                    }else{
+                        layer.msg('保存失败');
+                    }
+                });
+            });
+
+            //多图片上传
+			var i=0;
+			var imgs = [];
+            upload.render({
+                elem: '#imgs_btn'
+                ,url: '/Admin/Solution/addProvider'
+                ,multiple: true
+                ,auto:false
+                ,bindAction:'#start_up'
+                ,size:5*1024
+				,data:{action:1}
+                ,before: function(obj){
+                    //预读本地文件示例，不支持ie8
+                    if(i>6){
+                        layer.msg('上传数量超过限制');
+                        return;
+                    }
+                    obj.preview(function(index, file, result){
+                        $('#imgs_view').append('<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img">')
+                    });
+                }
+                ,done: function(res){
+                    i++;
+                    if(res.error==0){
+                        var img_path = res.msg.file.savepath+res.msg.file.savename;
+                        if(img_path){
+							imgs.push(img_path);
+						}
+						if(imgs.length>5){
+								imgs.splice(0,imgs.length-5);
+						}
+                        layer.msg('第'+i+'张图片上传成功');
+						base_data.imgs = imgs;
+						console.log(base_data);
+					}
+                    //上传完毕
+                }
+                ,error:function(){
+                    i++
+                    console.log('第'+i+'张图片上传错误');
+                }
+            });
+
+            //新窗口
+            $('.addProvider').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'上传供应方案',
+                    url:'/Admin/Solution/addProvider',
+                    icon:''
+                });
+            });
+            $('.my-solList').click(function () {
+                jlTool.sendIframeMsg('go',{
+                    title:'上传供应方案',
+                    url:'/Admin/Solution/mysolList',
+                    icon:''
+                });
+            });
+        })
+	</script>
+</block>

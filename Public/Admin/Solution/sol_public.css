@@ -1,0 +1,14 @@
+.float_L{
+    float:left;
+}
+.float_R{
+    float:right;
+}
+.data-table-handle-box {
+    width: 90px;
+    display: inline-block;
+}
+.data-table-handle-box span {
+    display: inline-block;
+    cursor: pointer;
+}

@@ -1,0 +1,11 @@
+<view class="page" style="margin-top:-1rpx;">
+ <view id="list" class=" " style="z-index:1;" >
+         <view style="width: 100%;height:100vh;border-top:0rpx solid #fff;text-align:center;" >
+           <image src="/static/images/start.png" mode="widthFix" style="width:100vw;height:100vh"></image>
+          <button wx:if="{{getInfo}}" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="onGotUserInfo" style="position:absolute;left:50%;bottom:12%;transform:translate(-50%,0);width:60%;margin-top:60vh;color:#DF433E;background-color:#fff;border:1rpx solid #e84343" wx:if="{{isTest}}">立即体验</button>
+
+        </view>
+  
+   </view> 
+<!--https://www.longicmall.com/Application/Small/wechat/jiulong-shop/static/images/start.gif--->
+</view>

@@ -1,0 +1,428 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <style>
+        .table-container .layui-table-body .layui-table-cell,
+        .table-container .layui-table-fixed .layui-table-body .layui-table-cell{
+            height: 120px;
+            white-space: normal;
+        }
+        img.data-table-logo{
+            max-width: 200px;
+            max-height: 120px;
+            width: 200px;
+            height: 120px;
+        }
+        .td-is_hot, .td-is_hot .iconfont-jl{  font-size: 18px;  }
+        .td-is_hot .iconfont-jl{font-size: 20px;color: #dd514c;}
+        .first-array{ }
+        .active-first{
+            color: #dd514c;
+        }
+        .first-array a:after{  content: '、';color:#333  }
+        .first-array a:last-child:after{  content: '';  }
+        .form-tips {
+            display: inline-block;
+            color: #666;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+    </style>
+</block>
+<block name="content">
+    <div class="table-container">
+        <blockquote class="jl-title layui-elem-quote">
+            <span class="layui-breadcrumb">
+                <a class="jl-main-title" href="javascript:">品牌管理</a>
+            </span>
+        </blockquote>
+        <blockquote class="layui-elem-quote">
+            <button class="jl-add-btn layui-btn layui-btn-sm">增加品牌</button>
+            <button class="jl-deletes-btn layui-btn layui-btn-sm">批量删除</button>
+        </blockquote>
+        <blockquote class="layui-elem-quote" style="overflow: hidden">
+            <span style="padding: 9px 15px">品牌名称</span>
+            <input value="{$request.brand_name}" type="text" name="brand_name" placeholder="请输入品牌名称" class="layui-input" style="display: inline-block;width: auto">
+            <div class="layui-btn-group">
+                <button class="layui-btn search-btn">检索</button>
+                <button class="layui-btn layui-btn-primary clear-btn">清空</button>
+            </div>
+        </blockquote>
+        <blockquote class="layui-elem-quote first-array">
+            <a href="?">全部</a>
+            <a href="?first=A">A</a><a href="?first=B">B</a><a href="?first=C">C</a>
+            <a href="?first=D">D</a><a href="?first=E">E</a><a href="?first=F">F</a>
+            <a href="?first=G">G</a><a href="?first=H">H</a><a href="?first=I">I</a>
+            <a href="?first=J">J</a><a href="?first=K">K</a><a href="?first=L">L</a>
+            <a href="?first=M">M</a><a href="?first=N">N</a><a href="?first=O">O</a>
+            <a href="?first=P">P</a><a href="?first=Q">Q</a><a href="?first=R">R</a>
+            <a href="?first=S">S</a><a href="?first=T">T</a><a href="?first=U">U</a>
+            <a href="?first=V">V</a><a href="?first=W">W</a><a href="?first=X">X</a>
+            <a href="?first=Y">Y</a><a href="?first=Z">Z</a>
+        </blockquote>
+        <table class="data-table" lay-filter="data-table">
+            <script type="text/html" id="data-table-handle-tpl">
+                <div class="data-table-handle-box" data-id="{{ d.id }}">
+                    <span lay-event="edit">修改</span>
+                    <span lay-event="del">删除</span>
+                    <span lay-event="hot1">{{ d.is_hot==1?'取消':'' }}热卖</span>
+                    <span lay-event="hot2">{{ d.is_hot==2?'取消':'' }}优势</span>
+                </div>
+            </script>
+        </table>
+        <div id="data-table-page"></div>
+    </div>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'jlTool','element','form','upload'], function () {
+            var layer = layui.layer;
+            var table = layui.table;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var element = layui.element;
+            var form = layui.form;
+            var upload = layui.upload;
+            var list_data = {$brandList|json_encode};
+            var request = {$request|json_encode};
+            //选择a-z
+            if(request&&request.first){
+                var code = request.first[0].charCodeAt();
+                var index = parseInt(code) - 65;
+                $('.first-array').children().eq(index+1).addClass('active-first')
+            }
+            var queryTable = function (query) {
+                query = jlTool.urlEncode(query);
+                window.location.href = '/Admin/Product/brandList?'+query
+            };
+            table.render({
+                id: 'brand',
+                elem: '.data-table',
+                data: list_data.list,
+                page: false,
+                limit: list_data.pageSize,
+                cellMinWidth: 160,
+                height:'full-328',
+                cols: [[
+                    {field: 'checkbox', type: 'checkbox', width: 50, fixed: 'left'}
+                    ,{field: 'id', width: 100,title: '品牌ID', fixed: 'left'}
+                    ,{field: 'brand_name', title: '品牌名称'}
+                    ,{field: 'logo',width: 230,title: 'logo',templet: '<div><img class="data-table-logo" src="{{d.logo}}"></div>'}
+                    ,{field: 'is_hot', title: '展示状态',templet: (
+                        '<div><div class="td-is_hot">' +
+                        '{{#  if(d.is_hot==1){ }}'+
+                        '<i class="iconfont-jl icon-jl-Balloon"></i>热卖'+
+                        '{{#  } else if(d.is_hot==2) { }}'+
+                        '<i class="iconfont-jl icon-jl-flag"></i>优势'+
+                        '{{#  } }}'+
+                        '</div></div>'
+                    )}
+                    ,{field: 'first', title: '首字母',sort:true}
+                    ,{field: 'href', title: '品牌官网'}
+                    ,{field: 'handle', title: '操作',align:'center', fixed: 'right', toolbar: '#data-table-handle-tpl'}
+                ]]
+            });
+            //分页初始化
+            laypage.render({
+                elem: 'data-table-page',
+                limit: list_data.pageSize,
+                count: list_data.count,
+                curr: list_data.page,
+                layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                jump: function (obj, first) {
+                    if (!first) {
+                        queryTable($.extend(request,{
+                            pageSize:obj.limit,
+                            page:String(obj.limit)===String(list_data.pageSize) ? obj.curr:1
+                        }));
+                    }
+                }
+            });
+            //渲染detial
+            var detailHtml = function (detail) {
+                detail = detail ? detail : {
+                    brand_name:'',
+                    first:request.first?request.first:'',
+                    href:'',
+                    logo:''
+                };
+                return (
+                    '<div> ' +
+                    '<form class="layui-form" action="" lay-filter="add"> ' +
+                    '<div class="layui-form-item layui-required"> ' +
+                    '<label class="layui-form-label">品牌名称</label> ' +
+                    '<div class="layui-input-block"> ' +
+                    '<input type="text" name="brand_name2" value="'+detail.brand_name+'" required lay-verify="required" ' +
+                    'placeholder="请输入品牌名称" autocomplete="off" class="layui-input"> ' +
+                    '</div> ' +
+                    '</div> ' +
+                    '<div class="layui-form-item"> ' +
+                    '<label class="layui-form-label">展示状态</label> ' +
+                    '<div class="layui-input-block"> ' +
+                    '<select name="is_hot" lay-verify="required"> ' +
+                    '<option  value="0">默认</option> ' +
+                    '<option '+(parseInt(detail.is_hot)===1?'selected':'')+' value="1">热卖</option> ' +
+                    '<option '+(parseInt(detail.is_hot)===2?'selected':'')+' value="2">优势</option> ' +
+                    '</select> ' +
+                    '</div> ' +
+                    '</div> ' +
+                    '<div class="layui-form-item layui-required"> ' +
+                    '<label class="layui-form-label">首字母</label> ' +
+                    '<div class="layui-input-block"> ' +
+                    '<input type="text" name="first" value="'+detail.first+'" placeholder="请输入品牌首字母" ' +
+                    'autocomplete="off" class="layui-input"> ' +
+                    '<span class="form-tips">（一个英文字符，范围是A~Z）</span>' +
+                    '</div> ' +
+                    '</div> ' +
+                    '<div class="layui-form-item"> ' +
+                    '<label class="layui-form-label">品牌官网</label> ' +
+                    '<div class="layui-input-block"> ' +
+                    '<input type="text" name="href" value="'+detail.href+'" placeholder="请输入品牌官网" ' +
+                    'autocomplete="off" class="layui-input"> ' +
+                    '</div> ' +
+                    '</div> ' +
+                    '<div class="layui-form-item layui-required"> ' +
+                    '<label class="layui-form-label">品牌logo</label> ' +
+                    '<div class="layui-input-block "> ' +
+                    '<button type="button" class="layui-btn" id="upload-logo"><i class="layui-icon">&#xe67c;</i>上传图片</button>' +
+                    '<img id="upload-img" style="width: 200px;height: 120px;'+(detail.logo?'':'display: none')+'" src="'+detail.logo+'"/>'+
+                    '</div> ' +
+                    '</div> ' +
+                    '</form> ' +
+                    '</div>'
+                )
+            };
+            //展示状态
+            var changHot = function (source,value) {
+                source.is_hot = value;
+                var data = {
+                    data:[source],
+                    action:'edit'
+                };
+                $.post('/Admin/Product/brandList',data,function (res) {
+                    res = $.parseJSON(res);
+                    if(res.error===0){
+                        layer.msg('修改成功',{time:500}, function(){
+                            window.location.reload()
+                        });
+                    }
+                    else {
+                        layer.tips(res.msg, '.layui-layer-btn');
+                    }
+                })
+            };
+            //工具按钮
+            table.on('tool(data-table)', function(obj){
+                var source = obj.data;
+                var layEvent = obj.event;
+                if(layEvent === 'edit'){ //查看
+                    layer.open({
+                        title:'编辑品牌',
+                        type: 0,
+                        area: '440px',
+                        content: detailHtml(source),
+                        success:function () {
+                            form.render(null, 'add');
+                            var uploadInst = upload.render({
+                                elem: '#upload-logo'
+                                ,url: '/Admin/Excel/fileUpload'
+                                ,data:{
+                                    path: 'brand_logo'
+                                }
+                                ,done: function(res){
+                                    if(res.error===0){
+                                        $('#upload-img').attr('src',res.data.path).show();
+                                    }
+                                    else {
+                                        layer.msg(res.msg);
+                                    }
+                                }
+                                ,error: function(){
+                                    layer.msg('上传失败')
+                                }
+                            });
+                        },
+                        yes:function (index) {
+                            var form = {
+                                id:source.id,
+                                brand_name:String($('input[name="brand_name2"]').val()).trim(),
+                                is_hot:String($('select[name="is_hot"]').val()).trim(),
+                                first:String($('input[name="first"]').val()).trim(),
+                                href:String($('input[name="href"]').val()).trim(),
+                                logo:String($('#upload-img').attr('src')).trim(),
+                            };
+                            if(!form.first){
+                                layer.tips('请输入首字母', 'input[name="first"]');
+                                return
+                            }
+                            else {
+                                var code = String(form.first[0]).toUpperCase().charCodeAt();
+                                if(code<65||code>90){
+                                    layer.tips('字符范围是A~Z', 'input[name="first"]');
+                                    return
+                                }
+                            }
+                            var data = {
+                                data:[form],
+                                action:'edit'
+                            };
+                            $.each(data.data[0],function (index,value) {
+                                if(!value){
+                                    delete data.data[0][index];
+                                }
+                            });
+                            $.post('/Admin/Product/brandList',data,function (res) {
+                                res = $.parseJSON(res);
+                                if(res.error===0){
+                                    layer.msg('编辑成功',{time:500}, function(){
+                                        window.location.reload()
+                                    });
+                                }
+                                else {
+                                    layer.tips(res.msg, '.layui-layer-btn');
+                                }
+                            })
+                        },
+                        cancel:function () {
+
+                        }
+                    })
+                }
+                else if(layEvent === 'hot1'){
+                    var is_hot = parseInt(source.is_hot)===1?0:1;
+                    changHot(source,is_hot)
+                }
+                else if(layEvent === 'hot2'){
+                    var is_hot2 = parseInt(source.is_hot)===2?0:2;
+                    changHot(source,is_hot2)
+                }
+                else if(layEvent === 'del'){
+                    layer.confirm('确认删除吗？',function(index){
+                        $.post('/Admin/Product/brandsDelete',{brandsId_arr:[source.id]},function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('删除成功',{time:500}, function(){
+                                    window.location.reload()
+                                });
+                            }
+                            else {
+                                layer.tips(res.msg, '.layui-layer-btn');
+                            }
+                        })
+                    });
+                }
+            });
+            //添加按钮
+            $('.jl-add-btn').click(function () {
+                layer.open({
+                    title:'增加品牌',
+                    type: 0,
+                    area: '440px',
+                    content: detailHtml(),
+                    success:function () {
+                        form.render(null, 'add');
+                        var uploadInst = upload.render({
+                            elem: '#upload-logo'
+                            ,url: '/Admin/Excel/fileUpload'
+                            ,data:{
+                                path: 'brand_logo'
+                            }
+                            ,done: function(res){
+                                if(res.error===0){
+                                    $('#upload-img').attr('src',res.data.path).show();
+                                }
+                                else {
+                                    layer.msg(res.msg);
+                                }
+                            }
+                            ,error: function(){
+                                layer.msg('上传失败')
+                            }
+                        });
+                    },
+                    yes:function (index) {
+                        var form = {
+                            brand_name:String($('input[name="brand_name2"]').val()).trim(),
+                            is_hot:String($('select[name="is_hot"]').val()).trim(),
+                            first:String($('input[name="first"]').val()).trim(),
+                            href:String($('input[name="href"]').val()).trim(),
+                            logo:String($('#upload-img').attr('src')).trim(),
+                        };
+
+                        if(!form.first){
+                            layer.tips('请输入首字母', 'input[name="first"]');
+                            return
+                        }
+                        else {
+                            var code = String(form.first[0]).toUpperCase().charCodeAt();
+                            if(code<65||code>90){
+                                layer.tips('字符范围是A~Z', 'input[name="first"]');
+                                return
+                            }
+                        }
+                        var data = {
+                            data:[form],
+                            action:'add'
+                        };
+                        console.log('1',form);
+                        $.each(data.data[0],function (index,value) {
+                            if(!value){
+                                delete data.data[0][index];
+                            }
+                        });
+                        console.log('2',form);
+                        $.post('/Admin/Product/brandList',data,function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('添加成功',{time:500}, function(){
+                                    window.location.reload()
+                                });
+                            }
+                            else {
+                                layer.tips(res.msg, '.layui-layer-btn');
+                            }
+                        })
+                    },
+                    cancel:function () {
+
+                    }
+                })
+            });
+            //批量删除
+            $('.jl-deletes-btn').click(function () {
+                layer.confirm('确认删除选中值吗？',function(index){
+                    var ids = table.checkStatus('brand');
+                    var arr = [];
+                    $.each(ids.data,function (index,value) {
+                        arr.push(value.id)
+                    });
+                    if(arr.length!==0){
+                        $.post('/Admin/Product/brandsDelete',{brandsId_arr:arr},function (res) {
+                            res = $.parseJSON(res);
+                            if(res.error===0){
+                                layer.msg('删除成功',{time:500}, function(){
+                                    window.location.reload()
+                                });
+                            }
+                            else {
+                                layer.tips(res.msg, '.layui-layer-btn');
+                            }
+                        })
+                    }
+                    else {
+                        layer.msg('请先勾选目标')
+                    }
+                });
+            });
+            //检索按钮
+            $('.search-btn').on('click',function () {
+                queryTable({
+                    brand_name:$('input[name="brand_name"]').val()
+                });
+            });
+            $('.clear-btn').on('click',function () {
+                queryTable();
+            })
+        });
+    </script>
+</block>

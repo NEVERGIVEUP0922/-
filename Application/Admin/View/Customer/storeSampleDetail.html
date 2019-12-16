@@ -1,0 +1,229 @@
+<extend name="Layout:layout-tab"/>
+<block name="css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/select-modal.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Common/module/pikaday/1.6.1/css/pikaday.min.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/data-table.css"/>
+    <link rel="stylesheet" href="__PUBLIC__/Admin/Public/css/list-query.css"/>
+</block>
+<block name="content">
+    <div style="position:relative">
+        <div class="">
+            <blockquote class="layui-elem-quote" style="margin-bottom: -10px">申请样品
+                <button class="layui-btn action-submit" data-submit="pass" style="padding:0 10px;height:30px;line-height:30px;">通过</button>
+                <button class="layui-btn action-add" data-submit="reject" style="padding:0 10px;height:30px;line-height:30px;color:#666;background-color:#fff;border:1px solid #ddd">拒绝</button>
+            </blockquote>
+            <table lay-filter="data-table" class="data-table"></table>
+            <div id="data-table-page"></div>
+        </div>
+        <div>
+            <blockquote class="layui-elem-quote" style="margin-bottom: -10px">已审核样品</blockquote>
+            <table lay-filter="data-table-pass" class="data-table-pass"></table>
+            <div id="data-table-page-pass"></div>
+        </div>
+    </div>
+    <style>
+        .layui-table-header .layui-table-cell{ height:54px;line-height:54px}
+        .layui-table-header th[data-field = order_type]>div{ line-height:28px}
+        .layui-table-header th[data-field = deposits_pay_type]>div{ line-height:28px}
+        .layui-table-header th[data-field = already_paid]>div{ line-height:28px}
+        .layui-table-header th[data-field = invoice_status]>div{ line-height:28px}
+
+    </style>
+</block>
+<block name="js">
+    <script>
+        layui.use(['table', 'layer', 'laypage', 'jlTool', 'element', 'form','orderConfig','commonTpl','selectCustomer',
+            'selectUser','pikadayOption','selectProduct','laydate'], function () {
+            var table = layui.table;
+            var layer = layui.layer;
+            var laypage = layui.laypage;
+            var jlTool = layui.jlTool;
+            var laydate = layui.laydate;
+            var form = layui.form;
+            var selectProduct =layui.selectProduct;
+            var list_data = {$userSampleList | json_encode};
+            var request = {$request | json_encode};
+            var data=[];
+            var ids=window.location.search.split("=")[1];
+            //console.log(list_data);
+            var tableShow=function(elemnt,list_data,hasPass) {
+                var cols = [
+                    {field: 'p_sign', title: (!hasPass ? "需求型号" : "商品型号"), width: 100}
+                    , {field: 'package', title: (!hasPass ? "需求" : "商品") + '封装'}
+                    , {field: (hasPass ? 'brand_name' : 'brand'), title: (!hasPass ? "需求" : "商品") + '品牌'}
+                    , {field: (hasPass ? 'cate_name' : 'cate'), title: (!hasPass ? "需求" : "商品") + '分类'}
+                    , {field: (!hasPass ? 'pnum' : 'max_num'), title: (!hasPass ? "需求样品数量" : "推荐数量")}
+                ];
+                if (!hasPass) {
+                    cols.push({
+                        field: 'productList', title: '选定样品', templet: function (d) {
+                            var productHtml = '';
+                            $.each(d.productList, function (index, value) {
+                                if (index == 0) {
+                                    productHtml += (
+                                        '<tr > ' +
+                                        '<td>' + value.id + '</td> ' +
+                                        '<td>' + value.p_sign + '</td> ' +
+                                        '<td>' + value.cate_name + '</td> ' +
+                                        '<td>' + value.brand_name + '</td> ' +
+                                        '</tr> '
+                                    )
+                                }
+
+                            });
+                            var hideCss="";
+                            if(d.productList.length<1){
+                                hideCss="background-color:#c2c2c2;";
+                            };
+                            return '<div class="details">' +
+                                '<p><button class="layui-btn layui-btn-sm" style="padding:0 8px;'+hideCss+'">查看详情</button><span style="margin: 0 50px;"></span></p>' +
+                                '<table class="layui-table"> ' +
+                                '<thead> ' +
+                                '<tr> ' +
+                                '<th style="width:1%">ID</th> ' +
+                                '<th>商品型号</th> ' +
+                                '<th>商品分类</th> ' +
+                                '<th>品牌</th> ' +
+                                '</tr> ' +
+                                '</thead> ' +
+                                '<tbody class="selectSample"> ' + productHtml + '</tbody> ' +
+                                '</table>' +
+                                '</div>';
+                        }
+                    });
+                    cols.push({
+                        field: 'p_num', title: '推荐数量', templet: function (d) {
+                            return '<div style="text-align:center;width:100px"><input class="recommentNum" type="text" max="50" style="text-indent:20px;width:90%;height:28px;padding:5px 0;line-height:28px;border:1px solid #e6e6e6;background-color:#fff;" placeholder="推荐数量" value="'+(d.pnum/*<=50?d.pnum:50*/||1)+'"/></div>';
+                        }
+                    });
+                    cols.push({
+                        field: 'handle', title: '操作', templet: function (d) {
+                            if(data[0].action_status ==1)return "";
+                            return '<span class="chooseSample handle-common" style="text-align:center;width:100px;cursor:pointer;" data-data="'+encodeURIComponent(JSON.stringify(d.productList))+'">选择样品</span>' +
+                                '/<span class="sample-clean handle-common" style="text-align:center;width:100px;cursor:pointer;" >清空</span>';
+                        }
+                    });
+                };
+               $.each(list_data,function(ind,val){
+                   val.p_num=val.pnum<50?val.pnum:50||1;
+                   !val.selectSample&&elemnt==".data-table"&&(val.selectSample=val.productList.length>0?val.productList[0]:{});
+               });
+                table.render({
+                    elem: elemnt,
+                    data: list_data,
+                    page: false,
+                    limit: list_data.pageSize||10,
+                    unresize: true,
+                    cellMinWidth: 90,
+                    height: 'auto',
+                    cols: [cols],
+                    done: function () {
+                        selectProduct.initInput(".chooseSample", function (value, $this) {
+                            var str= '<tr > ' +
+                                '<td>' + value.id + '</td> ' +
+                                '<td>' + value.p_sign + '</td> ' +
+                                '<td>' + value.cate_name + '</td> ' +
+                                '<td>' + value.brand_name + '</td> ' +
+                                '</tr> ';
+                            data[0].item[$this.parents("tr").data("index")].selectSample=value;
+                            $this.parents("tr").find(".selectSample").html(str);
+                            $this.parents("tr").find(".layui-btn-sm").css("background-color","#009688");
+                        },false,"true");
+                        //清空sample
+                       $(".sample-clean").on("click",function(){
+                           var $this=$(this);
+                           data[0].item[$this.parents("tr").data("index")].selectSample={};
+                           $this.parents("tr").find(".selectSample").html("");
+                           $this.parents("tr").find(".layui-btn-sm").css("background-color","#c2c2c2");
+                       });
+                       //赋值推荐数量
+                        var timer;
+                        $(".recommentNum").on("input",function(){
+                            var $this= $(this);
+                            clearTimeout(timer);
+                            timer=setTimeout(function(){
+                              /*  if($this.val() >=50){
+                                    $this.val("50")
+                                };*/
+                                data[0].item[$this.parents("tr").data("index")].p_num=$this.val();
+                                //console.log(data[0]);
+                            },300)
+                        });
+                    }
+                });
+                //分页初始化
+              /*  laypage.render({
+                    elem: 'data-table-page',
+                    limit: list_data.pageSize,
+                    count: list_data.count,
+                    curr: list_data.page,
+                    layout: ['prev', 'page', 'next', 'skip', 'count', 'limit'],
+                    jump: function (obj, first) {
+                        if (!first) {
+                            queryTable($.extend(request, {
+                                pageSize: obj.limit,
+                                page: String(obj.limit) === String(list_data.pageSize) ? obj.curr : 1,
+                                where: request.where
+                            }));
+                        }
+                    }
+                });*/
+            }
+            ///审核通过与拒绝
+            $(".layui-btn").off("click").on("click",function(){
+                var types = $(this).data("submit");
+                var msg_self={pass:true};
+                $.each( data[0].item,function(ind,val){
+                    if(!val.p_num ){
+                        msg_self.ind=ind;
+                        msg_self.pass=false;
+                        return false;
+                    }
+                });
+                if(!msg_self.pass){
+                    var _this_layer = layer.open({
+                        title:"错误提示",
+                        content:"样品第"+(++msg_self.ind )+"行，推荐数量没有填写或者没选定样品",
+                        success:function(){
+                            layer.close(_this_layer);
+                        }
+
+                    });
+                    return;
+                };
+                if(types == "pass"){
+                    data[0].action_status =1;
+                }else{
+                    data[0].action_status =2;
+                }
+                $.ajax({
+                    url:"/admin/sample/addSample",
+                    data:data[0],
+                    method:"post",
+                    dataType:"json",
+                    success:function(res){
+                        if(res.error ==0){
+                            layer.msg(  data[0].action_status==1?"审核通过":"操作成功",{time:1000},function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            layer.msg(res.msg,{time:1000});
+                        }
+                    }
+                });
+            });
+            $.each(list_data,function(idx,val){
+                if(ids == val.id){
+                    data.push(val);
+                }
+            });
+           // console.log("list_data",list_data,window.location);
+            if(data[0].action_status==1){
+                $(".layui-elem-quote").find(".layui-btn").hide();
+            };
+            var list_data=[{p_sign: "1", package: "1", brand: "1",brand_name: "1", pnum: "1", delivery: "1",cate:"55",cate_name:"666",max_num:"999"}];
+            data[0].item.length>0&&tableShow(".data-table",data[0].item,false);
+            data[0].sampleList.length>0&&(tableShow(".data-table-pass",data[0].sampleList,true));
+        });
+    </script>
+</block>

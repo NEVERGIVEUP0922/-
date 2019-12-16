@@ -1,0 +1,262 @@
+<!-- 前台搜索模板文件  -->
+<!-- 方案中心的命名:(旧)planCenter,(新)solution,简写sol -->
+<extend name="Layout:layout-sol-center" />
+
+<block name="title">方案中心</block>
+<block name="keywords">这里是关键字</block>
+<block name="description">这里是描述</block>
+<block name="css">
+	<!--<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/search-nav.css">-->
+	<link rel="stylesheet" href="__PUBLIC__/Home/Index/css/release.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Public/css/cart-nav.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/center.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/User/css/centerUser.css">
+
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/project.css">
+	<link rel="stylesheet" href="__PUBLIC__/Home/Solution/css/public.css">
+	<!--sol的前缀是solution(方案)的缩写-->
+	<style>
+		.myBrowse_color{
+			color:#e84343;
+		}
+	</style>
+</block>
+<block name="nav-title">
+	项目管理中心
+</block>
+<block name="main"><!-- 主要内容 -->
+	<!--面包屑导航系统-->
+	<!--{$breadcrum}-->
+	<!--页面布局主区域-->
+	<div id="jl-project">
+		<!--项目管理中心具体内容-->
+		<div class="projectContent">
+			<if condition="$res eq null">
+				<div id="jl-purchase-fault">
+					<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+					<p class="jl-fault">还没有任何内容哦!</p>
+					<a href="{:U('Home/Solution/provider')}" class="jl-browse">快去浏览吧（＾▽＾）</a>
+				</div>
+				<else/>
+				<foreach name="res" item="vo">
+					<if condition="$vo.pro_sn && !$vo.desir_sn">
+						<div class="mysol mysol2"><!--供应方案-->
+						<i class="p_or_d" data-p_or_d="1"></i>
+							<div class="mysol_children1_div">
+								<div class="div_img_0">
+									<div class="div_img_1"><img src="__PUBLIC__/Home/Public/img/logo.png" alt=""></div>
+									<div class="word-gy" style="height:20px;line-height:20px;margin-left:40px;">供应方案</div>
+								</div>
+								<div class="div_ul_0">
+									<ul id="browse_ul_a">
+										<li>
+											<div class="project_sol_info redword" style="max-width:170px;display: inline;">
+											{$vo.pro_name}
+											</div>
+											<if condition="$vo['jl_self'] eq 1">
+												<div class="detail-ziying">
+													<div class="detail-ziying-s">自营</div>
+												</div>
+											</if>
+										</li>
+										<li>
+											<div class="black_word height-line">方案编号:</div>
+											<div class="project_sol_info" style="width:150px;">{$vo.pro_sn}</div>
+										</li>
+										<li>
+											<div class="black_word height-line">方案类型:</div>
+											<div class="project_sol_info" style="width:150px;">{$vo.types}</div>
+										</li>
+										<li>
+											<div class="black_word height-line">发&nbsp;布&nbsp;者&nbsp;:</div>
+											<div class="project_sol_info" style="width:150px;">{$vo.nick_name}</div>
+										</li>
+										<li>
+											<div class="black_word height-line">发布时间:</div>
+											<div class="project_sol_info" style="width:150px;">{$vo.create_time}</div>
+										</li>
+									</ul>
+								</div>
+								<div class="clear"></div>
+							</div>
+							<div class="clear"></div>
+							<div class="div_desc_a0">
+								<div class="div_desc_a1_a black_word">方案简要描述:</div>
+								<!--<div class="desc-hidden1">{$vo.synopsis}</div>-->
+								<div class="div_desc_a1_b">{$vo.synopsis}</div>
+							</div>
+							<div class="clear"></div>
+							<div class="div_desc_b0">
+								<div class="div_desc_b1_a black_word" >方案详细描述:</div>
+								<!--<div class="div_desc_b1_b">{$vo.pro_desc}</div>-->
+								<div class="desc-hidden2" style="color:#e84343">方案详情请点击"查看更多"</div>
+							</div>
+							<div class="clear"></div>
+							<div>
+								<div class="checkmore2" >
+									<a href="javascript:;"  class="checkmore" data-method="describe2" data-pro_desc="{$vo.pro_desc}">查看更多>>></a>
+								</div>
+								<!--<div>-->
+									<!--<div class="ziying ziying2">私营</div>-->
+								<!--</div>-->
+							</div>
+						</div>
+					<elseif condition="$vo.desir_sn && !$vo.provider"/>
+						<div class="mysol mysol2">
+							<i class="p_or_d" data-p_or_d="2"></i>
+							<table style="width:100%;">
+								<tr>
+									<td colspan="4" class="redword" >
+										<div class="project_sol_info redword float_L" style="width:250px;">
+											{$vo.desir_name}
+										</div>
+										<b class="mysol-delete" data-sol_id="{$vo.sol_id}" data-sol_sn="{$vo.sol_sn}" data-sol_type="{$vo.sol_type}" data-sol_id="{$vo.sol_id}" data-pub_status="{$vo.publish_status}"></b>
+									</td>
+								</tr>
+								<tr>
+									<td style="width:80px;" class="black_word">方案编号:</td>
+									<td style="width:150px;"><div>{$vo.desir_sn}</div></td>
+									<td style="width:60px;"></td>
+									<td style="width:80px;"></td>
+								</tr>
+								<tr>
+									<td class="black_word">方案类型:</td>
+									<td><div>{$vo.types}</div></td>
+									<td class="black_word">状&nbsp;&nbsp;&nbsp;态:</td>
+									<td>
+										<if condition="$vo['publish_status'] eq 1" >发布中
+											<elseif condition="$vo['publish_status'] eq 2" />已结束
+										</if>
+									</td>
+								</tr>
+								<tr>
+									<td class="black_word">预&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;算:</td>
+									<td><div class="project_sol_info  float_L" style="width:80px;">{$vo.budget}</div></td>
+									<td class="black_word">发布者:</td>
+									<td><div class="project_sol_info redword float_L" style="width:80px;"><span class="redword">{$vo.nick_name}</span></div></td>
+								</tr>
+								<tr>
+									<td colspan="4">
+										<div class="myDesir-div word-gy" >需求方案<!--交付时间:&nbsp;{$vo.delivery}--></div>
+										<div class="myDesir-div project_sol_info float_L black_word" style="width:75px;margin-left:92px;">查看时间:</div>
+										<div class="myDesir-div">{$vo.create_time}</div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="4" style="height:22px;"></td>
+								</tr>
+								<tr>
+									<td class="textAlign-top black_word">方案描述:</td>
+									<td colspan="3" class="text-font-size"><div class="desc-hidden2" style="height:145px;" >{$vo.desir_desc}</div></td>
+								</tr>
+								<tr>
+									<td colspan="4" style="text-align:right;"><a href="javascript:;" class="checkmore" data-method="describe">查看更多>>></a></td>
+								</tr>
+								<!--<tr>-->
+									<!--<td colspan="4">-->
+										<!--&lt;!&ndash;<div class="ziying">自营</div>&ndash;&gt;-->
+										<!--&lt;!&ndash;<div class="check_status">&ndash;&gt;-->
+										<!--&lt;!&ndash;</div>&ndash;&gt;-->
+										<!--<div class="clear"></div>-->
+									<!--</td>-->
+								<!--</tr>-->
+							</table>
+						</div>
+					</if>
+				</foreach>
+			</if>
+		</div>
+		<div id="jl-purchase-fault" hidden="hidden"><!--用作填充-->
+			<img src="__PUBLIC__/Home/Public/img/heart.png" alt="">
+			<p class="jl-fault">还没有任何内容哦!</p>
+			<a href="{:U('Home/Solution/provider')}" class="jl-browse">快去浏览吧（＾▽＾）</a>
+		</div>
+		<div class="clear" ></div>
+		{$page}
+	</div>
+</block>
+
+<block name="js">
+	<script>
+        require(['__PUBLIC__/Home/Public/js/require-config.js','layer-all'], function () {
+            require(['jquery', 'jl-modal', 'pikaday', 'jl-tool','layer','webuploader'], function ($, modal, pikaday, jlTool,WebUploader) {
+                /*点击查看更多(需求方案)*/
+                $(".checkmore").on('click',function(event){
+                    event.stopPropagation();
+                    var _mysol = $(this).parents('.mysol');
+					var _type  = _mysol.find('.p_or_d').data('p_or_d');
+					console.log(_type);
+					if( _type  == 1){/*供应*/
+						var _descri= $(this).data('pro_desc');
+                        var othis  = $(this), method = othis.data('method');
+                        active[method] ? active[method]( _descri ) : '';
+
+					}else if( _type== 2 ){/*需求*/
+						console.log(1);
+                        var te   	= _mysol.find('.desc-hidden2'),_descri = te.html();
+//                        _descri =_descri.replace(/\n/g,"<p>");/*linux*/
+                        _descri =_descri.replace(/n/g,"<p>");/*windows*/
+                        var othis	= $(this), method = othis.data('method');
+                        active[method] ? active[method]( _descri ) : '';
+					}
+                });
+
+                /*点击查看方案*/
+                $(".mysol").on('click',function(){
+                    {}
+                    var data = $(this).find('b').data();
+                    var url = "";
+                    if(data.sol_type==1){
+                        url ="{:U('Home/Solution/proDetail')}"+"?"+"id="+data.sol_id;
+                    }else{
+                        url ="{:U('Home/Solution/desirDetail')}"+"?"+"id="+data.sol_id;
+                    }
+                    window.location=url;
+                });
+
+                /*弹层相关*/
+                var active  = {
+                    describe: function(text){
+                        var desc = text;
+                        layer.open({
+                            type: 1
+                            ,title:false// "方案描述"
+                            ,closeBtn: false
+                            ,area:['400px','500px']
+                            ,shade:0.3
+                            ,shadeClose:true
+                            ,id: 'LAY_layuipro'
+//                     	,btn:'关闭'
+                            ,btnAlign: 'r'
+                            ,moveType: 1
+                            ,content: "<div style='border:3px solid #777;box-sizing: border-box;width:100%;height:100%;line-height:25px;padding:10px;text-indent:25px;letter-spacing: 2px;word-break: break-all;word-wrap: break-word;color:#222'>"+desc+"</div>"
+                            ,success: function(layero){
+                                var btn = layero.find('.layui-layer-btn');
+                                btn.find('.layui-layer-btn0').attr({
+                                    href: 'http://www.layui.com/'
+                                    ,target: '_blank'
+                                });
+                            }
+                        });
+                    }
+                    ,describe2: function( text){
+                        var descri = text;
+                        var url = descri
+                        console.log(url);
+                        layer.open({
+                            type: 2
+                            , title: false
+                            , closeBtn: 2
+                            , area: ["60%", '80%']
+                            , shade: 0.5
+                            , id: 'LAY_layuipro'
+                            , btn: ['关闭页面']
+                            , content: url
+                        });
+                    }
+                };
+
+            });
+        });
+	</script>
+</block>
